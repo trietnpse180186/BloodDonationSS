@@ -1,0 +1,16 @@
+.footer {
+  display: flex;
+  flex-wrap: row;
+  background-color: #2f2f2f;
+  padding: 20px;
+  font-size: 14px;
+  color: #dad8d8;
+  margin-top: 100px;
+  padding: 100px;
+}
+.footer-content {
+  display: flex;
+  flex-direction: row;
+  align-items: space-between;
+  width: 100%;
+}

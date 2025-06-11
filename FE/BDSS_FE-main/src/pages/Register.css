@@ -1,0 +1,99 @@
+.register-page {
+  background-image: url("../images/banner5.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.form {
+  background: #fff;
+  padding: 36px 32px 28px 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 32px rgba(60, 72, 88, 0.15);
+  width: 100%;
+  max-width: 400px;
+}
+
+.form h1 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #2d3748;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.field-wrapper {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.field-wrapper label {
+  font-size: 1rem;
+  color: #374151;
+  margin-bottom: 4px;
+  cursor: pointer;
+}
+
+.field-wrapper input[type="text"],
+.field-wrapper input[type="date"] {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #f9fafb;
+  transition: border 0.2s;
+  outline: none;
+}
+
+.field-wrapper input[type="text"]:focus,
+.field-wrapper input[type="date"]:focus {
+  border-color: #6366f1;
+  background: #fff;
+}
+
+.field-wrapper input[type="checkbox"] {
+  margin-right: 6px;
+  accent-color: #6366f1;
+}
+.field-wrapper-gender {
+  display: flex;
+  margin-left: 10px;
+}
+.wrap-submit {
+  width: 100%;
+  padding: 12px 0;
+  background: linear-gradient(90deg, #6366f1 0%, #60a5fa 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.08);
+}
+
+.wrap-submit:hover {
+  background: linear-gradient(90deg, #a90a0a 0%, #f44242 100%);
+}
+
+.form a {
+  display: block;
+  text-align: center;
+  color: #6366f1;
+  text-decoration: none;
+  margin-top: 10px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.form a:hover {
+  color: #4338ca;
+  text-decoration: underline;
+}

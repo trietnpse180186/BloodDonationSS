@@ -1,0 +1,79 @@
+.login-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 100%;
+  height: 100vh;
+}
+.login-wrapper {
+  background: #fff;
+  max-width: 350px;
+  margin: 20px auto 0 auto;
+  padding: 32px 28px 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(44, 44, 44, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.login-wrapper input {
+  padding: 12px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.login-wrapper input:focus {
+  border: 1.5px solid #2a20ed;
+}
+
+.login-wrapper button[type="submit"] {
+  background: linear-gradient(90deg, #f14438 60%, #2a20ed 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(44, 44, 44, 0.08);
+}
+
+.login-wrapper button[type="submit"]:hover {
+  background: linear-gradient(90deg, #2a20ed 60%, #f14438 100%);
+}
+
+.login-wrapper input[type="email"],
+.login-wrapper input[type="password"] {
+  background: #fafbff;
+}
+
+.login-wrapper input::placeholder {
+  color: #b0b0b0;
+  font-size: 0.98rem;
+}
+
+.login-page a {
+  display: block;
+  text-align: center;
+  margin-top: 18px;
+  color: #2a20ed;
+  text-decoration: none; /* Chỉ áp dụng cho login */
+  .login-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f14438 0%, #2a20ed 100%);
+  }
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #f14438;
+}

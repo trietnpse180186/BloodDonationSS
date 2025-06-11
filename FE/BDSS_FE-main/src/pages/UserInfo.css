@@ -1,0 +1,129 @@
+/* Đặt toàn bộ giao diện ở giữa màn hình */
+.userinfo-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 80vh;
+  background: #f7f8fa;
+  padding: 40px 0;
+}
+
+/* Thanh công cụ bên trái */
+.userinfo-sidebar {
+  width: 220px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(44, 44, 44, 0.1);
+  margin-right: 36px;
+  padding: 28px 0 18px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.userinfo-sidebar .sidebar-item {
+  padding: 14px 28px;
+  font-size: 1.08rem;
+  color: #333;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.userinfo-sidebar .sidebar-item.delete {
+  color: #fff;
+  background: #b5332b;
+  border-radius: 0 20px 20px 0;
+  margin-top: 30px;
+  border-left: 4px solid #b5332b;
+}
+
+/* Thông tin người dùng ở giữa */
+.userinfo-content {
+  flex: 1;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(44, 44, 44, 0.1);
+  padding: 36px 44px;
+  min-width: 340px;
+  max-width: 520px;
+  margin-left: 0;
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+.userinfo-content h2 {
+  color: #b5332b;
+  margin-bottom: 24px;
+  text-align: center;
+  font-weight: 700;
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+.userinfo-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.userinfo-content li {
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  background: #f7f8fa;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  color: #2d2d2d;
+  font-family: "Roboto", Arial, sans-serif;
+  box-shadow: 0 2px 8px rgba(44, 44, 44, 0.04);
+  transition: background 0.2s, color 0.2s;
+}
+
+.userinfo-content li:last-child {
+  margin-bottom: 0;
+}
+
+.userinfo-content li strong {
+  color: #b5332b;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .userinfo-container {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 20px 0;
+  }
+  .userinfo-sidebar {
+    flex-direction: row;
+    width: 100%;
+    margin: 0 0 18px 0;
+    border-radius: 14px;
+    justify-content: center;
+    gap: 0;
+  }
+  .userinfo-sidebar .sidebar-item {
+    border-left: none;
+    border-bottom: 4px solid transparent;
+    border-radius: 0;
+    padding: 14px 18px;
+    text-align: center;
+  }
+  .userinfo-sidebar .sidebar-item.active,
+  .userinfo-sidebar .sidebar-item:hover {
+    border-bottom: 4px solid #b5332b;
+    border-left: none;
+  }
+  .userinfo-sidebar .sidebar-item.delete {
+    border-bottom: 4px solid #b5332b;
+    border-left: none;
+    border-radius: 0 0 20px 20px;
+    margin-top: 0;
+  }
+  .userinfo-content {
+    max-width: 100%;
+    padding: 24px 10px;
+  }
+}

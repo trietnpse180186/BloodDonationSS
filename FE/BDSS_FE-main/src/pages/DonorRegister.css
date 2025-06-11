@@ -1,0 +1,56 @@
+.donor-form-wrapper {
+  background-color: #fff;
+  margin: 50px auto;
+  padding: 50px;
+  max-width: 800px;
+  border-radius: 20px;
+  box-shadow: 10px 10px 10px rgba(128, 128, 128, 0.47);
+  font-family: "Roboto", sans-serif;
+}
+
+.donor-form-wrapper h2 {
+  color: rgb(138, 3, 3);
+  text-align: center;
+  font-size: 2.5em;
+  margin-bottom: 30px;
+}
+
+.donor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.donor-form label {
+  font-size: 1.2em;
+  color: rgb(68, 68, 68);
+  display: flex;
+  flex-direction: column;
+}
+
+.donor-form input,
+.donor-form select,
+.donor-form textarea {
+  padding: 12px;
+  font-size: 1em;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.donor-form textarea {
+  resize: vertical;
+}
+
+.donor-form button {
+  background-color: rgb(138, 3, 3);
+  color: #fff;
+  padding: 15px;
+  font-size: 1.2em;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.donor-form button:hover {
+  background-color: rgb(170, 0, 0);
+}

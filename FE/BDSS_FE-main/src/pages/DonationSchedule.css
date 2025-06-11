@@ -1,0 +1,56 @@
+.schedule-container {
+  display: flex;
+  justify-content: space-between;
+}
+.donation-schedule {
+  max-width: 900px;
+  margin: 40px auto 0 auto;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(44, 44, 44, 0.12);
+  padding: 32px 28px;
+  min-height: 400px;
+}
+
+.donation-schedule h2 {
+  color: #b5332b;
+  margin-bottom: 24px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.donation-schedule table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  background: #fafbff;
+}
+
+.donation-schedule th,
+.donation-schedule td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #e0e0e0;
+  text-align: left;
+}
+
+.donation-schedule th {
+  background: #f14438;
+  color: #fff;
+  font-weight: 600;
+}
+
+.donation-schedule tr:last-child td {
+  border-bottom: none;
+}
+
+.donation-schedule tr:hover {
+  background: #fbeaea;
+}
+
+.donation-schedule .no-schedule {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 32px 0;
+}
