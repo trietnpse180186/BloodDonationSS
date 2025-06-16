@@ -10,6 +10,8 @@ import Contact from "../pages/Contact";
 import DonationSchedule from "../pages/DonationSchedule";
 import BloodRegister from "../pages/BloodRegister";
 import UserInfo from "../pages/UserInfo";
+import BloodRegister2 from "../pages/BloodRegister2";
+// import BlogSection from "../components/BlogSection"; // Uncomment if you want to use BlogSection
 export default function WebRoutes() {
   return (
     <Routes>
@@ -21,8 +23,9 @@ export default function WebRoutes() {
       <Route path="/donor-register" element={<DonorRegister />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/user-profile" element={<UserInfo />} />
-      <Route path="/schedule" element={<DonationSchedule />} />
-      <Route path="/blood-registration" element={<BloodRegister />} />
+      <Route path="/schedule" element={<DonationSchedule />}></Route>
+      <Route path="/blood-registration" element={<BloodRegister />}></Route>
+      <Route path="/blood-registration2" element={<BloodRegister2 />}></Route>
     </Routes>
   );
 }
