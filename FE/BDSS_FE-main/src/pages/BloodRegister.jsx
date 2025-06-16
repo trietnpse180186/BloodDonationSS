@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Navbar from '../assets/navbar';
 import './BloodRegister.css'
 import bloodDonationSchedules from '../assets/donationSchedule';
@@ -84,6 +84,10 @@ export default function BloodRegister() {
   useEffect(() => {
     setSelectedLocation('')
   }, [selectedDate])
+
+  useEffect(() => {
+    setTimeSelected(false);
+  }, [selectedLocation]);
   const bloodGroups = getBloodGroup(selectedLocation);
   const locations = bloodDonationSchedules.filter(
     (item) => item.date === selectedDate
@@ -91,6 +95,7 @@ export default function BloodRegister() {
   const selectedLocationTime = locations.find(
     (loc) => loc.location === selectedLocation
   );
+  const [timeSelected, setTimeSelected] = useState(false);
   const startTime = selectedLocationTime ? selectedLocationTime.startTime : '';
   const endTime = selectedLocationTime ? selectedLocationTime.endTime : '';
   return (
@@ -148,7 +153,7 @@ export default function BloodRegister() {
                 bloodGroups.map((group) => (
                   <span
                     key={group}
-                    className="bloodform-type-box"
+                    className={`bloodform-type-box ${group.toLowerCase()}`}
                   >
                     {group}
                   </span>
@@ -161,20 +166,22 @@ export default function BloodRegister() {
             <h3 className="selected-time">
               Chọn khung giờ bạn sẽ đến hiến máu
             </h3>
-            <div className="selected-time-box">
-              {startTime && endTime ? (
-                <button className='box-time'>{startTime} - {endTime}</button>
-              ) : (
-                <p></p>
+            {selectedLocation && (
+              <button
+              className={`bloodform-time-box${timeSelected ? ' selected' : ''}`}
+              type="button"
+              onClick={() => setTimeSelected(true)}
+              >
+                {startTime && endTime ? `${startTime} - ${endTime}` : 'Chọn khung giờ'}
+              </button>
               )}
             </div>
-            </div>
               <Link to="/blood-registration2">
-                <button className="confirm-step1">
+                <button className="button-style">
                   Tiếp tục
                 </button>
               </Link>
-          </div>  
+          </div>
       </div>
     </div>
     <Footer />
