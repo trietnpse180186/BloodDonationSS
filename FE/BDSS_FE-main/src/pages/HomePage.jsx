@@ -46,36 +46,7 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div
-          className="search-schedule"
-          style={{ display: "flex", gap: 12, alignItems: "center" }}
-        >
-          <FloatingLabel
-            controlId="fromDate"
-            label="Chọn ngày bắt đầu"
-            className="mb-3"
-            style={{ flex: 1 }}
-          >
-            <Form.Control
-              type="date"
-              value={fromDate}
-              onChange={(e) => setFromDate(e.target.value)}
-              placeholder="Chọn ngày bắt đầu"
-            />
-          </FloatingLabel>
-          <Link
-            to={fromDate ? `/schedule?date=${fromDate}` : "#"}
-            style={{ pointerEvents: fromDate ? "auto" : "none" }}
-          >
-            <Button
-              variant="danger"
-              style={{ height: 48, minWidth: 120 }}
-              disabled={!fromDate}
-            >
-              Tìm kiếm
-            </Button>
-          </Link>
-        </div>
+
         <div className="overlap-group2">
           <div className="rectangle">
             <h3>Lợi ích của việc hiến máu</h3>
@@ -90,11 +61,11 @@ export default function HomePage() {
             </ul>
 
             <Link
-              to={"/FAQ"}
+              to={"/schedule"}
               style={{ textDecoration: "none", color: "white" }}
               className="wrapper-button2"
             >
-              Xem thêm
+              Xem lịch có sẵn
             </Link>
           </div>
           <img
@@ -258,5 +229,3 @@ export default function HomePage() {
     </>
   );
 }
-
-
