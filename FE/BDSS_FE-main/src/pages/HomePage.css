@@ -45,17 +45,16 @@
   color: rgb(255, 255, 255);
 }
 .wrapper-button {
-  background-color: #32b1ff;
-  border-radius: 20px;
+  background-color: #f41f1f;
   padding: 30px 50px;
   font-size: 1.4em;
   font-weight: bold;
   margin-bottom: 100px;
 }
 .wrapper-button:hover {
-  background: linear-gradient(135deg, #bb1509, #2a20ed);
+  background: linear-gradient(135deg, #d01a0d, #6b0707);
   transform: scale(1.05);
-  transition: transform 0.5s ease-in-out;
+  transition: 0.5s ease-in-out;
 }
 .overlap-group2 {
   display: flex;
@@ -101,13 +100,14 @@
   font-weight: bold;
 }
 .wrapper-button2:hover {
-  background: linear-gradient(135deg, #bb1509, #2a20ed);
-  transform: scale(1.05);
+  background: linear-gradient(100deg, #6e0d06, #dc0a0a);
+  transform: scale(1.02);
   transition: transform 0.5s ease-in-out;
 }
 .wrapper-button2:hover::after {
   content: " →";
   color: #ffffff;
+  transition: all 0.3s ease-in-out;
 }
 .overlap-group3 {
   display: grid;
