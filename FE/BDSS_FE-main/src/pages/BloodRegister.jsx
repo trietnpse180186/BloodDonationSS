@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../assets/navbar';
 import './BloodRegister.css'
-
+import bloodDonationSchedules from '../assets/donationSchedule';
+import { Link } from 'react-router';
+import Footer from '../assets/footer';
 function getStartOfWeek(date) {
   const d = new Date(date);
   const day = d.getDay() || 7;
@@ -64,22 +66,43 @@ function WeeklyDatePicker({ selectedDate, onChange }) {
     </div>
   );
 }
+// lấy nhóm máu dựa trên địa điểm
+function getBloodGroup(location) {
+  const bloodGroup ={
+    "Hà Nội – 132 Quan Nhân, Thanh Xuân": ["A", "O"],
+    "Hồ Chí Minh – 201B Nguyễn Chí Thanh, Quận 5": ["B", "AB"],
+    "Đà Nẵng – 47 Lê Duẩn, Hải Châu": ["A", "B", "O"],
+    "Cần Thơ – 315 Nguyễn Văn Linh, Ninh Kiều": ["O"],
+    "Hà Nội – 14 Trần Thái Tông, Cầu Giấy": ["A", "B", "AB", "O"],
+  }
+  return bloodGroup[location] || [];
+}
 
 export default function BloodRegister() {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [selectedLocation, setSelectedLocation] = useState('Hiến máu - 466 Nguyễn Thị Minh Khai');
-  const [selectedBloodGroup, setSelectedBloodGroup] = useState('A');
-  const [selectedTime, setSelectedTime] = useState('07:00 - 11:00');
-
+  const [selectedLocation, setSelectedLocation] = useState('');
+  useEffect(() => {
+    setSelectedLocation('')
+  }, [selectedDate])
+  const bloodGroups = getBloodGroup(selectedLocation);
+  const locations = bloodDonationSchedules.filter(
+    (item) => item.date === selectedDate
+  );
+  const selectedLocationTime = locations.find(
+    (loc) => loc.location === selectedLocation
+  );
+  const startTime = selectedLocationTime ? selectedLocationTime.startTime : '';
+  const endTime = selectedLocationTime ? selectedLocationTime.endTime : '';
   return (
     <>
     <Navbar />
     <div className="bloodform-container">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"></link>
         <h2 className="bloodform-title">Đặt lịch hiến máu</h2>
         <div className='bloodform-body'>
           <div className='bloodform-body1'>
-            <li>11</li>
-            <li>22</li>
+            <p className='step1'><i className="bi bi-check-square"></i>Thời gian & Địa điểm</p>
+            <p className='step2-icon'>Phiếu đăng ký hiến máu</p>
           </div>
           <div className='bloodform-body2'>
             <div className="bloodform-body-content">
@@ -88,57 +111,73 @@ export default function BloodRegister() {
             </div>
 
           <div className="bloodform-location">
-            <h3 className="blooform-location-title">Chọn địa điểm hiến máu</h3>
-            <label className="bloodform-location-ct1">Tỉnh/Thành phố</label>
-            <select className="bloodform-location-select1">
-              <option>Hồ Chí Minh</option>
-            </select>
-
-            <label className="bloodform-location-ct2">Địa điểm</label>
-            <select className="bloodform-location-select2">
-              <option>
-                Hiến máu - 466 Nguyễn Thị Minh Khai (7g đến 11g)
-              </option>
-            </select>
+            <h3 className="blooform-location-title">Địa điểm hiến máu hiện có</h3>
+                {locations.length === 0 ? (
+                  <div>Không có địa điểm hiến máu cho ngày này</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {locations.map((loc, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        className={`bloodform-location-btn${selectedLocation === loc.location ? ' selected' : ''}`}
+                        style={{
+                          padding: 10,
+                          borderRadius: 6,
+                          border: selectedLocation === loc.location ? '2px solid #1976d2' : '1px solid #ccc',
+                          background: selectedLocation === loc.location ? '#1976d2' : '#fff',
+                          color: selectedLocation === loc.location ? '#fff' : '#222',
+                          cursor: 'pointer',
+                          textAlign: 'left'
+                        }}
+                        onClick={() => setSelectedLocation(loc.location)}
+                      >
+                        {loc.center} - {loc.location}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
             <label className="bloodform-type">Nhóm máu cần hiến</label>
-            <div className="bloodform-">
-              {['A', 'B', 'AB', 'O'].map((group) => (
-                <button
-                key={group}
-                className={`bloodform-type-box ${
-                  group === 'A'
-                  ? 'bg-sky-500 text-white'
-                  : group === 'B'
-                  ? 'bg-yellow-400 text-white'
-                  : group === 'AB'
-                  ? 'bg-red-500 text-white'
-                  : 'bg-green-500 text-white'
-                }`}
-                onClick={() => setSelectedBloodGroup(group)}
-                >
-                  Nhóm máu {group}
-                </button>
-              ))}
+            <div className="bloodform-type-show">
+              {!selectedLocation ? (
+                <div></div>
+              ) : bloodGroups.length === 0 ? (
+                <div>Chưa có nhóm máu cho địa điểm này</div>
+              ) : (
+                bloodGroups.map((group) => (
+                  <span
+                    key={group}
+                    className="bloodform-type-box"
+                  >
+                    {group}
+                  </span>
+                ))
+              )}
             </div>
           </div>
 
-          <div className="mb-6">
-            <h3 className="font-semibold text-blue-600 mb-2">
+          <div className="bloodform-time">
+            <h3 className="selected-time">
               Chọn khung giờ bạn sẽ đến hiến máu
             </h3>
-              <div className="border rounded p-3 bg-gray-100">
-                <p>Thời gian nhận hồ sơ</p>
-                <p className="font-bold">{selectedTime}</p>
-              </div>
+            <div className="selected-time-box">
+              {startTime && endTime ? (
+                <button className='box-time'>{startTime} - {endTime}</button>
+              ) : (
+                <p></p>
+              )}
             </div>
-
-              <button className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
-            Tiếp tục
-              </button>
+            </div>
+              <Link to="/blood-registration2">
+                <button className="confirm-step1">
+                  Tiếp tục
+                </button>
+              </Link>
           </div>  
       </div>
     </div>
+    <Footer />
     </>
   );
 }
