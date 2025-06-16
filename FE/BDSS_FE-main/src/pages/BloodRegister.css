@@ -33,11 +33,25 @@
   align-items: center; /* căn giữa nội dung bên trong */
   margin: 0;
 }
-
-.box-time:hover {
-  background-color: aqua;
+.bloodform-time-box {
+  margin-top: 10px;
+  background: #fff;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 16px;
+  color: black;
+  font-weight: 600;
+  border: 2px solid #1976d2;
+  display: inline-block;
+  box-shadow: 0 2px 8px #1976d2;
+  letter-spacing: 1px;
+  transition: background 0.2s, color 0.2s;
 }
-
+.bloodform-time-box.selected,
+.bloodform-time-box.selected:hover{
+  background: #1976d2;
+  color: #fff;
+}
 input[type="radio"] {
   appearance: none;
   -webkit-appearance: none;
@@ -173,9 +187,24 @@ input[type="radio"]:checked::after {
   justify-content: flex-end;
   width: 100px;
   border: none;
-}
+  }
 .clear-answer-container{
   display: flex;
   justify-content: flex-end;
   padding-right: 10px;
 }
+.bloodform-type-box {
+  padding: 7px 20px;
+  border-radius: 5px;
+  font-weight: 600;
+  color: #fff;
+  font-size: 15px;
+  background: #1976d2;
+  border: none;
+  outline: none;
+  display: inline-block;
+}
+.bloodform-type-box.a { background: red; }
+.bloodform-type-box.b { background: #ffc107; }
+.bloodform-type-box.ab { background: aquamarine; }
+.bloodform-type-box.o { background: #43a047; }
