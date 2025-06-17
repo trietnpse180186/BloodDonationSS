@@ -7,7 +7,7 @@ import Footer from '../assets/footer';
 function getStartOfWeek(date) {
   const d = new Date(date);
   const day = d.getDay() || 7;
-  if (day !== 1) d.setHours(-24 * (day - 1));
+  d.setDate(d.getDate() - day + 1); // Set to Monday
   return d;
 }
 
@@ -84,7 +84,7 @@ export default function BloodRegister() {
   useEffect(() => {
     setSelectedLocation('')
   }, [selectedDate])
-
+  // reset selectedLocation khi thay đổi ngày
   useEffect(() => {
     setTimeSelected(false);
   }, [selectedLocation]);
@@ -92,9 +92,12 @@ export default function BloodRegister() {
   const locations = bloodDonationSchedules.filter(
     (item) => item.date === selectedDate
   );
+  // lọc địa điểm theo ngày
   const selectedLocationTime = locations.find(
     (loc) => loc.location === selectedLocation
   );
+
+  // reset timeSelected khi thay đổi địa điểm
   const [timeSelected, setTimeSelected] = useState(false);
   const startTime = selectedLocationTime ? selectedLocationTime.startTime : '';
   const endTime = selectedLocationTime ? selectedLocationTime.endTime : '';
@@ -107,16 +110,21 @@ export default function BloodRegister() {
         <div className='bloodform-body'>
           <div className='bloodform-body1'>
             <p className='step1'><i className="bi bi-check-square"></i>Thời gian & Địa điểm</p>
-            <p className='step2-icon'>Phiếu đăng ký hiến máu</p>
+            <p className='step2-icon'><i class="bi bi-calendar2"></i>Phiếu đăng ký hiến máu</p>
           </div>
           <div className='bloodform-body2'>
             <div className="bloodform-body-content">
-              <h3 className="bloodform-day">Chọn ngày</h3>
+              <div className="bloodform-date">
+              <h3 className="bloodform-day"><i class="bi bi-calendar3"></i>Chọn ngày</h3>
+              <input type="date" className="input-date-icon" value={selectedDate} onChange={e => setSelectedDate(e.target.value)}/>
+              </div>
+              <div className="bloodform-date-picker">
               <WeeklyDatePicker selectedDate={selectedDate} onChange={setSelectedDate} />
+              </div>
             </div>
 
           <div className="bloodform-location">
-            <h3 className="blooform-location-title">Địa điểm hiến máu hiện có</h3>
+            <h3 className="blooform-location-title"><i class="bi bi-geo-alt"></i>Địa điểm hiến máu hiện có</h3>
                 {locations.length === 0 ? (
                   <div>Không có địa điểm hiến máu cho ngày này</div>
                 ) : (

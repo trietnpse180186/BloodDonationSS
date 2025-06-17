@@ -25,7 +25,7 @@ export default function BloodRegister2() {
       <h2 className='bloodform-title'>Đặt lịch hiến máu</h2>
         <div className='bloodform-body1'>
             <p className='step1-icon'><i className="bi bi-check-square-fill"></i>Thời gian & Địa điểm</p>
-            <p className='step2'>Phiếu đăng ký hiến máu</p>
+            <p className='step2'><i class="bi bi-calendar2"></i>Phiếu đăng ký hiến máu</p>
         </div>
         <div className='bloodform-body2'>
           <div className='bloodform-body-content'>

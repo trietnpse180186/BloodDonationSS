@@ -6,8 +6,30 @@
   width: 100%;
   margin: 0 auto;
 }
+.bloodform-date{
+  display: flex;
+  justify-content: space-between;
+}
 .bloodform-title{
   text-align: center;
+}
+.input-date-icon{
+  color: transparent;         
+  background-color: #fff;
+  border: none;
+  width: 36px;                
+  cursor: pointer;
+}
+.input-date-icon::-webkit-input-placeholder { color: transparent; }
+.input-date-icon::-webkit-datetime-edit { color: transparent; }
+.input-date-icon::-webkit-calendar-picker-indicator {
+  color: #1976d2;
+  opacity: 1;
+  cursor: pointer;
+  font-size: 22px;
+}
+.input-date-icon:focus {
+  outline: none;
 }
 .bloodform-body1{
   display: flex;
@@ -16,13 +38,18 @@
 
 }
 .step1{
-  background-color: aqua;
+  background-color: aliceblue;
+}
+.step2-icon {
+  background-color: aliceblue;
+  margin-left: 2px;
 }
 .step2{
-  background-color: aqua;
+  background-color: aliceblue;
+  margin-left: 2px;
 }
 .step1-icon {
-  background-color: aliceblue;
+  background-color: rgb(204, 206, 206);
 
 }
 .bloodform-body2{
@@ -30,7 +57,6 @@
   min-width: 320px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* căn giữa nội dung bên trong */
   margin: 0;
 }
 .bloodform-time-box {
@@ -177,6 +203,7 @@ input[type="radio"]:checked::after {
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s;
+  margin-top: 10px;
 }
 
 .button-style:hover {
@@ -208,3 +235,14 @@ input[type="radio"]:checked::after {
 .bloodform-type-box.b { background: #ffc107; }
 .bloodform-type-box.ab { background: aquamarine; }
 .bloodform-type-box.o { background: #43a047; }
+.bloodform-container{
+  display: flex;
+  flex-direction: column;
+  padding: 20px;  
+  width: 1000px;
+  margin: auto;
+}
+.bloodform-date-picker{
+  display: flex;
+  justify-content: center;
+}
