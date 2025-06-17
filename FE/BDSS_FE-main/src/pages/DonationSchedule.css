@@ -1,6 +1,11 @@
 .schedule-container {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  margin: 10px;
+  border-radius: 10px;
+  padding: 20px;
 }
 .donation-schedule {
   max-width: 900px;
@@ -53,4 +58,27 @@
   color: #888;
   font-style: italic;
   padding: 32px 0;
+}
+.schedule-total-count {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  padding: 16px 0;
+  gap: 30px;
+  border-top: 1px solid #e0e0e0;
+}
+.schedule-button {
+  background: #f14438;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+.schedule-total-icon {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
