@@ -8,6 +8,7 @@ import { useLocation } from "react-router";
 import { logout } from "../assets/authLogout";
 import Navbar from "../assets/navbar";
 import Footer from "../assets/footer";
+import { peopleFill } from "../assets/icons/icon";
 
 export default function DonationSchedule() {
   const [searchName, setSearchName] = useState("");
@@ -90,9 +91,11 @@ export default function DonationSchedule() {
           filteredSchedules.map((schedule, idx) => (
             <div className="schedule-container" key={idx}>
               <div className="schedule-detail">
-                <ul>
+                <ul style={{ listStyleType: "none", padding: 0 }}>
                   <li>
-                    <strong>{schedule.center}</strong>
+                    <strong style={{ color: "rgb(218, 35, 35)" }}>
+                      {schedule.center}
+                    </strong>
                   </li>
                   <li>
                     <strong>Địa điểm:</strong> {schedule.location}{" "}
@@ -104,9 +107,21 @@ export default function DonationSchedule() {
                 </ul>
               </div>
               <div className="schedule-total">
-                <strong>Số lượng người đăng ký:</strong>
-                <br />
-                {schedule.donorCount}
+                <div className="schedule-total-icon">
+                  {peopleFill}
+                  <strong>Số lượng người đăng ký:</strong>
+                </div>
+                <div className="schedule-total-count">
+                  {schedule.donorCount}
+                  <button className="schedule-button">
+                    <Link
+                      to={`/blood-registration`}
+                      style={{ textDecoration: "none", color: "white" }}
+                    >
+                      Đặt lịch
+                    </Link>
+                  </button>
+                </div>
               </div>
             </div>
           ))
