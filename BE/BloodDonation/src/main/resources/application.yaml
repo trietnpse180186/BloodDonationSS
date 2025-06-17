@@ -1,0 +1,35 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: Blood-Donation
+
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=Blood;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: 12345
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+   hibernate:
+      ddl-auto: update
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dinhanh200304@gmail.com
+    password: tycqcptxzjkpxebc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+jwt:
+  secret-key: ELN2fFMaizi8pBZNeOd51QDIM2bY1UccIpdSziPgcgSPzZ7Q7YDc5HUzewDnZpN6G7WGJZxKIqKdr3B4dIW37rwfgPYcXzrjyt2VlbmutsOsg15kQEs0No2ZHHYKLWUb2Tksu9wNuGVZkEXJ15pbRecSrOQk8t3aAxgvSyuXxOiv2vmVwx6xteH04B6C2r9Ruj8P1TTgOyIeLGX5XgPuCjNxW3e6fSMLwmSYjKR0p4F8csEolpO7YyVMlpsg4YB4
+
+cloudinary:
+  name: dznef2sae
+  api-key: 537285485346489
+  api-secret: PHu0HBagBqf1rgfKMSJpSLUh29M
