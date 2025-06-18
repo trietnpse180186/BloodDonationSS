@@ -1,0 +1,72 @@
+.donation-info-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.donation-info-container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.donation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.info-card,
+.form-status-card {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.info-card h3,
+.form-status-card h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+.info-card p,
+.form-status-card p {
+  font-size: 14px;
+  margin: 6px 0;
+  color: #374151;
+}
+
+.form-placeholder {
+  text-align: center;
+  padding: 24px 0;
+  color: #6b7280;
+}
+
+.form-placeholder img {
+  width: 64px;
+  height: auto;
+  margin-bottom: 12px;
+}
+
+.button-container {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.button-container button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.button-container button:hover {
+  background-color: #1d4ed8;
+}

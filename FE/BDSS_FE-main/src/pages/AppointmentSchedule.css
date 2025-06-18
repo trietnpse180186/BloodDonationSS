@@ -1,0 +1,126 @@
+/* Container chính */
+.schedule-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Danh sách lịch hẹn theo chiều dọc */
+.appointment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Card từng lịch hẹn */
+.appointment-card {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #f9f9f9;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Icon bên trái */
+.icon {
+  text-align: center;
+}
+
+.icon img {
+  width: 48px;
+  height: 48px;
+}
+
+.icon p {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Thông tin lịch hẹn */
+.info {
+  flex: 1;
+}
+
+.info .location {
+  font-size: 16px;
+  color: #b91c1c;
+}
+
+.info p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+/* Cột bên phải: trạng thái và nút */
+.actions {
+  text-align: right;
+}
+
+.actions .badge {
+  background: #ef4444;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  display: inline-block;
+  margin-bottom: 8px;
+}
+
+.actions button {
+  padding: 6px 12px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.actions button:hover {
+  background: #1d4ed8;
+}
+
+/* Chi tiết lịch hẹn */
+.appointment-detail {
+  border: 1px solid #ccc;
+  padding: 24px;
+  border-radius: 12px;
+  background: #fff7f7;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.appointment-detail h3 {
+  color: #b91c1c;
+}
+
+.appointment-detail p {
+  margin: 8px 0;
+}
+
+.appointment-detail textarea {
+  min-height: 80px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 8px;
+  resize: vertical;
+}
+
+.appointment-detail button {
+  margin-top: 12px;
+  padding: 6px 12px;
+  background: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.appointment-detail button:hover {
+  background: #4b5563;
+}
