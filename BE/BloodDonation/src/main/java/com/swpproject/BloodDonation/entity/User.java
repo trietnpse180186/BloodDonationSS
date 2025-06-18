@@ -30,10 +30,10 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "FullName", nullable = false)
+    @Column(name = "FullName", nullable = false, columnDefinition = "NVARCHAR(4000)")
     private String fullName;
 
-    @Column(name = "Address")
+    @Column(name = "Address", columnDefinition = "NVARCHAR(4000)")
     private String address;
 
     @Column(name = "Phone_number")
@@ -53,7 +53,7 @@ public class User implements UserDetails {
     @Column(name = "Sex")
     private String sex;
 
-    @Column(name = "Occupation")
+    @Column(name = "Occupation", columnDefinition = "NVARCHAR(4000)")
     private String occupation;
 
 

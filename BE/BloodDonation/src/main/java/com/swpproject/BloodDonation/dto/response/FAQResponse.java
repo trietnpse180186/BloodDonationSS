@@ -7,9 +7,8 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BlogResponse {
+public class FAQResponse {
     private Long id;
-    private String title;
-    private String content;
-    private String imageurl;
+    private String question;
+    private String answer;
 }
