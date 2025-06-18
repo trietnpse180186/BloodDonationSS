@@ -11,6 +11,7 @@ import DonationSchedule from "../pages/DonationSchedule";
 import BloodRegister from "../pages/BloodRegister";
 import UserInfo from "../pages/UserInfo";
 import BloodRegister2 from "../pages/BloodRegister2";
+
 // import BlogSection from "../components/BlogSection"; // Uncomment if you want to use BlogSection
 export default function WebRoutes() {
   return (
