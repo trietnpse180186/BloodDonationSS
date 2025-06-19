@@ -19,7 +19,7 @@ export default function Navbar() {
   }, []);
   return (
     <>
-      <div className="navbar">
+      <div data-aos="fade-down" data-aos-duration="600" className="navbar">
         <div className="navbar-img">
           <Button
             style={{ backgroundColor: "transparent", border: "none" }}

@@ -21,6 +21,7 @@
   object-position: top;
 }
 
+
 .wrapper-img::after {
   content: "";
   position: absolute;
@@ -42,6 +43,7 @@
   //background-color: rgba(0, 0, 0, 0.5);
   padding: 20px;
   border-radius: 8px;
+
 }
 
 .wrapper-content h2 {
@@ -109,6 +111,7 @@
 
 .text-wrapper3 {
   display: flex;
+
   flex-wrap: wrap;
   justify-content: space-around;
   list-style: none;
@@ -156,6 +159,7 @@
   text-decoration: none;
   color: rgb(0, 0, 0);
   font-size: 1.8em;
+
 }
 .button-wrapper3:hover{
   color: #921D13;
@@ -225,6 +229,7 @@
   width: 12rem;
   height: 2.5rem;
   border: 1px solid white;
+
 }
 .a-text-content-donor:hover{
   color: #ffffff;
@@ -233,6 +238,7 @@
   
 
 }
+
 
 
 
