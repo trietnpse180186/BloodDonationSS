@@ -40,7 +40,9 @@ public class JwtService {
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .subject(user.getEmail())
                 .issueTime(new Date())
+                .claim("userId", user.getUserID())
                 .claim("authorities", authorityName)
+                .claim("fullName",user.getFullName())
                 .expirationTime(new Date(Instant.now().plus(30, ChronoUnit.MINUTES).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
                 .build();

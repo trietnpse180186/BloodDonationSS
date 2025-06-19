@@ -45,10 +45,10 @@ public class UserService {
                 .occupation(request.getOccupation())
                 .build();
 
-        Optional<Role> role = roleRepository.findByName("USER");
+        Optional<Role> role = roleRepository.findByName("DONOR");
         if(role.isEmpty()) {
             Role newRole = Role.builder()
-                    .name("USER")
+                    .name("DONOR")
                     .build();
             roleRepository.save(newRole);
             user.setUserHasRoles(List.of(UserHasRole.builder()
