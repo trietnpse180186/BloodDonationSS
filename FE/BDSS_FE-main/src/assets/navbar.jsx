@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Dropdown, Button, ButtonGroup } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { getUsernameFromToken, getUserRole } from "./getUserName";
-import { logout } from "./authLogout";
+import logout from "./authLogout";
 import logo from "../images/logo.jpeg";
 import "./navbar.css";
 
@@ -17,6 +17,9 @@ export default function Navbar() {
     const role = getUserRole();
     setUserRole(role);
   }, []);
+  const handleLogout = () => {
+    logout();
+  };
   return (
     <>
       <div data-aos="fade-down" data-aos-duration="600" className="navbar">
@@ -140,7 +143,7 @@ export default function Navbar() {
               <div className="fix-split-button">
                 <Dropdown as={ButtonGroup}>
                   <Button
-                    onClick={() => (window.location.href = "/user-info")}
+                    onClick={() => (window.location.href = "/user-profile")}
                     variant="success"
                     className="donor-button"
                   >
@@ -200,8 +203,8 @@ export default function Navbar() {
                         </Link>
                       </div>
                     </Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">
-                      <Button onClick={logout}>Logout</Button>
+                    <Dropdown.Item href="/">
+                      <Button onClick={handleLogout}>Logout</Button>
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
