@@ -35,6 +35,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
+
 }
 
 .login-wrapper {
@@ -101,6 +102,11 @@
 .login-wrapper button[type="submit"]:hover {
   background: #a12a24;
   box-shadow: 0 4px 16px rgba(44, 44, 44, 0.13);
+}
+.login-page h1{
+   display: block;
+  text-align: center;
+  text-shadow: 1px 2px 8px rgba(93, 93, 93, 0.39);
 }
 
 .login-inputs a {

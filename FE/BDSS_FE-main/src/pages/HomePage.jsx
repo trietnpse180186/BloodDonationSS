@@ -1,6 +1,8 @@
-import React from "react";
-import image1 from "../images/image1.jpg";
+import React, { useState } from "react";
+
 import "./HomePage.css";
+import bannerHome from "../images/bannerHome.jpg";
+import NHSBlood from "../images/NHSBlood.jpg"
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../assets/navbar";
@@ -30,172 +32,138 @@ export default function HomePage() {
 
           {/*body */}
           <div className="text-wrapper2">
-            <h2>Hiến máu nhân đạo</h2>
-            <div className="wrapper-content">
-              <p className="p">
-                Hiến máu là một nghĩa cử cao đẹp, thể hiện tinh thần nhân ái và
-                trách nhiệm với cộng đồng, góp phần cứu sống hàng triệu người
-                mỗi năm.
-              </p>
+            <div className="wrapper-img">
+              <img className="bannerHome" alt="Jimeng" src={bannerHome} />
             </div>
-            <div className="wrapper-button">
-              <Link
-                style={{ textDecoration: "none", color: "white" }}
-                to="/blood-registration"
-              >
-                Đăng ký hiến máu
-              </Link>
+            <div className="wrapper-content">
+              <h2>GIVE THE GIFT </h2>
+              <p className="p-wrapper-content">OF THE LIFE </p>
+
+              <p className="p-content">
+                Every time you donate blood, you're not just giving a part of
+                yourself you're giving someone a second chance at life, a future
+                filled with hope, and the precious gift of more time with their
+                loved ones.
+              </p>
+              <div className="wrapper-button">
+                <Link className="text-wrapper-button" to="/blood-registration">
+                  Give Blood
+                </Link>
+              </div>
             </div>
           </div>
         </div>
 
         <div className="overlap-group2">
-          <div className="rectangle">
-            <h3>Lợi ích của việc hiến máu</h3>
+          <h3 className="text-center-group2">Benefits of Blood Donation</h3>
 
-            <ul className="text-wrapper3">
-              <li>
-                {heartPulse} Cứu sống người bệnh trong ca cấp cứu, phẫu thuật.
-              </li>
-              <li>{heartPulse} Kiểm tra sức khỏe miễn phí và định kỳ.</li>
-              <li>{heartPulse} Tái tạo máu mới, tuần hoàn tốt hơn.</li>
-              <li>{heartPulse} Mang lại niềm vui và ý nghĩa nhân đạo.</li>
-            </ul>
+          <ul className="text-wrapper3">
+            <li>
+              <img src={bannerHome} alt="Benefit 1" className="benefit-icon" />
+              <h5>Who can your blood save?</h5>
+              <p>Save lives in emergencies and surgeries.</p>
+            </li>
+            <li>
+              <img src={bannerHome} alt="Benefit 2" className="benefit-icon" />
+              <h5>Is health check included?</h5>
+              <p>Receive free health check-ups.</p>
+            </li>
+            <li>
+              <img src={bannerHome} alt="Benefit 3" className="benefit-icon" />
+              <h5>Does donating blood help your body?</h5>
+              <p>Stimulate new blood production and improve circulation.</p>
+            </li>
+            <li>
+              <img src={bannerHome} alt="Benefit 4" className="benefit-icon" />
+              <h5>Why does blood donation matter?</h5>
+              <p>Bring joy and contribute to a meaningful cause.</p>
+            </li>
+          </ul>
 
-            <Link
-              to={"/schedule"}
-              style={{ textDecoration: "none", color: "white" }}
-              className="wrapper-button2"
-            >
-              Xem lịch có sẵn
-            </Link>
-          </div>
-          <img
-            data-aos="fade-right"
-            data-aos-duration="710"
-            data-aos-delay="200"
-            data-aos-easing="ease-in-out"
-            className="img"
-            alt="Ellipse"
-            src={image1}
-          />
+          <Link to={"/schedule"} className="button-wrapper3">
+            Check Available Times ⟶
+          </Link>
         </div>
+
+        <div className="content-donor">
+          <div className="img-content-donor">
+            <img className="bannerHome" alt="Jimeng" src={NHSBlood} />
+            <p>England, Give platelets</p>
+          </div>
+          <div className="text-content-donor">
+            <p className="p1-text-content-donor">
+              White blood cell donation
+            </p>
+            <p className="p2-text-content-donor">
+              Bringing hope and life to cancer patients.
+            </p>
+            <p className="p3-text-content-donor">You can help save a life today</p>
+            <a className="a-text-content-donor" href="https://platelets.blood.co.uk/about-platelets/">Learn about platelets</a>
+          </div>
+        </div>
+
+        {/* CÓ NÊN THÊM QUY TRÌNH HIẾN MÁU */}
 
         <div className="overlap-group3">
           <div className="group3-row1">
-            <div
-              data-aos="fade-in"
-              data-aos-duration="720"
-              data-aos-delay="200"
-              data-aos-easing="ease-in-out"
-              className="overlap-group3-content"
-            >
+            <div className="overlap-group3-content">
+              {clipboardHeart}
               <p className="text-wrapper-10">
                 Kết quả test nhanh âm tính với kháng nguyên bề mặt của siêu vi B
               </p>
-
-              {/* Clipboard Heart Fill Icon */}
-              {clipboardHeart}
             </div>
-            <div
-              data-aos="fade-in"
-              data-aos-duration="730"
-              data-aos-delay="200"
-              data-aos-easing="ease-in-out"
-              className="overlap-group3-content"
-            >
+
+            <div className="overlap-group3-content">
+              {capsulePill}
               <p className="text-wrapper-11">
                 Không nghiện ma túy, rượu bia và các chất kích thích
               </p>
-
-              {/* Capsule Pill Icon */}
-              {capsulePill}
             </div>
 
-            <div
-              data-aos="fade-in"
-              data-aos-duration="740"
-              data-aos-delay="200"
-              data-aos-easing="ease-in-out"
-              className="overlap-group3-content"
-            >
-              <p className="text-wrapper-12">
+            <div className="overlap-group3-content">
+              {peopleFill}
+              <p className="text-wapper-12">
                 Người khỏe mạnh trong độ tuổi từ đủ 18 đến 60 tuổi
               </p>
-
-              {/* People Fill Icon */}
-              {peopleFill}
             </div>
-            <p
-              data-aos="fade-in"
-              data-aos-duration="750"
-              data-aos-delay="200"
-              data-aos-easing="ease-in-out"
-              className="overlap-group3-title"
-            >
-              Tiêu chuẩn để được hiến máu
-            </p>
           </div>
+
           <div className="group3-row2">
-            <div
-              data-aos="fade-in"
-              data-aos-duration="760"
-              data-aos-delay="200"
-              data-aos-easing="ease-in-out"
-              className="overlap-group3-content"
-            >
+            <p className="overlap-group3-title">Eligibility Criteria</p>
+            <div className="overlap-group3-content">
+              {bodyFill}
               <p className="text-wrapper-10">
                 Cân nặng: Nam ≥ 45 kg Nữ ≥ 45 kg
               </p>
-              {bodyFill}
             </div>
 
-            <div
-              data-aos="fade-in"
-              data-aos-duration="770"
-              data-aos-delay="200"
-              data-aos-easing="ease-in-out"
-              className="overlap-group3-content"
-            >
+            <div className="overlap-group3-content">
+              {virusFill}
               <p className="text-wrapper-11">
                 Không mắc các bệnh truyền nhiễm qua đường máu
               </p>
-              {/* Virus Icon */}
-              {virusFill}
             </div>
 
-            <div
-              data-aos="fade-in"
-              data-aos-duration="780"
-              data-aos-delay="200"
-              data-aos-easing="ease-in-out"
-              className="overlap-group3-content"
-            >
-              <p className="text-wrapper-11">
+            <div className="overlap-group3-content">
+              {heartPulse}
+              <p className="text-wrapper-12">
                 Không mắc các bệnh lý mãn tính hoặc cấp tính về tim mạch huyết
                 áp, gan, hô hấp,...
               </p>
-              {/* Heart Pulse Fill Icon */}
-              {heartPulse}
             </div>
 
-            <div
-              data-aos="fade-in"
-              data-aos-duration="800"
-              data-aos-delay="200"
-              data-aos-easing="ease-in-out"
-              className="overlap-group3-content"
-            >
+            <div className="overlap-group3-content">
+              {celenderIcon}
               <p className="text-wrapper-13">
                 Thời gian tối thiểu giữa 2 lần hiến máu là 12 tuần đối với cả
                 Nam và Nữ
               </p>
-              {/* Calendar 3 Icon */}
-              {celenderIcon}
             </div>
           </div>
         </div>
-        <div data-aos="flip-down" className="overlap-group4">
+
+        <div className="overlap-group4">
+
           <div className="overlap-group4-content">
             <h2 style={{ color: "rgb(35, 108, 218)", fontWeight: "bold" }}>
               Trước khi hiến máu
