@@ -1,20 +1,25 @@
 .navbar {
   display: flex;
-  justify-content: space-evenly;
+  padding: 0px 30px;
+  background-color: #db230b;
+
+  height: 13vh;
+
 }
-.navbar-item {
+/* .navbar-item {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  background-color: snow;
+
+  background-color: rgb(238, 5, 5);
   box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
+
   margin: 0px 100px;
-  border-radius: 40px;
   font-size: 1.2em;
   padding: 5px;
   gap: 70px;
-}
+} 
 .donor-button {
   color: rgb(14, 20, 20);
   font-weight: bold;
@@ -47,6 +52,41 @@
 }
 .text-wrapper:hover {
   color: rgb(194, 51, 51);
-  transform: scale(1.02);
+  transform: scale(1.01);
   transition: transform 0.5s ease-in-out;
+} */
+
+/* New navbar */
+
+/* logo */
+
+.navbar-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 45px;
+  background-color: #db230b;
+}
+
+.wrapper-link {
+  color: white;
+  font-weight: bold;
+  font-family: "Nutito", sans-serif;
+  font-size: 1.4em;
+}
+.wrapper-link:hover {
+  color: white;
+  text-decoration: underline !important;
+}
+.navbav-item-login {
+  background-color: white;
+  padding: 10px 20px;
+  border-radius: 3px;
+
+  .wrapper-link-login {
+    color: #db230b;
+    //font-weight: bold;
+    font-family: "Nutito", sans-serif;
+    font-size: 20px;
+  }
 }

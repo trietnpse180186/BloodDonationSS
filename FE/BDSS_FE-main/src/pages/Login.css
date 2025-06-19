@@ -1,79 +1,140 @@
 .login-page {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  min-height: 100vh;
   align-items: center;
-  max-width: 100%;
-  height: 100vh;
+  justify-content: center;
+  background: #f7f7fa;
+  gap: 0;
 }
-.login-wrapper {
+
+.login-inputs,
+.login-background {
+  width: 520px;
+  height: 650px; /* tăng chiều cao */
   background: #fff;
-  max-width: 350px;
-  margin: 20px auto 0 auto;
-  padding: 32px 28px 24px 28px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(44, 44, 44, 0.15);
+  box-shadow: 0 8px 32px rgba(44, 44, 44, 0.13);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.login-inputs {
+  padding: 48px 44px 36px 44px;
+}
+
+.login-background {
+  padding: 0;
+  overflow: hidden;
+}
+
+.login-background img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+
+}
+
+.login-wrapper {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  align-items: stretch;
+}
+
+.login-wrapper h1 {
+  text-align: center;
+  color: #b5332b;
+  font-size: 2em;
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+}
+
+.input-group {
+  position: relative;
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b5332b;
+  font-size: 1.1em;
+  pointer-events: none;
 }
 
 .login-wrapper input {
-  padding: 12px 14px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  border: none;
+  border-bottom: 2px solid #bdbdbd;
+  border-radius: 0;
   font-size: 1rem;
-  outline: none;
-  transition: border 0.2s;
+  background: #fafbff;
+  transition: border-color 0.2s, background 0.2s;
 }
 
 .login-wrapper input:focus {
-  border: 1.5px solid #2a20ed;
+  border-bottom: 2.5px solid #b5332b;
+  background: #fff5f5;
+  outline: none;
 }
 
 .login-wrapper button[type="submit"] {
-  background: linear-gradient(90deg, #f14438 60%, #2a20ed 100%);
+  background: #b5332b;
   color: #fff;
   border: none;
-  border-radius: 8px;
   padding: 12px 0;
-  font-size: 1.1rem;
-  font-weight: bold;
-  cursor: pointer;
+  font-size: 1.1em;
+  font-weight: 500;
   margin-top: 8px;
+  cursor: pointer;
   transition: background 0.2s, box-shadow 0.2s;
   box-shadow: 0 2px 8px rgba(44, 44, 44, 0.08);
 }
 
 .login-wrapper button[type="submit"]:hover {
-  background: linear-gradient(90deg, #2a20ed 60%, #f14438 100%);
+  background: #a12a24;
+  box-shadow: 0 4px 16px rgba(44, 44, 44, 0.13);
 }
-
-.login-wrapper input[type="email"],
-.login-wrapper input[type="password"] {
-  background: #fafbff;
-}
-
-.login-wrapper input::placeholder {
-  color: #b0b0b0;
-  font-size: 0.98rem;
-}
-
-.login-page a {
-  display: block;
+.login-page h1{
+   display: block;
   text-align: center;
-  margin-top: 18px;
-  color: #2a20ed;
-  text-decoration: none; /* Chỉ áp dụng cho login */
-  .login-page {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #f14438 0%, #2a20ed 100%);
-  }
+  text-shadow: 1px 2px 8px rgba(93, 93, 93, 0.39);
+}
+
+.login-inputs a {
+  display: block;
+  margin: 18px auto 0 auto;
+  color: #b5332b;
+  text-align: center;
+  text-decoration: none;
   font-weight: 500;
+  font-size: 1em;
   transition: color 0.2s;
 }
 
-a:hover {
-  color: #f14438;
+.login-inputs a:hover {
+  color: #a12a24;
+  text-decoration: underline;
+}
+
+@media (max-width: 1100px) {
+  .login-inputs,
+  .login-background {
+    width: 95vw;
+    height: auto;
+    min-height: 320px;
+    max-width: 98vw;
+  }
+
+  .login-page {
+    flex-direction: column;
+  }
 }

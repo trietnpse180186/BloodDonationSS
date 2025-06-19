@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
 import { getUserRole } from "../assets/getUserName";
+import bannerLogin from "../images/banner-login.jpg";
+import { FaEnvelope, FaLock } from "react-icons/fa";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -14,22 +15,29 @@ export default function LoginForm() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post("http://localhost:8080/auth/login", {
+        email,
+        password,
+      });
 
-      // Lấy token đúng trường
-      const { token, authenticated } = response.data.result;
-      localStorage.setItem("token", token);
-      const role = getUserRole(token);
-      if (role == "DONOR") {
+      const { accessToken, refreshToken } = response.data;
+
+      if (!accessToken) {
+        alert("Không nhận được accessToken từ server!");
+        return;
+      }
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+
+      const role = getUserRole(accessToken);
+
+      if (role === "DONOR") {
         navigate("/");
-      } else {
+      } else if (role === "ADMIN" || role === "STAFF") {
         navigate("/adminPage");
+      } else {
+        alert("Vai trò không hợp lệ!");
+        return;
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -40,28 +48,37 @@ export default function LoginForm() {
   };
 
   return (
-    <>
-      <div className="login-page">
-        <h1>Đăng nhập</h1>
+    <div className="login-page">
+      <div className="login-inputs">
         <form className="login-wrapper" onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Mật khẩu"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <h1 style={{ color: "#b5332b" }}>Đăng nhập</h1>
+          <div className="input-group">
+            <FaEnvelope className="input-icon" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="input-group">
+            <FaLock className="input-icon" />
+            <input
+              type="password"
+              placeholder="Mật khẩu"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
           <button type="submit">Đăng nhập</button>
         </form>
         <Link to="/register">Đăng ký</Link>
       </div>
-    </>
+      <div className="login-background">
+        <img src={bannerLogin} alt="" />
+      </div>
+    </div>
   );
 }
