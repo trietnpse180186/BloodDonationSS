@@ -6,7 +6,7 @@ import { Link } from 'react-router';
 export default function BloodRegister2() {
   const [answers, setAnswers] = useState({});
   const [inputs, setInputs] = useState({});
-
+  const allAnswered = bloodRegister.every(q => answers[q.id]);
   const handleRadioChange = (questionId, value) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
     const question = bloodRegister.find(q => q.id === questionId);
@@ -23,37 +23,43 @@ export default function BloodRegister2() {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"></link>
     <div className='bloodform-container' >
       <h2 className='bloodform-title'>Đặt lịch hiến máu</h2>
-        <div className='bloodform-body1'>
-            <p className='step1-icon'><i className="bi bi-check-square-fill"></i>Thời gian & Địa điểm</p>
-            <p className='step2'><i class="bi bi-calendar2"></i>Phiếu đăng ký hiến máu</p>
+        <div className="bloodform-steps">
+          <p className="bloodform-step "><i className="bi bi-calendar-check-fill"></i>Thời gian & Địa điểm</p>
+          <p className="bloodform-step active"><i className="bi bi-calendar2"></i>Phiếu đăng ký hiến máu</p>
         </div>
         <div className='bloodform-body2'>
           <div className='bloodform-body-content'>
-            {bloodRegister.map((question) => (
-              <div key={question.id} className='question-container'>
-                <p className='question-text'>{question.text}</p>
-                <div className='options-container'>
-                  {question.options.map((option) => (
-                    <label key={option.value} className='option-label'>
-                      <input
-                        type='radio'
-                        name={question.id}
-                        value={option.value}
-                        checked={answers[question.id] === option.value}
-                        onChange={() => handleRadioChange(question.id, option.value)}
-                      />
-                      {option.label}
-                      {option.hasInput && answers[question.id] === option.value && (
-                        <input
-                          type='text'
-                          placeholder={option.inputPlaceholder}
-                          value={inputs[question.id] || ''}
-                          onChange={(e) => handleInputChange(question.id, e.target.value)}
-                          className='input-field'
-                        />
-                      )}
-                    </label>
-                  ))}
+            <div className="question-list">
+              {bloodRegister.map((question) => (
+                <div key={question.id} className='question-container'>
+                  <p className='question-text'>{question.text}</p>
+                  <div className='options-container'>
+                    {question.options.map((option) => (
+                      <div key={option.value} className='option-label'>
+                        <label>
+                          <input
+                            type='radio'
+                            name={question.id}
+                            value={option.value}
+                            checked={answers[question.id] === option.value}
+                            onChange={() => handleRadioChange(question.id, option.value)}
+                          />
+                        </label>
+                        <span>
+                          {option.label}
+                          {option.hasInput && answers[question.id] === option.value && (
+                            <input
+                              type='text'
+                              placeholder={option.inputPlaceholder}
+                              value={inputs[question.id] || ''}
+                              onChange={(e) => handleInputChange(question.id, e.target.value)}
+                              className='input-field'
+                            />
+                          )}
+                        </span>
+                      </div>
+                    ))}
+
                   <div className='clear-answer-container'>
                     <button
                       type="button"
@@ -70,14 +76,23 @@ export default function BloodRegister2() {
               </div>
             ))}
           </div>  
+          <div className='buttons'>
+            <Link to='/blood-registration'>
+            <button className='button-style'>Quay lại</button>
+            </Link>
+            <Link to={!allAnswered ? '/confirm-registration' : '#'}
+            onClick={e => {
+              if(!allAnswered) {
+                e.preventDefault();
+                alert("Vui lòng chọn đáp án")
+              }
+            }}>
+            <button className='button-style'>Xác nhận</button>
+            </Link>
+          </div>
         </div>
-        <div className='buttons'>
-          <Link to='/blood-registration'>
-          <button className='button-style'>Quay lại</button>
-          </Link>
-          <button className='button-style'>Xác nhận</button>
-        </div>
-    </div>
+      </div>
+    </div>  
     <Footer />
     </>
   )
