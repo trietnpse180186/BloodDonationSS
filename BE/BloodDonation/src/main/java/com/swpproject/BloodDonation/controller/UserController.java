@@ -1,8 +1,10 @@
 package com.swpproject.BloodDonation.controller;
 
 import com.swpproject.BloodDonation.dto.request.UserCreationRequest;
+import com.swpproject.BloodDonation.dto.request.UserUpdateRequest;
 import com.swpproject.BloodDonation.dto.response.UserCreationResponse;
 import com.swpproject.BloodDonation.dto.response.UserDetailResponse;
+import com.swpproject.BloodDonation.dto.response.UserUpdateResponse;
 import com.swpproject.BloodDonation.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,11 @@ public class UserController {
     @GetMapping("/users/{id}")
     public UserDetailResponse getUserById(@PathVariable String id) {
         return userService.getUserById(id);
+    }
+
+    @PutMapping("/users/{id}")
+    public UserUpdateResponse updateById(@PathVariable String id, @RequestBody UserUpdateRequest request){
+        return userService.updateUser(id, request);
     }
 
     @GetMapping("/users")

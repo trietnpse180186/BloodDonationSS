@@ -1,7 +1,6 @@
 import { useState } from "react";
 
 import WebRoutes from "./routes/WebRoutes";
-import DonationSchedule from "./pages/DonationSchedule";
 import ScrollToTop from "./assets/icons/scrollToTop";
 
 function App() {

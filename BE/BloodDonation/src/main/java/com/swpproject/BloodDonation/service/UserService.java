@@ -1,8 +1,10 @@
 package com.swpproject.BloodDonation.service;
 
 import com.swpproject.BloodDonation.dto.request.UserCreationRequest;
+import com.swpproject.BloodDonation.dto.request.UserUpdateRequest;
 import com.swpproject.BloodDonation.dto.response.UserCreationResponse;
 import com.swpproject.BloodDonation.dto.response.UserDetailResponse;
+import com.swpproject.BloodDonation.dto.response.UserUpdateResponse;
 import com.swpproject.BloodDonation.entity.Role;
 import com.swpproject.BloodDonation.entity.User;
 import com.swpproject.BloodDonation.entity.UserHasRole;
@@ -14,6 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
@@ -79,6 +85,35 @@ public class UserService {
                 .sex(user.getSex())
                 .occupation(user.getOccupation())
                 .build();
+    }
+
+    @PutMapping("/users/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public UserUpdateResponse updateUser (@PathVariable("id") String userId,
+                                                  @RequestBody UserUpdateRequest request) {
+        return userRepository.findById(userId).map(user -> {
+            user.setFullName(request.getFullName());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setAddress(request.getAddress());
+            user.setPhoneNumber(request.getPhoneNumber());
+            user.setBloodType(request.getBloodType());
+            user.setBirthday(request.getBirthday());
+            user.setSex(request.getSex());
+            user.setOccupation(request.getOccupation());
+
+            User updatedUser = userRepository.save(user);
+
+            return UserUpdateResponse.builder()
+                    .fullName(updatedUser.getFullName())
+                    .password(passwordEncoder.encode(updatedUser.getPassword()))
+                    .phoneNumber(updatedUser.getPhoneNumber())
+                    .address(updatedUser.getAddress())
+                    .birthday(updatedUser.getBirthday())
+                    .bloodType(updatedUser.getBloodType())
+                    .sex(updatedUser.getSex())
+                    .occupation(updatedUser.getOccupation())
+                    .build();
+        }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     @PreAuthorize("isAuthenticated()")
