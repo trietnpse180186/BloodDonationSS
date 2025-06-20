@@ -1,5 +1,6 @@
+// AppointmentDetail.js
 import React from 'react';
-import './AppointmentSchedule.css';
+import './AppointmentDetail.css';
 
 export default function AppointmentDetail({ appointment, onBack }) {
   if (!appointment) return null;
