@@ -2,9 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import { Dropdown, Button, ButtonGroup } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { getUsernameFromToken, getUserRole } from "./getUserName";
-
 import logout from "./authLogout";
-import logo from "../images/logo.jpeg";
+
 
 import "./navbar.css";
 
