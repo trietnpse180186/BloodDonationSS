@@ -33,7 +33,7 @@ export default function Register() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/users/register",
+        "http://localhost:8080/api/v1/users",
         formData
       );
       alert("Đăng ký thành công!");
