@@ -97,7 +97,15 @@ export default function BloodDonationInfo({answers}) {
                       {reviews[appointment.id] && (
                         <div className="review-result">
                           <strong>Đánh giá của bạn:</strong>
-                          <p>{reviews[appointment.id]}</p>
+                          <div>
+                            <p>{reviews[appointment.id].review}</p>
+                            {reviews[appointment.id].rating
+                              ? "★".repeat(reviews[appointment.id].rating)
+                              : ""}
+                            {reviews[appointment.id].rating
+                              ? ""
+                              : ""}
+                          </div>
                         </div>
                       )}
                   <div className="actions">
