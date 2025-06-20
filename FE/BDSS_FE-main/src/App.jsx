@@ -1,12 +1,11 @@
 import { useState } from "react";
-
+import WebRoutes from "./routes/WebRoutes";
 import ScrollToTop from "./assets/icons/scrollToTop";
-import BloodDonationInfo from "./pages/BloodDonationInfo";
 function App() {
   return (
     <>
       <ScrollToTop />
-      <BloodDonationInfo/>
+      <WebRoutes />
     </>
   );
 }

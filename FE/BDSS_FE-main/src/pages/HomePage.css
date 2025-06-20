@@ -5,216 +5,265 @@
   font-family: "Roboto", sans-serif;
 }
 
-.group-header {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.group-header img {
-  max-width: 100vh;
-  height: 60px;
-  border-radius: 50%;
+.text-wrapper2 {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
 }
 
-.text-wrapper2 {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  font-family: "Roboto", sans-serif;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)),
-    url("../images/banner2.jpeg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  text-shadow: 1px 1px 3px rgba(122, 121, 121, 0.486);
-  gap: 50px;
+.wrapper-img img {
+  display: block;
+  position: relative;
+  margin: 0 0;
+  width: 100%;
+  height: 680px;
+  object-fit: cover;
+  object-position: top;
 }
-.text-wrapper2 h2 {
-  font-size: 3em;
+
+
+.wrapper-img::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.192), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.wrapper-content {
+  position: absolute;
+  top: 70px;
+  left: 40px;
+  width: 34.33%;
+  color: white;
+  //background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 8px;
+
+}
+
+.wrapper-content h2 {
+  margin-top: 0;
   font-weight: bold;
-  color: transparent;
-  -webkit-text-stroke: 1px rgb(255, 255, 255);
-  margin-top: 100px;
+  font-size: 5.5em;
+  color: rgb(159, 3, 3);
 }
-.wrapper-content p {
-  font-size: 1.7em;
-  width: 50%;
-  text-align: center;
-  margin: 0 auto;
+.p-wrapper-content {
+  margin-top: -10px;
+  font-size: 2.5em;
+  font-family: "Inter", sans-serif;
+  font-weight: 900;
+  //color: rgb(91, 69, 69);
+  color: #000000;
+  letter-spacing: 2px;
+}
+
+.p-content {
+  font-size: 1em;
+  line-height: 1.5;
+  margin-top: 50px;
   color: rgb(255, 255, 255);
 }
-.wrapper-button {
-  background-color: #f41f1f;
-  padding: 30px 50px;
-  font-size: 1.4em;
-  font-weight: bold;
-  margin-bottom: 100px;
+
+.text-wrapper-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  font-size: 1.2em;
+  margin-top: 20px;
+  color: rgb(255, 255, 255);
+  background-color: rgb(159, 3, 3);
+
+  width: 120px;
+  height: 40px;
+  border-radius: 1px;
+  box-shadow: 0 0 5px rgb(191, 10, 10),
+  0 0 25px rgb(201, 3, 3);
 }
-.wrapper-button:hover {
-  background: linear-gradient(135deg, #d01a0d, #6b0707);
-  transform: scale(1.05);
-  transition: 0.5s ease-in-out;
+
+.text-wrapper-button:hover {
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
+  transition: 0.1s;
+  box-shadow: 0 0 5px rgb(0, 0, 0),
+  0 0 25px rgb(0, 0, 0);
 }
+
+/* Group2 */
 .overlap-group2 {
   display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
   align-items: center;
-  margin: 100px 0px 100px 0px;
-}
-.overlap-group2 img {
-  max-width: 45%;
-  height: auto;
-  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
-}
-.rectangle {
-  display: flex;
   flex-direction: column;
-  gap: 20px;
-  font-size: 1.5em;
-  background-color: rgb(255, 255, 255);
+  margin: 50px 60px;
 }
-.rectangle h3 {
+.text-center-group2 {
+  display: flex;
+  align-items: center;
+  color: #000000;
+  font-size: 4em; /* Tăng kích cỡ tại đây */
   font-weight: bold;
-  color: rgb(199, 6, 6);
-  font-size: 1.5em;
-  margin-bottom: 40px;
-  text-shadow: 1px 1px 3px rgba(122, 121, 121, 0.486);
 }
 
 .text-wrapper3 {
   display: flex;
-  flex-direction: column;
-  list-style-type: none;
-  gap: 15px;
-}
-.wrapper-button2 {
-  text-align: center;
-  background-color: rgb(197, 33, 33);
-  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
-  padding: 20px 20px;
-  margin: 25px 350px 0px 0px;
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-.wrapper-button2:hover {
-  background: linear-gradient(100deg, #6e0d06, #dc0a0a);
-  transform: scale(1.02);
-  transition: transform 0.5s ease-in-out;
-}
-.wrapper-button2:hover::after {
-  content: " →";
-  color: #ffffff;
-  transition: all 0.3s ease-in-out;
-}
-.overlap-group3 {
-  display: grid;
-  justify-content: space-evenly;
-  align-items: center;
-  padding: 100px 20px;
-  background: linear-gradient(180deg, hwb(212 10% 53%), #5c74e0);
-  gap: 40px;
-  max-width: 100%;
-  margin: 0 auto;
-}
-.group3-row1 {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-}
-.group3-row2 {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-}
-.overlap-group3-content {
-  background-color: white;
-  border-radius: 12px;
-  padding: 20px;
-  width: 300px;
-  min-height: 250px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  text-align: center;
-  gap: 12px;
-}
 
-.overlap-group3-content svg {
-  width: 32px;
-  height: 32px;
-  color: #e74c3c;
-}
-.overlap-group3-content:hover {
-  transform: scale(1.05);
-  transition: transform 0.3s ease-in-out;
-}
-.overlap-group3-title {
-  display: flex;
-  align-items: center;
-  font-size: 2em;
-  font-weight: bold;
-  color: #ffffff;
-  margin: 0;
-}
+  flex-wrap: wrap;
+  justify-content: space-around;
+  list-style: none;
+  padding: 0;
+  margin-top: 30px;
+  width: 100%;
+  
 
-.text-wrapper-10,
-.text-wrapper-11,
-.text-wrapper-12,
-.text-wrapper-13 {
-  font-size: 1.5em;
-  font-weight: 500;
-  color: #333;
-  line-height: 1.4;
+  li {
+    flex: 1 1 22%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin: 0px;
+  }
+  img {
+    width: 15rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  h5{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    font-weight: bold;
+    font-size: 1.1em;
+  }
+  p{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px 30px;
+    color: #000000;
+    font-size: 1em;
+  }
 }
-.overlap-group4 {
+.button-wrapper3{
   display: flex;
   justify-content: center;
-  margin: 100px 0px 50px 10px;
+  align-items: center;
+  margin-top: 15px;
+  text-decoration: none;
+  color: rgb(0, 0, 0);
+  font-size: 1.8em;
+
+}
+.button-wrapper3:hover{
+  color: #921D13;
 }
 
-.overlap-group4-content {
-  font-size: 1.5em;
+/* Content */
+.content-donor{ 
   display: flex;
-  flex-direction: column;
-  flex: 1;
-  width: 100%;
-  height: 65vh;
-  padding: 50px;
-  margin: 50px;
-  background: linear-gradient(135deg, #6226c2, #b91414);
-  border-radius: 20px;
-}
-
-.overlap-group4-content ul {
-  padding: 30px;
-}
-.overlap-group4-content ul li {
-  padding: 10px;
-  color: #dad8d8;
-}
-
-.contact-info {
-  margin-top: 30px;
-  display: flex;
+  flex-direction: row;
   justify-content: space-between;
-  gap: 100px;
+  align-items: center;
+  padding: 45px 30px;
+  background-color: #1D4A76;
 }
-.info-address {
+.img-content-donor{
+  background-color: white;
+  transform: rotate(-3deg);
+  margin-left: 70px;
+  p{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px 0;
+    color: #1D4A76;
+    font-size: 1.2em;
+    font-weight: 200;
+  }
+}
+.bannerHome{
+  width: 25rem;
+  margin: 20px 20px;
+  margin-bottom: 0px;
+}
+.text-content-donor{
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  align-items: flex-end;
+  text-align: right;
+  width: 45rem;
 }
-.info-phone {
+.p1-text-content-donor{
+  font-size: 3.2em;
+  font-weight: bold;
+  color: #fff;
+  margin-bottom: -10px;
+
+}
+.p2-text-content-donor{
+  font-size: 3.2em;
+  font-weight: bold;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 0px;
+}
+.p3-text-content-donor{
+  font-size: 2em;
+  color: #fff;
+  margin-top: 10px;
+}
+.a-text-content-donor{
   display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-top: 25px;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: #fff;
+  background-color: #A32823;
+  width: 12rem;
+  height: 2.5rem;
+  border: 1px solid white;
+
 }
-#home-wrapper {
-  color: #b5332b;
+.a-text-content-donor:hover{
+  color: #ffffff;
+  background-color: #850c0c;
+  border: 1px solid rgb(250, 250, 250);
+  
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Group3 */
+.overlap-group3{
+  background-color: aqua;
+}
+.group3-row1{
+  background-color: chocolate;
+}
+.group3-row2{
+background-color: chartreuse;
+}
+.overlap-group4{
+  background-color: aquamarine;
+}
+
