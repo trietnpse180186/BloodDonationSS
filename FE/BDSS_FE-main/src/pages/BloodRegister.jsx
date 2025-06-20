@@ -2,7 +2,7 @@ import React, { use, useEffect, useState } from 'react';
 import Navbar from '../assets/navbar';
 import './BloodRegister.css'
 import bloodDonationSchedules from '../assets/donationSchedule';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Footer from '../assets/footer';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -113,7 +113,6 @@ export default function BloodRegister() {
   return (
     <>
     <Navbar />
-    <ToastContainer position="top-right" autoClose={2000} />
     <div className="bloodform-container">
       <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet"></link>
       <h2 className="bloodform-title">Đặt lịch hiến máu</h2>
@@ -202,17 +201,20 @@ export default function BloodRegister() {
             )}
           </div>
           <div className='button-submit'>
-            <Link
-              to={canContinue ? "/blood-registration2" : "#"}
-              onClick={e => {
-                if (!canContinue) {
-                  e.preventDefault();
-                  toast.error("Vui lòng chọn đầy đủ ngày, địa điểm và khung giờ trước khi tiếp tục!");
-                }
-              }}
-            >
-              <button className="button-style" disabled={!canContinue}>Tiếp tục</button>
+            <Link to={canContinue ? "/blood-registration2" : "#"}>
+              <button
+                className="button-style"
+                onClick={(e) => {
+                  if (!canContinue) {
+                    e.preventDefault();
+                    toast.error("Vui lòng chọn đầy thông tin!");
+                  }
+                }}
+              >
+                Tiếp tục
+              </button>
             </Link>
+
           </div>
         </div>
       </div>

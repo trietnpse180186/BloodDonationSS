@@ -32,7 +32,14 @@
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
-
+.info-contact {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-top: 10px;
+}
 /* Lịch sử hiến máu */
 .wide-card {
   background: #f0f8ff;
@@ -43,3 +50,44 @@
 }
 
 /* Danh sách lịch sử*
+/* Thêm vào BloodDonationInfo.css hoặc file css của bạn */
+.modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 32px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #b30000;
+  cursor: pointer;
+}
+.view-survey{
+  background-color: #fca5a5;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+.actions{
+  padding-top: 50px;
+}

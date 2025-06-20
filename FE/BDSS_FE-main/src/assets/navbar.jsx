@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getUsernameFromToken, getUserRole } from "./getUserName";
 
 import logout from "./authLogout";
-import logo from "../images/logo.jpeg";
+import logo from "../images/logo.jpg";
 
 import "./navbar.css";
 

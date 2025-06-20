@@ -3,10 +3,12 @@ import Navbar from '../assets/navbar'
 import Footer from '../assets/footer'
 import bloodRegister from '../assets/bloodRegister';
 import { Link } from 'react-router';
+import { toast, ToastContainer } from 'react-toastify';
 export default function BloodRegister2() {
   const [answers, setAnswers] = useState({});
   const [inputs, setInputs] = useState({});
   const allAnswered = bloodRegister.every(q => answers[q.id]);
+  
   const handleRadioChange = (questionId, value) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
     const question = bloodRegister.find(q => q.id === questionId);
@@ -14,9 +16,11 @@ export default function BloodRegister2() {
       setInputs((prev) => ({ ...prev, [questionId]: '' }));
     }
   };
+  
   const handleInputChange = (questionId, value) => {
     setInputs((prev) => ({ ...prev, [questionId]: value }));
   };
+  
   return (
     <>
     <Navbar />
@@ -49,12 +53,12 @@ export default function BloodRegister2() {
                           {option.label}
                           {option.hasInput && answers[question.id] === option.value && (
                             <input
-                              type='text'
-                              placeholder={option.inputPlaceholder}
-                              value={inputs[question.id] || ''}
+                            type='text'
+                            placeholder={option.inputPlaceholder}
+                            value={inputs[question.id] || ''}
                               onChange={(e) => handleInputChange(question.id, e.target.value)}
                               className='input-field'
-                            />
+                              />
                           )}
                         </span>
                       </div>
@@ -80,11 +84,11 @@ export default function BloodRegister2() {
             <Link to='/blood-registration'>
             <button className='button-style'>Quay lại</button>
             </Link>
-            <Link to={!allAnswered ? '/confirm-registration' : '#'}
+            <Link to={allAnswered ? "/blood-donation-info" : "#"}
             onClick={e => {
               if(!allAnswered) {
                 e.preventDefault();
-                alert("Vui lòng chọn đáp án")
+                toast.error("Vui lòng chọn đáp án")
               }
             }}>
             <button className='button-style'>Xác nhận</button>

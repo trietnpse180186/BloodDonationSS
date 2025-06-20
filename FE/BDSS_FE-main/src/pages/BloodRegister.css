@@ -409,7 +409,7 @@ input[type="radio"]:checked::after {
   max-width: 1000px;
   width: 100%;
   margin: 0 auto 28px auto;   
-  border: 1px solid #1976d2;
+  border: 1px solid #1D4A76;
   border-radius: 12px;
   margin-bottom: 28px;
   overflow: hidden;
@@ -417,7 +417,7 @@ input[type="radio"]:checked::after {
 }
 
 .question-text {
-  background: #3973db;
+  background: #1D4A76;
   color: #fff;
   font-weight: 500;
   padding: 16px 24px;

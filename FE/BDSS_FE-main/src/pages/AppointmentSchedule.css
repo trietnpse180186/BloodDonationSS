@@ -1,4 +1,13 @@
-Container chính
+
+.donation-info-container h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.donation-grid {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 16px;
+}
 .schedule-container {
   max-width: 800px;
   margin: 0 auto;
@@ -8,9 +17,10 @@ Container chính
 
 /* Danh sách lịch hẹn theo chiều dọc */
 .appointment-list {
+  background: aqua;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  border-radius: 10px;
 }
 
 /* Card từng lịch hẹn */
@@ -23,6 +33,7 @@ Container chính
   border-radius: 12px;
   background: #f9f9f9;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 16px;
 }
 
 /* Icon bên trái */
