@@ -7,7 +7,7 @@ export default function AdminPage() {
     <div className="admin-page">
       <aside className="sidebar">
         <div className="sidebar-header">
-          <h2>Staff Panel</h2>
+          <h2>Admin Page</h2>
         </div>
         <nav className="sidebar-nav">
           <NavLink className="nav-link" to="donation-schedule">Donation Schedule</NavLink>
