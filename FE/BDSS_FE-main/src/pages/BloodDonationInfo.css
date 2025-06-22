@@ -1,0 +1,45 @@
+.donation-info-container {
+  padding: 24px;
+  background: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Chia thành 2 cột */
+.donation-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+/* Cột trái: chứa 2 info-card */
+.left-column {
+  flex: 1 1 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Cột phải: chỉ chứa lịch sử */
+.right-column {
+  flex: 1 1 40%;
+}
+
+/* Khung thẻ thông tin */
+.info-card {
+  background: #fff7f7;
+  border: 1px solid #fca5a5;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Lịch sử hiến máu */
+.wide-card {
+  background: #f0f8ff;
+  border: 1px solid #90caf9;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Danh sách lịch sử*
