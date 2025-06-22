@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./HomePage.css";
 import bannerHome from "../images/bannerHome.jpg";
-import NHSBlood from "../images/NHSBlood.jpg"
+import NHSBlood from "../images/NHSBlood.jpg";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Navbar from "../assets/navbar";
@@ -16,6 +16,7 @@ import {
   virusFill,
 } from "../assets/icons/icon";
 import Footer from "../assets/footer";
+import { toast } from "react-toastify";
 
 export default function HomePage() {
   return (
@@ -29,13 +30,22 @@ export default function HomePage() {
         <div className="group-header">
           {/*Navbar */}
           <Navbar />
-
           {/*body */}
           <div className="text-wrapper2">
-            <div className="wrapper-img">
+            <div
+              className="wrapper-img"
+              data-aos="fade-left"
+              data-aos-duration="700"
+              data-aos-delay="100"
+            >
               <img className="bannerHome" alt="Jimeng" src={bannerHome} />
             </div>
-            <div className="wrapper-content">
+            <div
+              className="wrapper-content"
+              data-aos="slide-right"
+              data-aos-duration="700"
+              data-aos-delay="100"
+            >
               <h2>GIVE THE GIFT </h2>
               <p className="p-wrapper-content">OF THE LIFE </p>
 
@@ -87,18 +97,23 @@ export default function HomePage() {
 
         <div className="content-donor">
           <div className="img-content-donor">
-            <img className="bannerHome" alt="Jimeng" src={NHSBlood} />
+            <img className="content-donor-img" alt="Jimeng" src={NHSBlood} />
             <p>England, Give platelets</p>
           </div>
           <div className="text-content-donor">
-            <p className="p1-text-content-donor">
-              White blood cell donation
-            </p>
+            <p className="p1-text-content-donor">White blood cell donation</p>
             <p className="p2-text-content-donor">
               Bringing hope and life to cancer patients.
             </p>
-            <p className="p3-text-content-donor">You can help save a life today</p>
-            <a className="a-text-content-donor" href="https://platelets.blood.co.uk/about-platelets/">Learn about platelets</a>
+            <p className="p3-text-content-donor">
+              You can help save a life today
+            </p>
+            <a
+              className="a-text-content-donor"
+              href="https://platelets.blood.co.uk/about-platelets/"
+            >
+              Learn about platelets
+            </a>
           </div>
         </div>
 
@@ -163,7 +178,6 @@ export default function HomePage() {
         </div>
 
         <div className="overlap-group4">
-
           <div className="overlap-group4-content">
             <h2 style={{ color: "rgb(35, 108, 218)", fontWeight: "bold" }}>
               Trước khi hiến máu
@@ -180,7 +194,7 @@ export default function HomePage() {
               <li>Uống nhiều nước.</li>
             </ul>
           </div>
-          <div data-aos="flip-down" className="overlap-group4-content">
+          <div className="overlap-group4-content">
             <h2 style={{ color: "rgb(218, 35, 35)", fontWeight: "bold" }}>
               Sau khi hiến máu
             </h2>

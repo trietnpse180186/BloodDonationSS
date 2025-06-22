@@ -1,0 +1,79 @@
+.faq-manager {
+  max-width: 100%;
+  background: #fff;
+  border-radius: 14px;
+   padding: 2.5rem 2rem 2rem 2rem;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.faq-manager h2 {
+  color: #b5332b;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.faq-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.faq-form input[type="text"],
+.faq-form textarea {
+  border: 1px solid #b5332b;
+  border-radius: 6px;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.faq-form input[type="text"]:focus,
+.faq-form textarea:focus {
+  border: 2px solid #db230b;
+}
+
+.submit-btn {
+  background: #b5332b;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.submit-btn:hover {
+  background: #db230b;
+}
+
+.faq-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+
+.faq-card {
+  border: 1px solid #f2bcbc;
+  border-radius: 10px;
+  padding: 1.2rem;
+  background: #fff7f7;
+  box-shadow: 0 2px 8px rgba(181, 51, 43, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.faq-card h4 {
+  color: #b5332b;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+.faq-card

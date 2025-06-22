@@ -1,67 +1,90 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./FAQ.css";
 import Navbar from "../assets/navbar";
 import Footer from "../assets/footer";
+import getFAQ from "../assets/getFAQ";
 export default function FAQ() {
   const ListFAQ = [
     {
-      question: "Ai có thể tham gia hiến máu?",
+      question: "Who can donate blood?",
       answer: [
-        "Từ 18-60 tuổi, tình nguyện và đủ sức khỏe.",
-        "Cân nặng ≥ 45kg, không mắc bệnh truyền nhiễm.",
-        "Cách lần hiến máu gần nhất ít nhất 12 tuần.",
-        "Có giấy tờ tùy thân hợp lệ.",
+        "Aged 18-60, voluntary and in good health.",
+        "Weigh at least 45kg, not suffering from infectious diseases.",
+        "At least 12 weeks since the last blood donation.",
+        "Have valid identification documents.",
       ],
     },
     {
-      question: "Quy trình hiến máu diễn ra như thế nào?",
+      question: "What is the blood donation process?",
       answer: [
-        "Đăng ký thông tin cá nhân và kiểm tra sức khỏe.",
-        "Lấy mẫu máu để xét nghiệm nhóm máu và các bệnh truyền nhiễm.",
-        "Tiến hành hiến máu dưới sự giám sát của nhân viên y tế.",
-        "Nghỉ ngơi và nhận quà sau khi hiến máu.",
+        "Register personal information and undergo a health check.",
+        "Take a blood sample to test blood type and infectious diseases.",
+        "Donate blood under the supervision of medical staff.",
+        "Rest and receive a gift after donating blood.",
       ],
     },
     {
-      question: "Sau khi hiến máu cần lưu ý gì?",
+      question: "What should I pay attention to after donating blood?",
       answer: [
-        "Uống đủ nước và ăn nhẹ để phục hồi sức khỏe.",
-        "Tránh vận động mạnh trong 24 giờ đầu sau khi hiến máu.",
-        "Theo dõi sức khỏe, nếu có triệu chứng bất thường thì liên hệ ngay với cơ sở y tế.",
+        "Drink enough water and have a light meal to recover.",
+        "Avoid strenuous activities within the first 24 hours after donating.",
+        "Monitor your health; if you have any unusual symptoms, contact a medical facility immediately.",
       ],
     },
     {
-      question: "Nhóm máu A,B,O,AB có thể hiến cho nhóm máu nào?",
+      question: "Which blood groups can A, B, O, AB donate to?",
       answer: [
-        "Người có nhóm máu O có thể cho máu cho tất cả các nhóm máu: O, A, B, AB. Đây là nhóm máu cho phổ quát.",
-        "Người có nhóm máu A có thể cho máu cho người có nhóm A và AB",
-        "Người có nhóm máu B có thể cho máu cho người có nhóm B và AB.",
-        "Người có nhóm máu AB chỉ có thể cho máu cho người có nhóm AB. Tuy nhiên, AB là nhóm nhận phổ quát, có thể nhận máu từ tất cả các nhóm máu (O, A, B, AB).",
+        "People with blood group O can donate to all blood groups: O, A, B, AB. This is the universal donor group.",
+        "People with blood group A can donate to those with blood group A and AB.",
+        "People with blood group B can donate to those with blood group B and AB.",
+        "People with blood group AB can only donate to those with blood group AB. However, AB is the universal recipient group and can receive blood from all groups (O, A, B, AB).",
       ],
     },
     {
-      question: "Máu của tôi sẽ được làm những xét nghiệm gì?",
+      question: "What tests will be performed on my blood?",
       answer: [
-        "Người đã nhiễm hoặc đã thực hiện hành vi có nguy cơ nhiễm HIV, viêm gan B, viêm gan C, và các vius lây qua đường truyền máu.",
-        "Người có các bệnh mãn tính: tim mạch, huyết áp, hô hấp, dạ dày…",
+        "Screening for HIV, hepatitis B, hepatitis C, and other blood-borne viruses.",
+        "Screening for chronic diseases: cardiovascular, blood pressure, respiratory, stomach, etc.",
       ],
     },
   ];
+  const [faq, setFaq] = useState([]);
+  useEffect(() => {
+    getFAQ()
+      .then(setFaq)
+      .catch((error) => {
+        console.error("Error fetching FAQ data:", error);
+      });
+  }, []);
   return (
     <>
       {/*Header------------------------------------------------*/}
       <Navbar />
       {/*Accordion------------------------------------------------*/}
-      <div>
-        <h1 className="faq-title">Câu hỏi thường gặp</h1>
+      <div data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+        <h1 className="faq-title">Frequently Asked Questions</h1>
         <div className="faq-container">
-          {ListFAQ.map((items, index) => (
-            <details key={index} className="faq-item">
+          {faq.map((items, index) => (
+            <details key={items.id || index} className="faq-item">
               <summary className="faq-question">{items.question}</summary>
               <ul className="faq-answer">
-                {items.answer.map((line, i) => (
-                  <li key={i}>{line}</li>
-                ))}
+                {Array.isArray(items.answer)
+                  ? items.answer.flatMap((ans, idx) =>
+                      ans
+                        .split(".")
+                        .map((sentence, i) =>
+                          sentence.trim() ? (
+                            <li key={idx + "-" + i}>{sentence.trim()}.</li>
+                          ) : null
+                        )
+                    )
+                  : items.answer
+                      .split(".")
+                      .map((sentence, i) =>
+                        sentence.trim() ? (
+                          <li key={i}>{sentence.trim()}.</li>
+                        ) : null
+                      )}
               </ul>
             </details>
           ))}

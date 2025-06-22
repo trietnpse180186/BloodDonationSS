@@ -13,26 +13,26 @@ export default function Contact() {
         <div className="form-contact">
           <form action="#">
             <div id="text-center">
-              <h1>Liên hệ với chúng tôi</h1>
+              <h1>Contact Us</h1>
             </div>
             <div id="sub-form">
-              <h5>Họ và tên</h5>
-              <input type="text" placeholder="Họ và tên" />
+              <h5>Full Name</h5>
+              <input type="text" placeholder="Full Name" />
             </div>
             <div id="sub-form">
-              <h5>Số điện thoại</h5>
-              <input type="text" placeholder="Số điện thoại" />
+              <h5>Phone Number</h5>
+              <input type="text" placeholder="Phone Number" />
             </div>
             <div id="sub-form">
               <h5>Email</h5>
               <input type="text" placeholder="Email" />
             </div>
             <div id="sub-form">
-              <h5>Chi tiết yêu cầu hỗ trợ</h5>
-              <input type="text" placeholder="Nội dung yêu cầu hỗ trợ" />
+              <h5>Support Request Details</h5>
+              <input type="text" placeholder="Support request details" />
             </div>
 
-            <button id="button-sub-form">Gửi yêu cầu</button>
+            <button id="button-sub-form">Submit Request</button>
           </form>
         </div>
       </div>
