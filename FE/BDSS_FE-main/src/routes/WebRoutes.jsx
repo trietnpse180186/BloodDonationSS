@@ -27,6 +27,7 @@ export default function WebRoutes() {
       <Route path="/schedule" element={<DonationSchedule />}></Route>
       <Route path="/blood-registration" element={<BloodRegister />}></Route>
       <Route path="/blood-registration2" element={<BloodRegister2 />}></Route>
+      
     </Routes>
   );
 }

@@ -1,7 +1,7 @@
 
 .donation-info-container {
   padding: 24px;
-
+}
 .schedule-container {
   display: flex;
   justify-content: space-between;
@@ -15,7 +15,7 @@
   max-width: 900px;
   margin: 40px auto 0 auto;
 
-
+}
 .donation-grid {
   display: flex;
   flex-wrap: wrap;
