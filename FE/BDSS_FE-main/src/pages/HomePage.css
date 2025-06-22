@@ -40,7 +40,6 @@
   left: 40px;
   width: 34.33%;
   color: white;
-  //background-color: rgba(0, 0, 0, 0.5);
   padding: 20px;
   border-radius: 8px;
 
@@ -57,7 +56,7 @@
   font-size: 2.5em;
   font-family: "Inter", sans-serif;
   font-weight: 900;
-  //color: rgb(91, 69, 69);
+  color: rgb(91, 69, 69);
   color: #000000;
   letter-spacing: 2px;
 }
@@ -264,6 +263,37 @@
 background-color: chartreuse;
 }
 .overlap-group4{
-  background-color: aquamarine;
+  display: flex;
+  flex-direction: row;
+
+}
+.overlap-group4-content1{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 20px;
+  color: black; 
+  background: white;
+  width: 100%;
+}
+.overlap-group4-content1 img{
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+.overlap-group4-content2{
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 20px;
+  color: white; 
+  background:  #1D4A76;
+  width: 100%;
+}
+.overlap-group4-content2 img{
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-right: 20px;
 }
 
