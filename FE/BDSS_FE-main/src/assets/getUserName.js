@@ -2,7 +2,7 @@ import { jwtDecode } from "jwt-decode";
 
 // Lấy tên user từ accessToken
 export function getUsernameFromToken() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   if (token && token.split(".").length === 3) {
     try {
       const decoded = jwtDecode(token);
@@ -23,7 +23,7 @@ export function getUsernameFromToken() {
 }
 
 export function getUserRole() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   if (token && token.split(".").length === 3) {
     try {
       const decoded = jwtDecode(token);

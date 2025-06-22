@@ -1,5 +1,6 @@
 package com.swpproject.BloodDonation.dto.request;
 
+import com.swpproject.BloodDonation.entity.Role;
 import com.swpproject.BloodDonation.enums.BloodType;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ public class UserCreationRequest {
     private String password;
     private String phoneNumber;
     private String address;
+    private Role role;
     private BloodType bloodType;
     private LocalDate birthday;
     private String sex;

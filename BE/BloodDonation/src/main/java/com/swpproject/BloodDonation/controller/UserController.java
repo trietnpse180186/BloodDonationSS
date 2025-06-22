@@ -7,6 +7,7 @@ import com.swpproject.BloodDonation.dto.response.UserDetailResponse;
 import com.swpproject.BloodDonation.dto.response.UserUpdateResponse;
 import com.swpproject.BloodDonation.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

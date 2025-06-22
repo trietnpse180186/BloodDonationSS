@@ -1,8 +1,8 @@
 import axios from "axios";
 
 // Hàm lấy userId từ token JWT
-function getUserIdFromToken() {
-  const token = localStorage.getItem("accessToken");
+export function getUserIdFromToken() {
+  const token = sessionStorage.getItem("accessToken");
   if (!token) return null;
 
   try {
@@ -16,7 +16,7 @@ function getUserIdFromToken() {
 
 // Hàm gọi API lấy thông tin user
 export default async function getUserById() {
-  const token = localStorage.getItem("accessToken");
+  const token = sessionStorage.getItem("accessToken");
   const userId = getUserIdFromToken();
 
   if (!token || !userId) {
