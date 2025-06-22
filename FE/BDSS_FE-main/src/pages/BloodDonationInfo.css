@@ -2,8 +2,13 @@
   padding: 24px;
   background: #fff;
   font-family: 'Segoe UI', sans-serif;
+  background-color: #FDFDFC;
 }
-
+.donation-info-container h2 {
+  color: black;
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
 /* Chia thành 2 cột */
 .donation-grid {
   display: flex;
@@ -26,15 +31,15 @@
 
 /* Khung thẻ thông tin */
 .info-card {
-  background: #fff7f7;
-  border: 1px solid #fca5a5;
+  background: white;
+  border: 1px solid #FEFEFE;
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 .info-contact {
-  background: #fef2f2;
-  border: 1px solid #fecaca;
+  background: white;
+  border: 1px solid #FEFEFE;
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -48,7 +53,27 @@
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
+.appointment-list {
+  background: white;
+  border: 1px solid #FEFEFE;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding : 16px;
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+}
 
+.appointment-card {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 16px;
+}
 /* Danh sách lịch sử*
 /* Thêm vào BloodDonationInfo.css hoặc file css của bạn */
 .modal {
@@ -84,10 +109,37 @@
   cursor: pointer;
 }
 .view-survey{
-  background-color: #fca5a5;
+  background: rgb(248, 221, 221);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 16px;
   border-radius: 10px;
   margin-top: 10px;
 }
 .actions{
-  padding-top: 50px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+.actions .status {
+  background: #ef4444;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 15px;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+.actions button {
+  padding: 6px 12px;
+  border: none;
+  background:  #1D4A76;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.actions button:hover {
+  background: #1D4A76;
 }

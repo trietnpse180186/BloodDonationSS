@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import AppointmentDetail from "./AppointmentDetail";
 import Navbar from "../assets/navbar";
 import bloodRegister from "../assets/bloodRegister";
+import LogoCenter from "../images/logocenter.jpg";
 export default function BloodDonationInfo({answers}) {
   const user = {
     name: "TRẦN HOÀNG TRUNG HIẾU",
@@ -25,16 +26,18 @@ export default function BloodDonationInfo({answers}) {
   const appointments = [
     {
       id: 1,
-      location: "466 Nguyễn Thị Minh Khai (thời gian làm việc từ 7g đến 11g)",
-      address: "466 Nguyễn Thị Minh Khai Phường 02, Quận 3, Tp Hồ Chí Minh",
-      time: "07:00 đến 11:00 - 14/06/2025",
+      center: "Trung tâm Hiến máu Quốc gia",
+      address: "Hà Nội – 132 Quan Nhân, Thanh Xuân",
+      date: "14/06/2025",
+      time: "08:00 đến 11:30",
       status: "Đã xoá"
     },
     {
       id: 2,
-      location: "Trung tâm Truyền máu Chợ Rẫy (Cổng số 6)",
+      center: "Trung tâm Truyền máu Chợ Rẫy",
       address: "Cổng số 6 - Bệnh viện Chợ Rẫy, đường Triệu Quang Phục, Phường 12, Quận 5, Tp Hồ Chí Minh",
-      time: "07:00 đến 11:00 - 26/05/2025",
+      date: "26/05/2025",
+      time: "09:00 đến 12:00",
       status: "Đã xoá"
     }
   ];
@@ -76,24 +79,22 @@ export default function BloodDonationInfo({answers}) {
         {/* Lịch sử đặt hẹn */}
         <div className="info-2">
           <div className="appointment-list">
-            <h2>Lịch sử đặt hẹn</h2>
+            <h3>Lịch sử đặt hẹn</h3>
             {appointments.length === 0 ? (
               <div>Chưa có lịch sử đặt hẹn</div>
             ) : (
               appointments.map((appointment) => (
                 <div className="appointment-card" key={appointment.id}>
                   <div className="icon">
-                    <img src="/blood-drop-icon.png" alt="Hiến máu" />
-                    <p>Hiến máu</p>
+                    <img src={LogoCenter} alt="Hiến máu" />
                   </div>
                   <div className="info">
                     <strong className="location" style={{ color: "#b30000" }}>
-                      {appointment.location}
-                    </strong>
-                    <p><i className="fa fa-map-marker-alt"></i> {appointment.address}</p>
-                    <p><i className="fa fa-clock"></i> {appointment.time}</p>
+                      {appointment.center}
+                    </strong> 
+                    <p><i className="fa fa-clock"></i>Ngày: {appointment.date}</p>
+                    <p><i className="fa fa-clock"></i>Thời gian: {appointment.time}</p>
                   </div>
-                  <span className="badge" style={{ backgroundColor: "#d9534f" }}>{appointment.status}</span>
                       {reviews[appointment.id] && (
                         <div className="review-result">
                           <strong>Đánh giá của bạn:</strong>
@@ -109,6 +110,7 @@ export default function BloodDonationInfo({answers}) {
                         </div>
                       )}
                   <div className="actions">
+                    <span className="status" style={{ backgroundColor: "#d9534f" }}>{appointment.status}</span>
                     <button onClick={() => setSelectedAppointment(appointment)}>
                       Xem chi tiết
                     </button>
@@ -124,7 +126,7 @@ export default function BloodDonationInfo({answers}) {
               const selectedOption = q.options.find(opt => opt.value === answer?.value);
               return (
                 <div key={q.id} style={{ marginBottom: 16 }}>
-                  <strong>{q.text}</strong>
+                  <i>{q.text}</i>
                   <div style={{ marginLeft: 16, color: "#b30000" }}>
                     {selectedOption
                       ? selectedOption.label +

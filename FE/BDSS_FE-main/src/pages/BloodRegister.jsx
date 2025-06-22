@@ -2,7 +2,7 @@ import React, { use, useEffect, useState } from 'react';
 import Navbar from '../assets/navbar';
 import './BloodRegister.css'
 import bloodDonationSchedules from '../assets/donationSchedule';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Footer from '../assets/footer';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -25,7 +25,17 @@ function getWeekDays(startDate) {
 }
 
 function WeeklyDatePicker({ selectedDate, onChange }) {
-  const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(new Date()));
+  // Khởi tạo tuần dựa trên selectedDate
+  const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(selectedDate ? new Date(selectedDate) : new Date()));
+
+  useEffect(() => {
+    // Nếu selectedDate thay đổi và nằm ngoài currentWeek, cập nhật lại tuần
+    const startOfSelectedWeek = getStartOfWeek(new Date(selectedDate));
+    if (currentWeek.getTime() !== startOfSelectedWeek.getTime()) {
+      setCurrentWeek(startOfSelectedWeek);
+    }
+  }, [selectedDate]);
+
   const weekDays = getWeekDays(currentWeek);
 
   const handlePrevWeek = () => {
@@ -80,12 +90,23 @@ function formatDate(dateStr) {
 }
 
 export default function BloodRegister() {
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-  const [selectedLocation, setSelectedLocation] = useState('');
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const initialDate = params.get('date') || new Date().toISOString().split('T')[0];
+  const initialLocation = params.get('location') || '';
+  
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+  const [selectedLocation, setSelectedLocation] = useState(initialLocation);
   
   useEffect(() => {
-    setSelectedLocation('')
-  }, [selectedDate])
+  // Nếu selectedLocation không còn trong danh sách địa điểm của ngày mới, thì reset
+  const locations = bloodDonationSchedules.filter(item => item.date === selectedDate);
+  const found = locations.some(loc => loc.location === selectedLocation);
+  if (!found) {
+    setSelectedLocation('');
+  }
+  // Nếu initialLocation hợp lệ, giữ nguyên
+}, [selectedDate, selectedLocation]);
   
   // reset selectedLocation khi thay đổi ngày
   useEffect(() => {
@@ -108,7 +129,9 @@ export default function BloodRegister() {
     setTimeSelected(null);
   }, [selectedLocation]);
   
+  // kiểm tra xem đã chọn đủ thông tin chưa
   const canContinue = !!selectedDate && !!selectedLocation && !!timeSelected;
+
 
   return (
     <>

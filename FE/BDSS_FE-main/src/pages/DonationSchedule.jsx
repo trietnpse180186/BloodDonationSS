@@ -100,8 +100,14 @@ export default function DonationSchedule() {
                   </li>
                   <li>
                     <strong>Thời gian:</strong> {schedule.date} - Từ{" "}
-                    {schedule.startTime} đến {schedule.endTime}
                   </li>
+                    <li>
+                      {schedule.timeSlots.map((slot) => (
+                        <li key={slot.id}>
+                          {slot.startTime} - {slot.endTime}
+                        </li>
+                      ))}
+                    </li>
                 </ul>
               </div>
               <div className="schedule-total">
@@ -113,7 +119,7 @@ export default function DonationSchedule() {
                   {schedule.donorCount}
                   <button className="schedule-button">
                     <Link
-                      to={`/blood-registration`}
+                      to={`/blood-registration?date=${schedule.date}&location=${encodeURIComponent(schedule.location)}`}
                       style={{ textDecoration: "none", color: "white" }}
                     >
                       Đặt lịch
