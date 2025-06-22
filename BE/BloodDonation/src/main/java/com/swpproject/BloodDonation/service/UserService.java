@@ -35,10 +35,10 @@ public class UserService {
     private final MailService mailService;
 
     public UserCreationResponse createUser(UserCreationRequest request) {
-        Optional<User> byEmail = userRepository.findByEmail(request.getEmail());
-        if(byEmail.isPresent()) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email existed");
         }
+
         User user = User.builder()
                 .email(request.getEmail())
                 .fullName(request.getFullName())
@@ -51,30 +51,29 @@ public class UserService {
                 .occupation(request.getOccupation())
                 .build();
 
-        Optional<Role> role = roleRepository.findByName("DONOR");
-        if(role.isEmpty()) {
-            Role newRole = Role.builder()
-                    .name("DONOR")
-                    .build();
-            roleRepository.save(newRole);
-            user.setUserHasRoles(List.of(UserHasRole.builder()
-                    .role(newRole)
-                    .user(user)
-                    .build()));
-        }
+        // Ensure role exists or create new
+        Role donorRole = roleRepository.findByName("DONOR").orElseGet(() -> {
+            Role newRole = Role.builder().name("DONOR").build();
+            return roleRepository.save(newRole);
+        });
 
-        role.ifPresent(value -> user.setUserHasRoles(List.of(UserHasRole.builder()
-                .role(value)
+        // Gán role vào user
+        user.setUserHasRoles(List.of(UserHasRole.builder()
+                .role(donorRole)
                 .user(user)
-                .build())));
+                .build()));
+
         userRepository.save(user);
 
         try {
-            mailService.sendEmail("Welcome to Blood Donation ", "Welcome, you have successfully registered an accoun ", user.getEmail());
+            mailService.sendEmail("Welcome to Blood Donation",
+                    "Welcome, you have successfully registered an account",
+                    user.getEmail());
         } catch (MessagingException | UnsupportedEncodingException e) {
-            log.error("SendEmail failed with email: {}",user.getEmail());
+            log.error("SendEmail failed with email: {}", user.getEmail());
             throw new RuntimeException(e);
         }
+
         return UserCreationResponse.builder()
                 .email(user.getEmail())
                 .fullName(user.getFullName())
@@ -87,13 +86,16 @@ public class UserService {
                 .build();
     }
 
+
     @PutMapping("/users/{id}")
     @PreAuthorize("isAuthenticated()")
     public UserUpdateResponse updateUser (@PathVariable("id") String userId,
                                                   @RequestBody UserUpdateRequest request) {
         return userRepository.findById(userId).map(user -> {
             user.setFullName(request.getFullName());
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(request.getPassword()));
+            }
             user.setAddress(request.getAddress());
             user.setPhoneNumber(request.getPhoneNumber());
             user.setBloodType(request.getBloodType());
@@ -105,7 +107,6 @@ public class UserService {
 
             return UserUpdateResponse.builder()
                     .fullName(updatedUser.getFullName())
-                    .password(passwordEncoder.encode(updatedUser.getPassword()))
                     .phoneNumber(updatedUser.getPhoneNumber())
                     .address(updatedUser.getAddress())
                     .birthday(updatedUser.getBirthday())
