@@ -25,6 +25,7 @@ public class BookingController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<BookingResponse>> getUserBookingsByUserId(@PathVariable String userId) {
+        List<BookingResponse> bookings = bookingService.getUserBookingsByUserId(userId);
         return ResponseEntity.ok(bookings);
     }
 
