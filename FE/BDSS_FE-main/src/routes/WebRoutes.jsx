@@ -15,8 +15,6 @@ import UserUpdate from "../pages/UserUpdate";
 import StaffPage from "../pages/staffPage";
 import AdminPage from "../pages/AdminPage";
 import ScrollTotop from "../assets/icons/scrollToTop";
-import BookingConfirm from "../pages/BookingConfirm";
-import AppointmentSchedule from "../pages/AppointmentSchedule1";
 export default function WebRoutes() {
   return (
     <>
@@ -36,8 +34,6 @@ export default function WebRoutes() {
         <Route path="/user/update/:userId" element={<UserUpdate />} />
         <Route path="/staff" element={<StaffPage />} />
         <Route path="/admin" element={<AdminPage />} />
-        <Route path="confirm-registration" element={<BookingConfirm />} />
-        <Route path="/donorSchedule" element={<AppointmentSchedule />} />
       </Routes>
     </>
   );

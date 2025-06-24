@@ -1,78 +1,62 @@
-import React, { useEffect, useState } from "react";
-import Navbar from "../assets/navbar";
-import Footer from "../assets/footer";
-import { getUserIdFromToken } from "../assets/getUserById";
+// // AppointmentSchedule.js
+// import React, { useState } from 'react';
+// import './AppointmentSchedule.css';
+// import AppointmentDetail from './AppointmentDetail';
 
-export default function AppointmentSchedule1() {
-  const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const token = sessionStorage.getItem("accessToken");
-  const userId = getUserIdFromToken(); // Không cần truyền token
+// const appointments = [
+//   {
+//     id: 1,
+//     location: "466 Nguyễn Thị Minh Khai (thời gian làm việc từ 7g đến 11g)",
+//     address: "466 Nguyễn Thị Minh Khai Phường 02, Quận 3, Tp Hồ Chí Minh",
+//     date: "14/06/2025",
+//     time: "07:00 đến 11:00",
+//     status: "Đã xoá",
+//   },
+//   {
+//     id: 2,
+//     location: "Trung tâm Truyền máu Chợ Rẫy (Cổng số 6)",
+//     address: "Cổng số 6 - Bệnh viện Chợ Rẫy, đường Triệu Quang Phục, Phường 12, Quận 5, Tp Hồ Chí Minh",
+//     date: "26/05/2025",
+//     time: "07:00 đến 11:00",
+//     status: "Đã xoá",
+//   }
+// ];
 
-  useEffect(() => {
-    if (!userId) {
-      setError("Không tìm thấy thông tin người dùng.");
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    fetch(`http://localhost:8080/api/booking/user/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Lỗi khi lấy dữ liệu lịch hẹn");
-        return res.json();
-      })
-      .then((data) => {
-        setAppointments(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message || "Đã xảy ra lỗi");
-        setLoading(false);
-      });
-  }, [userId, token]);
+// export default function AppointmentSchedule() {
+//   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
-  return (
-    <>
-      <Navbar />
-      <div className="appointment-container">
-        <h2 className="appointment-title">Lịch hẹn hiến máu của bạn</h2>
-        {loading ? (
-          <div>Đang tải dữ liệu...</div>
-        ) : error ? (
-          <div style={{ color: "red" }}>{error}</div>
-        ) : appointments.length === 0 ? (
-          <div>Bạn chưa có lịch hẹn nào.</div>
-        ) : (
-          <table className="appointment-table">
-            <thead>
-              <tr>
-                <th>Ngày</th>
-                <th>Địa điểm</th>
-                <th>Trung tâm</th>
-                <th>Khung giờ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {appointments.map((item) => (
-                <tr key={item.bookingId}>
-                  <td>{item.dateDonation}</td>
-                  <td>{item.address?.split(" - ")[0]}</td>
-                  <td>{item.address?.split(" - ")[1]}</td>
-                  <td>
-                    {item.startTime?.slice(0, 5)} - {item.endTime?.slice(0, 5)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-      <Footer />
-    </>
-  );
-}
+//   if (selectedAppointment) {
+//     return (
+//       <AppointmentDetail
+//         appointment={selectedAppointment}
+//         onBack={() => setSelectedAppointment(null)}
+//       />
+//     );
+//   }
+
+//   return (
+//     <div className="schedule-container">
+//       <h2>Lịch sử đặt hẹn</h2>
+
+//       <div className="appointment-list">
+//         {appointments.map(apt => (
+//           <div key={apt.id} className="appointment-card">
+//             <div className="icon">
+//               <img src="/blood-drop-icon.png" alt="Hiến máu" />
+//               <p>Hiến máu</p>
+//             </div>
+//             <div className="info">
+//               <strong className="location">{apt.location}</strong>
+//               <p><i className="fa fa-map-marker-alt"></i> {apt.address}</p>
+//               <p><i className="fa fa-clock"></i> {apt.time} - {apt.date}</p>
+//             </div>
+//             <div className="actions">
+//               <span className="badge">{apt.status}</span>
+//               <button onClick={() => setSelectedAppointment(apt)}>📄 Xem chi tiết</button>
+//             </div>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
