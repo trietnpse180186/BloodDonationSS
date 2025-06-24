@@ -7,6 +7,7 @@ import bannerLogin from "../images/banner-login.jpg";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
+import loginBanner from "../images/loginBanner.jpg";
 import "react-toastify/dist/ReactToastify.css";
 
 function PasswordInput({ value, onChange }) {
@@ -80,16 +81,18 @@ export default function LoginForm() {
       className="login-page"
       data-aos="fade-in"
       data-aos-duration="500"
+      data-aos-delay="100"
       data-aos-easing="ease-in-out"
     >
       <div
         className="login-inputs"
-        data-aos="fade-up"
-        data-aos-duration="500"
+        data-aos="slide-left"
+        data-aos-duration="800"
+        data-aos-delay="200"
         data-aos-easing="ease-in-out"
       >
         <form className="login-wrapper" onSubmit={handleSubmit}>
-          <h1 style={{ color: "#b5332b" }}>SIGN IN</h1>
+          <h1>SIGN IN</h1>
           <div className="input-group">
             <FaEnvelope className="input-icon" />
             <input
@@ -107,8 +110,11 @@ export default function LoginForm() {
           <button type="submit">Sign in</button>
         </form>
         <Link to="/register">Register</Link>
+        <Link to="/">Home</Link>
       </div>
-
+      <div className="login-banner">
+        <img src={loginBanner} />
+      </div>
       <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
