@@ -121,8 +121,8 @@
 }
 
 .weekly-day-btn.selected {
-  border: 2px solid #1976d2;
-  background: #1976d2;
+  border: 2px solid #1D4A76;
+  background: #1D4A76;
   color: #fff;
 }
 
@@ -144,8 +144,8 @@
 }
 
 .bloodform-location-btn.selected {
-  border: 2px solid #1976d2;
-  background: #1976d2;
+  border: 2px solid #1D4A76;
+  background: #1D4A76;
   color: #fff;
 }
 
@@ -195,8 +195,8 @@
 }
 
 .bloodform-time-btn.selected {
-  border: 2px solid #1976d2;
-  background: #1976d2;
+  border: 2px solid #1D4A76;
+  background: #1D4A76;
   color: #fff;
 }
 
@@ -280,8 +280,8 @@
 }
 
 .bloodform-time-slot.selected {
-  background-color: #1976d2;
-  border-color: #1976d2;
+  background-color: #1D4A76;
+  border-color: #1D4A76;
   color: white;
 }
 
@@ -409,7 +409,7 @@ input[type="radio"]:checked::after {
   max-width: 1000px;
   width: 100%;
   margin: 0 auto 28px auto;   
-  border: 1px solid #1976d2;
+  border: 1px solid #1D4A76;
   border-radius: 12px;
   margin-bottom: 28px;
   overflow: hidden;
@@ -417,7 +417,7 @@ input[type="radio"]:checked::after {
 }
 
 .question-text {
-  background: #3973db;
+  background: #1D4A76;
   color: #fff;
   font-weight: 500;
   padding: 16px 24px;
