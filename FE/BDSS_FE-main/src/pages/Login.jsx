@@ -2,7 +2,37 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "./Login.css";
-import { getUserRole } from "../assets/getUserRole";
+import { getUserRole } from "../assets/getUserName";
+import bannerLogin from "../images/banner-login.jpg";
+import { FaEnvelope, FaLock } from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+function PasswordInput({ value, onChange }) {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div className="input-group">
+      <FaLock className="input-icon" />
+      <input
+        type={show ? "text" : "password"}
+        placeholder="Password"
+        value={value}
+        onChange={onChange}
+        required
+        style={{ paddingLeft: 40, paddingRight: 40 }}
+      />
+      <span
+        className="show-password-btn"
+        onClick={() => setShow((s) => !s)}
+        tabIndex={0}
+      >
+        {show ? <FaEyeSlash /> : <FaEye />}
+      </span>
+    </div>
+  );
+}
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -24,47 +54,62 @@ export default function LoginForm() {
         alert("Không nhận được accessToken từ server!");
         return;
       }
-      localStorage.setItem("accessToken", accessToken);
-      localStorage.setItem("refreshToken", refreshToken);
+      sessionStorage.setItem("accessToken", accessToken);
+      sessionStorage.setItem("refreshToken", refreshToken);
 
       const role = getUserRole(accessToken);
 
-      if (role === "USER") {
+      if (role === "DONOR") {
         navigate("/");
-      } else if (role === "ADMIN" || role === "STAFF") {
-        navigate("/adminPage");
+      } else if (role === "ADMIN") {
+        navigate("/admin");
+      } else if (role === "STAFF") {
+        navigate("/staff");
       } else {
-        navigate("/");
+        toast.error("Invalid role!");
+        return;
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert(
-        "Đăng nhập không thành công. Vui lòng kiểm tra lại tài khoản và mật khẩu."
-      );
+      toast.error("Login failed. Please check your email and password.");
     }
   };
 
   return (
-    <div className="login-page">
-      <h1>Đăng nhập</h1>
-      <form className="login-wrapper" onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Mật khẩu"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Đăng nhập</button>
-      </form>
-      <Link to="/register">Đăng ký</Link>
+    <div
+      className="login-page"
+      data-aos="fade-in"
+      data-aos-duration="500"
+      data-aos-easing="ease-in-out"
+    >
+      <div
+        className="login-inputs"
+        data-aos="fade-up"
+        data-aos-duration="500"
+        data-aos-easing="ease-in-out"
+      >
+        <form className="login-wrapper" onSubmit={handleSubmit}>
+          <h1 style={{ color: "#b5332b" }}>SIGN IN</h1>
+          <div className="input-group">
+            <FaEnvelope className="input-icon" />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <PasswordInput
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button type="submit">Sign in</button>
+        </form>
+        <Link to="/register">Register</Link>
+      </div>
+
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 }

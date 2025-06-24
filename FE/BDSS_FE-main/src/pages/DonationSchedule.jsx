@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./DonationSchedule.css";
 import bloodDonationSchedules from "../assets/donationSchedule";
-import { getUsernameFromToken } from "../assets/getUserName";
 import { Link } from "react-router";
-import { Button, ButtonGroup, Dropdown } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useLocation } from "react-router";
-import { logout } from "../assets/authLogout";
 import Navbar from "../assets/navbar";
 import Footer from "../assets/footer";
 import { peopleFill } from "../assets/icons/icon";
@@ -102,8 +100,14 @@ export default function DonationSchedule() {
                   </li>
                   <li>
                     <strong>Thời gian:</strong> {schedule.date} - Từ{" "}
-                    {schedule.startTime} đến {schedule.endTime}
                   </li>
+                    <li>
+                      {schedule.timeSlots.map((slot) => (
+                        <li key={slot.id}>
+                          {slot.startTime} - {slot.endTime}
+                        </li>
+                      ))}
+                    </li>
                 </ul>
               </div>
               <div className="schedule-total">
@@ -115,7 +119,7 @@ export default function DonationSchedule() {
                   {schedule.donorCount}
                   <button className="schedule-button">
                     <Link
-                      to={`/blood-registration`}
+                      to={`/blood-registration?date=${schedule.date}&location=${encodeURIComponent(schedule.location)}`}
                       style={{ textDecoration: "none", color: "white" }}
                     >
                       Đặt lịch

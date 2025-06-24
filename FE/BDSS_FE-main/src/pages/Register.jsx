@@ -1,8 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router-dom"; // Sửa import
 import "./Register.css";
 import axios from "axios";
-
+import {
+  FaEnvelope,
+  FaLock,
+  FaUserEdit,
+  FaPhoneAlt,
+  FaMapMarkerAlt,
+  FaBriefcase,
+} from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 export default function Register() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -16,6 +25,8 @@ export default function Register() {
     occupation: "",
   });
 
+  const navigate = useNavigate(); // Thêm dòng này
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -27,7 +38,7 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password.length < 6) {
-      alert("Mật khẩu có 6 kí tự trở lên");
+      toast.error("Password must be at least 6 characters long.");
       return;
     }
 
@@ -36,24 +47,50 @@ export default function Register() {
         "http://localhost:8080/api/v1/users",
         formData
       );
-      alert("Đăng ký thành công!");
-      console.log("Server trả về:", response.data);
+      toast.success("Registration successful!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500); // Chờ toast hiện rồi chuyển trang
     } catch (error) {
-      console.error("Đăng ký lỗi:", error);
-      alert("Đăng ký thất bại. Hãy kiểm tra lại thông tin.");
+      console.error("Registration error:", error);
+      toast.error("Registration failed. Please check your information.");
     }
   };
 
   return (
     <div className="register-page">
       <form className="form" onSubmit={handleSubmit}>
-        <h1>Đăng ký</h1>
+        <h1>REGISTER</h1>
 
         <div className="field-wrapper">
+          <FaEnvelope className="input-icon" />
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="field-wrapper">
+          <FaLock className="input-icon" />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field-wrapper">
+          <FaUserEdit className="input-icon" />
           <input
             type="text"
             name="fullName"
-            placeholder="Họ tên"
+            placeholder="Full Name"
             value={formData.fullName}
             onChange={handleChange}
             required
@@ -80,7 +117,7 @@ export default function Register() {
               onChange={handleChange}
               required
             />
-            Nam
+            Male
           </label>
           <label style={{ marginLeft: "10px" }}>
             <input
@@ -90,37 +127,16 @@ export default function Register() {
               checked={formData.sex === "Female"}
               onChange={handleChange}
             />
-            Nữ
+            Female
           </label>
         </div>
 
         <div className="field-wrapper">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="field-wrapper">
-          <input
-            type="password"
-            name="password"
-            placeholder="Mật khẩu"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="field-wrapper">
+          <FaPhoneAlt className="input-icon" />
           <input
             type="text"
             name="phoneNumber"
-            placeholder="Số điện thoại"
+            placeholder="Phone Number"
             value={formData.phoneNumber}
             onChange={handleChange}
             required
@@ -128,10 +144,11 @@ export default function Register() {
         </div>
 
         <div className="field-wrapper">
+          <FaMapMarkerAlt className="input-icon" />
           <input
             type="text"
             name="address"
-            placeholder="Địa chỉ"
+            placeholder="Address"
             value={formData.address}
             onChange={handleChange}
             required
@@ -145,7 +162,7 @@ export default function Register() {
             onChange={handleChange}
             required
           >
-            <option value="">Chọn nhóm máu</option>
+            <option value="">Choose blood type </option>
             <option value="A_POSITIVE">A+</option>
             <option value="A_NEGATIVE">A-</option>
             <option value="B_POSITIVE">B+</option>
@@ -158,10 +175,11 @@ export default function Register() {
         </div>
 
         <div className="field-wrapper">
+          <FaBriefcase className="input-icon" />
           <input
             type="text"
             name="occupation"
-            placeholder="Nghề nghiệp"
+            placeholder="Occupation"
             value={formData.occupation}
             onChange={handleChange}
             required
@@ -170,13 +188,21 @@ export default function Register() {
 
         <br />
 
-        <div className="field-wrapper">
-          <input className="wrap-submit" type="submit" value="Đăng ký" />
+        <div
+          className="field-wrapper-btn"
+          data-aos="fade-up"
+          data-aos-duration="500"
+          data-aos-easing="ease-in-out"
+        >
+          <button className="wrap-submit" type="submit">
+            REGISTER
+          </button>
         </div>
 
         <br />
-        <Link to="/">Trang chủ</Link>
+        <Link to="/">Home</Link>
       </form>
+      <ToastContainer position="top-center" autoClose={2000} />
     </div>
   );
 }
