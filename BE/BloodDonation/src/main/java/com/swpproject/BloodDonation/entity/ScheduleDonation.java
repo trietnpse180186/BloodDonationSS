@@ -32,6 +32,9 @@ public class ScheduleDonation {
     @Column(name = "UpdateBy")
     private String updateBy;
 
+    @Column(name = "Center", columnDefinition = "NVARCHAR(4000)")
+    private String center;
+
     @OneToMany(mappedBy = "scheduleDonation", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     @JsonManagedReference
