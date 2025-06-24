@@ -2,20 +2,35 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../assets/navbar";
 import "./UserInfo.css";
 import Footer from "../assets/footer";
-import getUserById from "../assets/getUserById";
-import { Link } from "react-router";
+import getUserById, { getUserIdFromToken } from "../assets/getUserById";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
+import { FaPenToSquare } from "react-icons/fa6";
+import { Link, useNavigate } from "react-router-dom";
+import { Button } from "react-bootstrap";
 
 function GenderIcon({ sex }) {
-  console.log("Giá trị sex:", sex);
-  if (sex === "MALE") return <IoMdMale style={{ color: "#1976d2" }} />;
-  if (sex === "FEMALE") return <IoMdFemale style={{ color: "#e91e63" }} />;
+  if (sex.toUpperCase() === "MALE")
+    return (
+      <>
+        <IoMdMale style={{ color: "#1976d2" }} />
+        <p>Male</p>
+      </>
+    );
+  if (sex.toUpperCase() === "FEMALE")
+    return (
+      <>
+        <IoMdFemale style={{ color: "#e91e63" }} />
+        <p>Female</p>
+      </>
+    );
   return null;
 }
 
 function UserInfo({ userId }) {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
+  const userIdFromToken = getUserIdFromToken();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getUserById(userId).then(setUser).catch(setError);
@@ -26,29 +41,33 @@ function UserInfo({ userId }) {
     return `${day}/${month}/${year}`;
   }
 
-  if (error) return <p>Lỗi: {error.message}</p>;
-  if (!user) return <p>Đang tải dữ liệu...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+  if (!user) return <p>Loading...</p>;
 
   return (
     <>
       <Navbar />
       <div className="userinfo-container">
         <div className="userinfo-content">
-          <h2>USER PROFILE</h2>
-          <div className="content-group-first">
-            <p>
-              <strong style={{ fontSize: "1.1rem" }}>Full Name:</strong>{" "}
-              {user.fullName}
-            </p>
-            <p>
-              <strong style={{ fontSize: "1.1rem" }}>Birthday:</strong>{" "}
-              {formatDate(user.birthday)}
-            </p>
+          <div className="userinfo-header">
+            <h1>USER PROFILE</h1>
+            <Button onClick={() => navigate(`/user/update/${userIdFromToken}`)}>
+              <FaPenToSquare />
+            </Button>
           </div>
+          <p>
+            <strong style={{ fontSize: "1.1rem" }}>Full Name:</strong>{" "}
+            {user.fullName}
+          </p>
           <p>
             <strong style={{ fontSize: "1.1rem" }}>Gender:</strong>{" "}
             <GenderIcon sex={user.sex} />
           </p>
+          <p>
+            <strong style={{ fontSize: "1.1rem" }}>Birthday:</strong>{" "}
+            {formatDate(user.birthday)}
+          </p>
+
           <p>
             <strong style={{ fontSize: "1.1rem" }}>Address:</strong>{" "}
             {user.address}
@@ -67,12 +86,11 @@ function UserInfo({ userId }) {
           </p>
         </div>
         <div className="userinfo-report">
-          <h2>{user.bloodType}</h2>
-        </div>
-        <div className="userinfo-sidebar">
-          <Link to="/">Report</Link>
+          <h1> USER REPORT</h1>
+          <p>Blood Type: {user.bloodType}</p>
         </div>
       </div>
+      {user && user.id && <Link to={`/users/${userId}`}>Go to user</Link>}
       <Footer />
     </>
   );

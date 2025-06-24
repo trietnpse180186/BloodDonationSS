@@ -6,6 +6,7 @@ import com.swpproject.BloodDonation.dto.response.FAQResponse;
 import com.swpproject.BloodDonation.entity.FAQ;
 import com.swpproject.BloodDonation.repository.FAQRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,10 +19,10 @@ public class FAQService {
     public List<FAQResponse> getAll(){
         return faqRepository.findAll()
                 .stream()
-                .map(faq -> new FAQResponse(faq.getId(), faq.getAnswer(), faq.getQuestion()) )
+                .map(faq -> new FAQResponse(faq.getId(), faq.getQuestion(), faq.getAnswer()) )
                 .toList();
     }
-
+    @PreAuthorize("hasAuthority('STAFF')")
     public FAQResponse create(FAQRequest faqRequest){
         FAQ faq = new FAQ();
         faq.setQuestion(faqRequest.getQuestion());
@@ -30,7 +31,7 @@ public class FAQService {
         FAQ saved = faqRepository.save(faq);
         return new FAQResponse(saved.getId(), saved.getQuestion(), saved.getAnswer());
     }
-
+    @PreAuthorize("hasAuthority('STAFF')")
     public FAQResponse update(Long id, FAQRequest faqRequest){
         FAQ faq = faqRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         faq.setQuestion(faqRequest.getQuestion());
@@ -39,7 +40,7 @@ public class FAQService {
         FAQ saved = faqRepository.save(faq);
         return new FAQResponse(saved.getId(), saved.getQuestion(), saved.getAnswer());
     }
-
+    @PreAuthorize("hasAuthority('STAFF')")
     public void delete(Long id){
         if(!faqRepository.existsById(id)){
             throw new RuntimeException("Not Found");
