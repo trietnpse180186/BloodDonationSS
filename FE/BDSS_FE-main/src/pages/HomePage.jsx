@@ -191,13 +191,13 @@ export default function HomePage() {
           </div>
         </div>
 
-          <p className="overlap-group4-title">
-            Những điều cần lưu ý khi hiến máu
-          </p>  
         <div className="overlap-group4">
           <div className="overlap-group4-content1">
             <div>
-              <img src="https://i.pinimg.com/736x/69/f6/c6/69f6c6abd053ff2ec366fb05905248e1.jpg" alt="" />
+              <img
+                src="https://i.pinimg.com/736x/69/f6/c6/69f6c6abd053ff2ec366fb05905248e1.jpg"
+                alt=""
+              />
             </div>
             <div>
               <h2 style={{ color: "#DB230B", fontWeight: "bold" }}>
@@ -216,9 +216,12 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
-          <div  className="overlap-group4-content2">
+          <div className="overlap-group4-content2">
             <div>
-              <img src="https://i.pinimg.com/736x/aa/de/7a/aade7a2735cb09f9b7748da0247084d5.jpg" alt="" />
+              <img
+                src="https://i.pinimg.com/736x/aa/de/7a/aade7a2735cb09f9b7748da0247084d5.jpg"
+                alt=""
+              />
             </div>
             <div>
               <h2 style={{ color: "#F6AD00", fontWeight: "bold" }}>
@@ -231,16 +234,16 @@ export default function HomePage() {
                 <li>Duỗi thẳng, hơi nâng cao cánh tay trong 15 phút.</li>
                 <li>Hạn chế gập tay trong quá trình nghỉ sau hiến máu.</li>
                 <li>
-                  Nếu vết băng cầm máu chảy máu, hãy nâng tay lên, ấn nhẹ vào vết
-                  bông, ngồi xuống và báo nhân viên y tế hỗ trợ.
+                  Nếu vết băng cầm máu chảy máu, hãy nâng tay lên, ấn nhẹ vào
+                  vết bông, ngồi xuống và báo nhân viên y tế hỗ trợ.
                 </li>
               </ul>
             </div>
-            </div>
+          </div>
         </div>
         {/*Footer*/}
         <Footer />
-        </div>
+      </div>
     </>
   );
 }

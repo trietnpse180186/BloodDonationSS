@@ -1,19 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import "./DonationSchedule.css";
-import bloodDonationSchedules from "../assets/donationSchedule";
 import { Link } from "react-router";
 import { Button } from "react-bootstrap";
 import { useLocation } from "react-router";
 import Navbar from "../assets/navbar";
 import Footer from "../assets/footer";
 import { peopleFill } from "../assets/icons/icon";
+import axios from "axios";
 
 export default function DonationSchedule() {
   const [searchName, setSearchName] = useState("");
   const [searchDate, setSearchDate] = useState("");
-  const [filteredSchedules, setFilteredSchedules] = useState(
-    bloodDonationSchedules
+  const [filteredSchedules, setFilteredSchedules] = useState([]);
+  const [schedules, setSchedules] = useState([]);
+  useEffect(
+    () => async () => {
+      await axios
+        .get("http://localhost:8080/api/schedule-donations/")
+        .then((res) => {
+          setSchedules(res.data);
+          setFilteredSchedules(res.data);
+        })
+        .catch((err) => {
+          console.error("Error loading schedules", err);
+        });
+    },
+    []
   );
+
   const location = useLocation();
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -22,7 +36,7 @@ export default function DonationSchedule() {
   }, [location.search]);
 
   useEffect(() => {
-    let filtered = bloodDonationSchedules;
+    let filtered = schedules;
 
     if (searchName.trim()) {
       filtered = filtered.filter((s) =>
@@ -101,13 +115,13 @@ export default function DonationSchedule() {
                   <li>
                     <strong>Thời gian:</strong> {schedule.date} - Từ{" "}
                   </li>
-                    <li>
-                      {schedule.timeSlots.map((slot) => (
-                        <li key={slot.id}>
-                          {slot.startTime} - {slot.endTime}
-                        </li>
-                      ))}
-                    </li>
+                  <li>
+                    {schedule.timeSlots.map((slot) => (
+                      <li key={slot.id}>
+                        {slot.startTime} - {slot.endTime}
+                      </li>
+                    ))}
+                  </li>
                 </ul>
               </div>
               <div className="schedule-total">
@@ -119,7 +133,9 @@ export default function DonationSchedule() {
                   {schedule.donorCount}
                   <button className="schedule-button">
                     <Link
-                      to={`/blood-registration?date=${schedule.date}&location=${encodeURIComponent(schedule.location)}`}
+                      to={`/blood-registration?date=${
+                        schedule.date
+                      }&location=${encodeURIComponent(schedule.location)}`}
                       style={{ textDecoration: "none", color: "white" }}
                     >
                       Đặt lịch
