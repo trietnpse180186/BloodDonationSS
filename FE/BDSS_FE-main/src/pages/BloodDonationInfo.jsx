@@ -1,165 +1,194 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./BloodDonationInfo.css";
-import { Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import AppointmentDetail from "./AppointmentDetail";
 import Navbar from "../assets/navbar";
-import bloodRegister from "../assets/bloodRegister";
+import bloodRegister, { getLabelByValue } from "../assets/bloodRegister";
 import LogoCenter from "../images/logocenter.jpg";
-export default function BloodDonationInfo({answers}) {
-  const user = {
-    name: "TRẦN HOÀNG TRUNG HIẾU",
-    cmnd: "",
-    cccd: "033204008316",
-    passport: "",
-    dob: "19/10/2004",
-    gender: "Nam",
-    job: "Thống Trị Thế Giới",
-    unit: "",
-    bloodGroup: "-",
-    address: "472, khu phố Đông Ba, Phường Bình Hòa, Thành Phố Thuận An, Tỉnh Bình Dương",
-    phone: "0963832382",
-    phone2: "",
-    email: "thth19102004@gmail.com"
+import axios from "axios";
+import getUserById, { getUserIdFromToken } from "../assets/getUserById";
+import Footer from "../assets/footer";
+import { IoMdMale, IoMdFemale } from "react-icons/io";
+
+function GenderIcon({ sex }) {
+  if (!sex) return null;
+  if (sex.toUpperCase() === "MALE")
+    return (
+      <>
+        <IoMdMale style={{ color: "#1976d2" }} /> Nam
+      </>
+    );
+  if (sex.toUpperCase() === "FEMALE")
+    return (
+      <>
+        <IoMdFemale style={{ color: "#e91e63" }} /> Nữ
+      </>
+    );
+  return null;
+}
+
+export default function BloodDonationInfo({ answers }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const bookingData = location.state?.bookingData;
+  const surveyData = location.state?.surveyData;
+
+  // Lấy userId từ token
+  const userIdFromToken = getUserIdFromToken();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (userIdFromToken) {
+      getUserById(userIdFromToken)
+        .then(setUser)
+        .catch(() => setUser(null));
+    }
+  }, [userIdFromToken]);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const renderUserData = () => {
+    if (!user)
+      return (
+        <div className="info-card">
+          <h3>Thông tin cá nhân</h3>
+          <p>Không có thông tin người dùng.</p>
+        </div>
+      );
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const [year, month, day] = dateStr.split("-");
+      return `${day}/${month}/${year}`;
+    }
+    return (
+      <div className="info-card">
+        <h3>Thông tin cá nhân</h3>
+        <p>
+          <strong>Họ và tên:</strong> {user.fullName}
+        </p>
+        <p>
+          <strong>Giới tính:</strong> <GenderIcon sex={user.sex} />
+        </p>
+        <p>
+          <strong>Ngày sinh:</strong> {formatDate(user.birthday)}
+        </p>
+        <p>
+          <strong>Địa chỉ:</strong> {user.address}
+        </p>
+        <p>
+          <strong>Email:</strong> {user.email}
+        </p>
+        <p>
+          <strong>Nghề nghiệp:</strong> {user.occupation}
+        </p>
+        <p>
+          <strong>Số điện thoại:</strong> {user.phoneNumber}
+        </p>
+        <p>
+          <strong>Nhóm máu:</strong> {user.bloodType}
+        </p>
+      </div>
+    );
   };
 
-  // Danh sách lịch hẹn mẫu
-  const appointments = [
-    {
-      id: 1,
-      center: "Trung tâm Hiến máu Quốc gia",
-      address: "Hà Nội – 132 Quan Nhân, Thanh Xuân",
-      date: "14/06/2025",
-      time: "08:00 đến 11:30",
-      status: "Đã xoá"
-    },
-    {
-      id: 2,
-      center: "Trung tâm Truyền máu Chợ Rẫy",
-      address: "Cổng số 6 - Bệnh viện Chợ Rẫy, đường Triệu Quang Phục, Phường 12, Quận 5, Tp Hồ Chí Minh",
-      date: "26/05/2025",
-      time: "09:00 đến 12:00",
-      status: "Đã xoá"
-    }
-  ];
+  const renderBookingData = () => {
+    if (!bookingData) return <div>Không có thông tin đặt lịch.</div>;
+    return (
+      <div className="info-card">
+        <h3>Thông tin đặt lịch</h3>
+        <p>
+          <strong>Ngày:</strong> {bookingData.date}
+        </p>
+        <p>
+          <strong>Địa điểm:</strong> {bookingData.location}
+        </p>
+        <p>
+          <strong>Trung tâm:</strong> {bookingData.center}
+        </p>
+        <p>
+          <strong>Khung giờ:</strong> {bookingData.timeSlot}
+        </p>
+      </div>
+    );
+  };
 
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
-  const [reviews, setReviews] = useState({});
+  const renderSurveyData = () => {
+    if (!surveyData) return <div>Không có thông tin khảo sát.</div>;
+    return (
+      <div className="info-card">
+        <h3>Khảo sát đăng ký hiến máu</h3>
+        {surveyData.map((q, idx) => (
+          <div key={q.questionId} style={{ marginBottom: 10 }}>
+            <i>
+              {bloodRegister.find((bq) => bq.id === q.questionId)?.text ||
+                `Câu hỏi ${idx + 1}`}
+            </i>
+            <div style={{ marginLeft: 16, color: "#b30000" }}>
+              {getLabelByValue(q.questionId, q.answer)}
+              {q.input ? `: ${q.input}` : ""}
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  // Hàm xác nhận đặt lịch
+  const handleConfirmBooking = async () => {
+    if (!bookingData || !surveyData) {
+      alert("Vui lòng cung cấp đầy đủ thông tin đặt lịch và khảo sát.");
+      return;
+    }
+
+    const payload = {
+      booking: bookingData,
+      survey: surveyData,
+    };
+
+    setIsSubmitting(true);
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/booking/create",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      alert("Đặt lịch thành công!");
+      navigate("/");
+    } catch (error) {
+      alert("Đặt lịch thất bại. Vui lòng thử lại.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <>
-    <Navbar />
-    <div className="donation-info-container">
-      <h2>Thông tin đăng ký hiến máu</h2>
-
-      <div className="donation-grid">
-        {/* Thông tin cá nhân */}
-        <div className="info-1">
-          <div className="info-card">
-            <h3>Thông tin cá nhân</h3>
-            <p><strong>Họ và tên:</strong> {user.name}</p>
-            <p><strong>Số CMND:</strong> {user.cmnd || "-"}</p>
-            <p><strong>Số CCCD:</strong> {user.cccd}</p>
-            <p><strong>Số hộ chiếu:</strong> {user.passport || "-"}</p>
-            <p><strong>Ngày sinh:</strong> {user.dob}</p>
-            <p><strong>Giới tính:</strong> {user.gender}</p>
-            <p><strong>Nghề nghiệp:</strong> {user.job}</p>
-            <p><strong>Đơn vị:</strong> {user.unit || "-"}</p>
-            <p><strong>Nhóm máu:</strong> {user.bloodGroup || "-"}</p>
+      <Navbar />
+      <div className="donation-info-container">
+        <h2>Thông tin đăng ký hiến máu</h2>
+        <div className="donation-grid">
+          <div className="info-1">
+            {renderUserData()}
+            {renderBookingData()}
           </div>
-
-          {/* Thông tin liên hệ */}
-          <div className="info-contact">
-            <h3>Thông tin liên hệ</h3>
-            <p><strong>Địa chỉ liên hệ:</strong> {user.address}</p>
-            <p><strong>Điện thoại di động:</strong> {user.phone}</p>
-            <p><strong>Điện thoại bàn:</strong> {user.phone2 || "-"}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-          </div>
+          <div className="info-2">{renderSurveyData()}</div>
         </div>
-
-        {/* Lịch sử đặt hẹn */}
-        <div className="info-2">
-          <div className="appointment-list">
-            <h3>Lịch sử đặt hẹn</h3>
-            {appointments.length === 0 ? (
-              <div>Chưa có lịch sử đặt hẹn</div>
-            ) : (
-              appointments.map((appointment) => (
-                <div className="appointment-card" key={appointment.id}>
-                  <div className="icon">
-                    <img src={LogoCenter} alt="Hiến máu" />
-                  </div>
-                  <div className="info">
-                    <strong className="location" style={{ color: "#b30000" }}>
-                      {appointment.center}
-                    </strong> 
-                    <p><i className="fa fa-clock"></i>Ngày: {appointment.date}</p>
-                    <p><i className="fa fa-clock"></i>Thời gian: {appointment.time}</p>
-                  </div>
-                      {reviews[appointment.id] && (
-                        <div className="review-result">
-                          <strong>Đánh giá của bạn:</strong>
-                          <div>
-                            <p>{reviews[appointment.id].review}</p>
-                            {reviews[appointment.id].rating
-                              ? "★".repeat(reviews[appointment.id].rating)
-                              : ""}
-                            {reviews[appointment.id].rating
-                              ? ""
-                              : ""}
-                          </div>
-                        </div>
-                      )}
-                  <div className="actions">
-                    <span className="status" style={{ backgroundColor: "#d9534f" }}>{appointment.status}</span>
-                    <button onClick={() => setSelectedAppointment(appointment)}>
-                      Xem chi tiết
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-          <div className="view-survey">
-            <h3>Khảo sát đăng ký hiến máu</h3>
-            {bloodRegister.map(q => {
-              const answer = answers?.[q.id];
-              const selectedOption = q.options.find(opt => opt.value === answer?.value);
-              return (
-                <div key={q.id} style={{ marginBottom: 16 }}>
-                  <i>{q.text}</i>
-                  <div style={{ marginLeft: 16, color: "#b30000" }}>
-                    {selectedOption
-                      ? selectedOption.label +
-                        (selectedOption.hasInput && answer?.input
-                          ? `: ${answer.input}`
-                          : "")
-                      : <i>Chưa trả lời</i>}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>  
+        <div style={{ textAlign: "center", marginTop: 32 }}>
+          <button
+            className="button-style"
+            onClick={handleConfirmBooking}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Đang xác nhận..." : "Xác nhận đặt lịch"}
+          </button>
+        </div>
       </div>
-      {selectedAppointment && (
-        <div className="modal" onClick={() => setSelectedAppointment(null)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <button className="modal-close-btn" onClick={() => setSelectedAppointment(null)}>&times;</button>
-            <AppointmentDetail
-              appointment={selectedAppointment}
-              saveReview={reviews[selectedAppointment.id] || ""}
-              setSavedReview={review => {
-                setReviews(prev => ({
-                  ...prev,
-                  [selectedAppointment.id]: review
-                }));
-              }}
-              onClose={() => setSelectedAppointment(null)}
-            />
-          </div>
-        </div>
-      )}
-    </div>
+      <Footer />
     </>
   );
 }
