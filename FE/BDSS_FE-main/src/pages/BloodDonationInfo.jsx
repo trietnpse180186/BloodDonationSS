@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./BloodDonationInfo.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import AppointmentDetail from "./AppointmentDetail";
 import Navbar from "../assets/navbar";
 import bloodRegister, { getLabelByValue } from "../assets/bloodRegister";
-import LogoCenter from "../images/logocenter.jpg";
-import axios from "axios";
+import axios from "../assets/axiosInstance";
 import getUserById, { getUserIdFromToken } from "../assets/getUserById";
 import Footer from "../assets/footer";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
@@ -15,13 +13,13 @@ function GenderIcon({ sex }) {
   if (sex.toUpperCase() === "MALE")
     return (
       <>
-        <IoMdMale style={{ color: "#1976d2" }} /> Nam
+        <IoMdMale style={{ color: "#1976d2" }} /> Male
       </>
     );
   if (sex.toUpperCase() === "FEMALE")
     return (
       <>
-        <IoMdFemale style={{ color: "#e91e63" }} /> Nữ
+        <IoMdFemale style={{ color: "#e91e63" }} /> Female
       </>
     );
   return null;
@@ -33,7 +31,7 @@ export default function BloodDonationInfo({ answers }) {
   const bookingData = location.state?.bookingData;
   const surveyData = location.state?.surveyData;
 
-  // Lấy userId từ token
+  // Get userId from token
   const userIdFromToken = getUserIdFromToken();
   const [user, setUser] = useState(null);
 
@@ -51,8 +49,8 @@ export default function BloodDonationInfo({ answers }) {
     if (!user)
       return (
         <div className="info-card">
-          <h3>Thông tin cá nhân</h3>
-          <p>Không có thông tin người dùng.</p>
+          <h3>User Information</h3>
+          <p>No user information found.</p>
         </div>
       );
     function formatDate(dateStr) {
@@ -62,66 +60,67 @@ export default function BloodDonationInfo({ answers }) {
     }
     return (
       <div className="info-card">
-        <h3>Thông tin cá nhân</h3>
+        <h3>User Information</h3>
         <p>
-          <strong>Họ và tên:</strong> {user.fullName}
+          <strong>Full Name:</strong> {user.fullName}
         </p>
         <p>
-          <strong>Giới tính:</strong> <GenderIcon sex={user.sex} />
+          <strong>Gender:</strong> <GenderIcon sex={user.sex} />
         </p>
         <p>
-          <strong>Ngày sinh:</strong> {formatDate(user.birthday)}
+          <strong>Date of Birth:</strong> {formatDate(user.birthday)}
         </p>
         <p>
-          <strong>Địa chỉ:</strong> {user.address}
+          <strong>Address:</strong> {user.address}
         </p>
         <p>
           <strong>Email:</strong> {user.email}
         </p>
         <p>
-          <strong>Nghề nghiệp:</strong> {user.occupation}
+          <strong>Occupation:</strong> {user.occupation}
         </p>
         <p>
-          <strong>Số điện thoại:</strong> {user.phoneNumber}
+          <strong>Phone Number:</strong> {user.phoneNumber}
         </p>
         <p>
-          <strong>Nhóm máu:</strong> {user.bloodType}
+          <strong>Blood Type:</strong> {user.bloodType}
         </p>
       </div>
     );
   };
 
   const renderBookingData = () => {
-    if (!bookingData) return <div>Không có thông tin đặt lịch.</div>;
+    if (!bookingData) return <div>No booking information.</div>;
     return (
       <div className="info-card">
-        <h3>Thông tin đặt lịch</h3>
+        <h3>Booking Information</h3>
         <p>
-          <strong>Ngày:</strong> {bookingData.date}
+          <strong>Date:</strong> {bookingData.date}
         </p>
         <p>
-          <strong>Địa điểm:</strong> {bookingData.location}
+          <strong>Location:</strong> {bookingData.location}
         </p>
         <p>
-          <strong>Trung tâm:</strong> {bookingData.center}
+          <strong>Center:</strong> {bookingData.center}
         </p>
         <p>
-          <strong>Khung giờ:</strong> {bookingData.timeSlot}
+          <strong>Time Slot:</strong> {bookingData.timeSlot.startTime} -{" "}
+          {bookingData.timeSlot.endTime}
         </p>
       </div>
     );
   };
 
   const renderSurveyData = () => {
-    if (!surveyData) return <div>Không có thông tin khảo sát.</div>;
+    if (!surveyData) return <div>No survey information.</div>;
     return (
       <div className="info-card">
-        <h3>Khảo sát đăng ký hiến máu</h3>
+        <h3>Blood Donation Survey</h3>
         {surveyData.map((q, idx) => (
           <div key={q.questionId} style={{ marginBottom: 10 }}>
             <i>
               {bloodRegister.find((bq) => bq.id === q.questionId)?.text ||
-                `Câu hỏi ${idx + 1}`}
+                `Question ${idx + 1}`}
             </i>
             <div style={{ marginLeft: 16, color: "#b30000" }}>
               {getLabelByValue(q.questionId, q.answer)}
@@ -133,15 +132,22 @@ export default function BloodDonationInfo({ answers }) {
     );
   };
 
-  // Hàm xác nhận đặt lịch
+  // Confirm booking handler
   const handleConfirmBooking = async () => {
     if (!bookingData || !surveyData) {
-      alert("Vui lòng cung cấp đầy đủ thông tin đặt lịch và khảo sát.");
+      alert("Please provide complete booking and survey information.");
       return;
     }
 
+    // Chỉ truyền id hoặc chuỗi cho timeSlot
     const payload = {
-      booking: bookingData,
+      booking: {
+        ...bookingData,
+        timeSlot:
+          bookingData.timeSlot && bookingData.timeSlot.id
+            ? bookingData.timeSlot.id
+            : bookingData.timeSlot,
+      },
       survey: surveyData,
     };
 
@@ -157,10 +163,10 @@ export default function BloodDonationInfo({ answers }) {
           },
         }
       );
-      alert("Đặt lịch thành công!");
-      navigate("/");
+      alert("Booking successful!");
+      navigate("/appointment-detail");
     } catch (error) {
-      alert("Đặt lịch thất bại. Vui lòng thử lại.");
+      alert("Booking failed. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -170,7 +176,7 @@ export default function BloodDonationInfo({ answers }) {
     <>
       <Navbar />
       <div className="donation-info-container">
-        <h2>Thông tin đăng ký hiến máu</h2>
+        <h2>Blood Donation Registration Information</h2>
         <div className="donation-grid">
           <div className="info-1">
             {renderUserData()}
@@ -184,7 +190,7 @@ export default function BloodDonationInfo({ answers }) {
             onClick={handleConfirmBooking}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Đang xác nhận..." : "Xác nhận đặt lịch"}
+            {isSubmitting ? "Submitting..." : "Confirm Booking"}
           </button>
         </div>
       </div>

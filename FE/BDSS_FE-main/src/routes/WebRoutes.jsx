@@ -22,21 +22,25 @@ export default function WebRoutes() {
   return (
     <>
       <ScrollTotop />
-       <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/FAQ" element={<FAQ />} />
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/donor-register" element={<DonorRegister />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/user-profile" element={<UserInfo />} />
-      <Route path="/schedule" element={<DonationSchedule />}></Route>
-      <Route path="/blood-registration" element={<BloodRegister />}></Route>
-      <Route path="/blood-registration2" element={<BloodRegister2 />}></Route>
-      <Route path="/blood-donation-info" element={<BloodDonationInfo />}></Route>
-      <Route path="/appointment-detail" element={<AppointmentDetail />}></Route>
-    </Routes>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/FAQ" element={<FAQ />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/donor-register" element={<DonorRegister />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/user-profile" element={<UserInfo />} />
+        <Route path="/user/update/:userId" element={<UserUpdate />} />
+        <Route path="/staff" element={<StaffPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/appointment" element={<AppointmentDetail />} />
+        <Route path="/schedule" element={<DonationSchedule />} />
+        <Route path="/blood-registration" element={<BloodRegister />} />
+        <Route path="/blood-registration2" element={<BloodRegister2 />} />
+        <Route path="/blood-donation-info" element={<BloodDonationInfo />} />
+        <Route path="/appointment-detail" element={<AppointmentDetail />} />
+      </Routes>
     </>
   );
 }

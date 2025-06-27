@@ -1,105 +1,123 @@
-import React from 'react';
-import './AppointmentSchedule.css';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { useState } from 'react';
+import "./AppointmentDetail.css";
+import React, { useEffect, useState } from "react";
+import Navbar from "../assets/navbar";
+import Footer from "../assets/footer";
+import { getUserIdFromToken } from "../assets/getUserById";
+import axios from "../assets/axiosInstance";
 
-export default function AppointmentDetail({ appointment, saveReview, setSavedReview, onClose }) {
-  if (!appointment) return null;
+export default function AppointmentDetail() {
+  const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const token = sessionStorage.getItem("accessToken");
+  const userId = getUserIdFromToken();
 
-  const [review, setReview] = useState(saveReview || ""); // Khởi tạo review từ props hoặc để trống
-
-  
-  // Star rating state
-  const [rating, setRating] = useState(saveReview || 0);
-  
-  // Handle star click
-  const handleStarClick = (star) => {
-    setRating(star);
+  const renderStatus = (status) => {
+    switch (status) {
+      case "PENDING":
+        return <span className="status-pending">Pending</span>;
+      case "APPROVED":
+        return <span className="status-confirmed">Approved</span>;
+      case "CANCELLED":
+        return <span className="status-cancelled">Cancelled</span>;
+      case "COMPLETE":
+        return <span className="status-unknown">Complete</span>;
+    }
   };
-  
-  const handleReviewChange = () => {
-    if (!review.trim()) {
-      toast.error("Vui lòng nhập đánh giá trước khi lưu!");
+  useEffect(() => {
+    if (!userId) {
+      setError("User information not found.");
+      setLoading(false);
       return;
     }
-    if(!rating) {
-      toast.error("Vui lòng chọn đánh giá sao trước khi lưu!");
-      return;
+    setLoading(true);
+    axios
+      .get(`http://localhost:8080/api/booking/user/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setAppointments(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(
+          err.response?.data?.message || err.message || "An error occurred."
+        );
+        setLoading(false);
+      });
+  }, [userId, token]);
+
+  const handleCancel = async (bookingId) => {
+    try {
+      await axios.put(
+        `http://localhost:8080/api/booking/${bookingId}`,
+        { bookingId, status: "CANCELLED" },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setAppointments((prev) =>
+        prev.map((item) =>
+          item.bookingId === bookingId ? { ...item, status: "CANCELLED" } : item
+        )
+      );
+    } catch (error) {
+      alert("Failed to cancel appointment. Please try again.");
     }
-    setSavedReview({ review, rating }); // Lưu đánh giá và rating
-    toast.success("Đã lưu đánh giá!");
-    if (onClose) onClose(); // Đóng modal nếu có hàm onClose
   };
-  
-  const handleRemoveChange = () => {
-    toast.success("Đã xóa đánh giá!");
-    setSavedReview("");
-    if (onClose) onClose(); // Đóng modal nếu có hàm onClose
-  };
-  const handleClose = () => {
-    if (onClose) onClose(); // Gọi hàm onClose nếu có
-  }
+
   return (
     <>
-    <div>
-      <div className="appointment-detail">
-        <div className='body-info'>
-          <h3>Chi tiết lịch hẹn</h3>
-          <p><b>Địa điểm:</b> {appointment.center}</p>
-          <p><b>Địa chỉ:</b> {appointment.address}</p>
-          <p><b>Ngày:</b> {appointment.date}</p>
-          <p><b>Thời gian:</b> {appointment.time}</p>
-          <p><b>Trạng thái:</b>
-            <span style={{
-              backgroundColor: '#ef4444',
-              color: 'white',
-              padding: '4px 8px',
-              borderRadius: 4,
-              marginLeft: 6
-            }}>
-              {appointment.status}
-            </span>
-          </p>
-        </div>
-          <div className='body-rating'>
-            <h3>Đánh giá</h3>
-              <div style={{ fontSize: 28, color: '#fbbf24', marginBottom: 8 }}>
-                {[1, 2, 3, 4, 5].map(star => (
-                  <span
-                  key={star}
-                  style={{
-                    cursor: 'pointer',
-                    color: star <= rating ? '#fbbf24' : '#e5e7eb'
-                  }}
-                  onClick={() => setRating(star)}
-                  data-testid={`star-${star}`}
-                  role="button"
-                  aria-label={`Chọn ${star} sao`}
-                  >
-                    ★
-                  </span>
+      <Navbar />
+      <div className="appointment-container">
+        <h2 className="appointment-title">Your Blood Donation Appointments</h2>
+        {loading ? (
+          <div className="appointment-loading">Loading data...</div>
+        ) : error ? (
+          <div className="appointment-error">{error}</div>
+        ) : appointments.length === 0 ? (
+          <div className="appointment-empty">You have no appointments.</div>
+        ) : (
+          <div className="appointment-table-wrapper">
+            <table className="appointment-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Center</th>
+                  <th>Location</th>
+                  <th>Time Slot</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {appointments.map((item) => (
+                  <tr key={item.bookingId}>
+                    <td>{item.dateDonation}</td>
+                    <td>{item.center}</td>
+                    <td>{item.address}</td>
+                    <td>
+                      {item.startTime?.slice(0, 5)} -{" "}
+                      {item.endTime?.slice(0, 5)}
+                    </td>
+                    <td>{renderStatus(item.status)}</td>
+                    <td>
+                      <button onClick={() => handleCancel(item.bookingId)}>
+                        Cancel
+                      </button>
+                    </td>
+                  </tr>
                 ))}
-                <span style={{ marginLeft: 12, color: "#333", fontSize: 18 }}>
-                  {rating > 0}
-                </span>
-              </div>
-                <textarea
-                value={review}
-                onChange={e => setReview(e.target.value)}
-                placeholder="Viết đánh giá của bạn..."
-                rows={4}
-                />
-              <div className="modal-footer">
-                <button type="button" className="btn btn-primary" onClick={handleRemoveChange}>Remove</button>
-                <button type="button" className="btn btn-primary" onClick={handleReviewChange}>Save Changes</button>
-              </div>
+              </tbody>
+            </table>
           </div>
+        )}
       </div>
-      <div  className='modal-footer'>
-          <button type='button' className="button-back" onClick={handleClose}>Quay về</button>
-      </div>
-    </div>
+      <Footer />
     </>
   );
 }

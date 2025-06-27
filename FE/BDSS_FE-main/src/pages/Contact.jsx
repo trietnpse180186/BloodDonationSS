@@ -1,38 +1,103 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Contact.css";
 import Navbar from "../assets/navbar";
 import Footer from "../assets/footer";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "../assets/axiosInstance";
 
 export default function Contact() {
+  const [formData, setFormData] = useState({
+    fullName: "",
+    phoneNumber: "",
+    email: "",
+    details: "",
+  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (
+      formData.fullName === "" ||
+      formData.phoneNumber === "" ||
+      formData.email === "" ||
+      formData.details === ""
+    ) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/contact",
+        formData
+      );
+      toast.success("Contact form submitted successfully!");
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast.error("Failed to submit contact form. Please try again later.");
+    }
+  };
   return (
     <>
+      <ToastContainer position="top-center" autoClose={1000} />
       {/*-------------------Navbar-----------------------*/}
       <Navbar />
       {/*-------------------Contact-----------------------*/}
       <div className="contact">
         <div className="form-contact">
-          <form action="#">
+          <form onSubmit={handleSubmit}>
             <div id="text-center">
               <h1>Contact Us</h1>
             </div>
             <div id="sub-form">
               <h5>Full Name</h5>
-              <input type="text" placeholder="Full Name" />
+              <input
+                type="text"
+                name="fullName"
+                placeholder="Full Name"
+                value={formData.fullName}
+                onChange={handleChange}
+              />
             </div>
             <div id="sub-form">
               <h5>Phone Number</h5>
-              <input type="text" placeholder="Phone Number" />
+              <input
+                type="text"
+                name="phoneNumber"
+                placeholder="Phone Number"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+              />
             </div>
             <div id="sub-form">
               <h5>Email</h5>
-              <input type="text" placeholder="Email" />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={formData.email}
+                onChange={handleChange}
+              />
             </div>
             <div id="sub-form">
               <h5>Support Request Details</h5>
-              <input type="text" placeholder="Support request details" />
+              <input
+                type="text"
+                name="details"
+                placeholder="Support request details"
+                value={formData.details}
+                onChange={handleChange}
+              />
             </div>
-
-            <button id="button-sub-form">Submit Request</button>
+            <button id="button-sub-form" type="submit">
+              Submit Request
+            </button>
           </form>
         </div>
       </div>

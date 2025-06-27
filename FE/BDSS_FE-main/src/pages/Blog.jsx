@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import "./Blog.css";
-import { Link } from "react-router";
-import logo from "../images/logo.jpg";
 import Navbar from "../assets/navbar";
 import Footer from "../assets/footer";
 import { getAllBlogs } from "../assets/getBlogs";

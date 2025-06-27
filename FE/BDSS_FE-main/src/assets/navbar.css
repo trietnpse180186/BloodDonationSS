@@ -1,33 +1,33 @@
 .navbar {
-  overflow: visible !important;
   position: relative;
   z-index: 2001;
   display: flex;
   padding: 0px 30px;
-  background-color: #db230b;
-  height: 13vh;
-
+  background-color: rgb(156, 32, 32);
+  min-height: 13vh;
 }
-/* .navbar-item {
+.navbar-item {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
-
-  background-color: rgb(238, 5, 5);
-  box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1);
-
   margin: 0px 100px;
-  font-size: 1.2em;
   padding: 5px;
   gap: 70px;
-} 
-.donor-button {
-  color: rgb(14, 20, 20);
-  font-weight: bold;
-  background-color: snow;
+}
+.button-bell {
+  translate: 0px 3px;
+  color: white;
+  font-size: 1.5em;
+  background-color: transparent;
   border: none;
 }
+.button-bell:hover {
+  background-color: transparent;
+  text-decoration: underline;
+  transition: 0.3s ease-in-out;
+}
+
 #dropdown-split-basic {
   background-color: snow;
   border: none;
@@ -38,6 +38,7 @@
   flex-direction: row;
   align-items: center;
 }
+
 .text-wrapper {
   display: flex;
   flex-direction: row;
@@ -51,7 +52,6 @@
 }
 .wrapper-link {
   color: rgba(99, 101, 101, 0.705);
-
 }
 
 .navbar-item {
@@ -59,7 +59,6 @@
   justify-content: center;
   align-items: center;
   gap: 45px;
-  background-color: #db230b;
 }
 
 .wrapper-link {

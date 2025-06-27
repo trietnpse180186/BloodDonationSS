@@ -1,32 +1,31 @@
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./DonationSchedule.css";
-import { Link } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
-import { useLocation } from "react-router";
 import Navbar from "../assets/navbar";
 import Footer from "../assets/footer";
 import { peopleFill } from "../assets/icons/icon";
-import axios from "axios";
+import axios from "../assets/axiosInstance";
+import { toast } from "react-toastify";
 
 export default function DonationSchedule() {
   const [searchName, setSearchName] = useState("");
   const [searchDate, setSearchDate] = useState("");
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [schedules, setSchedules] = useState([]);
-  useEffect(
-    () => async () => {
-      await axios
-        .get("http://localhost:8080/api/schedule-donations/")
-        .then((res) => {
-          setSchedules(res.data);
-          setFilteredSchedules(res.data);
-        })
-        .catch((err) => {
-          console.error("Error loading schedules", err);
-        });
-    },
-    []
-  );
+  const token = sessionStorage.getItem("accessToken");
+  const navigate = useNavigate();
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/schedule-donations/")
+      .then((res) => {
+        setSchedules(res.data);
+        setFilteredSchedules(res.data);
+      })
+      .catch((err) => {
+        console.error("Error loading schedules", err);
+      });
+  }, []);
 
   const location = useLocation();
   useEffect(() => {
@@ -47,35 +46,37 @@ export default function DonationSchedule() {
       filtered = filtered.filter((s) => s.date === searchDate);
     }
     setFilteredSchedules(filtered);
-  }, [searchName, searchDate]);
+  }, [searchName, searchDate, schedules]);
+
+  const handleBooking = (schedule) => {
+    if (token === null || token === undefined) {
+      toast.error("Please log in to book an appointment.");
+      navigate("/login");
+    } else {
+      navigate(
+        `/blood-registration?date=${
+          schedule.date
+        }&location=${encodeURIComponent(
+          schedule.location
+        )}&center=${encodeURIComponent(schedule.center)}`
+      );
+    }
+  };
   return (
     <>
       {/*Navbar*/}
       <Navbar />
       {/* Search */}
-      <div
-        style={{
-          maxWidth: 900,
-          margin: "32px auto 0 auto",
-          display: "flex",
-          gap: 16,
-          alignItems: "center",
-        }}
-      >
+      <div className="search-bar">
         <input
+          className="search-name"
           type="text"
-          placeholder="Tìm theo tên trung tâm..."
+          placeholder="Search by center name..."
           value={searchName}
           onChange={(e) => setSearchName(e.target.value)}
-          style={{
-            padding: "10px 14px",
-            borderRadius: 8,
-            border: "1px solid #ccc",
-            flex: 1,
-            minWidth: 0,
-          }}
         />
         <input
+          className="search-date"
           type="date"
           value={searchDate}
           onChange={(e) => setSearchDate(e.target.value)}
@@ -92,13 +93,13 @@ export default function DonationSchedule() {
             setSearchDate("");
           }}
         >
-          Xóa lọc
+          Clear filter
         </Button>
       </div>
       {/*Donation Schedule*/}
       <div className="donation-schedule">
         {filteredSchedules.length === 0 ? (
-          <div className="no-schedule">Không tìm thấy lịch phù hợp.</div>
+          <div className="no-schedule">No matching schedules found.</div>
         ) : (
           filteredSchedules.map((schedule, idx) => (
             <div className="schedule-container" key={idx}>
@@ -110,36 +111,35 @@ export default function DonationSchedule() {
                     </strong>
                   </li>
                   <li>
-                    <strong>Địa điểm:</strong> {schedule.location}{" "}
+                    <strong>Location:</strong> {schedule.location}{" "}
                   </li>
                   <li>
-                    <strong>Thời gian:</strong> {schedule.date} - Từ{" "}
+                    <strong>Date:</strong> {schedule.date}
                   </li>
                   <li>
-                    {schedule.timeSlots.map((slot) => (
-                      <li key={slot.id}>
-                        {slot.startTime} - {slot.endTime}
-                      </li>
-                    ))}
+                    <strong>Time slots:</strong>
+                    <ul style={{ margin: 0, paddingLeft: 16 }}>
+                      {schedule.timeSlots.map((slot) => (
+                        <li key={slot.id}>
+                          {slot.startTime} - {slot.endTime}
+                        </li>
+                      ))}
+                    </ul>
                   </li>
                 </ul>
               </div>
               <div className="schedule-total">
                 <div className="schedule-total-icon">
                   {peopleFill}
-                  <strong>Số lượng người đăng ký:</strong>
+                  <strong>Number of registrations:</strong>
                 </div>
                 <div className="schedule-total-count">
                   {schedule.donorCount}
-                  <button className="schedule-button">
-                    <Link
-                      to={`/blood-registration?date=${
-                        schedule.date
-                      }&location=${encodeURIComponent(schedule.location)}`}
-                      style={{ textDecoration: "none", color: "white" }}
-                    >
-                      Đặt lịch
-                    </Link>
+                  <button
+                    className="schedule-button"
+                    onClick={() => handleBooking(schedule)}
+                  >
+                    Book now
                   </button>
                 </div>
               </div>

@@ -1,8 +1,8 @@
 .donation-info-container {
   padding: 24px;
   background: #fff;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #FDFDFC;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #fdfdfc;
 }
 .donation-info-container h2 {
   color: black;
@@ -12,7 +12,6 @@
 /* Chia thành 2 cột */
 .donation-grid {
   display: flex;
-  flex-wrap: wrap;
   gap: 24px;
 }
 
@@ -32,14 +31,14 @@
 /* Khung thẻ thông tin */
 .info-card {
   background: white;
-  border: 1px solid #FEFEFE;
+  border: 1px solid #fefefe;
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 .info-contact {
   background: white;
-  border: 1px solid #FEFEFE;
+  border: 1px solid #fefefe;
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
@@ -55,9 +54,9 @@
 }
 .appointment-list {
   background: white;
-  border: 1px solid #FEFEFE;
+  border: 1px solid #fefefe;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  padding : 16px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   border-radius: 10px;
@@ -71,15 +70,18 @@
   border: 1px solid #ddd;
   border-radius: 12px;
   background: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   margin-bottom: 16px;
 }
 /* Danh sách lịch sử*
 /* Thêm vào BloodDonationInfo.css hoặc file css của bạn */
 .modal {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.4);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -95,7 +97,7 @@
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 }
 
 .modal-close-btn {
@@ -108,14 +110,14 @@
   color: #b30000;
   cursor: pointer;
 }
-.view-survey{
+.view-survey {
   background: rgb(248, 221, 221);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   padding: 16px;
   border-radius: 10px;
   margin-top: 10px;
 }
-.actions{
+.actions {
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -133,7 +135,7 @@
 .actions button {
   padding: 6px 12px;
   border: none;
-  background:  #1D4A76;
+  background: #1d4a76;
   color: white;
   border-radius: 6px;
   cursor: pointer;
@@ -141,5 +143,5 @@
 }
 
 .actions button:hover {
-  background: #1D4A76;
+  background: #1d4a76;
 }

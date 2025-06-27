@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Dropdown, Button, ButtonGroup } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { VscAccount } from "react-icons/vsc";
@@ -8,8 +8,10 @@ import logo from "../images/logo.jpg";
 
 import "./navbar.css";
 import { getUserIdFromToken } from "./getUserById";
+import { FaRegBell } from "react-icons/fa";
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   useEffect(() => {
     const id = getUserIdFromToken();
@@ -84,6 +86,20 @@ export default function Navbar() {
           <div className="text-wrapper">
             {user ? (
               <div className="fix-split-button">
+                <Button
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "white",
+                    fontWeight: "bold",
+                    fontSize: "1.3rem",
+                    textAlign: "center",
+                  }}
+                  className="button-bell"
+                  onClick={() => navigate("/notification")}
+                >
+                  <FaRegBell />
+                </Button>
                 <Dropdown as={ButtonGroup}>
                   <Button
                     style={{
@@ -155,7 +171,7 @@ export default function Navbar() {
                           style={{
                             textDecoration: "none",
                           }}
-                          to="/donorSchedule"
+                          to="/appointment"
                         >
                           Lịch hẹn của bạn
                         </Link>

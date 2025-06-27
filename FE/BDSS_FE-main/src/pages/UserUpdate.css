@@ -1,0 +1,117 @@
+.update-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form {
+  background: #fff;
+  border-radius: 18px;
+  padding: 38px 34px 28px 34px;
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form h1 {
+  text-align: center;
+  color: #db230b;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 18px;
+  letter-spacing: 1px;
+}
+
+.field-wrapper,
+.field-wrapper-gender {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.field-wrapper-gender {
+  justify-content: flex-start;
+  border: none;
+}
+
+.input-icon {
+  color: #db230b;
+  font-size: 1.2em;
+  margin-right: 6px;
+}
+
+input[type="text"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.2px solid #db230b;
+  border-radius: 7px;
+  font-size: 1em;
+  outline: none;
+  transition: border 0.2s;
+  background: #fff;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+select:focus {
+  border: 1.5px solid #b30000;
+  background: #fff9f9;
+}
+
+select {
+  color: #333;
+}
+
+.wrap-submit {
+  width: 100%;
+  background: linear-gradient(90deg, #db230b 60%, #b30000 100%);
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 7px;
+  padding: 12px 0;
+  margin-top: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(219, 35, 11, 0.08);
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.wrap-submit:hover {
+  background: linear-gradient(90deg, #b30000 60%, #db230b 100%);
+  box-shadow: 0 4px 16px rgba(219, 35, 11, 0.13);
+}
+
+.field-wrapper-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+a {
+  color: #db230b;
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 8px;
+  display: inline-block;
+  text-align: center;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .form {
+    padding: 18px 8px 18px 8px;
+    max-width: 98vw;
+  }
+}
