@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"; // Sửa import
 import "./Register.css";
-import axios from "axios";
+import axios from "../assets/axiosInstance";
 import {
   FaEnvelope,
   FaLock,

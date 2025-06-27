@@ -4,12 +4,15 @@ import "./StaffPage.css";
 import BlogManager from "../components/BlogManager";
 import FAQManager from "../components/FAQManager";
 import logout from "../assets/authLogout";
+import ContactManager from "../components/ContactManager";
+import MedicalSchedule from "../components/MedicalSchedule";
+import Notification from "../components/Notification";
 const menuItems = [
   { key: "schedule", label: "Donation Schedule" },
   { key: "appointment", label: "Donor Appointment Manager" },
   { key: "blog", label: "Blog Manager" },
   { key: "faq", label: "FAQ Manager" },
-
+  { key: "notification", label: "Notification" },
   { key: "contact", label: "Contact" },
   { key: "logout", label: "Logout" },
 ];
@@ -24,7 +27,7 @@ export default function StaffPage() {
       case "schedule":
         return (
           <div className="admin-content-box">
-            Edit Donation Schedule content
+            <MedicalSchedule />
           </div>
         );
       case "appointment":
@@ -46,8 +49,18 @@ export default function StaffPage() {
           </div>
         );
 
+      case "notification":
+        return (
+          <div className="admin-content-box">
+            <Notification />
+          </div>
+        );
       case "contact":
-        return <div className="admin-content-box">Contact content</div>;
+        return (
+          <div className="admin-content-box">
+            <ContactManager />
+          </div>
+        );
       default:
         return null;
       case "logout":

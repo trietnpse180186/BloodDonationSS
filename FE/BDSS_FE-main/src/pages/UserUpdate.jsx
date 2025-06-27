@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  FaEnvelope,
-  FaLock,
   FaUserEdit,
   FaPhoneAlt,
   FaMapMarkerAlt,
@@ -9,9 +7,9 @@ import {
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import getUserById, { getUserIdFromToken } from "../assets/getUserById";
-import axios from "axios";
+import axios from "../assets/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
-
+import "./UserUpdate.css";
 export default function UserUpdate() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -35,7 +33,6 @@ export default function UserUpdate() {
           fullName: user.fullName || "",
           birthday: user.birthday || "",
           sex: user.sex || "",
-          email: user.email || "",
           password: "",
           phoneNumber: user.phoneNumber || "",
           address: user.address || "",
@@ -85,23 +82,13 @@ export default function UserUpdate() {
 
   return (
     <>
-      <div className="register-page">
+      <div className="update-page">
         <form className="form" onSubmit={handleSubmit}>
           <h1>EDIT YOUR PROFILE</h1>
-          <div className="field-wrapper">
-            <FaEnvelope className="input-icon" />
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
 
           <div className="field-wrapper">
-            <FaLock className="input-icon" />
             <input
-              type="password"
+              type="hidden"
               name="password"
               value={formData.password}
               placeholder="Need to change password?"
@@ -197,8 +184,6 @@ export default function UserUpdate() {
               onChange={handleChange}
             />
           </div>
-
-          <br />
 
           <div
             className="field-wrapper-btn"

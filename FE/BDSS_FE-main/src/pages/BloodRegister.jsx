@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../assets/navbar";
 import "./BloodRegister.css";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../assets/footer";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -135,12 +135,17 @@ export default function BloodRegister() {
       return;
     }
 
+    // Lấy object timeSlot đã chọn thay vì chỉ truyền id
+    const selectedTimeSlotObj = selectedLocationTime?.timeSlots?.find(
+      (slot) => slot.id === timeSelected
+    );
+
     const bookingData = {
       scheduleId: selectedLocationTime?.scheduleId || scheduleId,
       date: selectedDate,
       location: selectedLocation,
       center: selectedLocationTime?.center || "",
-      timeSlot: timeSelected,
+      timeSlot: selectedTimeSlotObj, // Truyền cả object timeSlot
     };
 
     navigate("/blood-registration2", { state: { bookingData } });

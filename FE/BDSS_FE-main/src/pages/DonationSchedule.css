@@ -1,74 +1,131 @@
+.donation-schedule {
+  max-width: 950px;
+  margin: 40px auto 32px auto;
+  padding: 0 12px;
+}
 
-.donation-info-container {
-  padding: 24px;
+.search-bar {
+  display: flex;
+  margin: auto;
+  margin-top: 30px;
+  max-height: 50px;
+  max-width: 800px;
+  gap: 16px;
+}
+.search-date {
+  max-width: 200px;
 }
 .schedule-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border: 1px solid #e0e0e0;
-  margin: 10px;
-  border-radius: 10px;
-  padding: 20px;
+  align-items: stretch;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+  margin-bottom: 28px;
+  padding: 24px 28px;
+  transition: box-shadow 0.2s;
 }
 .donation-schedule {
   max-width: 900px;
   margin: 40px auto 0 auto;
 }
 
-.donation-grid {
+.schedule-detail {
+  flex: 2;
+  font-size: 1.08rem;
+}
+
+.schedule-detail strong {
+  font-weight: 600;
+}
+
+.schedule-detail ul {
+  margin: 0;
+  padding: 0;
+}
+
+.schedule-detail li {
+  margin-bottom: 7px;
+}
+
+.schedule-detail ul ul {
+  margin-top: 4px;
+  margin-bottom: 0;
+  padding-left: 18px;
+}
+
+.schedule-detail ul ul li {
+  color: #b30000;
+  font-weight: 500;
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+
+/* Registration count and button */
+.schedule-total {
+  flex: 1;
   display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  justify-content: center;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  min-width: 180px;
+  padding-left: 24px;
 }
 
-/* Mỗi thẻ card */
-.info-card {
-  background: #fff7f7;
-  border: 1px solid #fca5a5;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.05);
-  flex: 1 1 300px; /* flexible layout */
-  max-width: 450px;
-  min-width: 280px;
-}
-
-/* Card rộng hơn */
-.wide-card {
-  flex: 1 1 100%;
-  max-width: none;
-}
-
-/* Nếu muốn cả ba cột cùng hàng trên màn hình rộng */
-@media (min-width: 1024px) {
-  .info-card,
-  .wide-card {
-    flex: 1 1 calc(33.33% - 24px);
-    max-width: calc(33.33% - 24px);
-  }
-}
-.schedule-total-count {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: bold;
-  padding: 16px 0;
-  gap: 30px;
-  border-top: 1px solid #e0e0e0;
-}
-.schedule-button {
-  background: #f14438;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
 .schedule-total-icon {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  color: #b30000;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.schedule-total-count {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.schedule-button {
+  background: linear-gradient(90deg, #d32f2f 60%, #b30000 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 22px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+  margin-left: 8px;
+  box-shadow: 0 1px 4px rgba(179, 0, 0, 0.08);
+}
+
+.schedule-button:hover {
+  background: linear-gradient(90deg, #b30000 60%, #d32f2f 100%);
+  box-shadow: 0 2px 8px rgba(179, 0, 0, 0.13);
+}
+
+/* No schedule message */
+.no-schedule {
+  text-align: center;
+  color: #888;
+  font-size: 1.15rem;
+  margin: 48px 0 32px 0;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .schedule-container {
+    flex-direction: column;
+    padding: 18px 10px;
+  }
+  .schedule-total {
+    align-items: flex-start;
+    padding-left: 0;
+    margin-top: 18px;
+  }
 }

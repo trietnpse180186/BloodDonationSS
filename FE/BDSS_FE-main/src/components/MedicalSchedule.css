@@ -1,0 +1,57 @@
+.medical-schedule {
+  max-width: 1500px;
+  margin: 36px auto;
+  padding: 32px 24px 28px 24px;
+}
+
+.medical-schedule h2 {
+  color: #db230b;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 22px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.medical-schedule table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+.medical-schedule th,
+.medical-schedule td {
+  border: 1px solid #db230b;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.medical-schedule th {
+  background: #cb0505b6;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.medical-schedule tr:last-child td {
+  border-bottom: none;
+}
+
+.medical-schedule td {
+  color: #333;
+}
+
+.medical-schedule td div {
+  margin-bottom: 2px;
+}
+
+@media (max-width: 700px) {
+  .medical-schedule {
+    padding: 10px 2px;
+  }
+  .medical-schedule table,
+  .medical-schedule th,
+  .medical-schedule td {
+    font-size: 0.98em;
+    padding: 7px 2px;
+  }
+}
