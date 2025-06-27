@@ -295,10 +295,7 @@
 .link-group3:hover {
   color: #921d13;
 }
-/* Group3 */
-.overlap-group3 {
-  background-color: aqua;
-}
+
 .group3-row1 {
   background-color: chocolate;
 }
@@ -312,7 +309,6 @@
 }
 .overlap-group4-content1 {
   display: flex;
-  flex-direction: row;
   align-items: center;
   padding: 20px;
   color: black;
@@ -323,16 +319,19 @@
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  margin-right: 20px;
+  margin-left: 20px; /* Đổi từ margin-right sang margin-left */
+  margin-right: 0; /* Reset margin-right */
 }
 .overlap-group4-content2 {
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row-reverse; /* Đổi từ row thành row-reverse */
+  align-items: center;
   padding: 20px;
   color: white;
   background: #1d4a76;
   width: 100%;
 }
+
 .overlap-group4-content2 img {
   width: 200px;
   height: 200px;
