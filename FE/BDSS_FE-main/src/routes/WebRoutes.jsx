@@ -1,43 +1,46 @@
 import React from "react";
 import { Routes, Route } from "react-router";
-import HomePage from "../pages/HomePage";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import FAQ from "../pages/FAQ";
-import Blog from "../pages/Blog";
-import DonorRegister from "../pages/DonorRegister";
-import Contact from "../pages/Contact";
-import DonationSchedule from "../pages/DonationSchedule";
-import BloodRegister from "../pages/BloodRegister";
-import UserInfo from "../pages/UserInfo";
-import BloodRegister2 from "../pages/BloodRegister2";
-import BloodDonationInfo from "../pages/BloodDonationInfo";
-import AppointmentDetail from "../pages/AppointmentDetail";
-import UserUpdate from "../pages/UserUpdate";
-import StaffPage from "../pages/staffPage";
-import AdminPage from "../pages/AdminPage";
-import ScrollTotop from "../assets/icons/scrollToTop";
-
+import HomePage from "../pages/Home/HomePage";
+import Login from "../pages/Auth/Login";
+import Register from "../pages//Auth/Register";
+import FAQ from "../pages/FAQ/FAQ";
+import Blog from "../pages/Blog/Blog";
+import DonorRegister from "../pages/Auth/DonorRegister";
+import Contact from "../pages/Contact/Contact";
+import DonationSchedule from "../pages/DonationSchedule/DonationSchedule";
+import BloodRegister from "../pages/BloodDonation/BloodRegister";
+import UserInfo from "../pages/User/UserInfo";
+import BloodRegister2 from "../pages/BloodDonation/BloodRegister2";
+import BloodDonationInfo from "../pages/BloodDonation/BloodDonationInfo";
+import AppointmentDetail from "../pages/Appointment/AppointmentDetail";
+import UserUpdate from "../pages/User/UserUpdate";
+import AdminPage from "../pages/Admin/AdminPage";
+import ScrollTotop from "../assets/scrollToTop";
+import StaffPage from "../pages/Staff/StaffPage";
 
 export default function WebRoutes() {
   return (
     <>
       <ScrollTotop />
-       <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/FAQ" element={<FAQ />} />
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/donor-register" element={<DonorRegister />} />
-      <Route path="/contact" element={<Contact />} />
-      <Route path="/user-profile" element={<UserInfo />} />
-      <Route path="/schedule" element={<DonationSchedule />}></Route>
-      <Route path="/blood-registration" element={<BloodRegister />}></Route>
-      <Route path="/blood-registration2" element={<BloodRegister2 />}></Route>
-      <Route path="/blood-donation-info" element={<BloodDonationInfo />}></Route>
-      <Route path="/appointment-detail" element={<AppointmentDetail />}></Route>
-    </Routes>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/FAQ" element={<FAQ />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/donor-register" element={<DonorRegister />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/user-profile" element={<UserInfo />} />
+        <Route path="/user/update/:userId" element={<UserUpdate />} />
+        <Route path="/staff" element={<StaffPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/appointment" element={<AppointmentDetail />} />
+        <Route path="/schedule" element={<DonationSchedule />} />
+        <Route path="/blood-registration" element={<BloodRegister />} />
+        <Route path="/blood-registration2" element={<BloodRegister2 />} />
+        <Route path="/blood-donation-info" element={<BloodDonationInfo />} />
+        <Route path="/appointment-detail" element={<AppointmentDetail />} />
+      </Routes>
     </>
   );
 }

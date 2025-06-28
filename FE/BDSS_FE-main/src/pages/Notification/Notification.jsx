@@ -1,61 +1,185 @@
-import React, { useState } from 'react';
-import './Notification.css';
-import Navbar from '../../assets/navbar';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Table, Form, Button } from "react-bootstrap";
 
-const notifications = [
-  { id: 1, title: "Lịch hiến máu mới", message: "Tại Đà Nẵng", time: "5 phút trước", type: "nhắc nhở", read: false },
-  { id: 2, title: "Xác nhận lịch", message: "Donor A đã hoàn tất", time: "30 phút trước", type: "sự kiện", read: true },
-  { id: 3, title: "Cập nhật FAQ", message: "Thêm câu hỏi mới", time: "1 giờ trước", type: "tin tức", read: false },
-];
-
-const FILTERS = ["Tất cả", "Chưa đọc", "Nhắc nhở", "Sự kiện", "Tin tức"];
-
-export default function NotificationCenter() {
-  const [filter, setFilter] = useState("Tất cả");
-
-  const filtered = notifications.filter(note => {
-    if (filter === "Tất cả") return true;
-    if (filter === "Chưa đọc") return !note.read;
-    return note.type === filter.toLowerCase();
+export default function Notification() {
+  const [form, setForm] = useState({
+    title: "",
+    detail: "",
+    date: "",
+    time: "",
+    donorId: "",
   });
+
+  const [notification, setNotification] = useState([]);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const response = await axios.get(
+        "http://localhost:8080/notifications/all",
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      setNotification(response.data);
+    };
+    fetchNotifications();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const now = new Date();
+    const currentDate = now.toISOString().slice(0, 10);
+    const currentTime = now.toTimeString().slice(0, 5);
+
+    const dataToSend = {
+      ...form,
+      date: form.date || currentDate,
+      time: form.time || currentTime,
+    };
+    console.log("Data to send:", dataToSend);
+    try {
+      await axios.post("http://localhost:8080/notifications", dataToSend, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+        },
+      });
+      const response = await axios.get(
+        "http://localhost:8080/notifications/all",
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      setNotification(response.data);
+      setForm({
+        title: "",
+        detail: "",
+        date: "",
+        time: "",
+        donorId: "",
+      });
+    } catch (error) {
+      alert("Failed to create notification.");
+    }
+  };
+
+  const [donor, setDonor] = useState([]);
+  useEffect(() => {
+    const fetchDonors = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/users", {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        });
+        setDonor(response.data);
+        console.log("Donor list:", response.data);
+      } catch (error) {
+        console.error("Failed to fetch donors:", error);
+      }
+    };
+    fetchDonors();
+  }, []);
 
   return (
     <>
-      <Navbar />
-      <div className="notification-wrapper">
-        <div className="notification-toolbar">
-          <h2 className="notification-title">Thông báo</h2>
-          <button className="mark-all-read">Đánh dấu đã đọc tất cả</button>
-        </div>
+      <Form onSubmit={handleSubmit} style={{ marginBottom: 32, maxWidth: 600 }}>
+        <Form.Group className="mb-2">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type="text"
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb-2">
+          <Form.Label>Details</Form.Label>
+          <Form.Control
+            as="textarea"
+            name="detail"
+            value={form.detail}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb-2">
+          <Form.Control
+            type="hidden"
+            name="date"
+            value={form.date}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb-2">
+          <Form.Control
+            type="hidden"
+            name="time"
+            value={form.time}
+            onChange={handleChange}
+            required
+          />
+        </Form.Group>
+        <Form.Group className="mb-2">
+          <Form.Label>For Donor</Form.Label>
+          <Form.Select
+            name="donorId"
+            value={form.donorId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select a donor</option>
+            {donor.map((d) => (
+              <option key={d.id || d.userId} value={d.id || d.userId}>
+                {d.userId ? d.fullName : d.username || d.email || "Unknown"}
+              </option>
+            ))}
+          </Form.Select>
+        </Form.Group>
+        <Button variant="danger" type="submit">
+          Create Notification
+        </Button>
+      </Form>
 
-        <div className="notification-filters">
-          {FILTERS.map((f) => (
-            <button
-              key={f}
-              className={`filter-btn ${filter === f ? 'active' : ''}`}
-              onClick={() => setFilter(f)}
-            >
-              {f}
-            </button>
+      <h2>Notification List</h2>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Title</th>
+            <th>Details</th>
+            <th>Date - time</th>
+            <th>For Donor</th>
+          </tr>
+        </thead>
+        <tbody>
+          {notification.map((note, index) => (
+            <tr key={note.id}>
+              <td>{index + 1}</td>
+              <td>{note.title}</td>
+              <td>{note.detail}</td>
+              <td>
+                {note.date} - {note.time}
+              </td>
+              <td>{note.donorId}</td>
+            </tr>
           ))}
-        </div>
-
-        <div className="notification-list">
-          {filtered.map((note) => (
-            <div key={note.id} className={`notification-card ${note.read ? '' : 'unread'}`}>
-              <div className="notification-icon">
-                <span className="icon"></span>
-                {!note.read && <span className="dot" />}
-              </div>
-              <div className="notification-content">
-                <h4 className="note-title">{note.title}</h4>
-                <p className="note-message">{note.message}</p>
-                <span className="note-time">{note.time}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+        </tbody>
+      </Table>
     </>
   );
 }
