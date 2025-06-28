@@ -18,26 +18,6 @@ export default function BloodDonationInfo() {
     email: "thth19102004@gmail.com"
   };
 
-  const appointments = [
-    {
-      id: 1,
-      location: "466 Nguyễn Thị Minh Khai (thời gian làm việc từ 7g đến 11g)",
-      address: "466 Nguyễn Thị Minh Khai Phường 02, Quận 3, Tp Hồ Chí Minh",
-      date: "14/06/2025",
-      time: "07:00 đến 11:00",
-      status: "Đã xoá",
-    },
-    {
-      id: 2,
-      location: "Trung tâm Truyền máu Chợ Rẫy (Cổng số 6)",
-      address: "Cổng số 6 - Bệnh viện Chợ Rẫy, đường Triệu Quang Phục, Phường 12, Quận 5, Tp Hồ Chí Minh",
-      date: "26/05/2025",
-      time: "07:00 đến 11:00",
-      status: "Đã xoá",
-    }
-  ];
-
-  const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   // Danh sách lịch hẹn mẫu
   const appointments = [

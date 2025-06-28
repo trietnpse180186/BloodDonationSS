@@ -1,6 +1,6 @@
 // AppointmentDetail.js
 import React from 'react';
-import './AppointmentSchedule.css';
+import './AppointmentDetail.css';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState } from 'react';
