@@ -1,6 +1,5 @@
 import React from 'react';
 import { Outlet, NavLink } from 'react-router-dom';
-import './AdminPage.css';
 
 export default function AdminPage() {
   return (
