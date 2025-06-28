@@ -1,0 +1,215 @@
+/* General container for the donation schedule page */
+.donation-schedule {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+}
+
+.search-bar {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.search-name,
+.search-date {
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  width: 150px; /* Reduced width further */
+  transition: border-color 0.3s ease;
+}
+
+.search-name:focus,
+.search-date:focus {
+  outline: none;
+  border-color: #da2323;
+  box-shadow: 0 0 3px rgba(218, 35, 35, 0.3);
+}
+
+.search-bar .btn-outline-danger {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+  height: 32px;
+  transition: all 0.3s ease;
+}
+
+.search-bar .btn-outline-danger:hover {
+  background-color: #da2323;
+  color: white;
+}
+/* Schedule container */
+.schedule-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.schedule-container:hover {
+  transform: translateY(-5px);
+}
+
+/* Schedule details */
+.schedule-detail {
+  flex: 2;
+}
+
+.schedule-detail ul {
+  margin: 0;
+  padding: 0;
+}
+
+.schedule-detail li {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.schedule-detail strong {
+  color: #333;
+}
+
+/* Time slots styling */
+.schedule-detail ul ul {
+  margin-top: 5px;
+}
+
+.schedule-detail ul ul li {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Schedule total (right side) */
+.schedule-total {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.schedule-total-icon {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+}
+
+.schedule-total-icon svg {
+  fill: #da2323;
+  width: 24px;
+  height: 24px;
+}
+
+.schedule-total-count {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Book now button */
+.schedule-button {
+  background-color: #da2323;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.schedule-button:hover {
+  background-color: #b71c1c;
+}
+
+/* No schedules found message */
+.no-schedule {
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .schedule-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .schedule-total {
+    align-items: flex-start;
+  }
+
+  .schedule-total-count {
+    align-items: flex-start;
+  }
+
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-name,
+  .search-date {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px; /* Tighter gap */
+    padding: 6px;
+  }
+
+  .search-name,
+  .search-date {
+    width: 100%; /* Full width on smaller screens */
+    font-size: 12px; /* Smaller font */
+  }
+
+  .search-bar .btn-outline-danger {
+    width: 100%; /* Full-width button */
+    padding: 6px;
+    height: auto; /* Adjust height */
+  }
+}
+
+@media (max-width: 480px) {
+  .search-name,
+  .search-date {
+    padding: 5px 8px; /* Even smaller */
+    font-size: 11px;
+  }
+
+  .search-bar .btn-outline-danger {
+    font-size: 11px;
+    padding: 5px;
+  }
+}
