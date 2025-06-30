@@ -163,7 +163,7 @@ export default function Navbar() {
                       ))
                     )}
                     <Dropdown.Divider />
-                    <Dropdown.Item onClick={() => navigate("/notification")}>
+                    <Dropdown.Item onClick={() => navigate("/")}>
                       Xem tất cả
                     </Dropdown.Item>
                   </Dropdown.Menu>

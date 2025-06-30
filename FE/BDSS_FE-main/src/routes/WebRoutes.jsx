@@ -17,6 +17,7 @@ import UserUpdate from "../pages/User/UserUpdate";
 import AdminPage from "../pages/Admin/AdminPage";
 import ScrollTotop from "../assets/scrollToTop";
 import StaffPage from "../pages/Staff/StaffPage";
+import UserNotification from "../pages/Notification/UserNotification";
 
 export default function WebRoutes() {
   return (
@@ -40,6 +41,7 @@ export default function WebRoutes() {
         <Route path="/blood-registration2" element={<BloodRegister2 />} />
         <Route path="/blood-donation-info" element={<BloodDonationInfo />} />
         <Route path="/appointment-detail" element={<AppointmentDetail />} />
+        <Route path="/user-notification" element={<UserNotification />} />     
       </Routes>
     </>
   );
