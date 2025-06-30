@@ -52,10 +52,10 @@ export default function Contact() {
       <div className="contact">
         <div className="form-contact">
           <form onSubmit={handleSubmit}>
-            <div id="text-center">
+            <div className="text-center">
               <h1>Contact Us</h1>
             </div>
-            <div id="sub-form">
+            <div className="sub-form">
               <h5>Full Name</h5>
               <input
                 type="text"
@@ -65,7 +65,7 @@ export default function Contact() {
                 onChange={handleChange}
               />
             </div>
-            <div id="sub-form">
+            <div className="sub-form">
               <h5>Phone Number</h5>
               <input
                 type="text"
@@ -75,7 +75,7 @@ export default function Contact() {
                 onChange={handleChange}
               />
             </div>
-            <div id="sub-form">
+            <div className="sub-form">
               <h5>Email</h5>
               <input
                 type="email"
@@ -85,9 +85,9 @@ export default function Contact() {
                 onChange={handleChange}
               />
             </div>
-            <div id="sub-form">
+            <div className="sub-form-details">
               <h5>Support Request Details</h5>
-              <input
+              <textarea
                 type="text"
                 name="details"
                 placeholder="Support request details"
@@ -95,7 +95,7 @@ export default function Contact() {
                 onChange={handleChange}
               />
             </div>
-            <button id="button-sub-form" type="submit">
+            <button className="button-sub-form" type="submit">
               Submit Request
             </button>
           </form>
