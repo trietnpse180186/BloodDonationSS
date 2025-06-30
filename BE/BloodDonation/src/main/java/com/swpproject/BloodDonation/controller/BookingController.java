@@ -35,4 +35,13 @@ public class BookingController {
         return ResponseEntity.ok(booking);
     }
 
+    @PutMapping("/{bookingId}")
+    public ResponseEntity<BookingResponse> updateBookingStatusById(
+            @PathVariable String bookingId,
+            @RequestParam String status) {
+
+        bookingService.updateBookingStatus(bookingId, status);
+        BookingResponse updatedBooking = bookingService.getBookingById(bookingId);
+        return ResponseEntity.ok(updatedBooking);
+    }
 }
