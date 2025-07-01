@@ -89,43 +89,7 @@
   box-shadow: 0 0 5px rgb(0, 0, 0), 0 0 25px rgb(0, 0, 0);
 }
 
-
-/*  Statement Under group 2 */
-.stats-container{
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin: 40px 0;
-}
-.stat-item{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  width: 250px;
-  padding: 20px;
-  background-color: #39080812;
-  border-radius: 10px;
-}
-.stat-number{
-  font-size: 3em;
-  font-weight: bold;
-  color: rgb(255, 0, 0) ;
-  -webkit-text-stroke: 2px #e50901;
-  text-stroke: 3px #a32823;
-  
-}
-.stat-label{
-  font-size: 0.9em;
-  color: #000000;
-  font-weight: bold;
-}
-
-
-
-
-
-/* Group2 Benefits..... */
+/* Group2 */
 .overlap-group2 {
   display: flex;
   align-items: center;
@@ -338,6 +302,42 @@
   background-color: chartreuse;
 }
 
+.overlap-group4 {
+  display: flex;
+  flex-direction: row;
+}
+.overlap-group4-content1 {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  color: black;
+  background: white;
+  width: 100%;
+}
+.overlap-group4-content1 img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-left: 20px; /* Đổi từ margin-right sang margin-left */
+  margin-right: 0; /* Reset margin-right */
+}
+.overlap-group4-content2 {
+  display: flex;
+  flex-direction: row-reverse; /* Đổi từ row thành row-reverse */
+  align-items: center;
+  padding: 20px;
+  color: white;
+  background: #1d4a76;
+  width: 100%;
+}
+
+.overlap-group4-content2 img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
 .overlap-group3-subContent1,
 .overlap-group3-subContent2 {
   flex: 1;
@@ -364,35 +364,4 @@
   display: flex;
   margin-top: 10px;
   font-size: 1.1em;
-}
-
-.overlap-group4 {
-  display: flex;
-  flex-direction: column;
-  margin: 60px 40px;
-}
-.overlap-group4 h2 {
- display: flex;
-  align-items: center;
-  color: #ad0000;
-  font-size: 3em;
-  font-weight: bold;
-  margin-bottom: 20px;  
-}
-
-
-.list-ul1-group4 {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-top: 50px;
-}
-
-.list-ul1-group4 li {
-  margin-bottom: 25px;
-  width: 97%;
-  height: 40px;
-  border-bottom: 1px solid #ccc;
-  font-size: 1.2em;
-  color: #000000;
 }
