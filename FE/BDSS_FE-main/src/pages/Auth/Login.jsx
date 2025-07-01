@@ -76,20 +76,8 @@ export default function LoginForm() {
   };
 
   return (
-    <div
-      className="login-page"
-      data-aos="fade-in"
-      data-aos-duration="500"
-      data-aos-delay="100"
-      data-aos-easing="ease-in-out"
-    >
-      <div
-        className="login-inputs"
-        data-aos="slide-left"
-        data-aos-duration="800"
-        data-aos-delay="200"
-        data-aos-easing="ease-in-out"
-      >
+    <div className="login-page">
+      <div className="login-inputs">
         <form className="login-wrapper" onSubmit={handleSubmit}>
           <h1>SIGN IN</h1>
           <div className="input-group">
