@@ -18,7 +18,9 @@ public class BookingResponse {
     private LocalDate dateDonation;
     private LocalTime startTime;
     private LocalTime endTime;
+    private String center;
     private String address;
+    private String status;
     private String message;
     private User user;
 }
