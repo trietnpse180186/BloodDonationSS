@@ -69,6 +69,28 @@ export default function HomePage() {
           </div>
         </div>
 
+        <div class="stats-container">
+          <div class="stat-item">
+            <div class="stat-number">5.102+</div>
+            <div class="stat-label">Registered Donors</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number">1.427 L</div>
+            <div class="stat-label">Total Blood Donated</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number">45 min</div>
+            <div class="stat-label">Avg. Donation Time</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number">7</div>
+            <div class="stat-label">Partner Hospitals</div>
+          </div>
+        </div>
+
         <div className="overlap-group2">
           <h3 className="text-center-group2">Benefits of Blood Donation</h3>
 
@@ -122,12 +144,11 @@ export default function HomePage() {
           </div>
         </div>
 
-
         {/* Step donation blood */}
         <div className="donation_step">
           <p className="donation_step_title">How to donate blood</p>
           <div class="vertical-step">
-            <div class="arrow-box-first" style={{backgroundColor: "#4E120D"}}>
+            <div class="arrow-box-first" style={{ backgroundColor: "#4E120D" }}>
               <div class="step-label">
                 <p class="step-number">Step 1</p>
               </div>
@@ -143,7 +164,7 @@ export default function HomePage() {
             </div>
           </div>
           <div class="vertical-step">
-            <div class="arrow-box" style={{backgroundColor: "#691710"}}>
+            <div class="arrow-box" style={{ backgroundColor: "#691710" }}>
               <div class="step-label">
                 <p class="step-number">Step 2</p>
               </div>
@@ -159,7 +180,7 @@ export default function HomePage() {
             </div>
           </div>
           <div class="vertical-step">
-            <div class="arrow-box" style={{backgroundColor: "#871F16"}}>
+            <div class="arrow-box" style={{ backgroundColor: "#871F16" }}>
               <div class="step-label">
                 <p class="step-number">Step 3</p>
               </div>
@@ -175,7 +196,7 @@ export default function HomePage() {
             </div>
           </div>
           <div class="vertical-step">
-            <div class="arrow-box" style={{backgroundColor: "#A2261B"}}>
+            <div class="arrow-box" style={{ backgroundColor: "#A2261B" }}>
               <div class="step-label">
                 <p class="step-number">Step 4</p>
               </div>
@@ -191,7 +212,7 @@ export default function HomePage() {
             </div>
           </div>
           <div class="vertical-step">
-            <div class="arrow-box" style={{backgroundColor: "#BF2E20"}}>
+            <div class="arrow-box" style={{ backgroundColor: "#BF2E20" }}>
               <div class="step-label">
                 <p class="step-number">Step 5</p>
               </div>
@@ -207,7 +228,7 @@ export default function HomePage() {
             </div>
           </div>
           <div class="vertical-step">
-            <div class="arrow-box" style={{backgroundColor: "#DB3626"}}>
+            <div class="arrow-box" style={{ backgroundColor: "#DB3626" }}>
               <div class="step-label">
                 <p class="step-number">Step 6</p>
               </div>
@@ -293,53 +314,45 @@ export default function HomePage() {
         <div className="overlap-group4">
           <div className="overlap-group4-content1">
             <div>
-              <img
-                src="https://i.pinimg.com/736x/69/f6/c6/69f6c6abd053ff2ec366fb05905248e1.jpg"
-                alt=""
-              />
-            </div>
-            <div>
-              <h2 style={{ color: "#DB230B", fontWeight: "bold" }}>
-                Trước khi hiến máu
-              </h2>
-              <ul style={{ listStyleType: "none" }}>
+              <h2>Before donating blood</h2>
+              <ul className="list-ul1-group4" style={{ listStyleType: "none" }}>
                 <li>
-                  Đêm trước khi hiến máu không nên thức quá khuya (ngủ ít nhất 6
-                  tiếng).
+                  1. Avoid staying up late the night before (get at least 6
+                  hours of sleep).
                 </li>
-                <li>Nên ăn nhẹ, không ăn các đồ ăn có nhiều đạm, nhiều mỡ.</li>
-                <li>Chuẩn bị tâm lý thực sự thoải mái.</li>
-                <li>Mang theo giấy tờ tùy thân.</li>
-                <li>Không uống rượu, bia.</li>
-                <li>Uống nhiều nước.</li>
+                <li>
+                  2. Have a light meal, avoid fatty or high-protein foods.
+                </li>
+                <li>3. Stay calm and mentally relaxed.</li>
+                <li>4. Bring a valid ID or personal identification.</li>
+                <li>5. Do not drink alcohol or beer.</li>
+                <li>6. Drink plenty of water.</li>
               </ul>
             </div>
           </div>
           <div className="overlap-group4-content2">
             <div>
-              <img
-                src="https://i.pinimg.com/736x/aa/de/7a/aade7a2735cb09f9b7748da0247084d5.jpg"
-                alt=""
-              />
-            </div>
-            <div>
-              <h2 style={{ color: "#F6AD00", fontWeight: "bold" }}>
-                Sau khi hiến máu
-              </h2>
-              <ul style={{ listStyleType: "none" }}>
-                <li>Uống nhiều nước.</li>
-                <li>Nghỉ tại điểm hiến máu tối thiểu 15 phút.</li>
-                <li>Chỉ ra về khi cảm thấy thực sự thoải mái.</li>
-                <li>Duỗi thẳng, hơi nâng cao cánh tay trong 15 phút.</li>
-                <li>Hạn chế gập tay trong quá trình nghỉ sau hiến máu.</li>
+              <h2>After donating blood</h2>
+              <ul className="list-ul1-group4" style={{ listStyleType: "none" }}>
+                <li>1. Drink plenty of water.</li>
+                <li>2. Rest at the donation site for at least 15 minutes.</li>
+                <li>3. Leave only when you feel fully recovered.</li>
                 <li>
-                  Nếu vết băng cầm máu chảy máu, hãy nâng tay lên, ấn nhẹ vào
-                  vết bông, ngồi xuống và báo nhân viên y tế hỗ trợ.
+                  4. Keep your arm straight and slightly elevated for 15
+                  minutes.
+                </li>
+                <li>5. Avoid bending your arm too much while resting.</li>
+
+                <li>
+                  6. If the bandaged site bleeds, raise your arm, press gently
+                  on the cotton, sit down, and inform medical staff for
+                  assistance.
                 </li>
               </ul>
             </div>
           </div>
         </div>
+
         {/*Footer*/}
         <Footer />
       </div>
