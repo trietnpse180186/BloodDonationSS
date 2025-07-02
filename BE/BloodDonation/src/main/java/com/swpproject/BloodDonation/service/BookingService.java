@@ -5,6 +5,7 @@ import com.swpproject.BloodDonation.dto.request.BookingWithSurveyRequest;
 import com.swpproject.BloodDonation.dto.request.SurveyRequest;
 import com.swpproject.BloodDonation.dto.response.BookingResponse;
 import com.swpproject.BloodDonation.entity.*;
+import com.swpproject.BloodDonation.enums.Status;
 import com.swpproject.BloodDonation.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -95,6 +96,8 @@ public class BookingService {
                 .startTime(startTime)
                 .endTime(endTime)
                 .address(request.getBooking().getLocation() + " - " + request.getBooking().getCenter())
+                .center(request.getBooking().getCenter())
+                .status(Status.PENDING)
                 .scheduleDonation(scheduleDonation)
                 .donor(user)
                 .build();
@@ -112,6 +115,8 @@ public class BookingService {
                 .startTime(savedBookingDonation.getStartTime())
                 .endTime(savedBookingDonation.getEndTime())
                 .address(savedBookingDonation.getAddress())
+                .status(String.valueOf(savedBookingDonation.getStatus()))
+                .center(savedBookingDonation.getCenter())
                 .message("Booking created successfully")
                 .build();
     }
@@ -151,6 +156,8 @@ public class BookingService {
                         .startTime(booking.getStartTime())
                         .endTime(booking.getEndTime())
                         .address(booking.getAddress())
+                        .status(String.valueOf(booking.getStatus()))
+                        .center(booking.getCenter())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -172,7 +179,19 @@ public class BookingService {
                 .startTime(booking.getStartTime())
                 .endTime(booking.getEndTime())
                 .address(booking.getAddress())
+                .center(booking.getCenter())
+                .status(String.valueOf(booking.getStatus()))
                 .user(booking.getDonor())
                 .build();
+    }
+
+    public void updateBookingStatus(String bookingId, String status) {
+        BookingDonation booking = bookingDonationRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+
+        // Convert String status to Status enum
+        Status statusEnum = Status.valueOf(status);
+        booking.setStatus(statusEnum);
+        bookingDonationRepository.save(booking);
     }
 }
