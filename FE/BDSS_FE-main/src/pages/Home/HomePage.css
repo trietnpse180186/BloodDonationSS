@@ -266,24 +266,38 @@
   border: 1px solid rgb(250, 250, 250);
 }
 /* Step Donation Blood */
-.donation_step {
-  margin: 50px 30px;
+.donation_step { 
+ margin: 50px 0;
+}
+.donation-step-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+.donation_step_img img{
+ 
+  width: 90vh;
+  clip-path: polygon(10% 0, 100% 0%, 100% 100%, 0% 80%);
+  
 }
 .donation_step_title {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 3em;
+  font-size: 3.2em;
   font-weight: bold;
   color: #000000;
   margin-bottom: 30px;
-  
+}
+.donation_step_left {
+
 }
 .vertical-step {
   display: flex;
   align-items: flex-start;
   margin-bottom: 5px;
-  margin-left: 40vh;
+  
 }
 .arrow-box-first {
   position: relative;
