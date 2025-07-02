@@ -1,58 +1,73 @@
 import "./footer.css";
-import { FaPhone, FaMapMarkerAlt, FaHeart, FaFacebook, FaInstagram, FaTwitter } from 'react-icons/fa';
+import {
+  FaPhone,
+  FaMapMarkerAlt,
+  FaHeart,
+  FaFacebook,
+  FaInstagram,
+  FaTwitter,
+} from "react-icons/fa";
 
 export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-column main-column">
-          <h2>Trung tâm Hiến máu Nhân đạo</h2>
+          <h2>Humanitarian Blood Donation Center</h2>
           <p className="footer-description">
-            Nơi kết nối những tấm lòng nhân ái, mỗi giọt máu hiến tặng là một món quà vô giá mang lại sự sống.
+            A place to connect kind hearts — every drop of donated blood is a priceless gift that brings life.
           </p>
           <div className="social-icons">
-            <a href="#"><FaFacebook /></a>
-            <a href="#"><FaInstagram /></a>
-            <a href="#"><FaTwitter /></a>
+            <a href="#">
+              <FaFacebook />
+            </a>
+            <a href="#">
+              <FaInstagram />
+            </a>
+            <a href="#">
+              <FaTwitter />
+            </a>
           </div>
         </div>
-        
+
         <div className="footer-column">
-          <h3>Liên hệ</h3>
-          
+          <h3>Contact</h3>
+
           <div className="contact-item">
-            <h4>Trung tâm hiến máu nhân đạo</h4>
+            <h4>Humanitarian Blood Donation Center</h4>
             <div className="contact-detail">
               <FaMapMarkerAlt />
-              <span>466 Nguyễn Thị Minh Khai, Phường 2, Quận 3, TP. Hồ Chí Minh</span>
+              <span>
+                466 Nguyen Thi Minh Khai, Ward 2, District 3, Ho Chi Minh City
+              </span>
             </div>
             <div className="contact-detail">
               <FaMapMarkerAlt />
-              <span>106 Thiên Phước, Phường 9, Tân Bình, TP. Hồ Chí Minh</span>
+              <span>106 Thien Phuoc, Ward 9, Tan Binh, Ho Chi Minh City</span>
             </div>
             <div className="contact-detail">
               <FaPhone />
               <span>028 3868 5509 - 028 3868 5507</span>
             </div>
           </div>
-          
+
           <div className="contact-item">
-            <h4>Bệnh viện BTH</h4>
+            <h4>Truyen Mau Huyet Hoc Hospital</h4>
             <div className="contact-detail">
               <FaMapMarkerAlt />
-              <span>118 Đ. Hồng Bàng, Phường 12, Quận 5, TP. Hồ Chí Minh</span>
+              <span>118 Hong Bang Street, Ward 12, District 5, Ho Chi Minh City</span>
             </div>
             <div className="contact-detail">
               <FaPhone />
               <span>028 39571342 - 028 39557858</span>
             </div>
           </div>
-          
+
           <div className="contact-item">
-            <h4>Trung tâm truyền máu Chợ Rẫy</h4>
+            <h4>Cho Ray Blood Transfusion Center</h4>
             <div className="contact-detail">
               <FaMapMarkerAlt />
-              <span>56 Phạm Hữu Chí, Phường 12, Quận 5, TP. Hồ Chí Minh</span>
+              <span>56 Pham Huu Chi, Ward 12, District 5, Ho Chi Minh City</span>
             </div>
             <div className="contact-detail">
               <FaPhone />
@@ -60,22 +75,36 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        
+
         <div className="footer-column">
-          <h3>Liên kết nhanh</h3>
+          <h3>Quick Links</h3>
           <ul className="footer-links">
-            <li><a href="/">Trang chủ</a></li>
-            <li><a href="/blood-donation-schedule">Lịch hiến máu</a></li>
-            <li><a href="/blood-registration">Đăng ký hiến máu</a></li>
-            <li><a href="/information">Thông tin hiến máu</a></li>
-            <li><a href="/about">Về chúng tôi</a></li>
+            <li>
+              <a href="/">Home</a>
+            </li>
+            <li>
+              <a href="/blood-donation-schedule">Donation Schedule</a>
+            </li>
+            <li>
+              <a href="/blood-registration">Register to Donate</a>
+            </li>
+            <li>
+              <a href="/information">Donation Information</a>
+            </li>
+            <li>
+              <a href="/about">About Us</a>
+            </li>
           </ul>
         </div>
       </div>
-      
+
       <div className="footer-bottom">
-        <p>&copy; 2025 Trung tâm Hiến máu Nhân đạo Việt Nam. Tất cả quyền được bảo lưu.</p>
-        <div className="heart-icon"><FaHeart /></div>
+        <p>
+          &copy; 2025 Vietnam Humanitarian Blood Donation Center. All rights reserved.
+        </p>
+        <div className="heart-icon">
+          <FaHeart />
+        </div>
       </div>
     </footer>
   );
