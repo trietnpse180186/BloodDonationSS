@@ -21,39 +21,20 @@ import {
   virusFill,
 } from "../../icons/icon";
 import Footer from "../../components/footer";
-import { toast } from "react-toastify";
 
 export default function HomePage() {
   return (
     <>
-      <div
-        data-aos="fade-up"
-        data-aos-duration="500"
-        data-aos-delay="100"
-        className="home-page"
-      >
+      <Navbar />
+      <div className="home-page">
         <div className="group-header">
-          {/*Navbar */}
-          <Navbar />
-          {/*body */}
           <div className="text-wrapper2">
-            <div
-              className="wrapper-img"
-              data-aos="fade-left"
-              data-aos-duration="700"
-              data-aos-delay="100"
-            >
-              <img className="bannerHome" alt="Jimeng" src={bannerHome} />
+            <div className="wrapper-img">
+              <img className="bannerHome" alt="Home banner" src={bannerHome} />
             </div>
-            <div
-              className="wrapper-content"
-              data-aos="slide-right"
-              data-aos-duration="700"
-              data-aos-delay="100"
-            >
+            <div className="wrapper-content">
               <h2>GIVE THE GIFT </h2>
               <p className="p-wrapper-content">OF THE LIFE </p>
-
               <p className="p-content">
                 Every time you donate blood, you're not just giving a part of
                 yourself you're giving someone a second chance at life, a future
@@ -68,7 +49,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
         <div className="overlap-group2">
           <h3 className="text-center-group2">Benefits of Blood Donation</h3>
 
@@ -99,7 +79,6 @@ export default function HomePage() {
             Check Available Times ⟶
           </Link>
         </div>
-
         <div className="content-donor">
           <div className="img-content-donor">
             <img className="content-donor-img" alt="Jimeng" src={NHSBlood} />
@@ -124,7 +103,6 @@ export default function HomePage() {
         <div>
           <p>[......]</p>
         </div>
-
         <div className="overlap-group3">
           <p className="overlap-group3-title">
             Health and Age Criteria for Blood Donors
@@ -190,7 +168,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
         <div className="overlap-group4">
           <div className="overlap-group4-content1">
             <div>
