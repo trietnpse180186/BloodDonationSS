@@ -32,12 +32,13 @@
   align-items: center;
 }
 
+
 .dropdown-menu {
   background: #fff;
   border-radius: 8px;
   border: 1px solid #db230b22;
   box-shadow: 0 2px 12px rgba(156, 32, 32, 0.08);
-}
+
 
 .dropdown-item {
   color: #b30000 !important;
