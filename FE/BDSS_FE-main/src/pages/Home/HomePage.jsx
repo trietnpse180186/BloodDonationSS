@@ -100,9 +100,108 @@ export default function HomePage() {
             </a>
           </div>
         </div>
-        <div>
-          <p>[......]</p>
+
+        {/* Step donation blood */}
+        <div className="donation_step">
+          <p className="donation_step_title">How to donate blood</p>
+          <div class="vertical-step">
+            <div class="arrow-box-first" style={{ backgroundColor: "#4E120D" }}>
+              <div class="step-label">
+                <p class="step-number">Step 1</p>
+              </div>
+            </div>
+            <div class="step-details">
+              <p>Registration & ID check</p>
+              <ul>
+                <li>
+                  You’ll sign in, show your ID, and read some information about
+                  donation.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="vertical-step">
+            <div class="arrow-box" style={{ backgroundColor: "#691710" }}>
+              <div class="step-label">
+                <p class="step-number">Step 2</p>
+              </div>
+            </div>
+            <div class="step-details">
+              <p>Health screening</p>
+              <ul>
+                <li>
+                  Complete a confidential interview and check temperature,
+                  pulse, blood pressure, and hemoglobin.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="vertical-step">
+            <div class="arrow-box" style={{ backgroundColor: "#871F16" }}>
+              <div class="step-label">
+                <p class="step-number">Step 3</p>
+              </div>
+            </div>
+            <div class="step-details">
+              <p>Medical eligibility</p>
+              <ul>
+                <li>
+                  Staff review your health history and confirm if you're
+                  eligible to donate.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="vertical-step">
+            <div class="arrow-box" style={{ backgroundColor: "#A2261B" }}>
+              <div class="step-label">
+                <p class="step-number">Step 4</p>
+              </div>
+            </div>
+            <div class="step-details">
+              <p>Blood collection</p>
+              <ul>
+                <li>
+                  Your arm is cleaned, the sterile needle is inserted, and blood
+                  is drawn (usually ~8–15 minutes for whole blood).
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="vertical-step">
+            <div class="arrow-box" style={{ backgroundColor: "#BF2E20" }}>
+              <div class="step-label">
+                <p class="step-number">Step 5</p>
+              </div>
+            </div>
+            <div class="step-details">
+              <p>Refreshment & observation</p>
+              <ul>
+                <li>
+                  After donation, enjoy snacks and drinks for about 10–15
+                  minutes before leaving.
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="vertical-step">
+            <div class="arrow-box" style={{ backgroundColor: "#DB3626" }}>
+              <div class="step-label">
+                <p class="step-number">Step 6</p>
+              </div>
+            </div>
+            <div class="step-details">
+              <p>Post‑donation care</p>
+              <ul>
+                <li>
+                  Keep the bandage on, avoid heavy activities for a few hours,
+                  hydrate well, and eat iron-rich foods.{" "}
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
+        {/* Health and Age Criteria for Blood Donors */}
         <div className="overlap-group3">
           <p className="overlap-group3-title">
             Health and Age Criteria for Blood Donors

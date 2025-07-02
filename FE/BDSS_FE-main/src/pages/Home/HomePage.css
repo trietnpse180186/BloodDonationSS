@@ -89,6 +89,7 @@
 }
 
 .text-wrapper-button:hover {
+  text-decoration: none;
   color: rgb(255, 255, 255);
   background-color: rgb(0, 0, 0);
   transition: 0.1s;
@@ -135,7 +136,39 @@
   }
 }
 
-/* Group2 */
+/*  Statement Under group 2 */
+.stats-container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 40px 0;
+}
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 250px;
+  padding: 20px;
+  background-color: #a2a2a241;
+  border-radius: 10px;
+}
+.stat-number {
+  font-size: 3em;
+  font-family: "Inter", sans-serif;
+  font-weight: 800;
+  color: rgb(164, 10, 10);
+  /* -webkit-text-stroke: 2px #e30b03;
+  text-stroke: 3px #a32823; */
+}
+.stat-label {
+  font-size: 0.9em;
+  color: #000000;
+  font-weight: bold;
+}
+
+/* Group2 Benefits..... */
+
 .overlap-group2 {
   display: flex;
   align-items: center;
@@ -202,6 +235,7 @@
   font-size: 1.8em;
 }
 .button-wrapper3:hover {
+  text-decoration: none;
   color: #921d13;
 }
 
@@ -272,6 +306,7 @@
   border: 1px solid white;
 }
 .a-text-content-donor:hover {
+  text-decoration: none;
   color: #ffffff;
   background-color: #850c0c;
   border: 1px solid rgb(250, 250, 250);
@@ -326,6 +361,77 @@
     font-size: 1em;
   }
 }
+/* Step Donation Blood */
+.donation_step {
+  margin: 50px 30px;
+}
+.donation_step_title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 3em;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 30px;
+}
+.vertical-step {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 5px;
+  margin-left: 40vh;
+}
+.arrow-box-first {
+  position: relative;
+  width: 150px;
+  padding: 30px 15px;
+  clip-path: polygon(0 0, 100% 0%, 100% 80%, 50% 100%, 0 80%);
+  text-align: center;
+  font-family: sans-serif;
+}
+.arrow-box {
+  position: relative;
+  width: 150px;
+  padding: 30px 15px;
+  clip-path: polygon(0% 0%, 50% 15%, 100% 0%, 100% 85%, 50% 100%, 0% 85%);
+  text-align: center;
+  font-family: sans-serif;
+}
+
+.step-label .step-number {
+  font-weight: bold;
+  font-size: 1.4em;
+  color: rgb(255, 255, 255);
+  margin: 0;
+}
+
+.step-label .step-title {
+  font-size: 1em;
+  margin: 0;
+}
+
+.step-details {
+  margin-left: 20px;
+  padding-top: 10px;
+  font-family: sans-serif;
+}
+.step-details p {
+  margin: 0;
+  padding-left: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.step-details ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.step-details li {
+  margin-bottom: 5px;
+  width: 400px;
+  font-size: 15px;
+}
+
 /* Group3 */
 .overlap-group3 {
   margin: 60px 0;
@@ -513,4 +619,34 @@
   display: flex;
   margin-top: 10px;
   font-size: 1.1em;
+}
+
+.overlap-group4 {
+  display: flex;
+  flex-direction: column;
+  margin: 60px 40px;
+}
+.overlap-group4 h2 {
+  display: flex;
+  align-items: center;
+  color: #ad0000;
+  font-size: 3em;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.list-ul1-group4 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 50px;
+}
+
+.list-ul1-group4 li {
+  margin-bottom: 25px;
+  width: 97%;
+  height: 40px;
+  border-bottom: 1px solid #ccc;
+  font-size: 1.2em;
+  color: #000000;
 }

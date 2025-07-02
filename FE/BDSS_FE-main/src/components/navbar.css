@@ -48,6 +48,11 @@
 .dropdown-item:focus {
   background: #ffe2e2 !important;
   color: #db230b !important;
+.navbar-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1px;
 }
 
 .custom-toggle,
