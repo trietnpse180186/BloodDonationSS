@@ -17,19 +17,9 @@ import java.util.List;
 public class ScheduleDonationResponse {
     private String scheduleId;
     private String center;
-    private String location;
-    private String date;
-    private List<TimeSlotDto> timeSlots;
-    private Integer donorCount;
-    private String updateBy;
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TimeSlotDto {
-        private Long id;
-        private String startTime;
-        private String endTime;
-    }
+    private String location; // =address
+    private String date; // yyyy-MM-dd
+    private List<TimeSlotResponse> timeSlots;
+    private Integer donorCount; // nhan gia tri tu numberOfDonor trong entity
+    private String updateBy; // ten dang nhap cua nguoi cap nhat cuoi cung
 }
