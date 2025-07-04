@@ -12,4 +12,6 @@ import java.util.List;
 public interface BookingDonationRepository extends JpaRepository<BookingDonation, String> {
     List<BookingDonation> findByDonor(User donor);
     List<BookingDonation> findByScheduleDonation(ScheduleDonation scheduleDonation);
+
+    int countByScheduleDonation(ScheduleDonation scheduleDonation);
 }

@@ -1,7 +1,6 @@
 .home-page {
   width: 100%;
   margin: 0 auto;
-  height: 100vh;
   font-family: "Roboto", sans-serif;
 }
 
@@ -11,13 +10,20 @@
   max-width: 100%;
 }
 
+.wrapper-img {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
 .wrapper-img img {
-  display: block;
-  margin: 0 0;
-  min-width: 100%;
-  height: 680px;
+  width: 100%;
+  max-width: 100vw;
+  height: auto;
+  min-height: 550px;
+  max-height: 87vh;
   object-fit: cover;
   object-position: top;
+  display: block;
 }
 
 .wrapper-img::after {
@@ -34,12 +40,12 @@
 
 .wrapper-content {
   position: absolute;
-  top: 70px;
-  left: 40px;
-  width: 34.33%;
+  top: 8vw;
+  left: 5vw;
+  width: 38vw;
+  min-width: 220px;
+  max-width: 90vw;
   color: white;
-  //background-color: rgba(0, 0, 0, 0.5);
-  padding: 20px;
   border-radius: 8px;
 }
 
@@ -54,16 +60,17 @@
   font-size: 2.5em;
   font-family: "Inter", sans-serif;
   font-weight: 900;
-  //color: rgb(91, 69, 69);
   color: #000000;
   letter-spacing: 2px;
 }
 
 .p-content {
-  font-size: 1em;
+  font-size: 1.2em;
   line-height: 1.5;
-  margin-top: 50px;
+  margin-top: 30px;
   color: rgb(255, 255, 255);
+  text-shadow: 1px 1px 2px #0000006c;
+  padding-right: 100px;
 }
 
 .text-wrapper-button {
@@ -75,10 +82,12 @@
   margin-top: 20px;
   color: rgb(255, 255, 255);
   background-color: rgb(159, 3, 3);
-  width: 120px;
-  height: 40px;
+
+  width: 130px;
+  height: 50px;
+
   border-radius: 1px;
-  box-shadow: 0 0 5px rgb(191, 10, 10), 0 0 25px rgb(201, 3, 3);
+  box-shadow: 0 0 5px rgb(191, 10, 10), 0 0 5px rgb(201, 3, 3);
 }
 
 .text-wrapper-button:hover {
@@ -87,6 +96,46 @@
   background-color: rgb(0, 0, 0);
   transition: 0.1s;
   box-shadow: 0 0 5px rgb(0, 0, 0), 0 0 25px rgb(0, 0, 0);
+}
+@media (max-width: 1100px) {
+  .wrapper-content {
+    position: absolute;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.66);
+    padding: 12px 8px;
+    border-radius: 12px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+  }
+  .p-content {
+    padding: 0;
+  }
+  .p-wrapper-content {
+    text-shadow: 1px 1px 2px #fefefe;
+  }
+  .wrapper-img {
+    min-height: 160px;
+  }
+  .bannerHome {
+    min-height: 120px;
+    max-height: 32vh;
+  }
+}
+
+@media (max-width: 600px) {
+  .wrapper-content {
+    font-size: 0.95em;
+    padding: 20px 2vw;
+  }
+  .wrapper-content h2 {
+    font-size: 2em;
+  }
+  .p-wrapper-content {
+    font-size: 1.1em;
+  }
 }
 
 
@@ -200,7 +249,7 @@
   justify-content: space-between;
   align-items: center;
   margin: 30px 0;
-  padding: 45px 30px;
+  padding: 100px 30px;
   background-color: #1d4a76;
 }
 .img-content-donor {
@@ -264,6 +313,57 @@
   color: #ffffff;
   background-color: #850c0c;
   border: 1px solid rgb(250, 250, 250);
+}
+
+@media (max-width: 1100px) {
+  .content-donor {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 24px 8px;
+    gap: 18px;
+  }
+  .img-content-donor {
+    margin: 10px auto;
+    margin-bottom: 12px;
+    max-width: 100%;
+  }
+  .text-content-donor {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .content-donor {
+    padding: 12px 2vw;
+    gap: 10px;
+  }
+  .img-content-donor {
+    padding: 10px 2px 6px 2px;
+    max-width: 250px;
+    margin: 10px auto;
+  }
+  .content-donor-img {
+    width: 200px;
+    height: 120px;
+  }
+  .p1-text-content-donor {
+    font-size: 1.5em;
+  }
+  .p2-text-content-donor {
+    font-size: 1.2em;
+    margin-top: 10px;
+  }
+  .p3-text-content-donor {
+    font-size: 1.1em;
+    margin-top: 5px;
+  }
+  .a-text-content-donor {
+    width: 90vw;
+    min-width: 120px;
+    height: 2rem;
+    font-size: 1em;
+  }
 }
 /* Step Donation Blood */
 .donation_step { 
@@ -348,6 +448,7 @@
   font-size: 15px;
 }
 
+
 /* Group3 */
 .overlap-group3 {
   margin: 60px 0;
@@ -413,6 +514,104 @@
 }
 .link-group3:hover {
   color: #921d13;
+}
+
+
+.group3-row1 {
+  background-color: chocolate;
+}
+.group3-row2 {
+  background-color: chartreuse;
+}
+@media (max-width: 1100px) {
+  .content-group3 {
+    flex-direction: column;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .content1-group3 {
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .img-content1-group3 {
+    margin-left: 7px;
+  }
+  .img-content1-group3 img {
+    width: 250px;
+    max-width: 100vw;
+  }
+  .sub1Content2-group3 {
+    margin: 0 auto;
+  }
+  .sub2Content2-group3 {
+    margin: 0 auto;
+  }
+}
+@media (max-width: 600px) {
+  .overlap-group3-title {
+    margin-left: 0;
+    font-size: 1.3em;
+    width: 100%;
+    text-align: center;
+  }
+  .content-group3 {
+    width: 100%;
+    max-width: 400px;
+    gap: 10px;
+  }
+  .img-content1-group3 {
+    width: 100%;
+    max-height: fit-content;
+  }
+
+  .sub1Content2-group3 {
+    display: flex;
+    flex-direction: column;
+  }
+  .overlap-group3-content {
+    padding: 10px 6px;
+    font-size: 0.98em;
+  }
+  .link-group3 {
+    font-size: 1em;
+    padding: 7px 12px;
+  }
+}
+/* Group4 */
+.overlap-group4 {
+  display: flex;
+  flex-direction: row;
+}
+.overlap-group4-content1 {
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  color: black;
+  background: white;
+  width: 100%;
+}
+.overlap-group4-content1 img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-left: 20px;
+  margin-right: 0;
+}
+.overlap-group4-content2 {
+  display: flex;
+  flex-direction: row-reverse; /* Đổi từ row thành row-reverse */
+  align-items: center;
+  padding: 20px;
+  color: white;
+  background: #1d4a76;
+  width: 100%;
+}
+
+.overlap-group4-content2 img {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin-right: 20px;
 }
 
 

@@ -1,3 +1,4 @@
+
 .navbar {
   position: relative;
   z-index: 2001;
@@ -26,59 +27,73 @@
   background-color: transparent;
   text-decoration: underline;
   transition: 0.3s ease-in-out;
+.navbar,
+.navbar.bg-dark,
+.navbar-dark {
+  background: rgb(156, 32, 32) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 12px rgba(156, 32, 
 }
 
-#dropdown-split-basic {
-  background-color: snow;
-  border: none;
-  color: rgb(14, 20, 20);
-}
-.fix-split-button {
-  display: inline-flex;
-  flex-direction: row;
-  align-items: center;
+.navbar .navbar-brand,
+.navbar .navbar-nav .nav-link,
+.navbar .navbar-nav .dropdown-toggle,
+.navbar .navbar-nav .dropdown-item {
+  color: #fff !important;
+  font-weight: 500;
+  font-size: 1.08em;
+  transition: color 0.15s;
 }
 
-.text-wrapper {
+.me-auto {
+  margin: 0 auto;
+  padding-left: 150px;
+  gap: 50px;
+  font-size: 1.3em;
+  text-align: center;
+}
+
+.navbar-brand {
+  margin-top: 0;
+}
+.navbar-nav {
   display: flex;
-  flex-direction: row;
   align-items: center;
-  justify-content: center;
-  font-family: "Roboto", sans-serif;
-  text-shadow: 1px 1px 3px rgba(122, 121, 121, 0.486);
-  gap: 10px;
-  margin-left: 30px;
-  margin-right: 30px;
-}
-.wrapper-link {
-  color: rgba(99, 101, 101, 0.705);
 }
 
-.navbar-item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1px;
+
+.dropdown-menu {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #db230b22;
+  box-shadow: 0 2px 12px rgba(156, 32, 32, 0.08);
+
+
+.dropdown-item {
+  color: #b30000 !important;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+}
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background: #ffe2e2 !important;
+  color: #db230b !important;
 }
 
-.wrapper-link {
-  color: white;
-  font-weight: bold;
-  font-family: "Nutito", sans-serif;
-  font-size: 1.4em;
-}
-.wrapper-link:hover {
-  color: white;
-  text-decoration: underline !important;
+.custom-toggle,
+#dropdown-notification {
+  background: none !important;
+  border: none !important;
+  color: #fff !important;
+  font-size: 1.5em !important;
+  box-shadow: none !important;
+  padding: 0 10px;
 }
 
-.wrapper-link-login {
-  border: none;
-  font-weight: bold;
-  font-family: "Nutito", sans-serif;
-  font-size: 20px;
-  padding: 5px 10px;
-}
-.wrapper-link-login:hover {
-  transition: 0.3s ease-in-out;
+@media (max-width: 991px) {
+  .navbar-collapse {
+    background: rgb(156, 32, 32) !important;
+    border-radius: 0 0 12px 12px;
+    padding-bottom: 12px;
+  }
 }
