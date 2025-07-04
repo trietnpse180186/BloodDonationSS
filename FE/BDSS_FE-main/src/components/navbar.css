@@ -1,10 +1,9 @@
-
 .navbar {
   position: relative;
   z-index: 2001;
   display: flex;
   padding: 0px 30px;
-  background-color: #CF4327;
+  background-color: #cf4327;
   min-height: 13vh;
 }
 .navbar-item {
@@ -27,19 +26,18 @@
   background-color: transparent;
   text-decoration: underline;
   transition: 0.3s ease-in-out;
+}
 .navbar,
 .navbar.bg-dark,
 .navbar-dark {
   background: rgb(156, 32, 32) !important;
   color: #fff !important;
-  box-shadow: 0 2px 12px rgba(156, 32, 
+  box-shadow: 0 2px 12px rgba(156, 32, 32, 0.08);
 }
-
 .navbar .navbar-brand,
 .navbar .navbar-nav .nav-link,
-.navbar .navbar-nav .dropdown-toggle,
-.navbar .navbar-nav .dropdown-item {
-  color: #fff !important;
+.navbar .navbar-nav .dropdown-toggle {
+  color: #ffffff !important;
   font-weight: 500;
   font-size: 1.08em;
   transition: color 0.15s;
@@ -62,26 +60,21 @@
 }
 
 .dropdown-menu {
-  background: #fff;
   border-radius: 8px;
-  border: 1px solid #db230b22;
-  box-shadow: 0 2px 12px rgba(156, 32, 32, 0.08);
 }
-.dropdown-item {
-  color: #b30000 !important;
-  font-weight: 500;
-  transition: background 0.15s, color 0.15s;
+.dropdown-item,
+.navbar .dropdown-item {
+  font-size: 1.1em;
+  padding: 8px 16px;
+  transition: background-color 0.15s, color 0.15s;
 }
+
 .dropdown-item:hover,
-.dropdown-item:focus {
+.dropdown-item:focus,
+.navbar .dropdown-item:hover,
+.navbar .dropdown-item:focus {
   background: #ffe2e2 !important;
   color: #db230b !important;
-  .navbar-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1px;
-  }
 }
 .custom-toggle,
 #dropdown-notification {
@@ -92,11 +85,42 @@
   box-shadow: none !important;
   padding: 0 10px;
 }
-
-@media (max-width: 991px) {
-  .navbar-collapse {
-    background: rgb(156, 32, 32) !important;
-    border-radius: 0 0 12px 12px;
-    padding-bottom: 12px;
+@media (max-width: 800px) {
+  .navbar {
+    flex-direction: column;
+    padding: 0 8px;
+    min-height: unset;
+  }
+  .navbar-item {
+    flex-direction: column;
+    gap: 18px;
+    margin: 0;
+    padding: 8px 0;
+    width: 100%;
+  }
+  .me-auto {
+    padding-left: 0;
+    gap: 10px;
+    font-size: 1em;
+    width: 100%;
+  }
+}
+@media (max-width: 500px) {
+  .navbar {
+    padding: 0 2vw;
+  }
+  .navbar-item {
+    gap: 8px;
+    padding: 4px 0;
+  }
+  .me-auto {
+    font-size: 0.95em;
+    gap: 6px;
+  }
+  .navbar .navbar-brand,
+  .navbar .navbar-nav .nav-link,
+  .navbar .navbar-nav .dropdown-toggle,
+  .navbar .navbar-nav .dropdown-item {
+    font-size: 0.98em;
   }
 }
