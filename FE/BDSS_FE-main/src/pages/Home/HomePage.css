@@ -366,24 +366,35 @@
   }
 }
 /* Step Donation Blood */
-.donation_step {
-  margin: 50px 30px;
+.donation_step { 
+ margin: 50px 0;
+}
+.donation-step-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+.donation_step_img img{
+ 
+  width: 90vh;
+  clip-path: polygon(10% 0, 100% 0%, 100% 100%, 0% 80%);
+  
 }
 .donation_step_title {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 3em;
+  font-size: 3.2em;
   font-weight: bold;
   color: #000000;
   margin-bottom: 30px;
-  
 }
 .vertical-step {
   display: flex;
   align-items: flex-start;
   margin-bottom: 5px;
-  margin-left: 40vh;
+  
 }
 .arrow-box-first {
   position: relative;
@@ -441,6 +452,9 @@
 /* Group3 */
 .overlap-group3 {
   margin: 60px 0;
+  padding: 35px 0;
+
+  background-color: #ccccccc8;
 }
 .overlap-group3-title {
   display: flex;
