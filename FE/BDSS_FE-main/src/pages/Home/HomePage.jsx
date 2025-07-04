@@ -50,7 +50,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
         <div class="stats-container">
           <div class="stat-item">
             <div class="stat-number">5.102+</div>
