@@ -74,7 +74,7 @@ export default function AppointmentDetail() {
     <>
       <Navbar />
       <div className="appointment-container">
-        <h2 className="appointment-title">Your Blood Donation Appointments</h2>
+        <h2 className="appointment-title">Donation Appointments</h2>
         {loading ? (
           <div className="appointment-loading">Loading data...</div>
         ) : error ? (

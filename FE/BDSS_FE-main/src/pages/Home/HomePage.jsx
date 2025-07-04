@@ -29,28 +29,27 @@ export default function HomePage() {
       <Navbar />
       <div className="home-page">
         <div className="group-header">
-          <div className="text-wrapper2">
-            <div className="wrapper-img">
+          <div className="group-header-slogan">
+            <div className="group-header-img">
               <img className="bannerHome" alt="Home banner" src={bannerHome} />
             </div>
-            <div className="wrapper-content">
+            <div className="group-header-title">
               <h2>GIVE THE GIFT </h2>
-              <p className="p-wrapper-content">OF THE LIFE </p>
-              <p className="p-content">
+              <p className="group-header-sub-title">OF THE LIFE </p>
+              <p className="group-header-content">
                 Every time you donate blood, you're not just giving a part of
                 yourself you're giving someone a second chance at life, a future
                 filled with hope, and the precious gift of more time with their
                 loved ones.
               </p>
-              <div className="wrapper-button">
-                <Link className="text-wrapper-button" to="/blood-registration">
+              <div className="group-header-btn">
+                <Link className="group-header-link" to="/blood-registration">
                   Give Blood
                 </Link>
               </div>
             </div>
           </div>
         </div>
-
         <div class="stats-container">
           <div class="stat-item">
             <div class="stat-number">5.102+</div>
@@ -98,25 +97,25 @@ export default function HomePage() {
             </li>
           </ul>
 
-          <Link to={"/schedule"} className="button-wrapper3">
+          <Link to={"/schedule"} className="section-link">
             Check Available Times ⟶
           </Link>
         </div>
-        <div className="content-donor">
-          <div className="img-content-donor">
-            <img className="content-donor-img" alt="Jimeng" src={NHSBlood} />
+        <div className="donor-highlight">
+          <div className="img-donor-highlight">
+            <img className="donor-highlight-img" alt="Jimeng" src={NHSBlood} />
             <p>England, Give platelets</p>
           </div>
-          <div className="text-content-donor">
-            <p className="p1-text-content-donor">White blood cell donation</p>
-            <p className="p2-text-content-donor">
+          <div className="text-donor-highlight">
+            <p className="p1-text-donor-highlight">White blood cell donation</p>
+            <p className="p2-text-donor-highlight">
               Bringing hope and life to cancer patients.
             </p>
-            <p className="p3-text-content-donor">
+            <p className="p3-text-donor-highlight">
               You can help save a life today
             </p>
             <a
-              className="a-text-content-donor"
+              className="a-text-donor-highlight"
               href="https://platelets.blood.co.uk/about-platelets/"
             >
               Learn about platelets
@@ -231,82 +230,86 @@ export default function HomePage() {
             </div>
             <div className="donation_step_img">
               <img src={BloodDonation} />
+
             </div>
           </div>
         </div>
         {/* Health and Age Criteria for Blood Donors */}
-        <div className="overlap-group3">
-          <p className="overlap-group3-title">
+        <div className="criteria-section">
+          <p className="criteria-section-title">
             Health and Age Criteria for Blood Donors
           </p>
-          <div className="content-group3">
-            <div className="content1-group3">
-              <img className="img-content1-group3" src={DRequirement} />
+          <div className="criteria-content">
+            <div className="criteria-image">
+              <img className="img-criteria-image" src={DRequirement} />
             </div>
-            <div className="content2-group3">
-              <div className="sub1Content2-group3">
-                <div className="overlap-group3-subContent1">
-                  <div className="overlap-group3-content">
+            <div className="criteria-list">
+              <div className="criteria-list-content">
+                <div className="criteria-list-left-content">
+                  <div className="criteria-section-content">
                     {capsulePill}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Not addicted to drugs, alcohol, or other stimulants
                     </p>
                   </div>
 
-                  <div className="overlap-group3-content">
+                  <div className="criteria-section-content">
                     {peopleFill}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Healthy individuals aged between 18 and 60 years
                     </p>
                   </div>
 
-                  <div className="overlap-group3-content">
+                  <div className="criteria-section-content">
                     {bodyFill}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Weight: Male ≥ 45 kg, Female ≥ 45 kg
                     </p>
                   </div>
                 </div>
-                <div className="overlap-group3-subContent2">
-                  <div className="overlap-group3-content">
+                <div className="criteria-list-right-content">
+                  <div className="criteria-section-content">
                     {virusFill}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Free from blood-borne infectious diseases
                     </p>
                   </div>
 
-                  <div className="overlap-group3-content">
+                  <div className="criteria-section-content">
                     {heartPulse}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       No chronic or acute conditions related to cardiovascular
                       system, blood pressure, liver, or respiratory system...
                     </p>
                   </div>
 
-                  <div className="overlap-group3-content">
+                  <div className="criteria-section-content">
                     {celenderIcon}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Minimum interval between two donations is 12 weeks for
                       both males and females
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="sub2Content2-group3">
-                <Link to={"/FAQ"} className="link-group3">
+              <div className="criteria-link-content">
+                <Link to={"/FAQ"} className="link-content">
                   See more ⟶
                 </Link>
               </div>
             </div>
           </div>
         </div>
-        <div className="overlap-group4">
-          <div className="overlap-group4-content1">
+
+        <div className="tips-section">
+          <div className="tips-before">
             <div>
-              <h2>Before donating blood</h2>
-              <ul className="list-ul1-group4" style={{ listStyleType: "none" }}>
+              <h2 style={{ color: "#DB230B", fontWeight: "bold" }}>
+                Before donating blood
+              </h2>
+              <ul style={{ listStyleType: "none" }}>
                 <li>
-                  1. Avoid staying up late the night before (get at least 6
+                   1. Avoid staying up late the night before (get at least 6
                   hours of sleep).
                 </li>
                 <li>
@@ -319,10 +322,12 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
-          <div className="overlap-group4-content2">
+          <div className="tips-after">
             <div>
-              <h2>After donating blood</h2>
-              <ul className="list-ul1-group4" style={{ listStyleType: "none" }}>
+              <h2 style={{ color: "#F6AD00", fontWeight: "bold" }}>
+                After donating blood
+              </h2>
+              <ul style={{ listStyleType: "none" }}>
                 <li>1. Drink plenty of water.</li>
                 <li>2. Rest at the donation site for at least 15 minutes.</li>
                 <li>3. Leave only when you feel fully recovered.</li>

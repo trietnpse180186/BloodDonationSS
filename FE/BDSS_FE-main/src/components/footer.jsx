@@ -56,6 +56,7 @@ export default function Footer() {
             <div className="contact-detail">
               <FaMapMarkerAlt />
               <span>118 Hong Bang Street, Ward 12, District 5, Ho Chi Minh City</span>
+
             </div>
             <div className="contact-detail">
               <FaPhone />
@@ -100,7 +101,9 @@ export default function Footer() {
 
       <div className="footer-bottom">
         <p>
+
           &copy; 2025 Vietnam Humanitarian Blood Donation Center. All rights reserved.
+
         </p>
         <div className="heart-icon">
           <FaHeart />
