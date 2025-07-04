@@ -28,31 +28,31 @@ export default function HomePage() {
       <Navbar />
       <div className="home-page">
         <div className="group-header">
-          <div className="text-wrapper2">
-            <div className="wrapper-img">
+          <div className="group-header-slogan">
+            <div className="group-header-img">
               <img className="bannerHome" alt="Home banner" src={bannerHome} />
             </div>
-            <div className="wrapper-content">
+            <div className="group-header-title">
               <h2>GIVE THE GIFT </h2>
-              <p className="p-wrapper-content">OF THE LIFE </p>
-              <p className="p-content">
+              <p className="group-header-sub-title">OF THE LIFE </p>
+              <p className="group-header-content">
                 Every time you donate blood, you're not just giving a part of
                 yourself you're giving someone a second chance at life, a future
                 filled with hope, and the precious gift of more time with their
                 loved ones.
               </p>
-              <div className="wrapper-button">
-                <Link className="text-wrapper-button" to="/blood-registration">
+              <div className="group-header-btn">
+                <Link className="group-header-link" to="/blood-registration">
                   Give Blood
                 </Link>
               </div>
             </div>
           </div>
         </div>
-        <div className="overlap-group2">
-          <h3 className="text-center-group2">Benefits of Blood Donation</h3>
+        <div className="benefits-section">
+          <h3 className="section-title">Benefits of Blood Donation</h3>
 
-          <ul className="text-wrapper3">
+          <ul className="benefits-list">
             <li>
               <img src={benefit1} alt="Benefit 1" className="benefit-icon" />
               <h5>Who can your blood save?</h5>
@@ -75,25 +75,25 @@ export default function HomePage() {
             </li>
           </ul>
 
-          <Link to={"/schedule"} className="button-wrapper3">
+          <Link to={"/schedule"} className="section-link">
             Check Available Times ⟶
           </Link>
         </div>
-        <div className="content-donor">
-          <div className="img-content-donor">
-            <img className="content-donor-img" alt="Jimeng" src={NHSBlood} />
+        <div className="donor-highlight">
+          <div className="img-donor-highlight">
+            <img className="donor-highlight-img" alt="Jimeng" src={NHSBlood} />
             <p>England, Give platelets</p>
           </div>
-          <div className="text-content-donor">
-            <p className="p1-text-content-donor">White blood cell donation</p>
-            <p className="p2-text-content-donor">
+          <div className="text-donor-highlight">
+            <p className="p1-text-donor-highlight">White blood cell donation</p>
+            <p className="p2-text-donor-highlight">
               Bringing hope and life to cancer patients.
             </p>
-            <p className="p3-text-content-donor">
+            <p className="p3-text-donor-highlight">
               You can help save a life today
             </p>
             <a
-              className="a-text-content-donor"
+              className="a-text-donor-highlight"
               href="https://platelets.blood.co.uk/about-platelets/"
             >
               Learn about platelets
@@ -102,216 +102,216 @@ export default function HomePage() {
         </div>
 
         {/* Step donation blood */}
-        <div className="donation_step">
-          <p className="donation_step_title">How to donate blood</p>
-          <div class="vertical-step">
-            <div class="arrow-box-first" style={{ backgroundColor: "#4E120D" }}>
-              <div class="step-label">
-                <p class="step-number">Step 1</p>
+        <div className="donation-steps-section">
+          <p className="donation-steps-section_title">How to donate blood</p>
+          <div className="donation-steps-section_details">
+            <div class="step-item">
+              <div
+                class="arrow-box-first"
+                style={{ backgroundColor: "#4E120D" }}
+              >
+                <div class="step-label">
+                  <p class="step-number">Step 1</p>
+                </div>
+              </div>
+              <div class="step-details">
+                <p>Registration & ID check</p>
+                <ul>
+                  <li>
+                    You’ll sign in, show your ID, and read some information
+                    about donation.
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="step-details">
-              <p>Registration & ID check</p>
-              <ul>
-                <li>
-                  You’ll sign in, show your ID, and read some information about
-                  donation.
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="vertical-step">
-            <div class="arrow-box" style={{ backgroundColor: "#691710" }}>
-              <div class="step-label">
-                <p class="step-number">Step 2</p>
+            <div class="step-item">
+              <div class="arrow-box" style={{ backgroundColor: "#691710" }}>
+                <div class="step-label">
+                  <p class="step-number">Step 2</p>
+                </div>
+              </div>
+              <div class="step-details">
+                <p>Health screening</p>
+                <ul>
+                  <li>
+                    Complete a confidential interview and check temperature,
+                    pulse, blood pressure, and hemoglobin.
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="step-details">
-              <p>Health screening</p>
-              <ul>
-                <li>
-                  Complete a confidential interview and check temperature,
-                  pulse, blood pressure, and hemoglobin.
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="vertical-step">
-            <div class="arrow-box" style={{ backgroundColor: "#871F16" }}>
-              <div class="step-label">
-                <p class="step-number">Step 3</p>
+            <div class="step-item">
+              <div class="arrow-box" style={{ backgroundColor: "#871F16" }}>
+                <div class="step-label">
+                  <p class="step-number">Step 3</p>
+                </div>
+              </div>
+              <div class="step-details">
+                <p>Medical eligibility</p>
+                <ul>
+                  <li>
+                    Staff review your health history and confirm if you're
+                    eligible to donate.
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="step-details">
-              <p>Medical eligibility</p>
-              <ul>
-                <li>
-                  Staff review your health history and confirm if you're
-                  eligible to donate.
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="vertical-step">
-            <div class="arrow-box" style={{ backgroundColor: "#A2261B" }}>
-              <div class="step-label">
-                <p class="step-number">Step 4</p>
+            <div class="step-item">
+              <div class="arrow-box" style={{ backgroundColor: "#A2261B" }}>
+                <div class="step-label">
+                  <p class="step-number">Step 4</p>
+                </div>
+              </div>
+              <div class="step-details">
+                <p>Blood collection</p>
+                <ul>
+                  <li>
+                    Your arm is cleaned, the sterile needle is inserted, and
+                    blood is drawn (usually ~8–15 minutes for whole blood).
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="step-details">
-              <p>Blood collection</p>
-              <ul>
-                <li>
-                  Your arm is cleaned, the sterile needle is inserted, and blood
-                  is drawn (usually ~8–15 minutes for whole blood).
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="vertical-step">
-            <div class="arrow-box" style={{ backgroundColor: "#BF2E20" }}>
-              <div class="step-label">
-                <p class="step-number">Step 5</p>
+            <div class="step-item">
+              <div class="arrow-box" style={{ backgroundColor: "#BF2E20" }}>
+                <div class="step-label">
+                  <p class="step-number">Step 5</p>
+                </div>
+              </div>
+              <div class="step-details">
+                <p>Refreshment & observation</p>
+                <ul>
+                  <li>
+                    After donation, enjoy snacks and drinks for about 10–15
+                    minutes before leaving.
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="step-details">
-              <p>Refreshment & observation</p>
-              <ul>
-                <li>
-                  After donation, enjoy snacks and drinks for about 10–15
-                  minutes before leaving.
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="vertical-step">
-            <div class="arrow-box" style={{ backgroundColor: "#DB3626" }}>
-              <div class="step-label">
-                <p class="step-number">Step 6</p>
+            <div class="step-item">
+              <div class="arrow-box" style={{ backgroundColor: "#DB3626" }}>
+                <div class="step-label">
+                  <p class="step-number">Step 6</p>
+                </div>
               </div>
-            </div>
-            <div class="step-details">
-              <p>Post‑donation care</p>
-              <ul>
-                <li>
-                  Keep the bandage on, avoid heavy activities for a few hours,
-                  hydrate well, and eat iron-rich foods.{" "}
-                </li>
-              </ul>
+              <div class="step-details">
+                <p>Post‑donation care</p>
+                <ul>
+                  <li>
+                    Keep the bandage on, avoid heavy activities for a few hours,
+                    hydrate well, and eat iron-rich foods.{" "}
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
         {/* Health and Age Criteria for Blood Donors */}
-        <div className="overlap-group3">
-          <p className="overlap-group3-title">
+        <div className="criteria-section">
+          <p className="criteria-section-title">
             Health and Age Criteria for Blood Donors
           </p>
-          <div className="content-group3">
-            <div className="content1-group3">
-              <img className="img-content1-group3" src={DRequirement} />
+          <div className="criteria-content">
+            <div className="criteria-image">
+              <img className="img-criteria-image" src={DRequirement} />
             </div>
-            <div className="content2-group3">
-              <div className="sub1Content2-group3">
-                <div className="overlap-group3-subContent1">
-                  <div className="overlap-group3-content">
+            <div className="criteria-list">
+              <div className="criteria-list-content">
+                <div className="criteria-list-left-content">
+                  <div className="criteria-section-content">
                     {capsulePill}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Not addicted to drugs, alcohol, or other stimulants
                     </p>
                   </div>
 
-                  <div className="overlap-group3-content">
+                  <div className="criteria-section-content">
                     {peopleFill}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Healthy individuals aged between 18 and 60 years
                     </p>
                   </div>
 
-                  <div className="overlap-group3-content">
+                  <div className="criteria-section-content">
                     {bodyFill}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Weight: Male ≥ 45 kg, Female ≥ 45 kg
                     </p>
                   </div>
                 </div>
-                <div className="overlap-group3-subContent2">
-                  <div className="overlap-group3-content">
+                <div className="criteria-list-right-content">
+                  <div className="criteria-section-content">
                     {virusFill}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Free from blood-borne infectious diseases
                     </p>
                   </div>
 
-                  <div className="overlap-group3-content">
+                  <div className="criteria-section-content">
                     {heartPulse}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       No chronic or acute conditions related to cardiovascular
                       system, blood pressure, liver, or respiratory system...
                     </p>
                   </div>
 
-                  <div className="overlap-group3-content">
+                  <div className="criteria-section-content">
                     {celenderIcon}
-                    <p className="text-wrapper-group3">
+                    <p className="criteria-sub-content">
                       Minimum interval between two donations is 12 weeks for
                       both males and females
                     </p>
                   </div>
                 </div>
               </div>
-              <div className="sub2Content2-group3">
-                <Link to={"/FAQ"} className="link-group3">
+              <div className="criteria-link-content">
+                <Link to={"/FAQ"} className="link-content">
                   See more ⟶
                 </Link>
               </div>
             </div>
           </div>
         </div>
-        <div className="overlap-group4">
-          <div className="overlap-group4-content1">
-            <div>
-              <img
-                src="https://i.pinimg.com/736x/69/f6/c6/69f6c6abd053ff2ec366fb05905248e1.jpg"
-                alt=""
-              />
-            </div>
+        <div className="tips-section">
+          <div className="tips-before">
             <div>
               <h2 style={{ color: "#DB230B", fontWeight: "bold" }}>
-                Trước khi hiến máu
+                Before donating blood
               </h2>
               <ul style={{ listStyleType: "none" }}>
                 <li>
-                  Đêm trước khi hiến máu không nên thức quá khuya (ngủ ít nhất 6
-                  tiếng).
+                  The night before donating blood, you should not stay up too
+                  late (sleep at least 6 hours).
                 </li>
-                <li>Nên ăn nhẹ, không ăn các đồ ăn có nhiều đạm, nhiều mỡ.</li>
-                <li>Chuẩn bị tâm lý thực sự thoải mái.</li>
-                <li>Mang theo giấy tờ tùy thân.</li>
-                <li>Không uống rượu, bia.</li>
-                <li>Uống nhiều nước.</li>
+                <li>
+                  You should eat light, avoiding foods high in protein and fat.
+                </li>
+                <li>Prepare your mind to be truly comfortable.</li>
+                <li>Bring personal identification.</li>
+                <li>Avoid alcohol and beer.</li>
+                <li>Drink plenty of water.</li>
               </ul>
             </div>
           </div>
-          <div className="overlap-group4-content2">
-            <div>
-              <img
-                src="https://i.pinimg.com/736x/aa/de/7a/aade7a2735cb09f9b7748da0247084d5.jpg"
-                alt=""
-              />
-            </div>
+          <div className="tips-after">
             <div>
               <h2 style={{ color: "#F6AD00", fontWeight: "bold" }}>
-                Sau khi hiến máu
+                After donating blood
               </h2>
               <ul style={{ listStyleType: "none" }}>
-                <li>Uống nhiều nước.</li>
-                <li>Nghỉ tại điểm hiến máu tối thiểu 15 phút.</li>
-                <li>Chỉ ra về khi cảm thấy thực sự thoải mái.</li>
-                <li>Duỗi thẳng, hơi nâng cao cánh tay trong 15 phút.</li>
-                <li>Hạn chế gập tay trong quá trình nghỉ sau hiến máu.</li>
+                <li>Drink plenty of water.</li>
+                <li>Rest at the donation site for at least 15 minutes.</li>
+                <li>Only leave when you feel truly comfortable.</li>
                 <li>
-                  Nếu vết băng cầm máu chảy máu, hãy nâng tay lên, ấn nhẹ vào
-                  vết bông, ngồi xuống và báo nhân viên y tế hỗ trợ.
+                  Keep your arm straight and slightly elevated for 15 minutes.
+                </li>
+                <li>
+                  Avoid bending your arm during the post-donation rest period.
+                </li>
+                <li>
+                  If the bandage is bleeding, raise your arm, apply gentle
+                  pressure to the cotton ball, sit down, and inform the medical
+                  staff for assistance.
                 </li>
               </ul>
             </div>
