@@ -15,8 +15,8 @@ export default function Footer() {
         <div className="footer-column main-column">
           <h2>Humanitarian Blood Donation Center</h2>
           <p className="footer-description">
-            A place to connect compassionate hearts. Every drop of donated blood
-            is a priceless gift of life.
+            A place to connect kind hearts — every drop of donated blood is a
+            priceless gift that brings life.
           </p>
           <div className="social-icons">
             <a href="#">
@@ -53,11 +53,11 @@ export default function Footer() {
           </div>
 
           <div className="contact-item">
-            <h4>BTH Hospital</h4>
+            <h4>Truyen Mau Huyet Hoc Hospital</h4>
             <div className="contact-detail">
               <FaMapMarkerAlt />
               <span>
-                118 Hong Bang St, Ward 12, District 5, Ho Chi Minh City
+                118 Hong Bang Street, Ward 12, District 5, Ho Chi Minh City
               </span>
             </div>
             <div className="contact-detail">

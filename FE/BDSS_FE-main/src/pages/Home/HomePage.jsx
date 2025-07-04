@@ -7,6 +7,7 @@ import benefit1 from "../../images/benefit1.jpg";
 import benefit2 from "../../images/benefit2.jpg";
 import benefit3 from "../../images/benefit3.jpg";
 import benefit4 from "../../images/benefit4.jpg";
+import BloodDonation from "../../images/BloodDonation.jpg";
 import DRequirement from "../../images/DRequirement.jpg";
 
 import { Link } from "react-router-dom";
@@ -49,10 +50,32 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div className="benefits-section">
-          <h3 className="section-title">Benefits of Blood Donation</h3>
 
-          <ul className="benefits-list">
+        <div class="stats-container">
+          <div class="stat-item">
+            <div class="stat-number">5.102+</div>
+            <div class="stat-label">Registered Donors</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number">1.427 L</div>
+            <div class="stat-label">Total Blood Donated</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number">45 min</div>
+            <div class="stat-label">Avg. Donation Time</div>
+          </div>
+
+          <div class="stat-item">
+            <div class="stat-number">7</div>
+            <div class="stat-label">Partner Hospitals</div>
+          </div>
+        </div>
+
+        <div className="overlap-group2">
+          <h3 className="text-center-group2">Benefits of Blood Donation</h3>
+          <ul className="text-wrapper3">
             <li>
               <img src={benefit1} alt="Benefit 1" className="benefit-icon" />
               <h5>Who can your blood save?</h5>
@@ -102,107 +125,112 @@ export default function HomePage() {
         </div>
 
         {/* Step donation blood */}
-        <div className="donation-steps-section">
-          <p className="donation-steps-section_title">How to donate blood</p>
-          <div className="donation-steps-section_details">
-            <div class="step-item">
-              <div
-                class="arrow-box-first"
-                style={{ backgroundColor: "#4E120D" }}
-              >
-                <div class="step-label">
-                  <p class="step-number">Step 1</p>
+        <div className="donation_step">
+          <p className="donation_step_title">How to donate blood</p>
+          <div className="donation-step-content">
+            <div className="donation_step_left">
+              <div class="vertical-step">
+                <div
+                  class="arrow-box-first"
+                  style={{ backgroundColor: "#4E120D" }}
+                >
+                  <div class="step-label">
+                    <p class="step-number">Step 1</p>
+                  </div>
+                </div>
+                <div class="step-details">
+                  <p>Registration & ID check</p>
+                  <ul>
+                    <li>
+                      You’ll sign in, show your ID, and read some information
+                      about donation.
+                    </li>
+                  </ul>
                 </div>
               </div>
-              <div class="step-details">
-                <p>Registration & ID check</p>
-                <ul>
-                  <li>
-                    You’ll sign in, show your ID, and read some information
-                    about donation.
-                  </li>
-                </ul>
+              <div class="vertical-step">
+                <div class="arrow-box" style={{ backgroundColor: "#691710" }}>
+                  <div class="step-label">
+                    <p class="step-number">Step 2</p>
+                  </div>
+                </div>
+                <div class="step-details">
+                  <p>Health screening</p>
+                  <ul>
+                    <li>
+                      Complete a confidential interview and check temperature,
+                      pulse, blood pressure, and hemoglobin.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="vertical-step">
+                <div class="arrow-box" style={{ backgroundColor: "#871F16" }}>
+                  <div class="step-label">
+                    <p class="step-number">Step 3</p>
+                  </div>
+                </div>
+                <div class="step-details">
+                  <p>Medical eligibility</p>
+                  <ul>
+                    <li>
+                      Staff review your health history and confirm if you're
+                      eligible to donate.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="vertical-step">
+                <div class="arrow-box" style={{ backgroundColor: "#A2261B" }}>
+                  <div class="step-label">
+                    <p class="step-number">Step 4</p>
+                  </div>
+                </div>
+                <div class="step-details">
+                  <p>Blood collection</p>
+                  <ul>
+                    <li>
+                      Your arm is cleaned, the sterile needle is inserted, and
+                      blood is drawn (usually ~8–15 minutes for whole blood).
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="vertical-step">
+                <div class="arrow-box" style={{ backgroundColor: "#BF2E20" }}>
+                  <div class="step-label">
+                    <p class="step-number">Step 5</p>
+                  </div>
+                </div>
+                <div class="step-details">
+                  <p>Refreshment & observation</p>
+                  <ul>
+                    <li>
+                      After donation, enjoy snacks and drinks for about 10–15
+                      minutes before leaving.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="vertical-step">
+                <div class="arrow-box" style={{ backgroundColor: "#DB3626" }}>
+                  <div class="step-label">
+                    <p class="step-number">Step 6</p>
+                  </div>
+                </div>
+                <div class="step-details">
+                  <p>Post‑donation care</p>
+                  <ul>
+                    <li>
+                      Keep the bandage on, avoid heavy activities for a few
+                      hours, hydrate well, and eat iron-rich foods.{" "}
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
-            <div class="step-item">
-              <div class="arrow-box" style={{ backgroundColor: "#691710" }}>
-                <div class="step-label">
-                  <p class="step-number">Step 2</p>
-                </div>
-              </div>
-              <div class="step-details">
-                <p>Health screening</p>
-                <ul>
-                  <li>
-                    Complete a confidential interview and check temperature,
-                    pulse, blood pressure, and hemoglobin.
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="arrow-box" style={{ backgroundColor: "#871F16" }}>
-                <div class="step-label">
-                  <p class="step-number">Step 3</p>
-                </div>
-              </div>
-              <div class="step-details">
-                <p>Medical eligibility</p>
-                <ul>
-                  <li>
-                    Staff review your health history and confirm if you're
-                    eligible to donate.
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="arrow-box" style={{ backgroundColor: "#A2261B" }}>
-                <div class="step-label">
-                  <p class="step-number">Step 4</p>
-                </div>
-              </div>
-              <div class="step-details">
-                <p>Blood collection</p>
-                <ul>
-                  <li>
-                    Your arm is cleaned, the sterile needle is inserted, and
-                    blood is drawn (usually ~8–15 minutes for whole blood).
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="arrow-box" style={{ backgroundColor: "#BF2E20" }}>
-                <div class="step-label">
-                  <p class="step-number">Step 5</p>
-                </div>
-              </div>
-              <div class="step-details">
-                <p>Refreshment & observation</p>
-                <ul>
-                  <li>
-                    After donation, enjoy snacks and drinks for about 10–15
-                    minutes before leaving.
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div class="step-item">
-              <div class="arrow-box" style={{ backgroundColor: "#DB3626" }}>
-                <div class="step-label">
-                  <p class="step-number">Step 6</p>
-                </div>
-              </div>
-              <div class="step-details">
-                <p>Post‑donation care</p>
-                <ul>
-                  <li>
-                    Keep the bandage on, avoid heavy activities for a few hours,
-                    hydrate well, and eat iron-rich foods.{" "}
-                  </li>
-                </ul>
-              </div>
+            <div className="donation_step_img">
+              <img src={BloodDonation} />
             </div>
           </div>
         </div>
@@ -280,16 +308,16 @@ export default function HomePage() {
               </h2>
               <ul style={{ listStyleType: "none" }}>
                 <li>
-                  The night before donating blood, you should not stay up too
-                  late (sleep at least 6 hours).
+                  1. Avoid staying up late the night before (get at least 6
+                  hours of sleep).
                 </li>
                 <li>
-                  You should eat light, avoiding foods high in protein and fat.
+                  2. Have a light meal, avoid fatty or high-protein foods.
                 </li>
-                <li>Prepare your mind to be truly comfortable.</li>
-                <li>Bring personal identification.</li>
-                <li>Avoid alcohol and beer.</li>
-                <li>Drink plenty of water.</li>
+                <li>3. Stay calm and mentally relaxed.</li>
+                <li>4. Bring a valid ID or personal identification.</li>
+                <li>5. Do not drink alcohol or beer.</li>
+                <li>6. Drink plenty of water.</li>
               </ul>
             </div>
           </div>
@@ -299,24 +327,25 @@ export default function HomePage() {
                 After donating blood
               </h2>
               <ul style={{ listStyleType: "none" }}>
-                <li>Drink plenty of water.</li>
-                <li>Rest at the donation site for at least 15 minutes.</li>
-                <li>Only leave when you feel truly comfortable.</li>
+                <li>1. Drink plenty of water.</li>
+                <li>2. Rest at the donation site for at least 15 minutes.</li>
+                <li>3. Leave only when you feel fully recovered.</li>
                 <li>
-                  Keep your arm straight and slightly elevated for 15 minutes.
+                  4. Keep your arm straight and slightly elevated for 15
+                  minutes.
                 </li>
+                <li>5. Avoid bending your arm too much while resting.</li>
+
                 <li>
-                  Avoid bending your arm during the post-donation rest period.
-                </li>
-                <li>
-                  If the bandage is bleeding, raise your arm, apply gentle
-                  pressure to the cotton ball, sit down, and inform the medical
-                  staff for assistance.
+                  6. If the bandaged site bleeds, raise your arm, press gently
+                  on the cotton, sit down, and inform medical staff for
+                  assistance.
                 </li>
               </ul>
             </div>
           </div>
         </div>
+
         {/*Footer*/}
         <Footer />
       </div>

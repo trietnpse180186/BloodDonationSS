@@ -1,9 +1,38 @@
+
+.navbar {
+  position: relative;
+  z-index: 2001;
+  display: flex;
+  padding: 0px 30px;
+  background-color: #CF4327;
+  min-height: 13vh;
+}
+.navbar-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 0px 100px;
+  padding: 5px;
+  gap: 70px;
+}
+.button-bell {
+  translate: 0px 3px;
+  color: white;
+  font-size: 1.5em;
+  background-color: transparent;
+  border: none;
+}
+.button-bell:hover {
+  background-color: transparent;
+  text-decoration: underline;
+  transition: 0.3s ease-in-out;
 .navbar,
 .navbar.bg-dark,
 .navbar-dark {
   background: rgb(156, 32, 32) !important;
   color: #fff !important;
-  box-shadow: 0 2px 12px rgba(156, 32, 32, 0.08);
+  box-shadow: 0 2px 12px rgba(156, 32, 
 }
 
 .navbar .navbar-brand,

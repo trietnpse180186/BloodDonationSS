@@ -5,9 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface ScheduleDonationRepository extends JpaRepository<ScheduleDonation, String> {
     Optional<ScheduleDonation> findByDateAndAddress(LocalDate date, String address);
+
+    List<ScheduleDonation> findByDateGreaterThanEqual(LocalDate date);
 }
