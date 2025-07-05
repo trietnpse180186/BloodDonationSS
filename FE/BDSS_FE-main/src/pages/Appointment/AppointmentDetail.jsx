@@ -20,7 +20,7 @@ export default function AppointmentDetail() {
         return <span className="status-confirmed">Approved</span>;
       case "CANCELLED":
         return <span className="status-cancelled">Cancelled</span>;
-      case "COMPLETE":
+      case "COMPLETED":
         return <span className="status-complete">Complete</span>;
     }
   };

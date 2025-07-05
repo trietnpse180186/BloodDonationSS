@@ -127,7 +127,9 @@ export default function AppNavbar() {
                       ))
                     )}
                     <Dropdown.Divider />
-                    <Dropdown.Item onClick={() => navigate("/notification")}>
+                    <Dropdown.Item
+                      onClick={() => navigate("/user-notification")}
+                    >
                       View all
                     </Dropdown.Item>
                   </Dropdown.Menu>
