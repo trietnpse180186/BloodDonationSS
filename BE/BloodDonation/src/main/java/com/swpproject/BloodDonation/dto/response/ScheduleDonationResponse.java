@@ -17,6 +17,7 @@ import java.util.List;
 public class ScheduleDonationResponse {
     private String scheduleId;
     private String center;
+<<<<<<< Updated upstream
     private String location;
     private String date;
     private List<TimeSlotDto> timeSlots;
@@ -32,4 +33,13 @@ public class ScheduleDonationResponse {
         private String startTime;
         private String endTime;
     }
+=======
+    private String location; // =address
+    private String date; // yyyy-MM-dd
+    private List<TimeSlotResponse> timeSlots;
+    private Integer donorCount; // nhan gia tri tu numberOfDonor trong entity
+    private String updateBy; // ten dang nhap cua nguoi cap nhat cuoi cung
+    private Integer currentDonorCount; // so luong nguoi da dang ky hien tai
+    private String registrationStatus; // thong tin dang ky (VD: "15/30 dang ky")
+>>>>>>> Stashed changes
 }
