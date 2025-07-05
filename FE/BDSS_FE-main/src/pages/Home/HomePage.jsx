@@ -50,31 +50,32 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-        <div class="stats-container">
-          <div class="stat-item">
-            <div class="stat-number">5.102+</div>
-            <div class="stat-label">Registered Donors</div>
-          </div>
+        <div className="stats-container">
+          <div className="stats-content">
+            <div className="stat-item">
+              <div className="stat-number">5.102+</div>
+              <div className="stat-label">Registered Donors</div>
+            </div>
+            <div className="stat-item">
+              <div className="stat-number">1.427 L</div>
+              <div className="stat-label">Total Blood Donated</div>
+            </div>
 
-          <div class="stat-item">
-            <div class="stat-number">1.427 L</div>
-            <div class="stat-label">Total Blood Donated</div>
-          </div>
+            <div className="stat-item">
+              <div className="stat-number">45 min</div>
+              <div className="stat-label">Avg. Donation Time</div>
+            </div>
 
-          <div class="stat-item">
-            <div class="stat-number">45 min</div>
-            <div class="stat-label">Avg. Donation Time</div>
-          </div>
-
-          <div class="stat-item">
-            <div class="stat-number">7</div>
-            <div class="stat-label">Partner Hospitals</div>
+            <div className="stat-item">
+              <div className="stat-number">7</div>
+              <div className="stat-label">Partner Hospitals</div>
+            </div>
           </div>
         </div>
 
-        <div className="overlap-group2">
-          <h3 className="text-center-group2">Benefits of Blood Donation</h3>
-          <ul className="text-wrapper3">
+        <div className="benefits-section">
+          <h3 className="section-title">Benefits of Blood Donation</h3>
+          <ul className="benefits-list">
             <li>
               <img src={benefit1} alt="Benefit 1" className="benefit-icon" />
               <h5>Who can your blood save?</h5>
@@ -230,7 +231,6 @@ export default function HomePage() {
             </div>
             <div className="donation_step_img">
               <img src={BloodDonation} />
-
             </div>
           </div>
         </div>
@@ -300,16 +300,16 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
         <div className="tips-section">
-          <div className="tips-before">
+          <div className="tips-section-content-first">
             <div>
-              <h2 style={{ color: "#DB230B", fontWeight: "bold" }}>
-                Before donating blood
-              </h2>
-              <ul style={{ listStyleType: "none" }}>
+              <h2>Before donating blood</h2>
+              <ul
+                className="tips-content-list"
+                style={{ listStyleType: "none" }}
+              >
                 <li>
-                   1. Avoid staying up late the night before (get at least 6
+                  1. Avoid staying up late the night before (get at least 6
                   hours of sleep).
                 </li>
                 <li>
@@ -322,12 +322,13 @@ export default function HomePage() {
               </ul>
             </div>
           </div>
-          <div className="tips-after">
+          <div className="tips-section-content-last">
             <div>
-              <h2 style={{ color: "#F6AD00", fontWeight: "bold" }}>
-                After donating blood
-              </h2>
-              <ul style={{ listStyleType: "none" }}>
+              <h2>After donating blood</h2>
+              <ul
+                className="tips-content-list"
+                style={{ listStyleType: "none" }}
+              >
                 <li>1. Drink plenty of water.</li>
                 <li>2. Rest at the donation site for at least 15 minutes.</li>
                 <li>3. Leave only when you feel fully recovered.</li>
@@ -346,7 +347,6 @@ export default function HomePage() {
             </div>
           </div>
         </div>
-
         {/*Footer*/}
         <Footer />
       </div>

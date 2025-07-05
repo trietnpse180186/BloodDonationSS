@@ -70,24 +70,27 @@ function UserInfo({ userId }) {
 
           <p>
             <strong style={{ fontSize: "1.1rem" }}>Address:</strong>{" "}
-            {user.address}
+            {user.address ?? <span style={{ color: "#888" }}>N/A</span>}
           </p>
           <p>
-            <strong style={{ fontSize: "1.1rem" }}>Email:</strong> {user.email}
+            <strong style={{ fontSize: "1.1rem" }}>Email:</strong>{" "}
+            {user.email ?? <span style={{ color: "#888" }}>N/A</span>}
           </p>
-
           <p>
             <strong style={{ fontSize: "1.1rem" }}>Occupation:</strong>{" "}
-            {user.occupation}
+            {user.occupation ?? <span style={{ color: "#888" }}>N/A</span>}
           </p>
           <p>
             <strong style={{ fontSize: "1.1rem" }}>Phone Number:</strong>{" "}
-            {user.phoneNumber}
+            {user.phoneNumber ?? <span style={{ color: "#888" }}>N/A</span>}
           </p>
         </div>
         <div className="userinfo-report">
           <h1> USER REPORT</h1>
-          <p>Blood Type: {user.bloodType}</p>
+          <p>
+            Blood Type:{" "}
+            {user.bloodType ?? <span style={{ color: "#888" }}>N/A</span>}
+          </p>
         </div>
       </div>
       {user && user.id && <Link to={`/users/${userId}`}>Go to user</Link>}

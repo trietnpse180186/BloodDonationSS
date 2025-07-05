@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Sửa import
+import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
 import axios from "../../assets/axiosInstance";
 import {
@@ -12,6 +12,8 @@ import {
 } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ClipLoader } from "react-spinners";
+
 export default function Register() {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -19,13 +21,14 @@ export default function Register() {
     sex: "",
     email: "",
     password: "",
-    phoneNumber: "",
-    address: "",
-    bloodType: "",
-    occupation: "",
+    phoneNumber: null,
+    address: null,
+    bloodType: null,
+    occupation: null,
   });
 
-  const navigate = useNavigate(); // Thêm dòng này
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,7 +44,7 @@ export default function Register() {
       toast.error("Password must be at least 6 characters long.");
       return;
     }
-
+    setLoading(true);
     try {
       const response = await axios.post(
         "http://localhost:8080/api/v1/users",
@@ -49,17 +52,46 @@ export default function Register() {
       );
       toast.success("Registration successful!");
       setTimeout(() => {
+        setLoading(false);
         navigate("/login");
-      }, 1500); // Chờ toast hiện rồi chuyển trang
+      }, 1500);
     } catch (error) {
-      console.error("Registration error:", error);
+      setLoading(false);
       toast.error("Registration failed. Please check your information.");
     }
   };
 
   return (
     <div className="register-page">
-      <form className="form" onSubmit={handleSubmit}>
+      {loading && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            margin: 20,
+          }}
+        >
+          <ClipLoader
+            color="#b30000"
+            size={60}
+            speedMultiplier={1.2}
+            loading={loading}
+            cssOverride={{
+              borderWidth: "6px",
+              margin: "0 auto",
+            }}
+          />
+        </div>
+      )}
+      <form
+        className="form"
+        onSubmit={handleSubmit}
+        style={{
+          opacity: loading ? 0.5 : 1,
+          pointerEvents: loading ? "none" : "auto",
+        }}
+      >
         <h1>REGISTER</h1>
 
         <div className="field-wrapper">
@@ -120,10 +152,59 @@ export default function Register() {
             Female
           </label>
         </div>
+        <div className="field-wrapper">
+          <input
+            type="date"
+            name="birthday"
+            value={formData.birthday}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field-wrapper">
+          <input
+            type="hidden"
+            name="phoneNumber"
+            placeholder="Phone Number"
+            value={formData.phoneNumber}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field-wrapper">
+          <input
+            type="hidden"
+            name="address"
+            placeholder="Address"
+            value={formData.address}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field-wrapper">
+          <input
+            type="hidden"
+            name="bloodType"
+            placeholder="Blood Type"
+            value={formData.bloodType}
+            onChange={handleChange}
+            required
+          />
+        </div>
+        <div className="field-wrapper">
+          <input
+            type="hidden"
+            name="occupation"
+            placeholder="Occupation"
+            value={formData.occupation}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
         <br />
 
-        <div className="field-wrapper-btn" >
+        <div className="field-wrapper-btn">
           <button className="wrap-button" type="submit">
             REGISTER
           </button>

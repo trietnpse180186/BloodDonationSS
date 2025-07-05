@@ -15,7 +15,8 @@ export default function Footer() {
         <div className="footer-column main-column">
           <h2>Humanitarian Blood Donation Center</h2>
           <p className="footer-description">
-            A place to connect kind hearts — every drop of donated blood is a priceless gift that brings life.
+            A place to connect kind hearts — every drop of donated blood is a
+            priceless gift that brings life.
           </p>
           <div className="social-icons">
             <a href="#">
@@ -55,8 +56,9 @@ export default function Footer() {
             <h4>Truyen Mau Huyet Hoc Hospital</h4>
             <div className="contact-detail">
               <FaMapMarkerAlt />
-              <span>118 Hong Bang Street, Ward 12, District 5, Ho Chi Minh City</span>
-
+              <span>
+                118 Hong Bang Street, Ward 12, District 5, Ho Chi Minh City
+              </span>
             </div>
             <div className="contact-detail">
               <FaPhone />
@@ -68,7 +70,9 @@ export default function Footer() {
             <h4>Cho Ray Blood Transfusion Center</h4>
             <div className="contact-detail">
               <FaMapMarkerAlt />
-              <span>56 Pham Huu Chi, Ward 12, District 5, Ho Chi Minh City</span>
+              <span>
+                56 Pham Huu Chi, Ward 12, District 5, Ho Chi Minh City
+              </span>
             </div>
             <div className="contact-detail">
               <FaPhone />
@@ -101,9 +105,8 @@ export default function Footer() {
 
       <div className="footer-bottom">
         <p>
-
-          &copy; 2025 Vietnam Humanitarian Blood Donation Center. All rights reserved.
-
+          &copy; 2025 Vietnam Humanitarian Blood Donation Center. All rights
+          reserved.
         </p>
         <div className="heart-icon">
           <FaHeart />

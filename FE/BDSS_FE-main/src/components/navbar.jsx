@@ -128,7 +128,7 @@ export default function AppNavbar() {
                     )}
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={() => navigate("/notification")}>
-                      Xem tất cả
+                      View all
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
@@ -141,14 +141,26 @@ export default function AppNavbar() {
                   id="nav-profile-dropdown"
                   align="end"
                 >
-                  <NavDropdown.Item as={Link} to="/user-profile">
-                    Hồ sơ cá nhân
+                  <NavDropdown.Item
+                    className="dropdown-item"
+                    as={Link}
+                    to="/user-profile"
+                  >
+                    Profile
                   </NavDropdown.Item>
-                  <NavDropdown.Item as={Link} to="/appointment">
-                    Lịch hẹn của bạn
+                  <NavDropdown.Item
+                    className="dropdown-item"
+                    as={Link}
+                    to="/appointment"
+                  >
+                    Your Appointments
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
-                  <NavDropdown.Item as="button" onClick={handleLogout}>
+                  <NavDropdown.Item
+                    className="dropdown-item"
+                    as="button"
+                    onClick={handleLogout}
+                  >
                     Logout
                   </NavDropdown.Item>
                 </NavDropdown>

@@ -53,8 +53,9 @@ export default function AppointmentDetail() {
     try {
       await axios.put(
         `http://localhost:8080/api/booking/${bookingId}`,
-        { bookingId, status: "CANCELLED" },
+        { bookingId },
         {
+          params: { status: "CANCELLED" },
           headers: {
             Authorization: `Bearer ${token}`,
           },
