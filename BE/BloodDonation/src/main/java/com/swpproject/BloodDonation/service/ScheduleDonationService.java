@@ -4,6 +4,7 @@ import com.swpproject.BloodDonation.dto.request.ScheduleDonationRequest;
 import com.swpproject.BloodDonation.dto.request.TimeSlotRequest;
 import com.swpproject.BloodDonation.dto.response.ScheduleDonationResponse;
 import com.swpproject.BloodDonation.dto.response.TimeSlotResponse;
+import com.swpproject.BloodDonation.entity.BookingDonation;
 import com.swpproject.BloodDonation.entity.ScheduleDonation;
 import com.swpproject.BloodDonation.entity.TimeSlot;
 import com.swpproject.BloodDonation.repository.BookingDonationRepository;
@@ -31,14 +32,7 @@ public class ScheduleDonationService {
     private final TimeSlotRepository timeSlotRepository;
     private final BookingDonationRepository bookingDonationRepository;
 
-//    public List<ScheduleDonation> getAllScheduleDonations() {
-//        return scheduleDonationRepository.findAll();
-//    }
-//
-//    public ScheduleDonation getScheduleDonationById(String scheduleId) {
-//        return scheduleDonationRepository.findById(scheduleId)
-//                .orElseThrow(() -> new RuntimeException("Schedule donation not found with id: " + scheduleId));
-//    }
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Transactional
@@ -201,6 +195,9 @@ public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) 
                         .build())
                 .collect(Collectors.toList());
 
+        List<BookingDonation> bookings = bookingDonationRepository.findByScheduleDonation(schedule);
+        int registeredCount = bookings.size();
+
         return ScheduleDonationResponse.builder()
                 .scheduleId(schedule.getScheduleId())
                 .center(schedule.getCenter())
@@ -209,6 +206,8 @@ public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) 
                 .timeSlots(timeSlotResponses)
                 .donorCount(schedule.getNumberOfDonor()) // numberOfDonor -> donorCount
                 .updateBy(schedule.getUpdateBy())
+                .currentDonorCount(registeredCount)
+                .registrationStatus(registeredCount + "/" + schedule.getNumberOfDonor() + " đã đăng ký")
                 .build();
     }
 

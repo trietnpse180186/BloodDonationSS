@@ -13,7 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +92,9 @@ public class BookingService {
         final LocalTime endTime = parsedEndTime;
 
         String bookingId = UUID.randomUUID().toString();
+        // them thoi gian dat lich
+        LocalDateTime now = LocalDateTime.now();
+
         BookingDonation bookingDonation = BookingDonation.builder()
                 .donationId(bookingId)
                 .dateDonation(request.getBooking().getDate())
@@ -100,6 +105,7 @@ public class BookingService {
                 .status(Status.PENDING)
                 .scheduleDonation(scheduleDonation)
                 .donor(user)
+                .bookingTime(now)
                 .build();
 
         BookingDonation savedBookingDonation = bookingDonationRepository.save(bookingDonation);
@@ -108,6 +114,9 @@ public class BookingService {
                 .map(surveyRequest -> createSurvey(surveyRequest, savedBookingDonation))
                 .collect(Collectors.toList());
         surveyRepository.saveAll(surveys);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedBookingTime = savedBookingDonation.getBookingTime().format(formatter);
 
         return BookingResponse.builder()
                 .bookingId(savedBookingDonation.getDonationId())
@@ -118,6 +127,8 @@ public class BookingService {
                 .status(String.valueOf(savedBookingDonation.getStatus()))
                 .center(savedBookingDonation.getCenter())
                 .message("Booking created successfully")
+                .bookingTime(savedBookingDonation.getBookingTime())
+                .formattedBookingTime("Đã đặt lịch lúc: " + formattedBookingTime)
                 .build();
     }
 
@@ -193,5 +204,25 @@ public class BookingService {
         Status statusEnum = Status.valueOf(status);
         booking.setStatus(statusEnum);
         bookingDonationRepository.save(booking);
+    }
+
+    public List<BookingResponse> getAllBookings() {
+        List<BookingDonation> bookings = bookingDonationRepository.findAll();
+
+        return bookings.stream()
+                .map(booking -> BookingResponse.builder()
+                        .bookingId(booking.getDonationId())
+                        .dateDonation(booking.getDateDonation())
+                        .startTime(booking.getStartTime())
+                        .endTime(booking.getEndTime())
+                        .address(booking.getAddress())
+                        .status(String.valueOf(booking.getStatus()))
+                        .center(booking.getCenter())
+                        .user(booking.getDonor())
+                        .bookingTime(booking.getBookingTime())
+                        .formattedBookingTime("Đã đặt lịch lúc: " +
+                                booking.getBookingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        .build())
+                .collect(Collectors.toList());
     }
 }
