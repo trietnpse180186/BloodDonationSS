@@ -13,7 +13,13 @@ import java.util.List;
 public interface BookingDonationRepository extends JpaRepository<BookingDonation, String> {
     List<BookingDonation> findByDonor(User donor);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     List<BookingDonation> findByScheduleDonation(ScheduleDonation scheduleDonation);
+=======
+    List<BookingDonation> findByScheduleDonation(ScheduleDonation schedule);
+    @Query("SELECT COUNT(b) FROM BookingDonation b WHERE b.scheduleDonation.scheduleId = :scheduleId")
+    Long countByScheduleDonationId(String scheduleId);
+>>>>>>> Stashed changes
 =======
     List<BookingDonation> findByScheduleDonation(ScheduleDonation schedule);
     @Query("SELECT COUNT(b) FROM BookingDonation b WHERE b.scheduleDonation.scheduleId = :scheduleId")

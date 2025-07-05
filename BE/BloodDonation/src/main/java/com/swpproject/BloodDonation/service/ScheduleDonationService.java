@@ -7,6 +7,9 @@ import com.swpproject.BloodDonation.dto.request.TimeSlotRequest;
 import com.swpproject.BloodDonation.dto.response.ScheduleDonationResponse;
 import com.swpproject.BloodDonation.dto.response.TimeSlotResponse;
 import com.swpproject.BloodDonation.entity.BookingDonation;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 import com.swpproject.BloodDonation.entity.ScheduleDonation;
 import com.swpproject.BloodDonation.repository.BookingDonationRepository;
@@ -26,7 +29,10 @@ public class ScheduleDonationService {
     private final BookingDonationRepository bookingDonationRepository;
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 

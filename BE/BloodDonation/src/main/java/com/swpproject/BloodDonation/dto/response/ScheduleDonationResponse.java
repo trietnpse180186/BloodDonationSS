@@ -41,5 +41,8 @@ public class ScheduleDonationResponse {
     private String updateBy; // ten dang nhap cua nguoi cap nhat cuoi cung
     private Integer currentDonorCount; // so luong nguoi da dang ky hien tai
     private String registrationStatus; // thong tin dang ky (VD: "15/30 dang ky")
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
