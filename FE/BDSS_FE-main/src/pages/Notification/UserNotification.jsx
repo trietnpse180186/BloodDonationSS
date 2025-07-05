@@ -1,99 +1,69 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './Notification.css';
-import Navbar from '../../components/navbar';
-
-const initialNotifications = [
-  { id: 1, title: "Lịch hiến máu mới", message: "Tại Đà Nẵng", time: "5 phút trước", type: "nhắc nhở", read: false },
-  { id: 2, title: "Xác nhận lịch", message: "Donor A đã hoàn tất", time: "30 phút trước", type: "sự kiện", read: true },
-  { id: 3, title: "Cập nhật FAQ", message: "Thêm câu hỏi mới", time: "1 giờ trước", type: "tin tức", read: false },
-];
-
-const FILTERS = ["Tất cả", "Chưa đọc", "Nhắc nhở", "Sự kiện", "Tin tức"];
+import React, { useState, useEffect, useRef, use } from "react";
+import "./Notification.css";
+import Navbar from "../../components/navbar";
+import axios from "axios";
+import { getUserNotifications } from "../../assets/getNotification";
 
 export default function NotificationCenter() {
-  const [filter, setFilter] = useState("Tất cả");
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const [notifications, setNotifications] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
-  const menuRefs = useRef({}); // Store ref for each item
+  const menuRefs = useRef({});
 
   useEffect(() => {
-    function handleClickOutside(e) {
-      const activeRef = menuRefs.current[activeMenuId];
-      if (activeRef && !activeRef.contains(e.target)) {
-        setActiveMenuId(null);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [activeMenuId]);
-
-  const filtered = notifications.filter(note => {
-    if (filter === "Tất cả") return true;
-    if (filter === "Chưa đọc") return !note.read;
-    return note.type === filter.toLowerCase();
-  });
-
-  const markAsRead = (id) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
-    setActiveMenuId(null);
-  };
-
-  const deleteNotification = (id) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
-    setActiveMenuId(null);
-  };
+    getUserNotifications().then(setNotifications).catch(console.error);
+  }, []);
 
   return (
     <>
       <Navbar />
       <div className="notification-wrapper">
         <div className="notification-toolbar">
-          <h2 className="notification-title">Thông báo</h2>
-          <button className="mark-all-read">Đánh dấu đã đọc tất cả</button>
-        </div>
-
-        <div className="notification-filters">
-          {FILTERS.map(f => (
-            <button
-              key={f}
-              className={`filter-btn ${filter === f ? 'active' : ''}`}
-              onClick={() => setFilter(f)}
-            >
-              {f}
-            </button>
-          ))}
+          <h2 className="notification-title">Notification</h2>
+          <button className="mark-all-read">Mark all as read</button>
         </div>
 
         <div className="notification-list">
-          {filtered.map(note => (
-            <div key={note.id} className={`notification-card ${note.read ? '' : 'unread'}`}>
+          {notifications.map((notify) => (
+            <div
+              key={notify.id}
+              className={`notification-card ${notify.read ? "" : "UNREAD"}`}
+            >
               <div className="notification-icon">
                 <span className="icon">🔔</span>
-                {!note.read && <span className="dot" />}
+                {!notify.read && <span className="dot" />}
               </div>
 
               <div className="notification-content">
-                <h4 className="note-title">{note.title}</h4>
-                <p className="note-message">{note.message}</p>
-                <span className="note-time">{note.time}</span>
+                <h4 className="note-title">{notify.title}</h4>
+                <p className="note-message">{notify.detail}</p>
+                <span className="note-date">{notify.date}</span>
+                <span className="note-time">{notify.time}</span>
               </div>
 
-              <div className="notification-actions" ref={el => menuRefs.current[note.id] = el}>
+              <div
+                className="notification-actions"
+                ref={(el) => (menuRefs.current[notify.id] = el)}
+              >
                 <button
                   className="menu-button"
                   onClick={() =>
-                    setActiveMenuId(activeMenuId === note.id ? null : note.id)
+                    setActiveMenuId(
+                      activeMenuId === notify.id ? null : notify.id
+                    )
                   }
                 >
                   ⋮
                 </button>
 
-                {activeMenuId === note.id && (
+                {activeMenuId === notify.id && (
                   <div className="dropdown-menu">
-                    <button onClick={() => markAsRead(note.id)}>Đánh dấu đã đọc</button>
+                    <button onClick={() => markAsRead(notify.id)}>
+                      Mark as read
+                    </button>
                     <hr />
-                    <button onClick={() => deleteNotification(note.id)}>Xoá thông báo</button>
+                    <button onClick={() => deleteNotification(notify.id)}>
+                      Delete notification
+                    </button>
                   </div>
                 )}
               </div>

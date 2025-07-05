@@ -13,6 +13,7 @@ import UserInfo from "../pages/User/UserInfo";
 import BloodRegister2 from "../pages/BloodDonation/BloodRegister2";
 import BloodDonationInfo from "../pages/BloodDonation/BloodDonationInfo";
 import AppointmentDetail from "../pages/Appointment/AppointmentDetail";
+import UserNotification from "../pages/Notification/UserNotification";
 import UserUpdate from "../pages/User/UserUpdate";
 import AdminPage from "../pages/Admin/AdminPage";
 import ScrollTotop from "../assets/scrollToTop";
@@ -40,6 +41,7 @@ export default function WebRoutes() {
         <Route path="/blood-registration2" element={<BloodRegister2 />} />
         <Route path="/blood-donation-info" element={<BloodDonationInfo />} />
         <Route path="/appointment-detail" element={<AppointmentDetail />} />
+        <Route path="/user-notification" element={<UserNotification />} />
       </Routes>
     </>
   );

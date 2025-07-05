@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Table, Form, Button } from "react-bootstrap";
+import { ClipLoader } from "react-spinners";
 
 export default function Notification() {
   const [form, setForm] = useState({
@@ -12,6 +13,7 @@ export default function Notification() {
   });
 
   const [notification, setNotification] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -38,6 +40,7 @@ export default function Notification() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Bắt đầu loading
     const now = new Date();
     const currentDate = now.toISOString().slice(0, 10);
     const currentTime = now.toTimeString().slice(0, 5);
@@ -47,7 +50,6 @@ export default function Notification() {
       date: form.date || currentDate,
       time: form.time || currentTime,
     };
-    console.log("Data to send:", dataToSend);
     try {
       await axios.post("http://localhost:8080/notifications", dataToSend, {
         headers: {
@@ -73,6 +75,7 @@ export default function Notification() {
     } catch (error) {
       alert("Failed to create notification.");
     }
+    setLoading(false); // Kết thúc loading
   };
 
   const [donor, setDonor] = useState([]);
@@ -95,7 +98,20 @@ export default function Notification() {
 
   return (
     <>
-      <Form onSubmit={handleSubmit} style={{ marginBottom: 32, maxWidth: 600 }}>
+      {loading && (
+        <div style={{ display: "flex", justifyContent: "center", margin: 20 }}>
+          <ClipLoader color="#b30000" size={48} speedMultiplier={1.1} />
+        </div>
+      )}
+      <Form
+        onSubmit={handleSubmit}
+        style={{
+          marginBottom: 32,
+          maxWidth: 600,
+          opacity: loading ? 0.5 : 1,
+          pointerEvents: loading ? "none" : "auto",
+        }}
+      >
         <Form.Group className="mb-2">
           <Form.Label>Title</Form.Label>
           <Form.Control
@@ -144,8 +160,8 @@ export default function Notification() {
           >
             <option value="">Select a donor</option>
             {donor.map((d) => (
-              <option key={d.id || d.userId} value={d.id || d.userId}>
-                {d.userId ? d.fullName : d.username || d.email || "Unknown"}
+              <option key={d.userId} value={d.userId}>
+                {d.fullName ? `${d.fullName} (${d.email})` : d.email}
               </option>
             ))}
           </Form.Select>
