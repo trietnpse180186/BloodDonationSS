@@ -1,4 +1,4 @@
-package vn.khanhduc.elearning.configuration;
+package com.swpproject.BloodDonation.config;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;

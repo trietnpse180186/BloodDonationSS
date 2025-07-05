@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -39,6 +40,8 @@ public class BookingDonation {
     @Column(name = "Status", columnDefinition = "NVARCHAR(255)")
     private Status status = Status.PENDING;
 
+    @Column(name = "BookingTime")
+    private LocalDateTime bookingTime; // lưu lại thời gian đặt lịch
 
     @ManyToOne
     @JoinColumn(name = "ScheduleId")

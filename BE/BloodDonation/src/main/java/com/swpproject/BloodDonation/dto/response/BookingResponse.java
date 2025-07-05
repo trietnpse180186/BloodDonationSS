@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -23,4 +24,6 @@ public class BookingResponse {
     private String status;
     private String message;
     private User user;
+    private LocalDateTime bookingTime;
+    private String formattedBookingTime; // thoi gian dat lich duoc định dạng
 }
