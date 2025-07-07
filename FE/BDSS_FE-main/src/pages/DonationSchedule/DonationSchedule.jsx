@@ -96,6 +96,7 @@ export default function DonationSchedule() {
               aria-label="Search by donation date"
             />
             <Button
+              className="btn-outline-danger"
               variant="outline-danger"
               onClick={() => {
                 setSearchName("");
