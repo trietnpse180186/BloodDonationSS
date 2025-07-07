@@ -8,7 +8,7 @@
 }
 .appointment-title {
   text-align: center;
-  color: #056ed1;
+  color: #8c1a03;
   margin-bottom: 32px;
   font-size: 2rem;
   font-weight: 600;
@@ -31,7 +31,7 @@
 }
 .appointment-table th {
   background: #f5f5f5;
-  color: #0eb7d4;
+  color: #000000;
   font-weight: 600;
   font-size: 1.05rem;
 }

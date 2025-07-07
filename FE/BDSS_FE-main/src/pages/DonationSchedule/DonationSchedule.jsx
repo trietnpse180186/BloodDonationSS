@@ -62,91 +62,108 @@ export default function DonationSchedule() {
       );
     }
   };
+
+  function formatDate(isoDate) {
+    if (!isoDate) return "";
+    const [year, month, day] = isoDate.split("-");
+    return `${day}-${month}-${year}`;
+  }
+
   return (
     <>
       {/*Navbar*/}
       <Navbar />
-      {/* Search */}
-      <div className="search-bar">
-        <input
-          className="search-name"
-          type="text"
-          placeholder="Search by center name..."
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-          aria-label="Search donation centers by name"
-        />
-        <input
-          className="search-date"
-          type="date"
-          value={searchDate}
-          onChange={(e) => setSearchDate(e.target.value)}
-          placeholder="Select a date"
-          aria-label="Search by donation date"
-        />
-        <Button
-          variant="outline-danger"
-          onClick={() => {
-            setSearchName("");
-            setSearchDate("");
-          }}
-          aria-label="Clear search filters"
-        >
-          Clear
-        </Button>
-      </div>
-      {/*Donation Schedule*/}
-      <div className="donation-schedule">
-        {filteredSchedules.length === 0 ? (
-          <div className="no-schedule">No matching schedules found.</div>
-        ) : (
-          filteredSchedules.map((schedule, idx) => (
-            <div className="schedule-container" key={idx}>
-              <div className="schedule-detail">
-                <ul style={{ listStyleType: "none", padding: 0 }}>
-                  <li>
-                    <strong style={{ color: "rgb(218, 35, 35)" }}>
-                      {schedule.center}
-                    </strong>
-                  </li>
-                  <li>
-                    <strong>Location:</strong> {schedule.location}{" "}
-                  </li>
-                  <li>
-                    <strong>Date:</strong> {schedule.date}
-                  </li>
-                  <li>
-                    <strong>Time slots:</strong>
-                    <ul style={{ margin: 0, paddingLeft: 16 }}>
-                      {schedule.timeSlots.map((slot) => (
-                        <li key={slot.id}>
-                          {slot.startTime} - {slot.endTime}
-                        </li>
-                      ))}
-                    </ul>
-                  </li>
-                </ul>
-              </div>
-              <div className="schedule-total">
-                <div className="schedule-total-icon">
-                  {peopleFill}
-                  <strong>Number of registrations:</strong>
+      <div className="donation-schedule-page">
+        <h1>Donation Schedule</h1>
+        {/* Search */}
+        <div className="search-bar">
+          <h3>Search schedule</h3>
+          <div className="search-inputs">
+            <input
+              className="search-name"
+              type="text"
+              placeholder="Search by center name..."
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              aria-label="Search donation centers by name"
+            />
+            <input
+              className="search-date"
+              type="date"
+              value={searchDate}
+              onChange={(e) => setSearchDate(e.target.value)}
+              placeholder="Select a date"
+              aria-label="Search by donation date"
+            />
+            <Button
+              className="btn-outline-danger"
+              variant="outline-danger"
+              onClick={() => {
+                setSearchName("");
+                setSearchDate("");
+              }}
+              aria-label="Clear search filters"
+            >
+              Clear
+            </Button>
+          </div>
+        </div>
+        {/*Donation Schedule*/}
+        <div className="donation-schedule">
+          {filteredSchedules.length === 0 ? (
+            <div className="no-schedule">No matching schedules found.</div>
+          ) : (
+            filteredSchedules.map((schedule, idx) => (
+              <div className="schedule-container" key={idx}>
+                <div className="schedule-detail">
+                  <ul style={{ listStyleType: "none", padding: 0 }}>
+                    <li>
+                      <strong
+                        style={{ color: "rgb(218, 35, 35)", fontSize: "1.2em" }}
+                      >
+                        {schedule.center}
+                      </strong>
+                    </li>
+                    <li>
+                      <strong>Location:</strong> {schedule.location}{" "}
+                    </li>
+                    <li>
+                      <strong>Date:</strong> {formatDate(schedule.date)}
+                    </li>
+                    <li>
+                      <strong>Time slots:</strong>
+
+                      <ul style={{ margin: 0, paddingLeft: 16 }}>
+                        {schedule.timeSlots.map((slot) => (
+                          <li key={slot.id}>
+                            {slot.startTime} - {slot.endTime}
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  </ul>
                 </div>
-                <div className="schedule-total-count">
-                  {schedule.donorCount}
-                  <button
-                    className="schedule-button"
-                    onClick={() => handleBooking(schedule)}
-                  >
-                    Book now
-                  </button>
+                <div className="schedule-total">
+                  <div className="schedule-total-icon">
+                    {peopleFill}
+                    <strong>Number of registrations:</strong>
+                  </div>
+                  <div className="schedule-total-count">
+                    {schedule.donorCount}
+                    <button
+                      className="schedule-button"
+                      onClick={() => handleBooking(schedule)}
+                    >
+                      Book now
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
+        {/*Footer*/}
       </div>
-      {/*Footer*/}
       <Footer />
     </>
   );

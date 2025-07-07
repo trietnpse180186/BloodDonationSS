@@ -1,19 +1,28 @@
-import { Link, useNavigate } from "react-router-dom";
-import { Dropdown, Button, ButtonGroup, DropdownToggle } from "react-bootstrap";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Navbar,
+  Nav,
+  Container,
+  NavDropdown,
+  Button,
+  Dropdown,
+} from "react-bootstrap";
 import { VscAccount } from "react-icons/vsc";
-
+import { FaRegBell } from "react-icons/fa";
 import logout from "../assets/authLogout";
 import logo from "../images/logo.jpg";
-
-import "./navbar.css";
 import { getUserIdFromToken } from "../assets/getUserById";
-import { FaRegBell } from "react-icons/fa";
+import "./navbar.css";
 
-export default function Navbar() {
+export default function AppNavbar() {
   const [notification, setNotification] = useState([]);
   const userId = getUserIdFromToken();
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
+    setUser(userId);
     const fetchNotifications = async () => {
       const response = await fetch(
         `http://localhost:8080/notifications/user/${userId}`,
@@ -26,99 +35,56 @@ export default function Navbar() {
       if (response.ok) {
         const data = await response.json();
         setNotification(data);
-      } else {
-        console.error("Failed to fetch notifications");
       }
     };
-    fetchNotifications();
-  }, []);
-
-  const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const id = getUserIdFromToken();
-    setUser(id);
-  }, []);
+    if (userId) fetchNotifications();
+  }, [userId]);
 
   const handleLogout = () => {
     logout();
+    navigate("/");
   };
+
   return (
-    <>
-      <div data-aos="fade-down" data-aos-duration="600" className="navbar">
-        <div className="navbar-img">
-          <Button
-            style={{ backgroundColor: "transparent", border: "none" }}
-            onClick={() => (window.location.href = "/")}
-          >
-            <img
-              className="navbar-logo"
-              alt="Jimeng"
-              src={logo}
-              style={{
-                Width: "100%",
-                maxWidth: "150px",
-                minHeight: "80px",
-                borderRadius: "7.7px",
-              }}
-            />
-          </Button>
-        </div>
-        <div className="navbar-item">
-          <div className="text-wrapper" id="home-wrapper">
-            <Link
-              className="wrapper-link"
-              style={{ textDecoration: "none" }}
-              to="/"
-            >
+    <Navbar variant="dark" expand="lg" sticky="top" className="px-3">
+      <Container fluid>
+        <Navbar.Brand as={Link} to="/">
+          <img
+            src={logo}
+            alt="Logo"
+            style={{
+              maxWidth: "150px",
+              minHeight: "50px",
+              borderRadius: "7.7px",
+            }}
+          />
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="main-navbar-nav" />
+        <Navbar.Collapse id="main-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link as={Link} to="/">
               Home
-            </Link>
-          </div>
-
-          <div className="text-wrapper">
-            <Link
-              className="wrapper-link"
-              style={{ textDecoration: "none" }}
-              to="/schedule"
-            >
-              Booking
-            </Link>
-          </div>
-
-          <div className="text-wrapper">
-            <Link
-              className="wrapper-link"
-              style={{ textDecoration: "none" }}
-              to="/blog"
-            >
+            </Nav.Link>
+            <Nav.Link as={Link} to="/schedule">
+              Schedule
+            </Nav.Link>
+            <Nav.Link as={Link} to="/blog">
               News
-            </Link>
-          </div>
-
-          <div className="text-wrapper">
-            <Link
-              className="wrapper-link"
-              style={{ textDecoration: "none" }}
-              to="/FAQ"
-            >
+            </Nav.Link>
+            <Nav.Link as={Link} to="/FAQ">
               FAQ
-            </Link>
-          </div>
-          <div className="text-wrapper">
-            <Link
-              className="wrapper-link"
-              style={{ textDecoration: "none" }}
-              to="/contact"
-            >
+            </Nav.Link>
+            <Nav.Link as={Link} to="/contact">
               Customer support
-            </Link>
-          </div>
-        </div>
-        <div className="navbav-item-login">
-          <div className="text-wrapper">
+            </Nav.Link>
+          </Nav>
+          <Nav
+            className="nav-user-group ms-auto"
+            style={{ alignItems: "center", gap: "18px" }}
+          >
             {user ? (
-              <div className="fix-split-button">
-                <Dropdown align="end" className="notification-dropdown">
+              <>
+                <Dropdown align="end">
                   <Dropdown.Toggle
                     bsPrefix="custom-toggle"
                     style={{
@@ -130,12 +96,10 @@ export default function Navbar() {
                       textAlign: "center",
                       boxShadow: "none",
                     }}
-                    className="button-bell"
                     id="dropdown-notification"
                   >
                     <FaRegBell />
                   </Dropdown.Toggle>
-
                   <Dropdown.Menu
                     style={{
                       minWidth: 320,
@@ -149,7 +113,7 @@ export default function Navbar() {
                     ) : (
                       notification.map((item, idx) => (
                         <Dropdown.Item key={item.id || idx}>
-                          <div style={{ fontWeight: 600 }}>{item.title}</div>{" "}
+                          <div style={{ fontWeight: 600 }}>{item.title}</div>
                           <div>{item.detail}</div>
                           <div
                             style={{
@@ -163,107 +127,54 @@ export default function Navbar() {
                       ))
                     )}
                     <Dropdown.Divider />
-                    <Dropdown.Item onClick={() => navigate("/")}>
-                      Xem tất cả
+                    <Dropdown.Item
+                      onClick={() => navigate("/user-notification")}
+                    >
+                      View all
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                <Dropdown as={ButtonGroup}>
-                  <Button
-                    style={{
-                      background: "none",
-                      border: "none",
-                      color: "white",
-                      fontWeight: "bold",
-                      fontSize: "1.7rem",
-                      textAlign: "center",
-                    }}
-                    onClick={() => (window.location.href = "/user-profile")}
-                    variant="success"
-                    className="donor-button"
-                  >
-                    <VscAccount />
-                  </Button>
-
-                  <Dropdown.Toggle
-                    style={{
-                      background: "none",
-                      border: "none",
-                      fontSize: "1.4rem",
-                      alignItems: "center",
-                      display: "flex",
-                      color: "white",
-                    }}
-                    split
-                    variant="success"
-                    id="dropdown-split-basic"
-                  />
-
-                  <Dropdown.Menu className="dropdown-menu">
-                    <Dropdown.Item href="#/action-1">
-                      <div className="text-wrapper">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="navbar-icon"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                        </svg>
-                        <Link
-                          style={{
-                            textDecoration: "none",
-                          }}
-                          to="/user-profile"
-                        >
-                          Hồ sơ cá nhân
-                        </Link>
-                      </div>
-                    </Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">
-                      <div className="text-wrapper">
-                        {/* Globe Icon */}
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          className="navbar-icon"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2m-5.146-5.146-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708" />
-                        </svg>
-                        <Link
-                          style={{
-                            textDecoration: "none",
-                          }}
-                          to="/appointment"
-                        >
-                          Lịch hẹn của bạn
-                        </Link>
-                      </div>
-                    </Dropdown.Item>
-                    <Dropdown.Item href="/">
-                      <Button onClick={handleLogout}>Logout</Button>
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            ) : (
-              <button className="wrapper-link-login" n>
-                <Link
-                  style={{ textDecoration: "none", color: "#db230b" }}
-                  to="/login"
+                <NavDropdown
+                  title={
+                    <VscAccount
+                      style={{ fontSize: "1.7rem", color: "white" }}
+                    />
+                  }
+                  id="nav-profile-dropdown"
+                  align="end"
                 >
-                  Login
-                </Link>
-              </button>
+                  <NavDropdown.Item
+                    className="dropdown-item"
+                    as={Link}
+                    to="/user-profile"
+                  >
+                    Profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    className="dropdown-item"
+                    as={Link}
+                    to="/appointment"
+                  >
+                    Your Appointments
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item
+                    className="dropdown-item"
+                    as="button"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </>
+            ) : (
+              <Nav.Link as={Link} to="/login">
+                Login
+              </Nav.Link>
             )}
-          </div>
-        </div>
-      </div>
-    </>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }

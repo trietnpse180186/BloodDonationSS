@@ -20,7 +20,7 @@ export default function AppointmentDetail() {
         return <span className="status-confirmed">Approved</span>;
       case "CANCELLED":
         return <span className="status-cancelled">Cancelled</span>;
-      case "COMPLETE":
+      case "COMPLETED":
         return <span className="status-complete">Complete</span>;
     }
   };
@@ -53,8 +53,9 @@ export default function AppointmentDetail() {
     try {
       await axios.put(
         `http://localhost:8080/api/booking/${bookingId}`,
-        { bookingId, status: "CANCELLED" },
+        { bookingId },
         {
+          params: { status: "CANCELLED" },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -74,7 +75,7 @@ export default function AppointmentDetail() {
     <>
       <Navbar />
       <div className="appointment-container">
-        <h2 className="appointment-title">Your Blood Donation Appointments</h2>
+        <h2 className="appointment-title">Donation Appointments</h2>
         {loading ? (
           <div className="appointment-loading">Loading data...</div>
         ) : error ? (

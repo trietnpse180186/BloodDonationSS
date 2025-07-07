@@ -8,6 +8,7 @@ import { FaEnvelope, FaLock } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ClipLoader } from "react-spinners";
 
 function PasswordInput({ value, onChange }) {
   const [show, setShow] = useState(false);
@@ -37,11 +38,12 @@ function PasswordInput({ value, onChange }) {
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    setLoading(true);
     try {
       const response = await axios.post("http://localhost:8080/auth/login", {
         email,
@@ -52,6 +54,7 @@ export default function LoginForm() {
 
       if (!accessToken) {
         alert("Không nhận được accessToken từ server!");
+        setLoading(false);
         return;
       }
       sessionStorage.setItem("accessToken", accessToken);
@@ -67,28 +70,29 @@ export default function LoginForm() {
         navigate("/staff");
       } else {
         toast.error("Invalid role!");
+        setLoading(false);
         return;
       }
     } catch (error) {
       console.error("Login error:", error);
       toast.error("Login failed. Please check your email and password.");
+      setLoading(false);
     }
   };
 
   return (
-    <div
-      className="login-page"
-      data-aos="fade-in"
-      data-aos-duration="500"
-      data-aos-delay="100"
-      data-aos-easing="ease-in-out"
-    >
+    <div className="login-page">
+      {loading && (
+        <div style={{ display: "flex", justifyContent: "center", margin: 20 }}>
+          <ClipLoader color="#b30000" size={48} speedMultiplier={1.1} />
+        </div>
+      )}
       <div
         className="login-inputs"
-        data-aos="slide-left"
-        data-aos-duration="800"
-        data-aos-delay="200"
-        data-aos-easing="ease-in-out"
+        style={{
+          opacity: loading ? 0.5 : 1,
+          pointerEvents: loading ? "none" : "auto",
+        }}
       >
         <form className="login-wrapper" onSubmit={handleSubmit}>
           <h1>SIGN IN</h1>

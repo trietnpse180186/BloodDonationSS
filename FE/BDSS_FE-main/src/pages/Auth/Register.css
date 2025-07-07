@@ -117,8 +117,13 @@
   background-position: calc(100% - 12px) center;
   padding-right: 36px;
 }
+.field-wrapper-btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-.wrap-submit {
+ .wrap-button {
   background: #b5332b;
   color: #fff;
   font-weight: 600;
@@ -128,13 +133,10 @@
   border-radius: 8px;
   padding: 14px 36px;
   min-width: 200px;
-  transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-  box-shadow: 0 3px 10px rgba(181, 51, 43, 0.2);
-}
+ }
 
-.wrap-submit:hover {
-  background: #a12a24;
-  box-shadow: 0 5px 15px rgba(181, 51, 43, 0.3);
+.wrap-button:hover {
+  background: #d00909df;
 }
 
 .wrap-submit:active {
@@ -160,9 +162,5 @@
 ::placeholder {
   color: #aaa;
   opacity: 1;
-}
-.field-wrapper-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+} 
+

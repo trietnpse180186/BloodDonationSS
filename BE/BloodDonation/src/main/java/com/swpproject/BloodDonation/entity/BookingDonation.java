@@ -1,10 +1,12 @@
 package com.swpproject.BloodDonation.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.swpproject.BloodDonation.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Entity
@@ -28,8 +30,18 @@ public class BookingDonation {
     @Column(name = "EndTime")
     private LocalTime endTime;
 
-    @Column(name = "Address", columnDefinition = "NVARCHAR(255)")
+    @Column(name = "Address", columnDefinition = "NVARCHAR(4000)")
     private String address;
+
+    @Column(name = "Center", columnDefinition = "NVARCHAR(4000)")
+    private String center;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "Status", columnDefinition = "NVARCHAR(255)")
+    private Status status = Status.PENDING;
+
+    @Column(name = "BookingTime")
+    private LocalDateTime bookingTime; // lưu lại thời gian đặt lịch
 
     @ManyToOne
     @JoinColumn(name = "ScheduleId")

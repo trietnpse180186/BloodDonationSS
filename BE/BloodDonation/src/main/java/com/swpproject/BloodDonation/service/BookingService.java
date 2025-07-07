@@ -5,6 +5,7 @@ import com.swpproject.BloodDonation.dto.request.BookingWithSurveyRequest;
 import com.swpproject.BloodDonation.dto.request.SurveyRequest;
 import com.swpproject.BloodDonation.dto.response.BookingResponse;
 import com.swpproject.BloodDonation.entity.*;
+import com.swpproject.BloodDonation.enums.Status;
 import com.swpproject.BloodDonation.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -12,7 +13,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,14 +92,20 @@ public class BookingService {
         final LocalTime endTime = parsedEndTime;
 
         String bookingId = UUID.randomUUID().toString();
+        // them thoi gian dat lich
+        LocalDateTime now = LocalDateTime.now();
+
         BookingDonation bookingDonation = BookingDonation.builder()
                 .donationId(bookingId)
                 .dateDonation(request.getBooking().getDate())
                 .startTime(startTime)
                 .endTime(endTime)
                 .address(request.getBooking().getLocation() + " - " + request.getBooking().getCenter())
+                .center(request.getBooking().getCenter())
+                .status(Status.PENDING)
                 .scheduleDonation(scheduleDonation)
                 .donor(user)
+                .bookingTime(now)
                 .build();
 
         BookingDonation savedBookingDonation = bookingDonationRepository.save(bookingDonation);
@@ -106,13 +115,20 @@ public class BookingService {
                 .collect(Collectors.toList());
         surveyRepository.saveAll(surveys);
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedBookingTime = savedBookingDonation.getBookingTime().format(formatter);
+
         return BookingResponse.builder()
                 .bookingId(savedBookingDonation.getDonationId())
                 .dateDonation(savedBookingDonation.getDateDonation())
                 .startTime(savedBookingDonation.getStartTime())
                 .endTime(savedBookingDonation.getEndTime())
                 .address(savedBookingDonation.getAddress())
+                .status(String.valueOf(savedBookingDonation.getStatus()))
+                .center(savedBookingDonation.getCenter())
                 .message("Booking created successfully")
+                .bookingTime(savedBookingDonation.getBookingTime())
+                .formattedBookingTime("Đã đặt lịch lúc: " + formattedBookingTime)
                 .build();
     }
 
@@ -151,6 +167,8 @@ public class BookingService {
                         .startTime(booking.getStartTime())
                         .endTime(booking.getEndTime())
                         .address(booking.getAddress())
+                        .status(String.valueOf(booking.getStatus()))
+                        .center(booking.getCenter())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -172,7 +190,39 @@ public class BookingService {
                 .startTime(booking.getStartTime())
                 .endTime(booking.getEndTime())
                 .address(booking.getAddress())
+                .center(booking.getCenter())
+                .status(String.valueOf(booking.getStatus()))
                 .user(booking.getDonor())
                 .build();
+    }
+
+    public void updateBookingStatus(String bookingId, String status) {
+        BookingDonation booking = bookingDonationRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+
+        // Convert String status to Status enum
+        Status statusEnum = Status.valueOf(status);
+        booking.setStatus(statusEnum);
+        bookingDonationRepository.save(booking);
+    }
+
+    public List<BookingResponse> getAllBookings() {
+        List<BookingDonation> bookings = bookingDonationRepository.findAll();
+
+        return bookings.stream()
+                .map(booking -> BookingResponse.builder()
+                        .bookingId(booking.getDonationId())
+                        .dateDonation(booking.getDateDonation())
+                        .startTime(booking.getStartTime())
+                        .endTime(booking.getEndTime())
+                        .address(booking.getAddress())
+                        .status(String.valueOf(booking.getStatus()))
+                        .center(booking.getCenter())
+                        .user(booking.getDonor())
+                        .bookingTime(booking.getBookingTime())
+                        .formattedBookingTime("Đã đặt lịch lúc: " +
+                                booking.getBookingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                        .build())
+                .collect(Collectors.toList());
     }
 }

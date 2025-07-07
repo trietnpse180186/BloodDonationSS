@@ -9,6 +9,8 @@
   padding: 0 24px;
   font-family: "Roboto", Arial, sans-serif;
 }
+
+/* Header */
 .userinfo-header {
   display: flex;
   justify-content: space-between;
@@ -17,6 +19,8 @@
   margin-bottom: 24px;
   border: none;
 }
+
+/* Nút chỉnh sửa */
 .edit-button {
   background: #b5332b;
   color: #fff;
@@ -25,7 +29,14 @@
   padding: 10px 18px;
   font-size: 1em;
   font-weight: 500;
+  cursor: pointer;
+  transition: background 0.18s;
 }
+.edit-button:hover {
+  background: #a12a24;
+}
+
+/* Nội dung chính và báo cáo */
 .userinfo-content,
 .userinfo-report {
   background: #fff;
@@ -33,10 +44,11 @@
   padding: 36px 32px 28px 32px;
   flex: 1 1 0;
   min-width: 340px;
-  min-height: 420px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border-radius: 16px;
 }
 
 .userinfo-content {
@@ -48,6 +60,7 @@
   font-size: 2em;
   font-weight: bold;
   letter-spacing: 1px;
+  margin-bottom: 18px;
 }
 
 .content-group-first {
@@ -87,11 +100,11 @@
   padding: 32px 24px;
   font-size: 2.5em;
   font-weight: bold;
-
   margin: 0;
   letter-spacing: 2px;
 }
 
+/* Sidebar */
 .userinfo-sidebar {
   background: #fff;
   border-radius: 18px;
@@ -120,12 +133,12 @@
   transition: background 0.2s, box-shadow 0.2s;
   margin-top: 12px;
 }
-
 .userinfo-sidebar a:hover {
   background: #a12a24;
   box-shadow: 0 4px 16px rgba(44, 44, 44, 0.13);
 }
 
+/* Responsive */
 @media (max-width: 1100px) {
   .userinfo-container {
     flex-direction: column;
@@ -148,5 +161,31 @@
     align-items: center;
     padding: 18px 0;
     gap: 18px;
+  }
+}
+
+@media (max-width: 700px) {
+  .userinfo-container {
+    padding: 0 4vw;
+    margin-top: 50px;
+    gap: 10px;
+  }
+  .userinfo-content,
+  .userinfo-report {
+    padding: 18px 8px 14px 8px;
+    min-width: 100%;
+    min-height: 540px;
+    border-radius: 10px;
+  }
+  .userinfo-sidebar {
+    padding: 10px 0;
+    border-radius: 10px;
+    min-height: 0;
+    gap: 10px;
+  }
+  .userinfo-content h1,
+  .userinfo-report h1 {
+    font-size: 1.2em;
+    padding: 12px 4px;
   }
 }
