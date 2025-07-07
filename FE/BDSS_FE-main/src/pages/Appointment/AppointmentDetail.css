@@ -51,16 +51,16 @@
 }
 .status-pending {
   background: #fffbe6;
-  color: #b8860b;
+  color: #0c8805;
   border-radius: 6px;
   padding: 3px 14px;
   font-weight: 600;
-  border: 1.5px solid #ffe066;
+  border: 1.5px solid #0dff00;
   display: inline-block;
 }
 .status-confirmed {
-  color: #ff9800;
-  border: 1.5px solid #ff9800;
+  color: #0dff00;
+  border: 1.5px solid #0dff00;
   border-radius: 6px;
   padding: 3px 14px;
   font-weight: 600;

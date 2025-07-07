@@ -119,14 +119,13 @@ export default function BloodRegister2() {
             </div>
             <div className="buttons">
               <Link to="/blood-registration">
-                <button className="button-style">Quay lại</button>
+                <button className="button-style">Back</button>
               </Link>
               <button
                 className="button-style"
                 onClick={handleSubmit}
-                disabled={!allAnswered}
               >
-                Xác nhận
+                Confirm
               </button>
             </div>
           </div>

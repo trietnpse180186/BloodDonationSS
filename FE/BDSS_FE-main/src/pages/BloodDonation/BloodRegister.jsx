@@ -272,8 +272,8 @@ export default function BloodRegister() {
             </div>
 
             <div className="button-submit">
-              <div className="button-submit">
-                <button onClick={goToNext}>Tiếp tục</button>
+              <div className="button-style-register">
+                <button onClick={goToNext}>Next</button>
               </div>
             </div>
           </div>
