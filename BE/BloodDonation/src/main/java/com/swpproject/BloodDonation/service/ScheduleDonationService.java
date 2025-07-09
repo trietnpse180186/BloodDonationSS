@@ -7,19 +7,23 @@ import com.swpproject.BloodDonation.dto.response.TimeSlotResponse;
 import com.swpproject.BloodDonation.entity.BookingDonation;
 import com.swpproject.BloodDonation.entity.ScheduleDonation;
 import com.swpproject.BloodDonation.entity.TimeSlot;
+import com.swpproject.BloodDonation.enums.BloodType;
 import com.swpproject.BloodDonation.repository.BookingDonationRepository;
 import com.swpproject.BloodDonation.repository.ScheduleDonationRepository;
 import com.swpproject.BloodDonation.repository.TimeSlotRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -36,7 +40,8 @@ public class ScheduleDonationService {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Transactional
-public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) {
+    @PreAuthorize("hasAuthority('STAFF')")
+    public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) {
     // Kiểm tra tính hợp lệ của request
     validateScheduleRequest(request);
 
@@ -51,6 +56,7 @@ public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) 
             .address(request.getAddress())
             .center(request.getCenter())
             .numberOfDonor(request.getNumberOfDonor())
+            .bloodNeed(request.getBloodNeed())
             .updateBy(currentUser)
             .timeSlots(new ArrayList<>())
             .build();
@@ -110,13 +116,14 @@ public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) 
 
         // Tìm schedule hiện có
         ScheduleDonation existingSchedule = scheduleDonationRepository.findById(scheduleId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hiến máu với ID: " + scheduleId));
+                .orElseThrow(() -> new RuntimeException("Can not found schedule with ID: " + scheduleId));
 
         // Cập nhật các trường cơ bản
         existingSchedule.setDate(request.getDate());
         existingSchedule.setAddress(request.getAddress());
         existingSchedule.setCenter(request.getCenter());
         existingSchedule.setNumberOfDonor(request.getNumberOfDonor());
+        existingSchedule.setBloodNeed(Arrays.asList(request.getBloodNeed().toArray(new BloodType[0])));
         existingSchedule.setUpdateBy(currentUser);
 
         // Xóa tất cả time slot hiện có
@@ -204,10 +211,11 @@ public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) 
                 .location(schedule.getAddress()) // Ánh xạ address -> location
                 .date(schedule.getDate().format(DATE_FORMATTER))
                 .timeSlots(timeSlotResponses)
+                .bloodNeed(schedule.getBloodNeed())
                 .donorCount(schedule.getNumberOfDonor()) // numberOfDonor -> donorCount
                 .updateBy(schedule.getUpdateBy())
                 .currentDonorCount(registeredCount)
-                .registrationStatus(registeredCount + "/" + schedule.getNumberOfDonor() + " đã đăng ký")
+                .registrationStatus(registeredCount + "/" + schedule.getNumberOfDonor() + " registed")
                 .build();
     }
 

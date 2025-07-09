@@ -168,9 +168,16 @@ export default function AppNavbar() {
                 </NavDropdown>
               </>
             ) : (
-              <Nav.Link as={Link} to="/login">
-                Login
-              </Nav.Link>
+              <>
+                <Nav.Link as={Link} to="/login">
+                  Sign In
+                </Nav.Link>
+                <Nav.Link as={Link} to="/register">
+                  <Button variant="outline-light" className="nav-btn">
+                    Sign Up
+                  </Button>
+                </Nav.Link>
+              </>
             )}
           </Nav>
         </Navbar.Collapse>

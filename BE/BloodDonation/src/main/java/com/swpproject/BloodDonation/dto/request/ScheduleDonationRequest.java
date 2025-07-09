@@ -1,6 +1,7 @@
 package com.swpproject.BloodDonation.dto.request;
 
 
+import com.swpproject.BloodDonation.enums.BloodType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,7 @@ import java.util.List;
 public class ScheduleDonationRequest {
     private String center;
     private String address;
+    private List<BloodType> bloodNeed;
     private LocalDate date; // yyyy-MM-dd
     private List<TimeSlotRequest> timeSlots;
     private Integer numberOfDonor; // maximum number of donors allowed

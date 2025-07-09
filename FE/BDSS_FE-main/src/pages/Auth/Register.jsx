@@ -152,7 +152,8 @@ export default function Register() {
             Female
           </label>
         </div>
-        <div className="field-wrapper">
+        <div className="field-wrapper" id="birthday">
+          <h6>Birthday</h6>
           <input
             type="date"
             name="birthday"

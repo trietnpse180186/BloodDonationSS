@@ -43,7 +43,7 @@ export default function HomePage() {
                 loved ones.
               </p>
               <div className="group-header-btn">
-                <Link className="group-header-link" to="/blood-registration">
+                <Link className="group-header-link" to="/schedule">
                   Give Blood
                 </Link>
               </div>

@@ -1,11 +1,11 @@
-.admin-page {
+.staff-page {
   display: flex;
   min-height: 100vh;
   background: linear-gradient(135deg, #fff 0%, #f8d7da 100%);
   font-family: "Segoe UI", Arial, sans-serif;
 }
 
-.admin-sidebar {
+.staff-sidebar {
   width: 260px;
   background: #b5332b;
   color: #fff;
@@ -16,20 +16,20 @@
   box-shadow: 2px 0 8px rgba(181, 51, 43, 0.08);
 }
 
-.admin-title {
+.staff-title {
   font-size: 1.7rem;
   font-weight: bold;
   margin-bottom: 32px;
   letter-spacing: 1px;
 }
 
-.admin-menu {
+.staff-menu {
   list-style: none;
   padding: 0;
   width: 100%;
 }
 
-.admin-menu li {
+.staff-menu li {
   padding: 16px 32px;
   cursor: pointer;
   font-size: 1.1rem;
@@ -37,22 +37,22 @@
   border-left: 4px solid transparent;
 }
 
-.admin-menu li.active,
-.admin-menu li:hover {
+.staff-menu li.active,
+.staff-menu li:hover {
   background: #fff;
   color: #b5332b;
   border-left: 4px solid #b5332b;
   font-weight: bold;
 }
 
-.admin-main {
+.staff-main {
   flex: 1;
   padding: 48px 40px;
   background: #fff;
   min-height: 100vh;
 }
 
-.admin-content-box {
+.staff-content-box {
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 16px rgba(181, 51, 43, 0.08);

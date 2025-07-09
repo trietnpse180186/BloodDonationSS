@@ -12,18 +12,18 @@ export function getUsernameFromToken() {
         decoded.username ||
         decoded.email ||
         decoded.sub ||
-        "Người dùng"
+        "Unknown User"
       );
     } catch (error) {
-      console.error("Token không hợp lệ:", error);
+      console.error("Error decoding token:", error);
       return null;
     }
   }
   return null;
 }
 
-export function getUserRole() {
-  const token = sessionStorage.getItem("accessToken");
+export function getUserRole(token) {
+  token = token || sessionStorage.getItem("accessToken");
   if (token && token.split(".").length === 3) {
     try {
       const decoded = jwtDecode(token);
@@ -31,10 +31,10 @@ export function getUserRole() {
         Array.isArray(decoded.authorities) &&
         decoded.authorities.length > 0
       ) {
-        return decoded.authorities[0];
+        return decoded.authorities[0].toUpperCase();
       }
     } catch (error) {
-      console.error("Token không hợp lệ:", error);
+      console.error("Error decoding token:", error);
       return null;
     }
   }

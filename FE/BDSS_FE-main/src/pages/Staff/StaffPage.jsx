@@ -26,38 +26,38 @@ export default function StaffPage() {
     switch (selected) {
       case "schedule":
         return (
-          <div className="admin-content-box">
+          <div className="staff-content-box">
             <MedicalSchedule />
           </div>
         );
       case "appointment":
         return (
-          <div className="admin-content-box">
+          <div className="staff-content-box">
             Donor Appointment Manager content
           </div>
         );
       case "blog":
         return (
-          <div className="admin-content-box">
+          <div className="staff-content-box">
             <BlogManager />
           </div>
         );
       case "faq":
         return (
-          <div className="admin-content-box">
+          <div className="staff-content-box">
             <FAQManager />
           </div>
         );
 
       case "notification":
         return (
-          <div className="admin-content-box">
+          <div className="staff-content-box">
             <Notification />
           </div>
         );
       case "contact":
         return (
-          <div className="admin-content-box">
+          <div className="staff-content-box">
             <ContactManager />
           </div>
         );
@@ -70,10 +70,10 @@ export default function StaffPage() {
   };
 
   return (
-    <div className="admin-page">
-      <aside className="admin-sidebar">
-        <h2 className="admin-title">Staff Panel</h2>
-        <ul className="admin-menu">
+    <div className="staff-page">
+      <aside className="staff-sidebar">
+        <h2 className="staff-title">Staff Panel</h2>
+        <ul className="staff-menu">
           {menuItems.map((item) => (
             <li
               key={item.key}
@@ -85,7 +85,7 @@ export default function StaffPage() {
           ))}
         </ul>
       </aside>
-      <main className="admin-main">{renderContent()}</main>
+      <main className="staff-main">{renderContent()}</main>
     </div>
   );
 }

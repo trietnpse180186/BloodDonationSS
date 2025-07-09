@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "../../assets/axiosInstance";
-import { useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 import "./Login.css";
 import { getUserRole } from "../../assets/getUserName";
 import loginBanner from "../../images/loginBanner.jpg";
@@ -39,11 +39,13 @@ export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const location = useLocation();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const response = await axios.post("http://localhost:8080/auth/login", {
         email,
@@ -53,7 +55,7 @@ export default function LoginForm() {
       const { accessToken, refreshToken } = response.data;
 
       if (!accessToken) {
-        alert("Không nhận được accessToken từ server!");
+        alert("Can not get accessToken!");
         setLoading(false);
         return;
       }
@@ -61,9 +63,11 @@ export default function LoginForm() {
       sessionStorage.setItem("refreshToken", refreshToken);
 
       const role = getUserRole(accessToken);
-
+      console.log(getUserRole(accessToken));
       if (role === "DONOR") {
-        navigate("/");
+        const params = new URLSearchParams(location.search);
+        const redirect = params.get("redirect");
+        navigate(redirect || "/");
       } else if (role === "ADMIN") {
         navigate("/admin");
       } else if (role === "STAFF") {
