@@ -73,6 +73,17 @@
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
+#birthday {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+#birthday h6 {
+  margin-bottom: 8px;
+  color: #868787;
+  margin-bottom: -6px;
+}
 .field-wrapper input:focus,
 .field-wrapper select:focus {
   border-color: #b5332b;
@@ -123,7 +134,7 @@
   align-items: center;
 }
 
- .wrap-button {
+.wrap-button {
   background: #b5332b;
   color: #fff;
   font-weight: 600;
@@ -133,7 +144,7 @@
   border-radius: 8px;
   padding: 14px 36px;
   min-width: 200px;
- }
+}
 
 .wrap-button:hover {
   background: #d00909df;
@@ -162,5 +173,4 @@
 ::placeholder {
   color: #aaa;
   opacity: 1;
-} 
-
+}

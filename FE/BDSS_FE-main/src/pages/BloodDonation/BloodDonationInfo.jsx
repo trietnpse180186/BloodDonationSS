@@ -25,6 +25,12 @@ function GenderIcon({ sex }) {
   return null;
 }
 
+const formatDateToIso = (dateStr) => {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+
+  const [day, month, year] = dateStr.split("/");
+  return `${year}-${month}-${day}`;
+};
 export default function BloodDonationInfo({ answers }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -124,7 +130,7 @@ export default function BloodDonationInfo({ answers }) {
             </i>
             <div style={{ marginLeft: 16, color: "#b30000" }}>
               {getLabelByValue(q.questionId, q.answer)}
-              {q.input ? `: ${q.input}` : ""}
+              {q.additionalInfo ? `: ${q.additionalInfo}` : ""}
             </div>
           </div>
         ))}
@@ -132,21 +138,17 @@ export default function BloodDonationInfo({ answers }) {
     );
   };
 
-  // Confirm booking handler
   const handleConfirmBooking = async () => {
     if (!bookingData || !surveyData) {
       alert("Please provide complete booking and survey information.");
       return;
     }
 
-    // Chỉ truyền id hoặc chuỗi cho timeSlot
     const payload = {
       booking: {
         ...bookingData,
-        timeSlot:
-          bookingData.timeSlot && bookingData.timeSlot.id
-            ? bookingData.timeSlot.id
-            : bookingData.timeSlot,
+        date: formatDateToIso(bookingData.date),
+        timeSlot: bookingData.timeSlot.id,
       },
       survey: surveyData,
     };
@@ -166,7 +168,13 @@ export default function BloodDonationInfo({ answers }) {
       alert("Booking successful!");
       navigate("/appointment-detail");
     } catch (error) {
-      alert("Booking failed. Please try again.");
+      console.error("Booking error:", error, error?.response?.data);
+      alert(
+        "Booking failed. " +
+          (error?.response?.data?.message
+            ? error.response.data.message
+            : "Please try again.")
+      );
     } finally {
       setIsSubmitting(false);
     }

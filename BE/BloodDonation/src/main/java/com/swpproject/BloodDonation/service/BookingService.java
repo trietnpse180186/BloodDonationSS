@@ -8,6 +8,7 @@ import com.swpproject.BloodDonation.entity.*;
 import com.swpproject.BloodDonation.enums.Status;
 import com.swpproject.BloodDonation.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,9 @@ public class BookingService {
     private final UserRepository userRepository;
     private final TimeSlotRepository timeSlotRepository;
 
+
     @Transactional
+    @PreAuthorize("isAuthenticated()") // cho phép nếu đã đăng nhập
     public BookingResponse createBookingWithSurvey(BookingWithSurveyRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
@@ -220,7 +223,7 @@ public class BookingService {
                         .center(booking.getCenter())
                         .user(booking.getDonor())
                         .bookingTime(booking.getBookingTime())
-                        .formattedBookingTime("Đã đặt lịch lúc: " +
+                        .formattedBookingTime("Booking at: " +
                                 booking.getBookingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                         .build())
                 .collect(Collectors.toList());
