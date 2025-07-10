@@ -10,17 +10,18 @@ import axios from "../../assets/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
 import "./UserUpdate.css";
 import getUserById, { getUserIdFromToken } from "../../assets/getUserById";
+import { Button } from "react-bootstrap";
 export default function UserUpdate() {
   const [formData, setFormData] = useState({
-    fullName: "",
-    birthday: "",
-    sex: "",
-    email: "",
-    password: "",
-    phoneNumber: "",
-    address: "",
-    bloodType: "",
-    occupation: "",
+    fullName: null,
+    birthday: null,
+    sex: null,
+    email: null,
+    password: null,
+    phoneNumber: null,
+    address: null,
+    bloodType: null,
+    occupation: null,
   });
 
   const navigate = useNavigate();
@@ -30,14 +31,14 @@ export default function UserUpdate() {
       try {
         const user = await getUserById();
         setFormData({
-          fullName: user.fullName || "",
-          birthday: user.birthday || "",
-          sex: user.sex || "",
-          password: "",
-          phoneNumber: user.phoneNumber || "",
-          address: user.address || "",
-          bloodType: user.bloodType || "",
-          occupation: user.occupation || "",
+          fullName: user.fullName || null,
+          birthday: user.birthday || null,
+          sex: user.sex || null,
+          password: null,
+          phoneNumber: user.phoneNumber || null,
+          address: user.address || null,
+          bloodType: user.bloodType || null,
+          occupation: user.occupation || null,
         });
       } catch (err) {
         console.error("Error fetching user data:", err);

@@ -38,4 +38,8 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @DeleteMapping("/users/delete/{id}")
+    public void deleteAccount(@PathVariable String id){
+        userService.deleteAccount(id);
+    }
 }

@@ -50,7 +50,6 @@ input[type="date"],
 select {
   width: 100%;
   padding: 10px 12px;
-  border: 1.2px solid #db230b;
   border-radius: 7px;
   font-size: 1em;
   outline: none;
@@ -61,7 +60,6 @@ select {
 input[type="text"]:focus,
 input[type="date"]:focus,
 select:focus {
-  border: 1.5px solid #b30000;
   background: #fff9f9;
 }
 

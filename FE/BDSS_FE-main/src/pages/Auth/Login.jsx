@@ -87,8 +87,30 @@ export default function LoginForm() {
   return (
     <div className="login-page">
       {loading && (
-        <div style={{ display: "flex", justifyContent: "center", margin: 20 }}>
-          <ClipLoader color="#b30000" size={48} speedMultiplier={1.1} />
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(255, 255, 255, 0.37)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <ClipLoader
+            color="#b30000"
+            size={60}
+            speedMultiplier={1.2}
+            loading={loading}
+            cssOverride={{
+              borderWidth: "6px",
+              margin: "0 auto",
+            }}
+          />
         </div>
       )}
       <div
@@ -116,8 +138,29 @@ export default function LoginForm() {
           />
           <button type="submit">Sign in</button>
         </form>
-        <Link to="/register">Register</Link>
-        <Link to="/">Home</Link>
+        <div
+          className="register"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <h8 style={{ marginTop: 8, marginRight: 8 }}>
+            Don't have an account?
+          </h8>
+          <Link to="/register">Register here!</Link>
+        </div>
+        <div className="back-btn">
+          <a
+            type="button"
+            className="back-btn-back"
+            onClick={() => navigate("/")}
+            style={{ marginRight: 8, fontSize: 15 }}
+          >
+            ⟵ Back to Home Page
+          </a>
+        </div>
       </div>
       <div className="login-banner">
         <img src={loginBanner} />
