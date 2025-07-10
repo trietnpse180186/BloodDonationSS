@@ -132,10 +132,26 @@ export default function LoginForm() {
               required
             />
           </div>
-          <PasswordInput
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <div style={{ position: "relative" }}>
+            <PasswordInput
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <div
+              style={{
+                right: 0,
+                fontSize: 14,
+                marginTop: -16,
+                marginBottom: 16,
+                justifyItems: "flex-end",
+                width: "100%",
+              }}
+            >
+              <Link to="/forgot-password" style={{ color: "#b30000" }}>
+                Forgot password?
+              </Link>
+            </div>
+          </div>
           <button type="submit">Sign in</button>
         </form>
         <div

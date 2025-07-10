@@ -9,8 +9,10 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "../../assets/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
 import "./UserUpdate.css";
+
 import getUserById, { getUserIdFromToken } from "../../assets/getUserById";
 import { Button } from "react-bootstrap";
+import { MdCake } from "react-icons/md";
 export default function UserUpdate() {
   const [formData, setFormData] = useState({
     fullName: null,
@@ -107,6 +109,7 @@ export default function UserUpdate() {
           </div>
 
           <div className="field-wrapper">
+            <MdCake className="input-icon" />
             <input
               type="date"
               name="birthday"
