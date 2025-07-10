@@ -11,6 +11,7 @@ import com.swpproject.BloodDonation.entity.UserHasRole;
 import com.swpproject.BloodDonation.repository.RoleRepository;
 import com.swpproject.BloodDonation.repository.UserRepository;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import com.swpproject.BloodDonation.repository.UserHasRoleRepository;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserHasRoleRepository userHasRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final MailService mailService;
@@ -148,6 +150,16 @@ public class UserService {
                         .occupation(user.getOccupation())
                         .build())
                 .toList();
+    }
+
+
+    @Transactional
+    @PreAuthorize("isAuthenticated() AND hasAuthority('DONOR')")
+    public void deleteAccount(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        userHasRoleRepository.deleteByUser(user);
+        userRepository.delete(user);
     }
 
 }
