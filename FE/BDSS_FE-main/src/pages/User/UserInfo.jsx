@@ -4,7 +4,10 @@ import "./UserInfo.css";
 import Footer from "../../components/footer";
 import getUserById, { getUserIdFromToken } from "../../assets/getUserById";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
+import { CiWarning } from "react-icons/ci";
+import { FaKey, FaTrashAlt, FaUserEdit } from "react-icons/fa";
 import { FaPenToSquare } from "react-icons/fa6";
+
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import axios from "axios";
@@ -15,14 +18,14 @@ function GenderIcon({ sex }) {
     return (
       <>
         <IoMdMale style={{ color: "#1976d2" }} />
-        <p>Male</p>
+        <span>Male</span>
       </>
     );
   if (sex.toUpperCase() === "FEMALE")
     return (
       <>
         <IoMdFemale style={{ color: "#e91e63" }} />
-        <p>Female</p>
+        <span>Female</span>
       </>
     );
   return null;
@@ -41,7 +44,7 @@ function UserInfo({ userId }) {
 
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(
+      await axios.delete(
         `http://localhost:8080/users/delete/${userIdFromToken}`,
         {
           headers: {
@@ -60,6 +63,7 @@ function UserInfo({ userId }) {
   };
 
   function formatDate(dateStr) {
+    if (!dateStr) return "";
     const [year, month, day] = dateStr.split("-");
     return `${day}/${month}/${year}`;
   }
@@ -70,59 +74,37 @@ function UserInfo({ userId }) {
   return (
     <>
       <Navbar />
-      <div className="userinfo-container">
-        <div className="userinfo-content">
-          <div className="userinfo-header">
-            <h1>USER PROFILE</h1>
-            <Button onClick={() => navigate(`/user/update/${userIdFromToken}`)}>
-              <FaPenToSquare />
-            </Button>
-          </div>
-          <p>
-            <strong style={{ fontSize: "1.1rem" }}>Full Name:</strong>{" "}
-            {user.fullName}
-          </p>
-          <p>
-            <strong style={{ fontSize: "1.1rem" }}>Gender:</strong>{" "}
-            <GenderIcon sex={user.sex} />
-          </p>
-          <p>
-            <strong style={{ fontSize: "1.1rem" }}>Birthday:</strong>{" "}
-            {formatDate(user.birthday)}
-          </p>
-
-          <p>
-            <strong style={{ fontSize: "1.1rem" }}>Address:</strong>{" "}
-            {user.address ?? <span style={{ color: "#888" }}>N/A</span>}
-          </p>
-          <p>
-            <strong style={{ fontSize: "1.1rem" }}>Email:</strong>{" "}
-            {user.email ?? <span style={{ color: "#888" }}>N/A</span>}
-          </p>
-          <p>
-            <strong style={{ fontSize: "1.1rem" }}>Occupation:</strong>{" "}
-            {user.occupation ?? <span style={{ color: "#888" }}>N/A</span>}
-          </p>
-          <p>
-            <strong style={{ fontSize: "1.1rem" }}>Phone Number:</strong>{" "}
-            {user.phoneNumber ?? <span style={{ color: "#888" }}>N/A</span>}
-          </p>
-          <Button variant="danger" onClick={() => setShowConfirm(true)}>
-            Delete Account{" "}
+      <div className="user-info-modern-container">
+        <div className="user-info-modern-sidebar">
+          <h4 style={{ marginBottom: 18, color: "#b30000" }}>Actions</h4>
+          <Button
+            variant="outline-primary"
+            className="user-info-modern-action-btn"
+            onClick={() => navigate(`/user/update/${userIdFromToken}`)}
+          >
+            <FaPenToSquare style={{ marginRight: 8 }} />
+            Edit Profile
+          </Button>
+          <Button
+            variant="outline-secondary"
+            className="user-info-modern-action-btn"
+            onClick={() => navigate(`/user/change-password`)}
+            style={{ marginTop: 10 }}
+          >
+            <FaKey style={{ marginRight: 8 }} />
+            Change Password
+          </Button>
+          <Button
+            variant="outline-danger"
+            className="user-info-modern-action-btn"
+            style={{ marginTop: 10 }}
+            onClick={() => setShowConfirm(true)}
+          >
+            <FaTrashAlt style={{ marginRight: 8 }} />
+            Delete Account
           </Button>
           {showConfirm && (
-            <div
-              style={{
-                background: "#fff",
-                border: "1px solid #ccc",
-                borderRadius: 8,
-                padding: 24,
-                marginTop: 16,
-                boxShadow: "0 2px 8px #0002",
-                zIndex: 100,
-                maxWidth: 320,
-              }}
-            >
+            <div className="user-info-modern-confirm">
               <p style={{ color: "#b30000", fontWeight: "bold" }}>
                 Are you sure you want to delete your account? This action cannot
                 be undone.
@@ -141,15 +123,80 @@ function UserInfo({ userId }) {
             </div>
           )}
         </div>
-        <div className="userinfo-report">
-          <h1> USER REPORT</h1>
-          <p>
-            Blood Type:{" "}
-            {user.bloodType ?? <span style={{ color: "#888" }}>N/A</span>}
-          </p>
+        <div className="user-info-modern-card">
+          <div className="user-info-modern-header">
+            <div className="user-info-modern-avatar">
+              <FaUserEdit size={56} color="#b30000" />
+            </div>
+            <div>
+              <h2 style={{ marginBottom: 4 }}>{user.fullName}</h2>
+              <span className="user-info-modern-role">
+                {user.role || "Donor"}
+              </span>
+            </div>
+          </div>
+          <div className="user-info-modern-details">
+            <div className="user-info-modern-row">
+              <span className="user-info-modern-label">Gender:</span>
+              <span className="user-info-modern-value">
+                <GenderIcon sex={user.sex} />
+              </span>
+            </div>
+            <div className="user-info-modern-row">
+              <span className="user-info-modern-label">Birthday:</span>
+              <span className="user-info-modern-value">
+                {formatDate(user.birthday)}
+              </span>
+            </div>
+            <div className="user-info-modern-row">
+              <span className="user-info-modern-label">Email:</span>
+              <span className="user-info-modern-value">
+                {user.email ?? <span style={{ color: "#888" }}>N/A</span>}
+              </span>
+            </div>
+            <div className="user-info-modern-row">
+              <span className="user-info-modern-label">Phone:</span>
+              <span className="user-info-modern-value">
+                {user.phoneNumber ?? <span style={{ color: "#888" }}>N/A</span>}
+              </span>
+            </div>
+            <div className="user-info-modern-row">
+              <span className="user-info-modern-label">Address:</span>
+              <span className="user-info-modern-value">
+                {user.address ?? <span style={{ color: "#888" }}>N/A</span>}
+              </span>
+            </div>
+            <div className="user-info-modern-row">
+              <span className="user-info-modern-label">Occupation:</span>
+              <span className="user-info-modern-value">
+                {user.occupation ?? <span style={{ color: "#888" }}>N/A</span>}
+              </span>
+            </div>
+            <div className="user-info-modern-row">
+              <span className="user-info-modern-label">Blood Type:</span>
+              <span className="user-info-modern-value">
+                {user.bloodType ?? <span style={{ color: "#888" }}>N/A</span>}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div className="user-info-modern-report">
+          <h4 style={{ color: "#b30000", marginBottom: 16 }}>
+            Donation Report
+          </h4>
+          <div className="user-info-modern-report-content">
+            <p>
+              <strong>Total Donations:</strong> {user.totalDonations ?? 0}
+            </p>
+            <p>
+              <strong>Last Donation:</strong>{" "}
+              {user.lastDonationDate
+                ? formatDate(user.lastDonationDate)
+                : "N/A"}
+            </p>
+          </div>
         </div>
       </div>
-      {user && user.id && <Link to={`/users/${userId}`}>Go to user</Link>}
       <Footer />
     </>
   );

@@ -18,6 +18,7 @@ import UserUpdate from "../pages/User/UserUpdate";
 import AdminPage from "../pages/Admin/AdminPage";
 import ScrollTotop from "../assets/scrollToTop";
 import StaffPage from "../pages/Staff/StaffPage";
+import ForgotPassword from "../pages/Auth/ForgotPassword";
 
 export default function WebRoutes() {
   return (
@@ -42,6 +43,7 @@ export default function WebRoutes() {
         <Route path="/blood-donation-info" element={<BloodDonationInfo />} />
         <Route path="/appointment-detail" element={<AppointmentDetail />} />
         <Route path="/user-notification" element={<UserNotification />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
       </Routes>
     </>
   );

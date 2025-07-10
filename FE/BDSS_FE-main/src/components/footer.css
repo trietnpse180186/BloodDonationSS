@@ -1,10 +1,9 @@
 .footer {
-  background: linear-gradient(135deg, #1D2B53 0%, #0D1E3D 100%);
+  background: linear-gradient(135deg, #1d2b53 0%, #0d1e3d 100%);
   color: #f5f5f5;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   padding: 60px 40px 20px;
   position: relative;
-  margin-top: 100px;
   box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
 }
 
@@ -54,7 +53,7 @@
 }
 
 .footer-column h3::after {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   bottom: 0;
@@ -117,7 +116,7 @@
 }
 
 .footer-links li a::after {
-  content: '';
+  content: "";
   position: absolute;
   width: 0;
   height: 1px;
@@ -178,12 +177,24 @@
 }
 
 @keyframes heartbeat {
-  0% { transform: scale(1); }
-  5% { transform: scale(1.1); }
-  10% { transform: scale(1); }
-  15% { transform: scale(1.1); }
-  20% { transform: scale(1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  5% {
+    transform: scale(1.1);
+  }
+  10% {
+    transform: scale(1);
+  }
+  15% {
+    transform: scale(1.1);
+  }
+  20% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Responsive */
@@ -191,7 +202,7 @@
   .footer-column {
     flex: 0 0 50%;
   }
-  
+
   .main-column {
     flex: 0 0 100%;
   }
@@ -201,7 +212,7 @@
   .footer-column {
     flex: 0 0 100%;
   }
-  
+
   .footer {
     padding: 40px 20px 20px;
   }
