@@ -27,6 +27,7 @@ export default function Notification() {
       );
       setNotification(response.data);
     };
+
     fetchNotifications();
   }, []);
 
@@ -170,7 +171,7 @@ export default function Notification() {
           Create Notification
         </Button>
       </Form>
-
+      
       <h2>Notification List</h2>
       <Table striped bordered hover>
         <thead>

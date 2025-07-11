@@ -8,9 +8,24 @@ export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
   const menuRefs = useRef({});
+  const [users, setUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState("");
 
   useEffect(() => {
-    getUserNotifications().then(setNotifications).catch(console.error);
+    getUserNotifications()
+      .then((data) => {
+        console.log("🔔 Notifications:", data); // Kiểm tra notify.id
+        setNotifications(data);
+      })
+      .catch(console.error);
+
+    axios
+      .get("http://localhost:8080/api/users?role=DONOR")
+      .then((response) => {
+        console.log("🧑‍🤝‍🧑 Users:", response.data); // Kiểm tra user.id
+        setUsers(response.data);
+      })
+      .catch((error) => console.error("Error fetching donors:", error));
   }, []);
 
   return (
@@ -19,6 +34,19 @@ export default function NotificationCenter() {
       <div className="notification-wrapper">
         <div className="notification-toolbar">
           <h2 className="notification-title">Notification</h2>
+
+          {/* take all user notifications */}
+          <select
+            value={selectedUserId}
+            onChange={(e) => setSelectedUserId(e.target.value)}
+          >
+            <option value="">-- Select User --</option>
+            {users.map((user) => (
+              <option key={user.donorId} value={user.id}>
+                {user.fullName || user.email || user.donorId}
+              </option>
+            ))}
+          </select>
           <button className="mark-all-read">Mark all as read</button>
         </div>
 

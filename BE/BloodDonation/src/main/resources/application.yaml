@@ -6,7 +6,7 @@ spring:
     name: Blood-Donation
 
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=Blood;encrypt=true;trustServerCertificate=true
+    url: jdbc:sqlserver://localhost:1433;databaseName=Blood1;encrypt=true;trustServerCertificate=true
     username: sa
     password: 12345
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver

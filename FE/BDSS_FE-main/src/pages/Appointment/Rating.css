@@ -1,0 +1,81 @@
+.rating-container {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.rating-container h2 {
+  text-align: center;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+.rating-question {
+  margin-bottom: 25px;
+}
+
+.rating-question label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.rating-options label {
+  margin-right: 20px;
+  display: inline-block;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.rating-options input[type="radio"] {
+  margin-right: 6px;
+}
+
+.rating-comment label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.rating-comment textarea {
+  width: 100%;
+  padding: 10px;
+  resize: vertical;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-height: 100px;
+  font-family: Arial, sans-serif;
+}
+
+.rating-submit {
+  display: block;
+  margin: 30px auto 0;
+  background-color: #dc3545;
+  color: white;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.rating-submit:hover {
+  background-color: #b02a37;
+}
+
+.required {
+  color: red;
+  margin-left: 4px;
+}
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 6px;
+}

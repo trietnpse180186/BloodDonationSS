@@ -38,4 +38,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/users/donors")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public List<UserDetailResponse> getAllDonors() {
+        return userService.getAllDonors();
+    }
 }
