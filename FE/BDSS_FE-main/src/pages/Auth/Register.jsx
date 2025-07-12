@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 import {
   FaEnvelope,
   FaLock,
@@ -14,7 +14,7 @@ import { FaPhone, FaLocationDot } from "react-icons/fa6";
 import { MdCake, MdWork } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ClipLoader } from "react-spinners";
+import { ClipLoader, PulseLoader } from "react-spinners";
 
 function PasswordInput({ value, onChange, name }) {
   const [show, setShow] = useState(false);
@@ -148,7 +148,7 @@ export default function Register() {
       {loading && (
         <div
           style={{
-            position: "fixed", // hoặc "absolute" nếu muốn chỉ phủ trong .register-page
+            position: "fixed",
             top: 0,
             left: 0,
             width: "100vw",
@@ -160,7 +160,7 @@ export default function Register() {
             zIndex: 9999,
           }}
         >
-          <ClipLoader
+          <PulseLoader
             color="#b30000"
             size={60}
             speedMultiplier={1.2}

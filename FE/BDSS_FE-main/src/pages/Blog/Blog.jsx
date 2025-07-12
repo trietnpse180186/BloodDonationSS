@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Blog.css";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
-import { getAllBlogs } from "../../assets/getBlogs";
+import { getAllBlogs } from "../../helpers/getBlogs";
 
 export default function Blog() {
   const [blogs, setBlogs] = useState([]);

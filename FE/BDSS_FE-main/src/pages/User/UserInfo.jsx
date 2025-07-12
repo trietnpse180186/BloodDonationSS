@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import "./UserInfo.css";
 import Footer from "../../components/footer";
-import getUserById, { getUserIdFromToken } from "../../assets/getUserById";
+import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
 import { CiWarning } from "react-icons/ci";
 import { FaKey, FaTrashAlt, FaUserEdit } from "react-icons/fa";
 import { FaPenToSquare } from "react-icons/fa6";
-
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import axios from "axios";
@@ -126,7 +125,20 @@ function UserInfo({ userId }) {
         <div className="user-info-modern-card">
           <div className="user-info-modern-header">
             <div className="user-info-modern-avatar">
-              <FaUserEdit size={56} color="#b30000" />
+              {user.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt="Avatar"
+                  style={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <FaUserEdit size={56} color="#b30000" />
+              )}
             </div>
             <div>
               <h2 style={{ marginBottom: 4 }}>{user.fullName}</h2>

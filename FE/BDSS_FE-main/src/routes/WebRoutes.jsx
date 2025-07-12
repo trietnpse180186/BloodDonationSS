@@ -16,7 +16,7 @@ import AppointmentDetail from "../pages/Appointment/AppointmentDetail";
 import UserNotification from "../pages/Notification/UserNotification";
 import UserUpdate from "../pages/User/UserUpdate";
 import AdminPage from "../pages/Admin/AdminPage";
-import ScrollTotop from "../assets/scrollToTop";
+import ScrollTotop from "../helpers/scrollToTop";
 import StaffPage from "../pages/Staff/StaffPage";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 

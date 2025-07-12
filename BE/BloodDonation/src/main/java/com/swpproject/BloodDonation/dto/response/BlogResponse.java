@@ -11,5 +11,5 @@ public class BlogResponse {
     private Long id;
     private String title;
     private String content;
-    private String imageurl;
+    private String imageUrl;
 }

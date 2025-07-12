@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import "./Login.css";
-import { getUserRole } from "../../assets/getUserName";
+import { getUserRole } from "../../helpers/getUserName";
 import loginBanner from "../../images/loginBanner.jpg";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ClipLoader } from "react-spinners";
+import { PulseLoader } from "react-spinners";
 
 function PasswordInput({ value, onChange }) {
   const [show, setShow] = useState(false);
@@ -94,16 +94,16 @@ export default function LoginForm() {
             left: 0,
             width: "100vw",
             height: "100vh",
-            background: "rgba(255, 255, 255, 0.37)",
+            background: "rgba(255, 255, 255, 0.82)",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
             zIndex: 9999,
           }}
         >
-          <ClipLoader
-            color="#b30000"
-            size={60}
+          <PulseLoader
+            color="#bd0909ff"
+            size={50}
             speedMultiplier={1.2}
             loading={loading}
             cssOverride={{

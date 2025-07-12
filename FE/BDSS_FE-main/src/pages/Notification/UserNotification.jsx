@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, use } from "react";
 import "./Notification.css";
 import Navbar from "../../components/navbar";
 import axios from "axios";
-import { getUserNotifications } from "../../assets/getNotification";
+import { getUserNotifications } from "../../helpers/getNotification";
 
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);

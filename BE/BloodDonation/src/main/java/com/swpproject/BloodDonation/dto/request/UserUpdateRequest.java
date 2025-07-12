@@ -40,4 +40,5 @@ public class UserUpdateRequest {
 
     @Size(max = 100, message = "Occupation cannot exceed 100 characters")
     private String occupation;
+    private String avatarUrl;
 }

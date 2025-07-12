@@ -2,8 +2,8 @@ import "./AppointmentDetail.css";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
-import { getUserIdFromToken } from "../../assets/getUserById";
-import axios from "../../assets/axiosInstance";
+import { getUserIdFromToken } from "../../helpers/getUserById";
+import axios from "../../helpers/axiosInstance";
 
 export default function AppointmentDetail() {
   const [appointments, setAppointments] = useState([]);

@@ -10,9 +10,9 @@ import {
 } from "react-bootstrap";
 import { VscAccount } from "react-icons/vsc";
 import { FaRegBell } from "react-icons/fa";
-import logout from "../assets/authLogout";
+import logout from "../helpers/authLogout";
 import logo from "../images/logo.jpg";
-import { getUserIdFromToken } from "../assets/getUserById";
+import { getUserIdFromToken } from "../helpers/getUserById";
 import "./navbar.css";
 
 export default function AppNavbar() {
@@ -137,7 +137,11 @@ export default function AppNavbar() {
                 <NavDropdown
                   title={
                     <VscAccount
-                      style={{ fontSize: "1.7rem", color: "white" }}
+                      style={{
+                        fontSize: "1.7rem",
+                        color: "white",
+                        marginRight: "10px",
+                      }}
                     />
                   }
                   id="nav-profile-dropdown"

@@ -1,7 +1,7 @@
-/* General container for the donation schedule page */
 .donation-schedule-page {
   background-color: #ffffff;
   margin-top: 50px;
+  margin-bottom: 100px;
 }
 
 .donation-schedule-page h1 {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
-import bloodRegister from "../../assets/bloodRegister";
+import bloodRegister from "../../helpers/bloodRegister";
 import { Link, useLocation, useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 export default function BloodRegister2() {
