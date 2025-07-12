@@ -7,6 +7,7 @@ import ContactManager from "../Contact/ContactManager";
 import MedicalSchedule from "../DonationSchedule/MedicalSchedule";
 import Notification from "../Notification/Notification";
 import FAQManager from "../FAQ/FAQManager";
+import AppointmentManager from "../Appointment/AppointmentManager";
 const menuItems = [
   { key: "schedule", label: "Donation Schedule" },
   { key: "appointment", label: "Donor Appointment Manager" },
@@ -33,7 +34,7 @@ export default function StaffPage() {
       case "appointment":
         return (
           <div className="admin-content-box">
-            Donor Appointment Manager content
+            <AppointmentManager />
           </div>
         );
       case "blog":
