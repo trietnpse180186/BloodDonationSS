@@ -7,18 +7,7 @@ import ContactManager from "../Contact/ContactManager";
 import MedicalSchedule from "../DonationSchedule/MedicalSchedule";
 import Notification from "../Notification/Notification";
 import FAQManager from "../FAQ/FAQManager";
-// Thêm icon
-import {
-  FaCalendarAlt,
-  FaUserFriends,
-  FaBlog,
-  FaQuestionCircle,
-  FaBell,
-  FaEnvelope,
-  FaSignOutAlt,
-} from "react-icons/fa";
-import { getUsernameFromToken } from "../../helpers/getUserName";
-import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
+import AppointmentManager from "../Appointment/AppointmentManager";
 
 const menuItems = [
   { key: "schedule", label: "Donation Schedule", icon: <FaCalendarAlt /> },
@@ -49,8 +38,10 @@ export default function StaffPage() {
         );
       case "appointment":
         return (
-          <div className="staff-content-box">
-            Donor Appointment Manager content
+
+          <div className="admin-content-box">
+            <AppointmentManager />
+
           </div>
         );
       case "blog":

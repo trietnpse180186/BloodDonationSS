@@ -5,6 +5,12 @@ import Footer from "../../components/footer";
 import { getUserIdFromToken } from "../../helpers/getUserById";
 import axios from "../../helpers/axiosInstance";
 
+
+  function formatDate(isoDate) {
+    if (!isoDate) return "";
+    const [year, month, day] = isoDate.split("-");
+    return `${day}-${month}-${year}`;
+  }
 export default function AppointmentDetail() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,8 +93,8 @@ export default function AppointmentDetail() {
             <table className="appointment-table">
               <thead>
                 <tr>
-                  <th>Date</th>
                   <th>Center</th>
+                  <th>Date</th>
                   <th>Location</th>
                   <th>Time Slot</th>
                   <th>Status</th>
@@ -98,8 +104,8 @@ export default function AppointmentDetail() {
               <tbody>
                 {appointments.map((item) => (
                   <tr key={item.bookingId}>
-                    <td>{item.dateDonation}</td>
                     <td>{item.center}</td>
+                    <td>{formatDate(item.dateDonation)}</td>
                     <td>{item.address}</td>
                     <td>
                       {item.startTime?.slice(0, 5)} -{" "}

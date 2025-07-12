@@ -309,7 +309,10 @@ export default function BloodRegister() {
             </div>
 
             <div className="button-submit">
-              <button onClick={goToNext}>Continue</button>
+              <div className="button-style-register">
+                <button onClick={goToNext}>Next</button>
+              </div>
+
             </div>
           </div>
         </div>

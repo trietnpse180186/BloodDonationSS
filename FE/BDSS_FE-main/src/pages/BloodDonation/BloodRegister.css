@@ -331,11 +331,11 @@
   outline: none;
   display: inline-block;
 }
-.clear-answer-button {
-  display: flex;
-  justify-content: flex-end;
+
+.clear-answer-button{
   width: 100px;
   border: none;
+  background: #FFFFFF;
 }
 .clear-answer-container {
   display: flex;
@@ -343,10 +343,7 @@
   padding-right: 10px;
 }
 
-.button-style:hover {
-  background: #1251a3;
-}
-.blood-form-body2 {
+.bloodform-body2{
   flex: 3;
   min-width: 500px;
   display: flex;
@@ -486,18 +483,22 @@ input[type="radio"]:checked::after {
   width: 100%;
   max-width: 150px;
 }
-.button-style {
+.button-style-register button {
   padding: 10px 28px;
   border-radius: 6px;
   border: none;
-  background: #1976d2;
+  background: #1D4A76;
   color: #fff;
   font-size: 16px;
   transition: background 0.2s;
   margin-top: 10px;
   display: flex;
 }
-.button-submit {
+
+.button-style-register button:hover {
+  background: #1976d2;
+}
+.button-submit{
   display: flex;
   justify-content: flex-end;
 }
