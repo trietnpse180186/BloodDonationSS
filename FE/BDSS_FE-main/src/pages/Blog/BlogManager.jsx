@@ -1,41 +1,71 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 import { toast } from "react-toastify";
 import "./BlogManager.css";
+import { uploadImageToCloudinary } from "../../helpers/uploadImageToCloudinary";
+import { FaSpinner } from "react-icons/fa";
 
 export default function BlogManager() {
   const [blogs, setBlogs] = useState([]);
   const [form, setForm] = useState({ title: "", content: "", imageurl: "" });
   const [editingId, setEditingId] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const token = sessionStorage.getItem("accessToken");
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
+    setLoading(true);
     axios
       .get("http://localhost:8080/blogs")
-      .then((res) => setBlogs(res.data))
-      .catch((err) => toast.error("Failed to load blogs:", err));
+      .then((res) => {
+        setBlogs(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Failed to load blogs:", err);
+        setLoading(false);
+      });
   }, []);
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
+      let imageUrl = form.imageurl;
+      if (imageFile) {
+        imageUrl = await uploadImageToCloudinary(imageFile);
+      }
       const config = { headers: { Authorization: `Bearer ${token}` } };
+      const data = { ...form, imageurl: imageUrl };
+
       if (editingId) {
         await axios.put(
           `http://localhost:8080/blogs/${editingId}`,
-          form,
+          data,
           config
         );
       } else {
-        await axios.post("http://localhost:8080/blogs", form, config);
+        await axios.post("http://localhost:8080/blogs", data, config);
       }
       const res = await axios.get("http://localhost:8080/blogs");
       setBlogs(res.data);
       setForm({ title: "", content: "", imageurl: "" });
       setEditingId(null);
+      setImageFile(null);
+      setImagePreview(null);
+      setLoading(false);
     } catch (err) {
       console.error("Error adding/updating blog:", err);
       alert("You do not have permission to perform this action.");
+      setLoading(false);
     }
   };
 
@@ -46,6 +76,8 @@ export default function BlogManager() {
       imageurl: blog.imageurl,
     });
     setEditingId(blog.id);
+    setImageFile(null);
+    setImagePreview(blog.imageurl || null);
   };
 
   const handleDelete = async (id) => {
@@ -87,12 +119,41 @@ export default function BlogManager() {
         />
         <input
           type="text"
-          placeholder="Image URL"
+          placeholder="Image URL (or upload below)"
           value={form.imageurl}
           onChange={(e) => setForm({ ...form, imageurl: e.target.value })}
         />
-        <button type="submit" className="submit-btn">
-          {editingId ? "Update" : "Create"}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          style={{ margin: "10px 0" }}
+        />
+        {imagePreview && (
+          <div style={{ marginBottom: 10 }}>
+            <img
+              src={imagePreview}
+              alt="Preview"
+              style={{
+                width: 120,
+                height: 120,
+                objectFit: "cover",
+                borderRadius: 8,
+              }}
+            />
+          </div>
+        )}
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? (
+            <>
+              <FaSpinner className="loading-spinner" />{" "}
+              {editingId ? "Updating..." : "Creating..."}
+            </>
+          ) : editingId ? (
+            "Update"
+          ) : (
+            "Create"
+          )}
         </button>
       </form>
 

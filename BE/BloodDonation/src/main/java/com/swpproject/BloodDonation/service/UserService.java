@@ -103,8 +103,8 @@ public class UserService {
             user.setBloodType(request.getBloodType());
             user.setBirthday(request.getBirthday());
             user.setSex(request.getSex());
+            user.setAvatarUrl(request.getAvatarUrl());
             user.setOccupation(request.getOccupation());
-
             User updatedUser = userRepository.save(user);
 
             return UserUpdateResponse.builder()
@@ -114,6 +114,7 @@ public class UserService {
                     .birthday(updatedUser.getBirthday())
                     .bloodType(updatedUser.getBloodType())
                     .sex(updatedUser.getSex())
+                    .avatarUrl(updatedUser.getAvatarUrl())
                     .occupation(updatedUser.getOccupation())
                     .build();
         }).orElseThrow(() -> new RuntimeException("User not found"));
@@ -130,6 +131,7 @@ public class UserService {
                         .bloodType(user.getBloodType())
                         .birthday(user.getBirthday())
                         .sex(user.getSex())
+                        .avatarUrl(user.getAvatarUrl())
                         .occupation(user.getOccupation())
                         .build())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -161,6 +163,17 @@ public class UserService {
         userHasRoleRepository.deleteByUser(user);
         userRepository.delete(user);
     }
+
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public void updateAvatarUrl(String userId, String imageUrl) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setAvatarUrl(imageUrl);
+        userRepository.save(user);
+    }
+
 
 }
 

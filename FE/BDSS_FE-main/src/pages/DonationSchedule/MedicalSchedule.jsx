@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 import "./MedicalSchedule.css"; // Assuming you have a CSS file for styling
 
 export default function MedicalSchedule() {

@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./BloodDonationInfo.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../../components/navbar";
-import bloodRegister, { getLabelByValue } from "../../assets/bloodRegister";
-import axios from "../../assets/axiosInstance";
-import getUserById, { getUserIdFromToken } from "../../assets/getUserById";
+import bloodRegister, { getLabelByValue } from "../../helpers/bloodRegister";
+import axios from "../../helpers/axiosInstance";
+import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 import Footer from "../../components/footer";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
 

@@ -1,20 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./staffPage.css";
 import "./StaffPage.css";
 import BlogManager from "../Blog/BlogManager";
-import logout from "../../assets/authLogout";
+import logout from "../../helpers/authLogout";
 import ContactManager from "../Contact/ContactManager";
 import MedicalSchedule from "../DonationSchedule/MedicalSchedule";
 import Notification from "../Notification/Notification";
 import FAQManager from "../FAQ/FAQManager";
+// Thêm icon
+import {
+  FaCalendarAlt,
+  FaUserFriends,
+  FaBlog,
+  FaQuestionCircle,
+  FaBell,
+  FaEnvelope,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import { getUsernameFromToken } from "../../helpers/getUserName";
+import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
+
 const menuItems = [
-  { key: "schedule", label: "Donation Schedule" },
-  { key: "appointment", label: "Donor Appointment Manager" },
-  { key: "blog", label: "Blog Manager" },
-  { key: "faq", label: "FAQ Manager" },
-  { key: "notification", label: "Notification" },
-  { key: "contact", label: "Contact" },
-  { key: "logout", label: "Logout" },
+  { key: "schedule", label: "Donation Schedule", icon: <FaCalendarAlt /> },
+  {
+    key: "appointment",
+    label: "Donor Appointment Manager",
+    icon: <FaUserFriends />,
+  },
+  { key: "blog", label: "Blog Manager", icon: <FaBlog /> },
+  { key: "faq", label: "FAQ Manager", icon: <FaQuestionCircle /> },
+  { key: "notification", label: "Notification", icon: <FaBell /> },
+  { key: "contact", label: "Contact", icon: <FaEnvelope /> },
+  { key: "logout", label: "Logout", icon: <FaSignOutAlt /> },
 ];
 
 export default function StaffPage() {
@@ -68,18 +85,33 @@ export default function StaffPage() {
         return;
     }
   };
+  const [staffInfo, setStaffInfo] = useState(null);
 
+  useEffect(() => {
+    const staffId = getUserIdFromToken();
+    getUserById(staffId).then((data) => setStaffInfo(data));
+  }, []);
+  if (!staffInfo) {
+    return <div className="staff-page">Loading...</div>;
+  }
+  console.log("Staff Info:", staffInfo);
   return (
     <div className="staff-page">
       <aside className="staff-sidebar">
-        <h2 className="staff-title">Staff Panel</h2>
+        <h2 className="staff-title">Staff Workspace</h2>
+        <div className="staff-info">
+          <h5 className="staff-username">Name: {staffInfo.fullName}</h5>
+          <h5 className="staff-email">Email: {staffInfo.email}</h5>
+        </div>
         <ul className="staff-menu">
           {menuItems.map((item) => (
             <li
               key={item.key}
               className={selected === item.key ? "active" : ""}
               onClick={() => setSelected(item.key)}
+              style={{ display: "flex", alignItems: "center", gap: 10 }}
             >
+              <span style={{ fontSize: 18 }}>{item.icon}</span>
               {item.label}
             </li>
           ))}
