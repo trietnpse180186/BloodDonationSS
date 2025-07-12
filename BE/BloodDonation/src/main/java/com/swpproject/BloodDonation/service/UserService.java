@@ -8,9 +8,11 @@ import com.swpproject.BloodDonation.dto.response.UserUpdateResponse;
 import com.swpproject.BloodDonation.entity.Role;
 import com.swpproject.BloodDonation.entity.User;
 import com.swpproject.BloodDonation.entity.UserHasRole;
+import com.swpproject.BloodDonation.enums.BloodType;
 import com.swpproject.BloodDonation.repository.RoleRepository;
 import com.swpproject.BloodDonation.repository.UserRepository;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,8 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import com.swpproject.BloodDonation.repository.UserHasRoleRepository;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,13 +33,19 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserHasRoleRepository userHasRoleRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final MailService mailService;
 
+    // Tạo người dùng mới với vai trò mặc định là DONOR
     public UserCreationResponse createUser(UserCreationRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email existed");
+            throw new RuntimeException("Email already exists");
+        }
+        // Validate blood type manually
+        if (request.getBloodType() != null && !isValidBloodType(request.getBloodType())) {
+            throw new RuntimeException("Invalid blood type");
         }
 
         User user = User.builder()
@@ -86,22 +95,40 @@ public class UserService {
                 .build();
     }
 
-
+    // Cập nhật thông tin người dùng, chỉ cho phép người dùng đã đăng nhập truy cập
     @PutMapping("/users/{id}")
     @PreAuthorize("isAuthenticated()")
-    public UserUpdateResponse updateUser (@PathVariable("id") String userId,
-                                                  @RequestBody UserUpdateRequest request) {
+    public UserUpdateResponse updateUser(String userId, UserUpdateRequest request) {
         return userRepository.findById(userId).map(user -> {
-            user.setFullName(request.getFullName());
+            // Validate blood type manually if provided
+            if (request.getBloodType() != null && !isValidBloodType(request.getBloodType())) {
+                throw new RuntimeException("Invalid blood type");
+            }
+            if (request.getFullName() != null) {
+                user.setFullName(request.getFullName());
+            }
             if (request.getPassword() != null && !request.getPassword().isEmpty()) {
                 user.setPassword(passwordEncoder.encode(request.getPassword()));
             }
-            user.setAddress(request.getAddress());
-            user.setPhoneNumber(request.getPhoneNumber());
-            user.setBloodType(request.getBloodType());
-            user.setBirthday(request.getBirthday());
-            user.setSex(request.getSex());
-            user.setOccupation(request.getOccupation());
+
+            if (request.getAddress() != null) {
+                user.setAddress(request.getAddress());
+            }
+            if (request.getPhoneNumber() != null) {
+                user.setPhoneNumber(request.getPhoneNumber());
+            }
+            if (request.getBloodType() != null) {
+                user.setBloodType(request.getBloodType());
+            }
+            if (request.getBirthday() != null) {
+                user.setBirthday(request.getBirthday());
+            }
+            if (request.getSex() != null) {
+                user.setSex(request.getSex());
+            }
+            if (request.getOccupation() != null) {
+                user.setOccupation(request.getOccupation());
+            }
 
             User updatedUser = userRepository.save(user);
 
@@ -112,11 +139,18 @@ public class UserService {
                     .birthday(updatedUser.getBirthday())
                     .bloodType(updatedUser.getBloodType())
                     .sex(updatedUser.getSex())
+                    .avatarUrl(updatedUser.getAvatarUrl())
                     .occupation(updatedUser.getOccupation())
                     .build();
         }).orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // kiểm tra xem loại máu có hợp lệ hay không
+    private boolean isValidBloodType(BloodType bloodType) {
+        return Arrays.asList(BloodType.values()).contains(bloodType);
+    }
+
+    // lấy thông tin chi tiết của người dùng theo ID, chỉ cho phép người dùng đã đăng nhập truy cập
     @PreAuthorize("isAuthenticated()")
     public UserDetailResponse getUserById( String userID) {
         return userRepository.findById(userID)
@@ -128,11 +162,13 @@ public class UserService {
                         .bloodType(user.getBloodType())
                         .birthday(user.getBirthday())
                         .sex(user.getSex())
+                        .avatarUrl(user.getAvatarUrl())
                         .occupation(user.getOccupation())
                         .build())
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // lấy danh sách tất cả người dùng, chỉ cho phép ADMIN truy cập
     @PreAuthorize("hasAuthority('ADMIN')") // => ROLE_USER, ROLE_USER
     public List<UserDetailResponse> getAllUsers(){
         return userRepository.findAll()
@@ -149,6 +185,27 @@ public class UserService {
                         .build())
                 .toList();
     }
+
+
+    @Transactional
+    @PreAuthorize("isAuthenticated() AND hasAuthority('DONOR')")
+    public void deleteAccount(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        userHasRoleRepository.deleteByUser(user);
+        userRepository.delete(user);
+    }
+
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public void updateAvatarUrl(String userId, String imageUrl) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setAvatarUrl(imageUrl);
+        userRepository.save(user);
+    }
+
 
 }
 

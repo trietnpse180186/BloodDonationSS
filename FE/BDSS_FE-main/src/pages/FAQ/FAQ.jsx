@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./FAQ.css";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
-import getFAQ from "../../assets/getFAQ";
+import getFAQ from "../../helpers/getFAQ";
 export default function FAQ() {
   // State to hold FAQ data
   const [faq, setFaq] = useState([]);

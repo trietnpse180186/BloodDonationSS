@@ -39,6 +39,9 @@ public class User implements UserDetails {
     @Column(name = "Phone_number")
     private String phoneNumber;
 
+    @Column(name = "avatar_url", columnDefinition = "NVARCHAR(1000)")
+    private String avatarUrl;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<UserHasRole> userHasRoles;

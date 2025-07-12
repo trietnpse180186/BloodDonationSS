@@ -7,10 +7,12 @@ import com.swpproject.BloodDonation.dto.response.UserDetailResponse;
 import com.swpproject.BloodDonation.dto.response.UserUpdateResponse;
 import com.swpproject.BloodDonation.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +39,23 @@ public class UserController {
     public List<UserDetailResponse> getAllUsers(){
         return userService.getAllUsers();
     }
+
+    @DeleteMapping("/users/delete/{id}")
+    public void deleteAccount(@PathVariable String id){
+        userService.deleteAccount(id);
+    }
+
+    @PostMapping("/api/user/avatar")
+    public ResponseEntity<String> updateUserAvatar(
+            @PathVariable String id,
+            @RequestBody Map<String, String> request) {
+
+        String imageUrl = request.get("imageUrl");
+
+        userService.updateAvatarUrl(id, imageUrl);
+
+        return ResponseEntity.ok("Avatar URL updated successfully.");
+    }
+
 
 }

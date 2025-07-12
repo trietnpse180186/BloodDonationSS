@@ -24,6 +24,6 @@ public class Blog {
     @Column(columnDefinition = "NVARCHAR(4000)")
     private String content;
 
-    private String imageurl;
+    private String imageUrl;
 }
 

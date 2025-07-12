@@ -33,7 +33,9 @@ public class BookingService {
     private final UserRepository userRepository;
     private final TimeSlotRepository timeSlotRepository;
 
+
     @Transactional
+    @PreAuthorize("isAuthenticated()") // cho phép nếu đã đăng nhập
     public BookingResponse createBookingWithSurvey(BookingWithSurveyRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userEmail = authentication.getName();
@@ -231,6 +233,7 @@ public class BookingService {
                             .formattedBookingTime(formattedTime)
                             .build();
                 })
+
                 .collect(Collectors.toList());
     }
     public void deleteBooking(String bookingId) {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
-import bloodRegister from "../../assets/bloodRegister";
+import bloodRegister from "../../helpers/bloodRegister";
 import { Link, useLocation, useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 export default function BloodRegister2() {
@@ -20,7 +20,7 @@ export default function BloodRegister2() {
     const surveyData = bloodRegister.map((q) => ({
       questionId: q.id,
       answer: answers[q.id],
-      input: inputs[q.id] || "",
+      additionalInfo: inputs[q.id] || "",
     }));
     navigate("/blood-donation-info", {
       state: {
@@ -50,7 +50,7 @@ export default function BloodRegister2() {
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
         rel="stylesheet"
       ></link>
-      <div className="bloodform-container">
+      <div className="blood-form-container">
         <h2 className="bloodform-title">Đặt lịch hiến máu</h2>
         <div className="bloodform-steps">
           <p className="bloodform-step ">

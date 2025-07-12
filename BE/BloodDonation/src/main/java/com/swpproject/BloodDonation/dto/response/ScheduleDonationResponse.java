@@ -1,5 +1,6 @@
 package com.swpproject.BloodDonation.dto.response;
 
+import com.swpproject.BloodDonation.enums.BloodType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,7 @@ public class ScheduleDonationResponse {
     private String center;
     private String location; // =address
     private String date; // yyyy-MM-dd
+    private List<BloodType> bloodNeed;
     private List<TimeSlotResponse> timeSlots;
     private Integer donorCount; // nhan gia tri tu numberOfDonor trong entity
     private String updateBy; // ten dang nhap cua nguoi cap nhat cuoi cung
