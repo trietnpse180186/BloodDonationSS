@@ -36,10 +36,13 @@ public class AuthenticationService {
     public LoginResponse login(LoginRequest request) {
         try{
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-            User user = (User) authentication.getPrincipal();
 
+            // Lấy thông tin người dùng đã được xác thực
+            User user = (User) authentication.getPrincipal();
+            // tạo access token và refresh token cho người dùng đã xác thực
             String accessToken = jwtService.generateAccessToken(user);
             String refreshToken = jwtService.generateRefreshToken(user);
+           // trả token về cho client
             return LoginResponse.builder()
                     .accessToken(accessToken)
                     .refreshToken(refreshToken)
