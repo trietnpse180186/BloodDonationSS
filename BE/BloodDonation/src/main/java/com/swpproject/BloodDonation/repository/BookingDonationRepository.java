@@ -16,4 +16,7 @@ public interface BookingDonationRepository extends JpaRepository<BookingDonation
 
     @Query("SELECT COUNT(b) FROM BookingDonation b WHERE b.scheduleDonation.scheduleId = :scheduleId")
     Long countByScheduleDonationId(String scheduleId);
+
+    @Query("SELECT b FROM BookingDonation b WHERE b.donor = :donor AND b.status = 'COMPLETED' ORDER BY b.dateDonation DESC")
+    List<BookingDonation> findCompletedDonationsByDonorOrderByDateDesc(User donor);
 }
