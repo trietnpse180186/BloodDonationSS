@@ -13,5 +13,5 @@ public class BlogRequest {
 
     private String title;
     private String content;
-    private String imageurl;
+    private String imageUrl;
 }

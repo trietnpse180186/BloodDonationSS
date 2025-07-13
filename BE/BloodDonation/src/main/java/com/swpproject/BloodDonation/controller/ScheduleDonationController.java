@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,6 +64,7 @@ public class ScheduleDonationController {
                 .location(location)
                 .date(dateStr)
                 .timeSlots(timeSlotDtos)
+                .bloodNeed(scheduleDonation.getBloodNeed())
                 .donorCount(scheduleDonation.getNumberOfDonor())
                 .updateBy(scheduleDonation.getUpdateBy())
                 .build();

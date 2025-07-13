@@ -1,7 +1,7 @@
-/* General container for the donation schedule page */
 .donation-schedule-page {
   background-color: #ffffff;
   margin-top: 50px;
+  margin-bottom: 100px;
 }
 
 .donation-schedule-page h1 {
@@ -214,6 +214,18 @@
   border-radius: 8px;
 }
 
+/* Login prompt styling */
+.login-prompt {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  min-height: 300px;
+  width: 50%;
+  background-color: #c7c4c44a;
+  border-radius: 20px;
+}
 /* Responsive design */
 @media (max-width: 1100px) {
   .schedule-container {

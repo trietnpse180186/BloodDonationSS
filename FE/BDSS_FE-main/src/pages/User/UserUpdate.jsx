@@ -4,41 +4,52 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
   FaBriefcase,
+  FaSpinner,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 import { toast, ToastContainer } from "react-toastify";
 import "./UserUpdate.css";
-import getUserById, { getUserIdFromToken } from "../../assets/getUserById";
+import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
+import { MdCake } from "react-icons/md";
+import { uploadImageToCloudinary } from "../../helpers/uploadImageToCloudinary";
+
 export default function UserUpdate() {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     birthday: "",
     sex: "",
     email: "",
-    password: "",
+    password: null,
     phoneNumber: "",
     address: "",
     bloodType: "",
     occupation: "",
+    avatarUrl: "",
   });
 
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [selectedFileName, setSelectedFileName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchUser() {
       try {
         const user = await getUserById();
-        setFormData({
+        setFormData((prev) => ({
+          ...prev,
           fullName: user.fullName || "",
           birthday: user.birthday || "",
           sex: user.sex || "",
-          password: "",
           phoneNumber: user.phoneNumber || "",
           address: user.address || "",
           bloodType: user.bloodType || "",
           occupation: user.occupation || "",
-        });
+          avatarUrl: user.avatarUrl || "",
+        }));
+        setAvatarPreview(user.avatarUrl || null);
       } catch (err) {
         console.error("Error fetching user data:", err);
       }
@@ -54,6 +65,15 @@ export default function UserUpdate() {
     }));
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setAvatarFile(file);
+      setAvatarPreview(URL.createObjectURL(file));
+      setSelectedFileName(file.name);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const userId = getUserIdFromToken();
@@ -62,21 +82,33 @@ export default function UserUpdate() {
       toast.error("User not found or not logged in");
       return;
     }
+
     try {
-      const response = await axios.put(
-        `http://localhost:8080/users/${userId}`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      setLoading(true); // Start loading
+      let uploadedUrl = formData.avatarUrl;
+      if (avatarFile) {
+        const url = await uploadImageToCloudinary(avatarFile);
+        if (url) uploadedUrl = url;
+      }
+
+      const updatedData = {
+        ...formData,
+        avatarUrl: uploadedUrl,
+      };
+
+      await axios.put(`http://localhost:8080/users/${userId}`, updatedData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       toast.success("Update successful!");
       navigate("/user-profile");
     } catch (error) {
       console.error("Update error:", error);
       toast.error("Update failed. Please check your information.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,15 +118,29 @@ export default function UserUpdate() {
         <form className="form" onSubmit={handleSubmit}>
           <h1>EDIT YOUR PROFILE</h1>
 
-          <div className="field-wrapper">
-            <input
-              type="hidden"
-              name="password"
-              value={formData.password}
-              placeholder="Need to change password?"
-              onChange={handleChange}
-            />
+          <div className="field-wrapper avatar-upload-wrapper">
+            <div className="avatar-upload-label">
+              <label>Upload Avatar:</label>
+              <label className="custom-file-btn">
+                Choose File
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                />
+              </label>
+              <span className="selected-file-name">
+                {selectedFileName || "No file chosen"}
+              </span>
+            </div>
+            {avatarPreview && (
+              <div className="avatar-preview">
+                <img src={avatarPreview} alt="Avatar Preview" />
+              </div>
+            )}
           </div>
+
           <div className="field-wrapper">
             <FaUserEdit className="input-icon" />
             <input
@@ -106,6 +152,7 @@ export default function UserUpdate() {
           </div>
 
           <div className="field-wrapper">
+            <MdCake className="input-icon" />
             <input
               type="date"
               name="birthday"
@@ -163,7 +210,7 @@ export default function UserUpdate() {
               value={formData.bloodType}
               onChange={handleChange}
             >
-              <option value="">Choose blood type </option>
+              <option value="">Choose blood type</option>
               <option value="A_POSITIVE">A+</option>
               <option value="A_NEGATIVE">A-</option>
               <option value="B_POSITIVE">B+</option>
@@ -185,14 +232,15 @@ export default function UserUpdate() {
             />
           </div>
 
-          <div
-            className="field-wrapper-btn"
-            data-aos="fade-up"
-            data-aos-duration="500"
-            data-aos-easing="ease-in-out"
-          >
-            <button className="wrap-submit" type="submit">
-              SAVE CHANGES
+          <div className="field-wrapper-btn">
+            <button className="wrap-submit" type="submit" disabled={loading}>
+              {loading ? (
+                <>
+                  <FaSpinner className="loading-spinner" /> Saving...
+                </>
+              ) : (
+                "SAVE CHANGES"
+              )}
             </button>
           </div>
 
