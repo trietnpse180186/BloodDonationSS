@@ -36,7 +36,7 @@ public class ScheduleDonationService {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Transactional
-public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) {
+    public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) {
     // Kiểm tra tính hợp lệ của request
     validateScheduleRequest(request);
 

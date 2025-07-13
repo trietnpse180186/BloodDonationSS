@@ -13,10 +13,35 @@
   letter-spacing: 1px;
 }
 
+/* Styling for the "Add New Schedule" button */
+.schedule-actions {
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+.schedule-actions button {
+  background-color: #db230b;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.schedule-actions button:hover {
+  background-color: #b51c09;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+}
+
+/* Table styling */
 .medical-schedule table {
   width: 100%;
   border-collapse: collapse;
   background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .medical-schedule th,
@@ -32,8 +57,67 @@
   font-weight: bold;
 }
 
-.medical-schedule tr:last-child td {
-  border-bottom: none;
+/* Action buttons in table rows */
+.medical-schedule td button {
+  margin: 0 5px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.medical-schedule td button:first-child {
+  background-color: #4285f4;
+  color: white;
+}
+
+.medical-schedule td button:first-child:hover {
+  background-color: #3367d6;
+}
+
+.medical-schedule td button:last-child {
+  background-color: #ea4335;
+  color: white;
+}
+
+.medical-schedule td button:last-child:hover {
+  background-color: #d33426;
+}
+
+/* Modal form buttons */
+.modal-footer button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-footer button:last-child {
+  background-color: #db230b;
+  color: white;
+  border: none;
+}
+
+.modal-footer button:last-child:hover {
+  background-color: #b51c09;
+}
+
+/* Add Time Slot button */
+button.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  transition: background-color 0.2s;
+}
+
+button.btn-secondary:hover {
+  background-color: #5a6268;
 }
 
 .medical-schedule td {
@@ -53,5 +137,10 @@
   .medical-schedule td {
     font-size: 0.98em;
     padding: 7px 2px;
+  }
+  
+  .medical-schedule td button {
+    padding: 4px 8px;
+    font-size: 0.9em;
   }
 }

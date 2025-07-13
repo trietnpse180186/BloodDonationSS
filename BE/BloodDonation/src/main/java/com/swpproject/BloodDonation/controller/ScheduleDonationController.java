@@ -69,7 +69,7 @@ public class ScheduleDonationController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<ScheduleDonationResponse> createSchedule(@RequestBody ScheduleDonationRequest request) {
         ScheduleDonationResponse response = scheduleDonationService.createSchedule(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -94,7 +94,7 @@ public class ScheduleDonationController {
     }
 
     @PutMapping("/{scheduleId}")
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<ScheduleDonationResponse> updateSchedule(
             @PathVariable String scheduleId,
             @RequestBody ScheduleDonationRequest request) {
@@ -103,7 +103,7 @@ public class ScheduleDonationController {
     }
 
     @DeleteMapping("/{scheduleId}")
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<Void> deleteSchedule(@PathVariable String scheduleId) {
         scheduleDonationService.deleteSchedule(scheduleId);
         return ResponseEntity.noContent().build();
