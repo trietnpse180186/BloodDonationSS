@@ -4,13 +4,28 @@ import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
 import { getUserIdFromToken } from "../../assets/getUserById";
 import axios from "../../assets/axiosInstance";
+import Certificate from "../Certificate/Certificate";
+import { Modal, Button } from "antd";
 
 export default function AppointmentDetail() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const token = sessionStorage.getItem("accessToken");
   const userId = getUserIdFromToken();
+
+  const openCertificateModal = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setIsModalVisible(true);
+  };
+
+  const closeCertificateModal = () => {
+    setSelectedBookingId(null);
+    setIsModalVisible(false);
+  };
 
   const renderStatus = (status) => {
     switch (status) {
@@ -22,8 +37,11 @@ export default function AppointmentDetail() {
         return <span className="status-cancelled">Cancelled</span>;
       case "COMPLETED":
         return <span className="status-complete">Complete</span>;
+      default:
+        return null;
     }
   };
+
   useEffect(() => {
     if (!userId) {
       setError("User information not found.");
@@ -92,7 +110,7 @@ export default function AppointmentDetail() {
                   <th>Location</th>
                   <th>Time Slot</th>
                   <th>Status</th>
-                  <th></th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -102,17 +120,19 @@ export default function AppointmentDetail() {
                     <td>{item.center}</td>
                     <td>{item.address}</td>
                     <td>
-                      {item.startTime?.slice(0, 5)} -{" "}
-                      {item.endTime?.slice(0, 5)}
+                      {item.startTime?.slice(0, 5)} - {item.endTime?.slice(0, 5)}
                     </td>
                     <td>{renderStatus(item.status)}</td>
-                    <td
-                      style={{
-                        minWidth: "50px",
-                        padding: "0",
-                        translate: "-20px 0px",
-                      }}
-                    >
+                    <td>
+                      {item.status === "COMPLETED" && (
+                        <Button
+                          type="primary"
+                          size="small"
+                          onClick={() => openCertificateModal(item.bookingId)}
+                        >
+                          View Certificate
+                        </Button>
+                      )}
                       {item.status === "PENDING" && (
                         <button
                           className="cancel-button"
@@ -126,6 +146,18 @@ export default function AppointmentDetail() {
                 ))}
               </tbody>
             </table>
+
+            <Modal
+              title="Chứng nhận hiến máu"
+              open={isModalVisible}
+              onCancel={closeCertificateModal}
+              footer={null}
+              width={600}
+            >
+              {selectedBookingId && (
+                <Certificate bookingId={selectedBookingId} />
+              )}
+            </Modal>
           </div>
         )}
       </div>

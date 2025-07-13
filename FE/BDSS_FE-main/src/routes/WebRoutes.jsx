@@ -18,7 +18,7 @@ import UserUpdate from "../pages/User/UserUpdate";
 import AdminPage from "../pages/Admin/AdminPage";
 import ScrollTotop from "../assets/scrollToTop";
 import StaffPage from "../pages/Staff/StaffPage";
-import UserNotification from "../pages/Notification/UserNotification";
+
 
 export default function WebRoutes() {
   return (

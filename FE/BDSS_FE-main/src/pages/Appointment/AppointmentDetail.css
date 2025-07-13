@@ -105,3 +105,19 @@
   color: #fff;
   border-color: #b30000;
 }
+.certificate-button {
+  margin-left: 10px;
+  padding: 6px 12px;
+  font-size: 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.certificate-button:hover {
+  background-color: #388e3c;
+}
+
