@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../helpers/axiosInstance";
 import "./AppointmentManager.css";
+
 import Table from 'react-bootstrap/Table';
 
 export default function AppointmentManager() {
   const [appointments, setAppointments] = useState([]);
   const accessToken = sessionStorage.getItem("accessToken");
+
 
   useEffect(() => {
     axios
@@ -79,6 +81,7 @@ export default function AppointmentManager() {
     }
   };
 
+
   return (
     <div className="appointment-manager-container">
       <h2>Donor Appointment Details</h2>
@@ -105,7 +108,9 @@ export default function AppointmentManager() {
                     <td>{item.user.email}</td>
                     <td>{formatDate(item.dateDonation)}</td>
                     <td>
+
                       {item.startTime?.slice(0, 5)} - {item.endTime?.slice(0, 5)}
+
                     </td>
                     <td>{item.center}</td>
                     <td>{item.address}</td>
@@ -114,8 +119,7 @@ export default function AppointmentManager() {
                     <td className="action-buttons">
                       {(item.status === "PENDING" || item.status === "APPROVED") && (
                         <button onClick={() => handleUpdate(item)}>Update</button>
-                      )}
-                      
+                      )}                
                     </td>
                   </tr>
                 ))}

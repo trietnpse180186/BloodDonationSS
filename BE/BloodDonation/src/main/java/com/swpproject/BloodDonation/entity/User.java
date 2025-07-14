@@ -59,6 +59,9 @@ public class User implements UserDetails {
     @Column(name = "Occupation", columnDefinition = "NVARCHAR(4000)")
     private String occupation;
 
+    @Column(name = "IsActive")
+    private boolean active = true; // Mặc định là đang hoạt động
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

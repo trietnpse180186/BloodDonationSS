@@ -35,12 +35,12 @@
 }
 
 .user-info-modern-report {
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 4px 24px #0001;
-  padding: 28px 24px;
-  min-width: 220px;
-  max-width: 260px;
+  background: linear-gradient(135deg, #fff 70%, #ffeaea 100%);
+  border-radius: 20px;
+  box-shadow: 0 6px 32px #b3000012;
+  padding: 40px 36px 32px 36px;
+  min-width: 420px;
+  max-width: 470px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -48,12 +48,98 @@
   top: 100px;
   height: fit-content;
   order: 2;
+  transition: box-shadow 0.2s;
+  border: 1.5px solid #ffeaea;
+}
+
+.user-info-modern-report h4 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #b30000;
+  margin-bottom: 26px;
+  text-align: left;
+  text-shadow: 0 2px 8px #b3000011;
+}
+
+.user-info-modern-report-content {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
 
 .user-info-modern-report-content p {
-  margin-bottom: 10px;
-  color: #333;
-  font-size: 1.05em;
+  margin: 0;
+  font-size: 1.13rem;
+  color: #1d3557;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.7;
+}
+
+.user-info-modern-report-content strong {
+  min-width: 170px;
+  color: #b30000;
+  font-weight: 700;
+  font-size: 1.08rem;
+  letter-spacing: 0.2px;
+}
+
+.user-info-modern-report-content span {
+  font-weight: 600;
+  font-size: 1.08rem;
+}
+
+.user-info-modern-report-content .yes {
+  color: #2e7d32;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.user-info-modern-report-content .no {
+  color: #d32f2f;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.user-info-modern-report-content .next-eligible {
+  background: #fff7f0;
+  color: #b30000;
+  border-radius: 8px;
+  padding: 7px 18px;
+  font-size: 1.08rem;
+  margin-top: 4px;
+  display: inline-block;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px #b3000011;
+  border: 1px solid #ffeaea;
+}
+
+.user-info-modern-report-content .report-message {
+  background: linear-gradient(90deg, #ffeaea 60%, #fff 100%);
+  color: #b30000;
+  border-radius: 8px;
+  padding: 15px 18px;
+  margin-top: 8px;
+  font-size: 1.08rem;
+  font-weight: 600;
+  border-left: 5px solid #b30000;
+  box-shadow: 0 2px 12px #b3000011;
+  line-height: 1.6;
+}
+
+.user-info-modern-report-content .friendly-tip {
+  background: #f0f8ff;
+  color: #1976d2;
+  border-radius: 7px;
+  padding: 10px 16px;
+  margin-top: 8px;
+  font-size: 1.02rem;
+  font-weight: 500;
+  border-left: 4px solid #1976d2;
+  box-shadow: 0 2px 8px #1976d211;
 }
 
 .user-info-modern-header {
@@ -118,6 +204,15 @@
   box-shadow: 0 2px 8px #b3000022;
 }
 
+@media (max-width: 900px) {
+  .user-info-modern-report {
+    max-width: 100%;
+    min-width: unset;
+    padding: 22px 10px 16px 10px;
+    margin-top: 24px;
+    position: static;
+  }
+}
 @media (max-width: 1100px) {
   .user-info-modern-container {
     flex-direction: column;

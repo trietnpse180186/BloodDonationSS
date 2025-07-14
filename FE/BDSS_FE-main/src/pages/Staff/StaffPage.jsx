@@ -8,8 +8,10 @@ import MedicalSchedule from "../DonationSchedule/MedicalSchedule";
 import Notification from "../Notification/Notification";
 import FAQManager from "../FAQ/FAQManager";
 import AppointmentManager from "../Appointment/AppointmentManager";
+
 import { FaBell, FaBlog, FaCalendarAlt, FaEnvelope, FaQuestionCircle, FaSignOutAlt, FaUserFriends } from "react-icons/fa";
 import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
+
 const menuItems = [
   { key: "schedule", label: "Donation Schedule", icon: <FaCalendarAlt /> },
   {
@@ -39,10 +41,8 @@ export default function StaffPage() {
         );
       case "appointment":
         return (
-
           <div className="admin-content-box">
             <AppointmentManager />
-
           </div>
         );
       case "blog":

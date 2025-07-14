@@ -7,7 +7,7 @@ import { FaSpinner } from "react-icons/fa";
 
 export default function BlogManager() {
   const [blogs, setBlogs] = useState([]);
-  const [form, setForm] = useState({ title: "", content: "", imageurl: "" });
+  const [form, setForm] = useState({ title: "", content: "", imageUrl: "" });
   const [editingId, setEditingId] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -39,12 +39,12 @@ export default function BlogManager() {
     e.preventDefault();
     setLoading(true);
     try {
-      let imageUrl = form.imageurl;
+      let imageUrl = form.imageUrl;
       if (imageFile) {
         imageUrl = await uploadImageToCloudinary(imageFile);
       }
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const data = { ...form, imageurl: imageUrl };
+      const data = { ...form, imageUrl };
 
       if (editingId) {
         await axios.put(
@@ -57,7 +57,7 @@ export default function BlogManager() {
       }
       const res = await axios.get("http://localhost:8080/blogs");
       setBlogs(res.data);
-      setForm({ title: "", content: "", imageurl: "" });
+      setForm({ title: "", content: "", imageUrl: "" });
       setEditingId(null);
       setImageFile(null);
       setImagePreview(null);
@@ -73,11 +73,11 @@ export default function BlogManager() {
     setForm({
       title: blog.title,
       content: blog.content,
-      imageurl: blog.imageurl,
+      imageUrl: blog.imageUrl,
     });
     setEditingId(blog.id);
     setImageFile(null);
-    setImagePreview(blog.imageurl || null);
+    setImagePreview(blog.imageUrl || null);
   };
 
   const handleDelete = async (id) => {
@@ -120,8 +120,8 @@ export default function BlogManager() {
         <input
           type="text"
           placeholder="Image URL (or upload below)"
-          value={form.imageurl}
-          onChange={(e) => setForm({ ...form, imageurl: e.target.value })}
+          value={form.imageUrl}
+          onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
         />
         <input
           type="file"
@@ -161,7 +161,7 @@ export default function BlogManager() {
       <div className="blog-list">
         {blogs.map((blog) => (
           <div className="blog-card" key={blog.id}>
-            {blog.imageurl && <img src={blog.imageurl} alt="Blog" />}
+            {blog.imageUrl && <img src={blog.imageUrl} alt="Blog" />}
             <h4>{blog.title}</h4>
             <p style={{ color: "black" }}>{blog.content}</p>
 
