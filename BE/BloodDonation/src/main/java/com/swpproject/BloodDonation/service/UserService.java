@@ -166,11 +166,12 @@ public class UserService {
     }
 
     // lấy danh sách tất cả người dùng, chỉ cho phép ADMIN truy cập
-    @PreAuthorize("hasAuthority('ADMIN')") // => ROLE_USER, ROLE_USER
+    @PreAuthorize("hasAuthority('STAFF')") // => ROLE_USER, ROLE_USER
     public List<UserDetailResponse> getAllUsers(){
         return userRepository.findAll()
                 .stream()
                 .map(user -> UserDetailResponse.builder()
+                        .userId(user.getUserID())
                         .email(user.getEmail())
                         .fullName(user.getFullName())
                         .phoneNumber(user.getPhoneNumber())

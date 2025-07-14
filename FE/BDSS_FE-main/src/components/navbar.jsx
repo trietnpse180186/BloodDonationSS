@@ -17,27 +17,59 @@ import "./navbar.css";
 
 export default function AppNavbar() {
   const [notification, setNotification] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const userId = getUserIdFromToken();
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     setUser(userId);
+
     const fetchNotifications = async () => {
-      const response = await fetch(
-        `http://localhost:8080/notifications/user/${userId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-          },
+      if (!userId) return;
+
+      try {
+        const response = await fetch(
+          `http://localhost:8080/notifications/user/${userId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+            },
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setNotification(data);
+
+          // Đếm số thông báo chưa đọc
+          const unreadNotifications = data.filter(
+            (item) =>
+              item.status !== "read" && item.status !== "READ" && !item.read
+          );
+          setUnreadCount(unreadNotifications.length);
         }
-      );
-      if (response.ok) {
-        const data = await response.json();
-        setNotification(data);
+      } catch (error) {
+        console.error("Failed to fetch notifications:", error);
       }
     };
-    if (userId) fetchNotifications();
+
+    // Fetch notifications initially
+    fetchNotifications();
+
+    // Listen for notification updates từ UserNotification
+    const handleNotificationUpdate = () => {
+      fetchNotifications();
+    };
+
+    window.addEventListener("notificationUpdated", handleNotificationUpdate);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener(
+        "notificationUpdated",
+        handleNotificationUpdate
+      );
+    };
   }, [userId]);
 
   const handleLogout = () => {
@@ -95,10 +127,32 @@ export default function AppNavbar() {
                       fontSize: "1.4rem",
                       textAlign: "center",
                       boxShadow: "none",
+                      position: "relative",
                     }}
                     id="dropdown-notification"
                   >
                     <FaRegBell />
+                    {unreadCount > 0 && (
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: "-8px",
+                          right: "-8px",
+                          background: "#dc3545",
+                          color: "white",
+                          borderRadius: "50%",
+                          width: "20px",
+                          height: "20px",
+                          fontSize: "0.7rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </span>
+                    )}
                   </Dropdown.Toggle>
                   <Dropdown.Menu
                     style={{

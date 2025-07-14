@@ -1,106 +1,175 @@
+/* Main container styles */
+.notification-wrapper {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+/* Toolbar styles */
+.notification-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.notification-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+/* Notification list container */
+.notification-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* Individual notification card */
 .notification-card {
   display: flex;
   align-items: flex-start;
-  background: #ffffff;
-  padding: 16px 24px;
-  margin-bottom: 16px;
-  border-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  padding: 1.2rem;
+  border-radius: 10px;
+  background-color: #f9fafb;
+  transition: all 0.2s ease;
   position: relative;
-  transition: box-shadow 0.2s ease;
+  border-left: 4px solid transparent;
 }
 
 .notification-card:hover {
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+  background-color: #f3f4f6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-/* Container nút ba chấm */
-.notification-actions {
+/* Unread notification styles */
+.notification-card.UNREAD {
+  background-color: #f0f7ff;
+  border-left: 4px solid #3182ce;
+}
+
+.notification-card.UNREAD:hover {
+  background-color: #e6f0fd;
+}
+
+/* Notification icon styles */
+.notification-icon {
+  margin-right: 1rem;
   position: relative;
-  margin-left: auto;
+  font-size: 1.3rem;
 }
 
-/* Nút ba chấm - tròn, nền xanh, icon trắng */
-.menu-button {
-  background-color: #4e73df; /* xanh dương dịu */
-  color: #ffffff;
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  font-size: 18px;
-  cursor: pointer;
+.icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  transition: background-color 0.25s ease;
+  width: 40px;
+  height: 40px;
+  background-color: #e6f0fd;
+  border-radius: 50%;
+  color: #3182ce;
+}
+
+/* Unread dot indicator */
+.dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: #e53e3e;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+/* Notification content styles */
+.notification-content {
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.note-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 0.4rem 0;
+}
+
+.note-message {
+  font-size: 0.95rem;
+  color: #4a5568;
+  margin: 0 0 0.8rem 0;
+  line-height: 1.5;
+}
+
+.note-date, .note-time {
+  font-size: 0.8rem;
+  color: #718096;
+  margin-right: 0.8rem;
+}
+
+/* Actions button styles */
+.notification-actions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.menu-button {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  font-size: 1.3rem;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
 }
 
 .menu-button:hover {
-  background-color: #3b5fc9;
+  background-color: #e2e8f0;
+  color: #e53e3e;
 }
 
-/* Dropdown menu */
-.dropdown-menu {
-  position: absolute;
-  top: 45px;
-  right: 0;
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-  z-index: 100;
-  min-width: 180px;
-  padding: 6px 0;
-  animation: fadeIn 0.2s ease;
-}
-
-/* Mũi tên chỉ lên */
-.dropdown-menu::before {
-  content: "";
-  position: absolute;
-  top: -6px;
-  right: 16px;
-  width: 12px;
-  height: 12px;
-  background: #ffffff;
-  transform: rotate(45deg);
-  border-top: 1px solid #e0e0e0;
-  border-left: 1px solid #e0e0e0;
-}
-
-/* Các nút trong dropdown */
-.dropdown-menu button {
-  background: none;
-  border: none;
-  width: 100%;
-  text-align: left;
-  padding: 10px 18px;
-  font-size: 15px;
-  color: #333;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.dropdown-menu button:hover {
-  background-color: #f5f7fb;
-}
-
-.dropdown-menu hr {
-  margin: 4px 0;
-  border: none;
-  border-top: 1px solid #eee;
-}
-
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-5px);
+/* Responsive styles */
+@media (max-width: 768px) {
+  .notification-wrapper {
+    margin: 1rem;
+    padding: 1rem;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  
+  .notification-card {
+    padding: 1rem;
+  }
+  
+  .notification-icon {
+    margin-right: 0.8rem;
+  }
+  
+  .icon {
+    width: 35px;
+    height: 35px;
+    font-size: 1.1rem;
+  }
+  
+  .note-title {
+    font-size: 1rem;
+  }
+  
+  .note-message {
+    font-size: 0.9rem;
   }
 }
