@@ -16,7 +16,7 @@ public class DonationReportController {
     private final DonationReportService donationReportService;
 
     @GetMapping("/user/{userId}")
-    @PreAuthorize("hasAuthority('STAFF') or hasAuthority('DONOR') and #userId == authentication.principal.username")
+    @PreAuthorize("hasAuthority('DONOR')")
     public ResponseEntity<UserDonationReportResponse> getUserDonationReport(@PathVariable String userId) {
         UserDonationReportResponse report = donationReportService.generateUserDonationReport(userId);
         return ResponseEntity.ok(report);

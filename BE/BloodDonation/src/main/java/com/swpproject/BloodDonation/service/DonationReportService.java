@@ -22,14 +22,14 @@ public class DonationReportService {
     private final BookingDonationRepository bookingDonationRepository;
 
     // Lượng máu tiêu chuẩn cho mỗi lần hiến (tính bằng lít)
-    private static final double STANDARD_DONATION_VOLUME = 0.45;
+    private static final double STANDARD_DONATION_VOLUME = 0.35;
 
     // Số ngày tối thiểu giữa các lần hiến máu (2 tháng = 60 ngày)
     private static final long MIN_DAYS_BETWEEN_DONATIONS = 60;
 
     public UserDonationReportResponse generateUserDonationReport(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("Can not found user with ID: " + userId));
 
         // Lấy tất cả các lần hiến máu đã HOÀN THÀNH của người dùng
         List<BookingDonation> completedDonations = bookingDonationRepository.findByDonor(user).stream()
@@ -47,7 +47,7 @@ public class DonationReportService {
 
         boolean eligibleToDonate = true;
         LocalDate nextEligibleDate = null;
-        String message = "Đủ điều kiện hiến máu";
+        String message = "Eligible to donate blood";
 
         // Kiểm tra xem người dùng có thể hiến máu hay không (phải đợi 60 ngày kể từ lần hiến cuối)
         if (lastDonationDate != null) {
@@ -57,7 +57,7 @@ public class DonationReportService {
             if (daysSinceLastDonation < MIN_DAYS_BETWEEN_DONATIONS) {
                 eligibleToDonate = false;
                 nextEligibleDate = lastDonationDate.plusDays(MIN_DAYS_BETWEEN_DONATIONS);
-                message = String.format("Chưa đủ điều kiện hiến máu. Cần đợi đến %s (còn %d ngày nữa)",
+                message = String.format("Not eligible to donate blood yet. Please wait until %s (%d days remaining)",
                         nextEligibleDate.toString(),
                         MIN_DAYS_BETWEEN_DONATIONS - daysSinceLastDonation);
             }
@@ -79,7 +79,7 @@ public class DonationReportService {
     // Phương thức kiểm tra xem người dùng có thể đặt lịch hiến máu mới hay không
     public boolean canUserDonate(String userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng với ID: " + userId));
+                .orElseThrow(() -> new RuntimeException("Can not found user with ID: " + userId));
 
         // Lấy tất cả các lần hiến máu đã hoàn thành
         List<BookingDonation> completedDonations = bookingDonationRepository.findByDonor(user).stream()
