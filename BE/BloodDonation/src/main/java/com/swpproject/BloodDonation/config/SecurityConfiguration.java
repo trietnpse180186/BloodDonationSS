@@ -35,7 +35,19 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults());
 
         http.authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/users", "/auth/**","/blogs/**", "/faq/**","/contact/**", "/api/auth/reset-password", "/api/auth/forgot-password").permitAll()
+                        .requestMatchers("/api/v1/users",
+                                "/auth/**",
+                                "/blogs/**",
+                                "/faq/**",
+                                "/contact/**",
+                                "/api/auth/reset-password",
+                                "/api/auth/forgot-password",
+                                "/api/v1/auth/google",
+                                // Swagger UI endpoints
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
