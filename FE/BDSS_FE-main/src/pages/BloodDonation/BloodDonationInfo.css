@@ -5,9 +5,13 @@
   background-color: #fdfdfc;
 }
 .donation-info-container h2 {
+  text-align: center;
   color: black;
   font-size: 2.5rem;
   margin-bottom: 16px;
+}
+.donation-info-container strong{
+  color: #1B2950;
 }
 /* Chia thành 2 cột */
 .donation-grid {
@@ -30,118 +34,155 @@
 
 /* Khung thẻ thông tin */
 .info-card {
+  width: 100%;
   background: white;
   border: 1px solid #fefefe;
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
-.info-contact {
+.info-card-booking {
   background: white;
   border: 1px solid #fefefe;
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  margin-top: 10px;
+  margin-top: 18px;
 }
-/* Lịch sử hiến máu */
-.wide-card {
-  background: #f0f8ff;
-  border: 1px solid #90caf9;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-.appointment-list {
-  background: white;
-  border: 1px solid #fefefe;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  padding: 16px;
+.info-card p, .info-card-booking p {
   display: flex;
-  flex-direction: column;
-  border-radius: 10px;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 8px;
 }
 
-.appointment-card {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
+.info-card strong, .info-card-booking strong {
+  min-width: 120px; /* Fixed width for labels */
+  display: inline-block;
+  color: #1B2950;
+  margin-right: 10px;
+}
+
+/* Add a little space between label and value */
+.info-card p::after, .info-card-booking p::after {
+  content: "";
+  flex-grow: 1;
+}
+
+/* Style the value part */
+.info-value {
+  flex-grow: 1;
+  max-width: 60%;
+}
+.info-card-survey {
+  background: rgb(248, 221, 221);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 16px;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  background: white;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  width: 100%;
+  max-width: 1400px;
+}
+.info-card h3 {
+  text-align: center;
+  color: #1a284f;
+  font-size: 1.5rem;
   margin-bottom: 16px;
 }
-/* Danh sách lịch sử*
-/* Thêm vào BloodDonationInfo.css hoặc file css của bạn */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.modal-content {
-  background: #fff;
-  border-radius: 8px;
-  padding: 32px 24px 24px 24px;
-  min-width: 320px;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-}
-
-.modal-close-btn {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  color: #b30000;
-  cursor: pointer;
-}
-.view-survey {
-  background: rgb(248, 221, 221);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  padding: 16px;
-  border-radius: 10px;
-  margin-top: 10px;
-}
-.actions {
+.info-card-booking h3 {
   text-align: center;
-  display: flex;
-  flex-direction: column;
+  color: #1a284f;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
 }
-.actions .status {
-  background: #ef4444;
-  color: white;
-  padding: 4px 8px;
+.info-card-survey h3 {
+  text-align: center;
+  color: #b30000;
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+.button-style {
+  display: flex;
+  margin-top: 0px;
+  padding: 10px 28px;
   border-radius: 6px;
-  font-size: 15px;
-  display: inline-block;
+  border: none;
+  background: #1D4A76;
+  color: #fff;
+  font-size: 16px;
+  margin-left: auto;
+}
+.question{
+  color: #333;
+  font-size: 1.2rem;
   margin-bottom: 15px;
 }
 
-.actions button {
-  padding: 6px 12px;
-  border: none;
-  background: #1d4a76;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
+@media (max-width: 1100px) {
+  .donation-grid {
+    flex-direction: column;
+    gap: 18px;
+  }
+  .left-column,
+  .right-column {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
 }
 
-.actions button:hover {
-  background: #1d4a76;
+@media (max-width: 700px) {
+  .donation-info-container {
+    padding: 8px;
+  }
+  .donation-info-container h2 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+  }
+  .donation-grid {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .info-card,
+  .info-contact,
+  .wide-card,
+  .appointment-list,
+  .appointment-card {
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.98em;
+  }
+  .appointment-card {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+  }
+  .modal-content {
+    padding: 16px 6px 12px 6px;
+    min-width: unset;
+    max-width: 98vw;
+    max-height: 90vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .donation-info-container {
+    padding: 2px;
+  }
+  .donation-info-container h2 {
+    font-size: 1.1rem;
+  }
+  .info-card,
+  .info-contact,
+  .wide-card,
+  .appointment-list,
+  .appointment-card {
+    padding: 6px;
+    border-radius: 5px;
+    font-size: 0.95em;
+  }
+  .modal-content {
+    padding: 8px 2px 8px 2px;
+    max-width: 100vw;
+  }
 }

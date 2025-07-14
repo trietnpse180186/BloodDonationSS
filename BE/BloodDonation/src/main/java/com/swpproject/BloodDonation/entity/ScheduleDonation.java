@@ -1,6 +1,7 @@
 package com.swpproject.BloodDonation.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.swpproject.BloodDonation.enums.BloodType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,6 +35,12 @@ public class ScheduleDonation {
 
     @Column(name = "Center", columnDefinition = "NVARCHAR(4000)")
     private String center;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "schedule_blood_need", joinColumns = @JoinColumn(name = "schedule_id"))
+    @Column(name = "blood_type")
+    private List<BloodType> bloodNeed = new ArrayList<>();
 
     @OneToMany(mappedBy = "scheduleDonation", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

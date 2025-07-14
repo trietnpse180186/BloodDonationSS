@@ -2,11 +2,17 @@ import "./AppointmentDetail.css";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
-import { getUserIdFromToken } from "../../assets/getUserById";
-import axios from "../../assets/axiosInstance";
 import Certificate from "../Certificate/Certificate";
 import { Modal, Button } from "antd";
+import { getUserIdFromToken } from "../../helpers/getUserById";
+import axios from "../../helpers/axiosInstance";
 
+
+  function formatDate(isoDate) {
+    if (!isoDate) return "";
+    const [year, month, day] = isoDate.split("-");
+    return `${day}-${month}-${year}`;
+  }
 export default function AppointmentDetail() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -105,8 +111,8 @@ export default function AppointmentDetail() {
             <table className="appointment-table">
               <thead>
                 <tr>
-                  <th>Date</th>
                   <th>Center</th>
+                  <th>Date</th>
                   <th>Location</th>
                   <th>Time Slot</th>
                   <th>Status</th>
@@ -116,8 +122,8 @@ export default function AppointmentDetail() {
               <tbody>
                 {appointments.map((item) => (
                   <tr key={item.bookingId}>
-                    <td>{item.dateDonation}</td>
                     <td>{item.center}</td>
+                    <td>{formatDate(item.dateDonation)}</td>
                     <td>{item.address}</td>
                     <td>
                       {item.startTime?.slice(0, 5)} - {item.endTime?.slice(0, 5)}

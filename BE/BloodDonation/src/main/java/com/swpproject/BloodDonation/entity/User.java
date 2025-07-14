@@ -39,6 +39,9 @@ public class User implements UserDetails {
     @Column(name = "Phone_number")
     private String phoneNumber;
 
+    @Column(name = "avatar_url", columnDefinition = "NVARCHAR(1000)")
+    private String avatarUrl;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<UserHasRole> userHasRoles;
@@ -55,6 +58,9 @@ public class User implements UserDetails {
 
     @Column(name = "Occupation", columnDefinition = "NVARCHAR(4000)")
     private String occupation;
+
+    @Column(name = "IsActive")
+    private boolean active = true; // Mặc định là đang hoạt động
 
 
     @Override

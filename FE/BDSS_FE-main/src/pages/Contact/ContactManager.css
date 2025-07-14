@@ -1,0 +1,89 @@
+.contact-manager {
+  max-width: 900px;
+  margin: 32px auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px rgba(30, 60, 120, 0.1);
+  padding: 36px 32px 32px 32px;
+  animation: fadeInContact 0.5s;
+}
+
+@keyframes fadeInContact {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.contact-manager h2 {
+  text-align: center;
+  color: #1d4a76;
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+  letter-spacing: 1px;
+}
+
+.table {
+  background: #f7fafd;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(30, 60, 120, 0.04);
+  margin-bottom: 0;
+}
+
+.table thead tr {
+  background: linear-gradient(90deg, #1d4a76 80%, #e53935 100%);
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: 600;
+}
+
+.table th,
+.table td {
+  vertical-align: middle !important;
+  border: none;
+  padding: 14px 12px;
+  font-size: 1.05rem;
+}
+
+.table tbody tr {
+  background: #fff;
+  transition: background 0.18s;
+}
+
+.table tbody tr:hover {
+  background: #f0f8ff;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background: #f7fafd;
+}
+
+.table-bordered {
+  border-radius: 12px;
+  border: 1.5px solid #dbeafe;
+  overflow: hidden;
+}
+
+.table-hover tbody tr:hover {
+  background: #e3eaf5;
+}
+
+@media (max-width: 700px) {
+  .contact-manager {
+    padding: 16px 4vw;
+  }
+  .table th,
+  .table td {
+    padding: 8px 4px;
+    font-size: 0.98rem;
+  }
+  .contact-manager h2 {
+    font-size: 1.3rem;
+  }
+}

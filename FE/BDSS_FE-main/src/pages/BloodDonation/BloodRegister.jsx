@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import axios from "../../helpers/axiosInstance";
 function getStartOfWeek(date) {
   const d = new Date(date);
   const day = d.getDay() || 7;
@@ -24,15 +24,24 @@ function getWeekDays(startDate) {
 }
 
 function WeeklyDatePicker({ selectedDate, onChange }) {
-  const [currentWeek, setCurrentWeek] = useState(
-    getStartOfWeek(selectedDate ? new Date(selectedDate) : new Date())
-  );
+  const parseDate = (dateStr) => {
+    const [d, m, y] = dateStr.split("/");
+    return new Date(`${y}-${m}-${d}`);
+  };
+
+  const safeDate =
+    selectedDate && /^\d{2}\/\d{2}\/\d{4}$/.test(selectedDate)
+      ? parseDate(selectedDate)
+      : new Date();
+
+  const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(safeDate));
 
   useEffect(() => {
-    const startOfSelectedWeek = getStartOfWeek(new Date(selectedDate));
+    const startOfSelectedWeek = getStartOfWeek(safeDate);
     if (currentWeek.getTime() !== startOfSelectedWeek.getTime()) {
       setCurrentWeek(startOfSelectedWeek);
     }
+    // eslint-disable-next-line
   }, [selectedDate]);
 
   const weekDays = getWeekDays(currentWeek);
@@ -55,15 +64,15 @@ function WeeklyDatePicker({ selectedDate, onChange }) {
         {"<"}
       </button>
       {weekDays.map((day) => {
-        const value = day.toISOString().split("T")[0];
+        const ddmmyyyy = day.toLocaleDateString("vi-VN");
         return (
           <button
-            key={value}
+            key={ddmmyyyy}
             type="button"
             className={`weekly-day-btn ${
-              value === selectedDate ? "selected" : ""
+              selectedDate === ddmmyyyy ? "selected" : ""
             }`}
-            onClick={() => onChange(value)}
+            onClick={() => onChange(ddmmyyyy)}
           >
             {day.toLocaleDateString("vi-VN", {
               weekday: "short",
@@ -80,62 +89,78 @@ function WeeklyDatePicker({ selectedDate, onChange }) {
   );
 }
 
-function getBloodGroup(location) {
-  const bloodGroup = {
-    "Hà Nội – 132 Quan Nhân, Thanh Xuân": ["A", "O"],
-    "Hồ Chí Minh – 201B Nguyễn Chí Thanh, Quận 5": ["B", "AB"],
-    "Đà Nẵng – 47 Lê Duẩn, Hải Châu": ["A", "B", "O"],
-    "Cần Thơ – 315 Nguyễn Văn Linh, Ninh Kiều": ["O"],
-    "Hà Nội – 14 Trần Thái Tông, Cầu Giấy": ["A", "B", "AB", "O"],
-  };
-  return bloodGroup[location] || [];
-}
-
 export default function BloodRegister() {
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const initialDate =
-    params.get("date") || new Date().toISOString().split("T")[0];
+    params.get("date") || new Date().toLocaleDateString("vi-VN");
   const initialLocation = params.get("location") || "";
+  const initialCenter = params.get("center") || "";
   const initialScheduleId = params.get("scheduleId") || "";
 
   const [selectedDate, setSelectedDate] = useState(initialDate);
-  const [selectedLocation, setSelectedLocation] = useState(initialLocation);
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedCenter, setSelectedCenter] = useState("");
   const [scheduleId, setScheduleId] = useState(initialScheduleId);
   const [donationSchedules, setDonationSchedules] = useState([]);
   const [timeSelected, setTimeSelected] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/schedule-donations/")
-      .then((res) => res.json())
-      .then((data) => setDonationSchedules(data))
-      .catch((err) => console.error("Lỗi tải lịch hiến máu:", err));
+    axios
+      .get("http://localhost:8080/api/schedule-donations")
+      .then((res) => {
+        setDonationSchedules(res.data);
+      })
+      .catch((err) => {
+        console.error("Fail to load donation schedules:", err);
+        toast.error("Failed to load donation schedules");
+      });
   }, []);
 
-  const locations = donationSchedules.filter(
-    (item) => item.date === selectedDate
-  );
+  useEffect(() => {
+    if (donationSchedules.length > 0) {
+      if (initialLocation) {
+        setSelectedLocation(decodeURIComponent(initialLocation));
+      }
+      if (initialCenter) {
+        setSelectedCenter(decodeURIComponent(initialCenter));
+      }
+    }
+  }, [donationSchedules, initialLocation, initialCenter]);
+
+  const locations = donationSchedules.filter((item) => {
+    const itemDate = item.date?.trim();
+    return itemDate === selectedDate;
+  });
 
   const selectedLocationTime = locations.find(
     (loc) => loc.location === selectedLocation
   );
-  const bloodGroups = getBloodGroup(selectedLocation);
+
+  function getBloodGroup(schedule) {
+    if (!schedule) return [];
+    const found = donationSchedules.find(
+      (item) => item.scheduleId === schedule.scheduleId
+    );
+    if (!found || !found.bloodNeed) return [];
+    if (Array.isArray(found.bloodNeed)) return found.bloodNeed;
+    return [found.bloodNeed];
+  }
+  const bloodGroups = getBloodGroup(selectedLocationTime);
 
   useEffect(() => {
     setTimeSelected(null);
   }, [selectedLocation]);
 
   const canContinue = !!selectedDate && !!selectedLocation && !!timeSelected;
-
   const navigate = useNavigate();
 
   const goToNext = () => {
     if (!canContinue) {
-      toast.error("Vui lòng chọn đầy đủ ngày, địa điểm và khung giờ!");
+      toast.error("Please select a complete date, location, and time slot!");
       return;
     }
 
-    // Lấy object timeSlot đã chọn thay vì chỉ truyền id
     const selectedTimeSlotObj = selectedLocationTime?.timeSlots?.find(
       (slot) => slot.id === timeSelected
     );
@@ -145,45 +170,57 @@ export default function BloodRegister() {
       date: selectedDate,
       location: selectedLocation,
       center: selectedLocationTime?.center || "",
-      timeSlot: selectedTimeSlotObj, // Truyền cả object timeSlot
+      timeSlot: selectedTimeSlotObj,
     };
 
     navigate("/blood-registration2", { state: { bookingData } });
     console.log("Booking Data:", bookingData);
   };
 
+  const convertDateForInput = (ddmmyyyy) => {
+    const [d, m, y] = ddmmyyyy.split("/");
+    return `${y}-${m}-${d}`;
+  };
+
+  const convertDateFromInput = (yyyymmdd) => {
+    const [y, m, d] = yyyymmdd.split("-");
+    return `${d}/${m}/${y}`;
+  };
+
   return (
     <>
       <Navbar />
-      <div className="bloodform-container">
+      <div className="blood-form-container">
         <link
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
           rel="stylesheet"
         ></link>
-        <h2 className="bloodform-title">Đặt lịch hiến máu</h2>
-        <div className="bloodform-body">
-          <div className="bloodform-steps">
-            <p className="bloodform-step active">
-              <i className="bi bi-check-square"></i>Thời gian & Địa điểm
+        <h2 className="blood-form-title">Booking for donation</h2>
+        <div className="blood-form-body">
+          <div className="blood-form-steps">
+            <p className="blood-form-step active">
+              <i className="bi bi-check-square"></i>Time & Location
             </p>
-            <p className="bloodform-step">
-              <i className="bi bi-calendar2"></i>Phiếu đăng ký hiến máu
+            <p className="blood-form-step">
+              <i className="bi bi-calendar2"></i>Donation Registration Form
             </p>
           </div>
-          <div className="bloodform-content">
-            <div className="bloodform-section">
-              <div className="bloodform-date-section">
-                <h3 className="bloodform-section-title">
-                  <i className="bi bi-calendar3"></i>Chọn ngày
+          <div className="blood-form-content">
+            <div className="blood-form-section">
+              <div className="blood-form-date-section">
+                <h3 className="blood-form-section-title">
+                  <i className="bi bi-calendar3"></i>Select date
                 </h3>
                 <input
                   type="date"
-                  className="bloodform-date-input"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="blood-form-date-input"
+                  value={convertDateForInput(selectedDate)}
+                  onChange={(e) =>
+                    setSelectedDate(convertDateFromInput(e.target.value))
+                  }
                 />
               </div>
-              <div className="bloodform-weekly-picker">
+              <div className="blood-form-weekly-picker">
                 <WeeklyDatePicker
                   selectedDate={selectedDate}
                   onChange={setSelectedDate}
@@ -191,21 +228,21 @@ export default function BloodRegister() {
               </div>
             </div>
 
-            <div className="bloodform-section">
-              <h3 className="bloodform-section-title">
-                <i className="bi bi-geo-alt"></i>Địa điểm hiến máu hiện có
+            <div className="blood-form-section">
+              <h3 className="blood-form-section-title">
+                <i className="bi bi-geo-alt"></i>Available Donation Locations
               </h3>
               {locations.length === 0 ? (
-                <div className="bloodform-empty-message">
-                  Không có địa điểm hiến máu cho ngày này
+                <div className="blood-form-empty-message">
+                  No donation locations available for this date
                 </div>
               ) : (
-                <div className="bloodform-location-list">
+                <div className="blood-form-location-list">
                   {locations.map((loc, idx) => (
                     <button
                       key={idx}
                       type="button"
-                      className={`bloodform-location-btn ${
+                      className={`blood-form-location-btn ${
                         selectedLocation === loc.location ? "selected" : ""
                       }`}
                       onClick={() => setSelectedLocation(loc.location)}
@@ -216,22 +253,22 @@ export default function BloodRegister() {
                 </div>
               )}
 
-              <div className="bloodform-blood-types">
-                <label className="bloodform-section-subtitle">
-                  Nhóm máu cần hiến
+              <div className="blood-form-blood-types">
+                <label className="blood-form-section-subtitle">
+                  <i className="bi bi-droplet-half"></i>Available Blood Types
                 </label>
-                <div className="bloodform-blood-type-container">
+                <div className="blood-form-blood-type-container">
                   {!selectedLocation ? (
                     <div></div>
                   ) : bloodGroups.length === 0 ? (
-                    <div className="bloodform-empty-message">
-                      Chưa có nhóm máu cho địa điểm này
+                    <div className="blood-form-empty-message">
+                      No blood types available for this location
                     </div>
                   ) : (
                     bloodGroups.map((group) => (
                       <span
                         key={group}
-                        className={`bloodform-blood-type type-${group.toLowerCase()}`}
+                        className={`blood-form-blood-type type-${group.toLowerCase()}`}
                       >
                         {group}
                       </span>
@@ -241,21 +278,21 @@ export default function BloodRegister() {
               </div>
             </div>
 
-            <div className="bloodform-section">
-              <h3 className="bloodform-section-title">
-                Khung giờ hiến máu tại địa điểm đã chọn
+            <div className="blood-form-section">
+              <h3 className="blood-form-section-title">
+                Time slots for the selected location
               </h3>
               {!selectedLocation ? (
-                <div className="bloodform-empty-message">
-                  Vui lòng chọn địa điểm trước
+                <div className="blood-form-empty-message">
+                  Please select a location first
                 </div>
               ) : selectedLocationTime && selectedLocationTime.timeSlots ? (
-                <div className="bloodform-time-slots">
+                <div className="blood-form-time-slots">
                   {selectedLocationTime.timeSlots.map((slot) => (
                     <button
                       key={slot.id}
                       type="button"
-                      className={`bloodform-time-slot ${
+                      className={`blood-form-time-slot ${
                         timeSelected === slot.id ? "selected" : ""
                       }`}
                       onClick={() => setTimeSelected(slot.id)}
@@ -265,16 +302,17 @@ export default function BloodRegister() {
                   ))}
                 </div>
               ) : (
-                <div className="bloodform-empty-message">
-                  Không có khung giờ nào cho địa điểm này
+                <div className="blood-form-empty-message">
+                  No time slots available for this location
                 </div>
               )}
             </div>
 
             <div className="button-submit">
-              <div className="button-submit">
-                <button onClick={goToNext}>Tiếp tục</button>
+              <div className="button-style-register">
+                <button onClick={goToNext}>Next</button>
               </div>
+
             </div>
           </div>
         </div>

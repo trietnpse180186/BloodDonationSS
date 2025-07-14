@@ -21,4 +21,5 @@ public class UserDetailResponse {
     private LocalDate birthday;
     private String sex;
     private String occupation;
+    private String avatarUrl;
 }

@@ -40,7 +40,7 @@ export default function Notification() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Bắt đầu loading
+    setLoading(true);
     const now = new Date();
     const currentDate = now.toISOString().slice(0, 10);
     const currentTime = now.toTimeString().slice(0, 5);
@@ -75,7 +75,7 @@ export default function Notification() {
     } catch (error) {
       alert("Failed to create notification.");
     }
-    setLoading(false); // Kết thúc loading
+    setLoading(false);
   };
 
   const [donor, setDonor] = useState([]);

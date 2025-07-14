@@ -51,9 +51,17 @@ public class BookingController {
 
     // xem tất cả các lịch hẹn
     @GetMapping("/all")
-    @PreAuthorize("hasRole('STAFF')")
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<List<BookingResponse>> getAllBookings() {
         List<BookingResponse> bookings = bookingService.getAllBookings();
         return ResponseEntity.ok(bookings);
     }
+
+    @DeleteMapping("/{bookingId}")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public ResponseEntity<Void> deleteBooking(@PathVariable String bookingId) {
+        bookingService.deleteBooking(bookingId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

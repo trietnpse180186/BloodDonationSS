@@ -1,7 +1,7 @@
 const logout = () => {
   sessionStorage.removeItem("accessToken");
   sessionStorage.removeItem("refreshToken");
-  window.location.href = "/login";
+  window.location.href = "/";
 };
 
 export default logout;

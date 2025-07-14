@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./BloodDonationInfo.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../../components/navbar";
-import bloodRegister, { getLabelByValue } from "../../assets/bloodRegister";
-import axios from "../../assets/axiosInstance";
-import getUserById, { getUserIdFromToken } from "../../assets/getUserById";
+import bloodRegister, { getLabelByValue } from "../../helpers/bloodRegister";
+import axios from "../../helpers/axiosInstance";
+import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 import Footer from "../../components/footer";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
 
@@ -23,6 +23,12 @@ function GenderIcon({ sex }) {
       </>
     );
   return null;
+}
+
+function formatDate(isoDate) {
+  if (!isoDate) return "";
+  const [year, month, day] = isoDate.split("-");
+  return `${day}-${month}-${year}`;
 }
 
 export default function BloodDonationInfo({ answers }) {
@@ -62,28 +68,38 @@ export default function BloodDonationInfo({ answers }) {
       <div className="info-card">
         <h3>User Information</h3>
         <p>
-          <strong>Full Name:</strong> {user.fullName}
+          <strong>Full Name:</strong>
+          <span className="info-value">{user.fullName}</span>
         </p>
         <p>
-          <strong>Gender:</strong> <GenderIcon sex={user.sex} />
+          <strong>Gender:</strong>
+          <span className="info-value">
+            <GenderIcon sex={user.sex} />
+          </span>
         </p>
         <p>
-          <strong>Date of Birth:</strong> {formatDate(user.birthday)}
+          <strong>Date of Birth:</strong>
+          <span className="info-value">{formatDate(user.birthday)}</span>
         </p>
         <p>
-          <strong>Address:</strong> {user.address}
+          <strong>Address:</strong>
+          <span className="info-value">{user.address}</span>
         </p>
         <p>
-          <strong>Email:</strong> {user.email}
+          <strong>Email:</strong>
+          <span className="info-value">{user.email}</span>
         </p>
         <p>
-          <strong>Occupation:</strong> {user.occupation}
+          <strong>Occupation:</strong>
+          <span className="info-value">{user.occupation}</span>
         </p>
         <p>
-          <strong>Phone Number:</strong> {user.phoneNumber}
+          <strong>Phone Number:</strong>
+          <span className="info-value">{user.phoneNumber}</span>
         </p>
         <p>
-          <strong>Blood Type:</strong> {user.bloodType}
+          <strong>Blood Type:</strong>
+          <span className="info-value">{user.bloodType}</span>
         </p>
       </div>
     );
@@ -92,20 +108,25 @@ export default function BloodDonationInfo({ answers }) {
   const renderBookingData = () => {
     if (!bookingData) return <div>No booking information.</div>;
     return (
-      <div className="info-card">
+      <div className="info-card-booking">
         <h3>Booking Information</h3>
         <p>
-          <strong>Date:</strong> {bookingData.date}
+          <strong>Date:</strong>
+          <span className="info-value">{formatDate(bookingData.date)}</span>
         </p>
         <p>
-          <strong>Location:</strong> {bookingData.location}
+          <strong>Location:</strong>
+          <span className="info-value">{bookingData.location}</span>
         </p>
         <p>
-          <strong>Center:</strong> {bookingData.center}
+          <strong>Center:</strong>
+          <span className="info-value">{bookingData.center}</span>
         </p>
         <p>
-          <strong>Time Slot:</strong> {bookingData.timeSlot.startTime} -{" "}
-          {bookingData.timeSlot.endTime}
+          <strong>Time Slot:</strong>
+          <span className="info-value">
+            {bookingData.timeSlot.startTime} - {bookingData.timeSlot.endTime}
+          </span>
         </p>
       </div>
     );
@@ -114,17 +135,20 @@ export default function BloodDonationInfo({ answers }) {
   const renderSurveyData = () => {
     if (!surveyData) return <div>No survey information.</div>;
     return (
-      <div className="info-card">
+      <div className="info-card-survey">
         <h3>Blood Donation Survey</h3>
         {surveyData.map((q, idx) => (
           <div key={q.questionId} style={{ marginBottom: 10 }}>
-            <i>
+            <i className="question">
               {bloodRegister.find((bq) => bq.id === q.questionId)?.text ||
                 `Question ${idx + 1}`}
             </i>
-            <div style={{ marginLeft: 16, color: "#b30000" }}>
+            <div
+              className="answer"
+              style={{ marginLeft: 16, color: "#b30000" }}
+            >
               {getLabelByValue(q.questionId, q.answer)}
-              {q.input ? `: ${q.input}` : ""}
+              {q.additionalInfo ? `: ${q.additionalInfo}` : ""}
             </div>
           </div>
         ))}
@@ -132,21 +156,17 @@ export default function BloodDonationInfo({ answers }) {
     );
   };
 
-  // Confirm booking handler
   const handleConfirmBooking = async () => {
     if (!bookingData || !surveyData) {
       alert("Please provide complete booking and survey information.");
       return;
     }
 
-    // Chỉ truyền id hoặc chuỗi cho timeSlot
     const payload = {
       booking: {
         ...bookingData,
-        timeSlot:
-          bookingData.timeSlot && bookingData.timeSlot.id
-            ? bookingData.timeSlot.id
-            : bookingData.timeSlot,
+        date: formatDateToIso(bookingData.date),
+        timeSlot: bookingData.timeSlot.id,
       },
       survey: surveyData,
     };
@@ -166,7 +186,13 @@ export default function BloodDonationInfo({ answers }) {
       alert("Booking successful!");
       navigate("/appointment-detail");
     } catch (error) {
-      alert("Booking failed. Please try again.");
+      console.error("Booking error:", error, error?.response?.data);
+      alert(
+        "Booking failed. " +
+          (error?.response?.data?.message
+            ? error.response.data.message
+            : "Please try again.")
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -184,7 +210,10 @@ export default function BloodDonationInfo({ answers }) {
           </div>
           <div className="info-2">{renderSurveyData()}</div>
         </div>
-        <div style={{ textAlign: "center", marginTop: 32 }}>
+        <div
+          className="actions-button"
+          style={{ textAlign: "center", marginTop: 32 }}
+        >
           <button
             className="button-style"
             onClick={handleConfirmBooking}

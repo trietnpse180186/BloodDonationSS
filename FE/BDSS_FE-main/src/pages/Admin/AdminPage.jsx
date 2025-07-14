@@ -1,13 +1,5 @@
-import React, { useState, useEffect } from "react";
-import "./adminPage.css";
-import logout from "../../assets/authLogout";
-import axios from "../../assets/axiosInstance";
-
-const menuItems = [
-  { key: "dashboard", label: "Dashboard" },
-  { key: "donor-management", label: "Donor Management" },
-  { key: "staff-management", label: "Staff Management" },
-];
+import React from 'react';
+import { Outlet, NavLink } from 'react-router-dom';
 
 export default function AdminPage() {
   const [selected, setSelected] = useState("dashboard");
@@ -206,20 +198,17 @@ export default function AdminPage() {
 
   return (
     <div className="admin-page">
-      <aside className="admin-sidebar">
-        <h2>Admin Page</h2>
-        <ul>
-          {menuItems.map((item) => (
-            <li
-              key={item.key}
-              className={selected === item.key ? "active" : ""}
-              onClick={() => setSelected(item.key)}
-            >
-              {item.label}
-            </li>
-          ))}
-          <li onClick={handleLogout} className="logout-btn">Logout</li>
-        </ul>
+      <aside className="sidebar">
+        <div className="sidebar-header">
+          <h2>Admin Page</h2>
+        </div>
+        <nav className="sidebar-nav">
+          <NavLink className="nav-link" to="donation-schedule">Donation Schedule</NavLink>
+          <NavLink className="nav-link" to="blog-manager">Blog Manager</NavLink>
+          <NavLink className="nav-link" to="faq-manager">FAQ Manager</NavLink>
+          <NavLink className="nav-link" to="appointment-manager">Donor Appointment Manager</NavLink>
+          <NavLink className="nav-link" to="contact">Contact</NavLink>
+        </nav>
       </aside>
       <main className="admin-main">{renderContent()}</main>
     </div>

@@ -1,6 +1,6 @@
 import axios from "axios";
+import { Button } from "react-bootstrap";
 
-// Hàm gọi refresh token API
 export async function refreshAccessToken() {
   const refreshToken = sessionStorage.getItem("refreshToken");
 
@@ -20,7 +20,7 @@ export async function refreshAccessToken() {
     console.error("Lỗi khi refresh token:", err);
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("refreshToken");
-    window.location.href = "/login"; // hoặc navigate("/login")
+    window.location.href = "/login";
     throw err;
   }
 }

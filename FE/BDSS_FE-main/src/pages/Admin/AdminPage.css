@@ -6,6 +6,13 @@
 }
 
 .admin-sidebar {
+.staff-page {
+  display: flex;
+  min-height: 100vh;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.sidebar {
   width: 240px;
   background-color: #b23228;
   color: #fff;
@@ -16,6 +23,14 @@
 }
 
 .admin-sidebar h2 {
+  padding: 30px 20px;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar-header h2 {
   font-size: 22px;
   text-align: center;
   margin-bottom: 20px;
@@ -27,6 +42,9 @@
   list-style: none;
   padding: 0;
   flex-grow: 1;
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
 }
 
 .admin-sidebar li {
@@ -57,6 +75,7 @@
 }
 
 .admin-main {
+.main-content {
   flex-grow: 1;
   padding: 40px;
   background-color: #f9f9f9;
@@ -168,4 +187,10 @@
 
 .add-staff-button:hover {
   background-color: #911e1e;
+  padding: 30px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  min-height: 85vh;
+
+  border: 2px solid #b23228;
+}
 }
