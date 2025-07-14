@@ -644,7 +644,7 @@
 }
 .criteria-image,
 .criteria-list {
-  flex: 1;
+
 }
 .img-criteria-image {
   display: block;
@@ -667,13 +667,14 @@
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  margin-right: 30px;
+  margin-left: 60px;
 }
 .criteria-link-content {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
+  margin-left: 60px;
 }
 .link-content {
   display: flex;

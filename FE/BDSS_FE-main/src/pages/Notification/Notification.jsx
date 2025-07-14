@@ -72,10 +72,15 @@ export default function Notification() {
         time: "",
         donorId: "",
       });
+      
     } catch (error) {
       alert("Failed to create notification.");
     }
     setLoading(false);
+
+    console.log(dataToSend);
+
+
   };
 
   const [donor, setDonor] = useState([]);
