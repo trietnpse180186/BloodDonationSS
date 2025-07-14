@@ -71,6 +71,7 @@ public class ScheduleDonationController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<ScheduleDonationResponse> createSchedule(@RequestBody ScheduleDonationRequest request) {
         ScheduleDonationResponse response = scheduleDonationService.createSchedule(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);

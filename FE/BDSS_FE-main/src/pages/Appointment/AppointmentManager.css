@@ -1,3 +1,12 @@
+.appointment-manager-container h2{
+    text-align: center;
+    color: #1d4a76;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+}
+
 .appointment-card {
     background: #fff;
     border-radius: 10px;
