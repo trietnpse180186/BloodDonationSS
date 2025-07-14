@@ -10,7 +10,6 @@
   background: white;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 22px;
-  border-radius: 16px;
   width: 100%;
   max-width: 980px;
 }
@@ -76,7 +75,6 @@ h6 {
   width: 100%;
   padding-left: 42px;
   border: 1px solid #ccc;
-  border-radius: 6px;
   font-size: 14px;
   outline: none;
   transition: border 0.2s;
@@ -108,7 +106,6 @@ h6 {
   color: white;
   padding: 12px 28px;
   border: none;
-  border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
@@ -126,6 +123,47 @@ h6 {
   font-size: 14px;
   display: inline-block;
   padding: 6px 12px;
-  border-radius: 6px;
   transition: all 0.3s ease;
+}
+
+.show-password-btn {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 20px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  transition: color 0.2s;
+}
+
+.show-password-btn:active,
+.show-password-btn:focus {
+  color: #b30600;
+}
+
+.show-password-btn svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.input-group input[type="password"],
+.input-group input[type="text"] {
+  font-size: 1em;
+  height: 49px;
+  line-height: 44px;
+  box-sizing: border-box;
+}
+@media screen and (max-width: 960px) {
+  .register-account {
+    border-right: none;
+    padding-left: 20px;
+    border-bottom: 1px solid #e0e0e0;
+  }
 }

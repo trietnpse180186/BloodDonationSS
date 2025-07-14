@@ -56,4 +56,12 @@ public class BookingController {
         List<BookingResponse> bookings = bookingService.getAllBookings();
         return ResponseEntity.ok(bookings);
     }
+
+    @DeleteMapping("/{bookingId}")
+    @PreAuthorize("hasAuthority('STAFF')")
+    public ResponseEntity<Void> deleteBooking(@PathVariable String bookingId) {
+        bookingService.deleteBooking(bookingId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

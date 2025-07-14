@@ -3,7 +3,7 @@ import "./Contact.css";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
 import { toast, ToastContainer } from "react-toastify";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
