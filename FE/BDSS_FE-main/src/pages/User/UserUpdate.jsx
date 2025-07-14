@@ -84,7 +84,7 @@ export default function UserUpdate() {
     }
 
     try {
-      setLoading(true); // Start loading
+      setLoading(true);
       let uploadedUrl = formData.avatarUrl;
       if (avatarFile) {
         const url = await uploadImageToCloudinary(avatarFile);

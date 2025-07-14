@@ -26,7 +26,7 @@ export default function Blog() {
             <div key={post.id} className="blog-card">
               <img
                 className="blog-image"
-                src={post.imageurl}
+                src={post.imageUrl}
                 alt={post.title}
               />
               <div className="blog-content">

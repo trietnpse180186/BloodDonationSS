@@ -25,12 +25,11 @@ function GenderIcon({ sex }) {
   return null;
 }
 
-
-  function formatDate(isoDate) {
-    if (!isoDate) return "";
-    const [year, month, day] = isoDate.split("-");
-    return `${day}-${month}-${year}`;
-  }
+function formatDate(isoDate) {
+  if (!isoDate) return "";
+  const [year, month, day] = isoDate.split("-");
+  return `${day}-${month}-${year}`;
+}
 
 export default function BloodDonationInfo({ answers }) {
   const location = useLocation();
@@ -69,35 +68,37 @@ export default function BloodDonationInfo({ answers }) {
       <div className="info-card">
         <h3>User Information</h3>
         <p>
-          <strong>Full Name:</strong> 
+          <strong>Full Name:</strong>
           <span className="info-value">{user.fullName}</span>
         </p>
         <p>
-          <strong>Gender:</strong> 
-          <span className="info-value"><GenderIcon sex={user.sex} /></span>
+          <strong>Gender:</strong>
+          <span className="info-value">
+            <GenderIcon sex={user.sex} />
+          </span>
         </p>
         <p>
-          <strong>Date of Birth:</strong> 
+          <strong>Date of Birth:</strong>
           <span className="info-value">{formatDate(user.birthday)}</span>
         </p>
         <p>
-          <strong>Address:</strong> 
+          <strong>Address:</strong>
           <span className="info-value">{user.address}</span>
         </p>
         <p>
-          <strong>Email:</strong> 
+          <strong>Email:</strong>
           <span className="info-value">{user.email}</span>
         </p>
         <p>
-          <strong>Occupation:</strong> 
+          <strong>Occupation:</strong>
           <span className="info-value">{user.occupation}</span>
         </p>
         <p>
-          <strong>Phone Number:</strong> 
+          <strong>Phone Number:</strong>
           <span className="info-value">{user.phoneNumber}</span>
         </p>
         <p>
-          <strong>Blood Type:</strong> 
+          <strong>Blood Type:</strong>
           <span className="info-value">{user.bloodType}</span>
         </p>
       </div>
@@ -110,20 +111,22 @@ export default function BloodDonationInfo({ answers }) {
       <div className="info-card-booking">
         <h3>Booking Information</h3>
         <p>
-          <strong>Date:</strong> 
+          <strong>Date:</strong>
           <span className="info-value">{formatDate(bookingData.date)}</span>
         </p>
         <p>
-          <strong>Location:</strong> 
+          <strong>Location:</strong>
           <span className="info-value">{bookingData.location}</span>
         </p>
         <p>
-          <strong>Center:</strong> 
+          <strong>Center:</strong>
           <span className="info-value">{bookingData.center}</span>
         </p>
         <p>
-          <strong>Time Slot:</strong> 
-          <span className="info-value">{bookingData.timeSlot.startTime} - {bookingData.timeSlot.endTime}</span>
+          <strong>Time Slot:</strong>
+          <span className="info-value">
+            {bookingData.timeSlot.startTime} - {bookingData.timeSlot.endTime}
+          </span>
         </p>
       </div>
     );
@@ -140,7 +143,10 @@ export default function BloodDonationInfo({ answers }) {
               {bloodRegister.find((bq) => bq.id === q.questionId)?.text ||
                 `Question ${idx + 1}`}
             </i>
-            <div className="answer" style={{ marginLeft: 16, color: "#b30000" }}>
+            <div
+              className="answer"
+              style={{ marginLeft: 16, color: "#b30000" }}
+            >
               {getLabelByValue(q.questionId, q.answer)}
               {q.additionalInfo ? `: ${q.additionalInfo}` : ""}
             </div>
@@ -204,7 +210,10 @@ export default function BloodDonationInfo({ answers }) {
           </div>
           <div className="info-2">{renderSurveyData()}</div>
         </div>
-        <div className="actions-button" style={{ textAlign: "center", marginTop: 32 }}>
+        <div
+          className="actions-button"
+          style={{ textAlign: "center", marginTop: 32 }}
+        >
           <button
             className="button-style"
             onClick={handleConfirmBooking}
