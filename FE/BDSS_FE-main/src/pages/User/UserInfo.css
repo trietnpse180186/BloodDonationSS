@@ -204,7 +204,6 @@
   box-shadow: 0 2px 8px #b3000022;
 }
 
-
 @media (max-width: 900px) {
   .user-info-modern-report {
     max-width: 100%;
@@ -212,7 +211,8 @@
     padding: 22px 10px 16px 10px;
     margin-top: 24px;
     position: static;
-
+  }
+}
 @media (max-width: 1100px) {
   .user-info-modern-container {
     flex-direction: column;
@@ -269,6 +269,5 @@
   }
   .user-info-modern-value {
     font-size: 1em;
-
   }
 }
