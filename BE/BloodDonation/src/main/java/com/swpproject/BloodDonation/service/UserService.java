@@ -130,6 +130,9 @@ public class UserService {
                 user.setOccupation(request.getOccupation());
             }
 
+            if (request.getAvatarUrl() != null) {
+                user.setAvatarUrl(request.getAvatarUrl());
+            }
             User updatedUser = userRepository.save(user);
 
             return UserUpdateResponse.builder()

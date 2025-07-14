@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../assets/axiosInstance";
-import "./AppointmentManager.css"; // Import your CSS file for styling
-import Table from 'react-bootstrap/Table';
+import axios from "../../helpers/axiosInstance";
+import "./AppointmentManager.css";
+import Table from "react-bootstrap/Table";
 export default function AppointmentManager() {
   const [appointments, setAppointments] = useState([]);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -9,7 +9,6 @@ export default function AppointmentManager() {
   const [newStatus, setNewStatus] = useState("");
 
   // Hàm decode JWT payload
-
 
   useEffect(() => {
     axios
@@ -86,12 +85,9 @@ export default function AppointmentManager() {
   const handleDelete = async (bookingId) => {
     if (!window.confirm("Are you sure you want to delete?")) return;
     try {
-      await axios.delete(
-        `http://localhost:8080/api/booking/${bookingId}`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      await axios.delete(`http://localhost:8080/api/booking/${bookingId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       setAppointments((prev) =>
         prev.filter((item) => item.bookingId !== bookingId)
       );
@@ -104,64 +100,71 @@ export default function AppointmentManager() {
     <div>
       <h2>Users Appointment Details</h2>
       <div className="appointment-manager">
-      {Object.entries(grouped).map(([name, items]) => (
-        <div className="appointment-card" key={name} >
-          <h3>{name}</h3>
-          <Table  bordered>
-            <thead>
-              <tr>
-                <th>Email</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Center</th>
-                <th>Address</th>
-                <th>Booking Time</th>
-                <th>Status</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => (
-                <tr key={item.bookingId}>
-                  <td>{item.user.email}</td>
-                  <td>{formatDate(item.dateDonation)}</td>
-                  <td>
-                    {item.startTime?.slice(0, 5)} - {item.endTime?.slice(0, 5)}
-                  </td>
-                  <td>{item.center}</td>
-                  <td>{item.address}</td>
-                  <td>{formatDateTime(item.bookingTime)}</td>
-                  <td>
-                    {editingId === item.bookingId ? (
-                      <select
-                        value={newStatus}
-                        onChange={e => setNewStatus(e.target.value)}
-                      >
-                        <option value="APPROVED">Approved</option>
-                        <option value="COMPLETED">Completed</option>
-                        <option value="CANCELLED">Cancelled</option>
-                      </select>
-                    ) : (
-                      renderStatus(item.status)
-                    )}
-                  </td>
-                  <td className="action-buttons">
-                    {editingId === item.bookingId ? (
-                      <button onClick={() => handleSave(item.bookingId)}>Save</button>
-                    ) : (
-                      <>
-                        <button onClick={() => handleUpdate(item)}>Update</button>
-                        <button onClick={() => handleDelete(item.bookingId)}>Delete</button>
-                      </>
-                    )}
-                  </td>
+        {Object.entries(grouped).map(([name, items]) => (
+          <div className="appointment-card" key={name}>
+            <h3>{name}</h3>
+            <Table bordered>
+              <thead>
+                <tr>
+                  <th>Email</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Center</th>
+                  <th>Address</th>
+                  <th>Booking Time</th>
+                  <th>Status</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
-      ))}
-        </div>
+              </thead>
+              <tbody>
+                {items.map((item) => (
+                  <tr key={item.bookingId}>
+                    <td>{item.user.email}</td>
+                    <td>{formatDate(item.dateDonation)}</td>
+                    <td>
+                      {item.startTime?.slice(0, 5)} -{" "}
+                      {item.endTime?.slice(0, 5)}
+                    </td>
+                    <td>{item.center}</td>
+                    <td>{item.address}</td>
+                    <td>{formatDateTime(item.bookingTime)}</td>
+                    <td>
+                      {editingId === item.bookingId ? (
+                        <select
+                          value={newStatus}
+                          onChange={(e) => setNewStatus(e.target.value)}
+                        >
+                          <option value="APPROVED">Approved</option>
+                          <option value="COMPLETED">Completed</option>
+                          <option value="CANCELLED">Cancelled</option>
+                        </select>
+                      ) : (
+                        renderStatus(item.status)
+                      )}
+                    </td>
+                    <td className="action-buttons">
+                      {editingId === item.bookingId ? (
+                        <button onClick={() => handleSave(item.bookingId)}>
+                          Save
+                        </button>
+                      ) : (
+                        <>
+                          <button onClick={() => handleUpdate(item)}>
+                            Update
+                          </button>
+                          <button onClick={() => handleDelete(item.bookingId)}>
+                            Delete
+                          </button>
+                        </>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        ))}
       </div>
+    </div>
   );
 }

@@ -25,7 +25,7 @@ public class ImageUploadController {
     public ResponseEntity<Map> upload(@RequestParam("file") MultipartFile file) {
         try {
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
-            return ResponseEntity.ok(uploadResult); // trả về URL ảnh,...
+            return ResponseEntity.ok(uploadResult);
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of("error", "Upload failed"));
