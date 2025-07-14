@@ -7,7 +7,7 @@ export function getUserIdFromToken() {
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.userId; // chính xác theo token bạn cung cấp
+    return payload.userId;
   } catch (err) {
     console.error("Lỗi decode token:", err);
     return null;

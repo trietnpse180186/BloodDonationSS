@@ -39,7 +39,7 @@ public class AdminService {
     private final MailService mailService;
 
     // Lượng máu tiêu chuẩn cho mỗi lần hiến (tính bằng lít)
-    private static final double STANDARD_DONATION_VOLUME = 0.45;
+    private static final double STANDARD_DONATION_VOLUME = 0.35;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
