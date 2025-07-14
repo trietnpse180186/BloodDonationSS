@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 import { toast } from "react-toastify";
 import "./FAQManager.css";
 

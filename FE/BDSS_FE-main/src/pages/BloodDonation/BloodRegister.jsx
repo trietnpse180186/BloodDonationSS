@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 function getStartOfWeek(date) {
   const d = new Date(date);
   const day = d.getDay() || 7;
@@ -309,7 +309,10 @@ export default function BloodRegister() {
             </div>
 
             <div className="button-submit">
-              <button onClick={goToNext}>Continue</button>
+              <div className="button-style-register">
+                <button onClick={goToNext}>Next</button>
+              </div>
+
             </div>
           </div>
         </div>

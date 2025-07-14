@@ -219,19 +219,37 @@ public class BookingService {
         List<BookingDonation> bookings = bookingDonationRepository.findAll();
 
         return bookings.stream()
-                .map(booking -> BookingResponse.builder()
-                        .bookingId(booking.getDonationId())
-                        .dateDonation(booking.getDateDonation())
-                        .startTime(booking.getStartTime())
-                        .endTime(booking.getEndTime())
-                        .address(booking.getAddress())
-                        .status(String.valueOf(booking.getStatus()))
-                        .center(booking.getCenter())
-                        .user(booking.getDonor())
-                        .bookingTime(booking.getBookingTime())
-                        .formattedBookingTime("Booking at: " +
-                                booking.getBookingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                        .build())
+                .map(booking -> {
+                    String formattedTime = null;
+                    if (booking.getBookingTime() != null) {
+                        formattedTime = "Đã đặt lịch lúc: " +
+                                booking.getBookingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    }
+
+                    return BookingResponse.builder()
+                            .bookingId(booking.getDonationId())
+                            .dateDonation(booking.getDateDonation())
+                            .startTime(booking.getStartTime())
+                            .endTime(booking.getEndTime())
+                            .address(booking.getAddress())
+                            .status(String.valueOf(booking.getStatus()))
+                            .center(booking.getCenter())
+                            .user(booking.getDonor())
+                            .bookingTime(booking.getBookingTime())
+                            .formattedBookingTime(formattedTime)
+                            .build();
+                })
+
                 .collect(Collectors.toList());
     }
+    public void deleteBooking(String bookingId) {
+        BookingDonation booking = bookingDonationRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+
+        List<Survey> surveys = surveyRepository.findByBookingDonation(booking);
+        surveyRepository.deleteAll(surveys);
+
+        bookingDonationRepository.delete(booking);
+    }
+
 }

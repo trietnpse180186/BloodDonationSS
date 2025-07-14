@@ -4,10 +4,11 @@ import com.swpproject.BloodDonation.dto.request.BlogRequest;
 import com.swpproject.BloodDonation.dto.response.BlogResponse;
 import com.swpproject.BloodDonation.service.BlogService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/blogs")
@@ -36,4 +37,17 @@ public class BlogController {
     public void delete(@PathVariable Long id) {
         blogService.delete(id);
     }
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity<String> updateBlogImage(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> request) {
+
+        String imageUrl = request.get("imageUrl");
+
+        blogService.updateImageUrl(id, imageUrl);
+
+        return ResponseEntity.ok("Image URL updated successfully.");
+    }
+
 }
