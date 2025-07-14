@@ -189,7 +189,6 @@ public class UserService {
                 .toList();
     }
 
-
     @Transactional
     @PreAuthorize("isAuthenticated() AND hasAuthority('DONOR')")
     public void deleteAccount(String userId) {

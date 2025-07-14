@@ -32,6 +32,7 @@ public class BookingService {
     private final ScheduleDonationRepository scheduleDonationRepository;
     private final UserRepository userRepository;
     private final TimeSlotRepository timeSlotRepository;
+    private final DonationReportService donationReportService;
 
 
     @Transactional
@@ -41,6 +42,11 @@ public class BookingService {
         String userEmail = authentication.getName();
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean canDonate = donationReportService.canUserDonate(user.getUserID());
+        if (!canDonate) {
+            throw new RuntimeException("You are not eligible to donate blood at this time. Please check your donation history or contact support for more information.");
+        }
 
         ScheduleDonation scheduleDonation;
         if (request.getBooking().getScheduleId() != null && !request.getBooking().getScheduleId().isEmpty()) {
@@ -131,7 +137,7 @@ public class BookingService {
                 .center(savedBookingDonation.getCenter())
                 .message("Booking created successfully")
                 .bookingTime(savedBookingDonation.getBookingTime())
-                .formattedBookingTime("Đã đặt lịch lúc: " + formattedBookingTime)
+                .formattedBookingTime("Booking at: " + formattedBookingTime)
                 .build();
     }
 
