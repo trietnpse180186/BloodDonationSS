@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 import "./AppointmentManager.css";
 import Table from 'react-bootstrap/Table';
 
@@ -79,26 +79,9 @@ export default function AppointmentManager() {
     }
   };
 
-  const handleDelete = async (bookingId) => {
-    if (!window.confirm("Are you sure you want to delete?")) return;
-    try {
-      await axios.delete(
-        `http://localhost:8080/api/booking/${bookingId}`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      setAppointments((prev) =>
-        prev.filter((item) => item.bookingId !== bookingId)
-      );
-    } catch (error) {
-      alert("Xóa lịch hẹn thất bại!");
-    }
-  };
-
   return (
-    <div>
-      <h2>Users Appointment Details</h2>
+    <div className="appointment-manager-container">
+      <h2>Donor Appointment Details</h2>
       <div className="appointment-manager">
         {Object.entries(grouped).map(([name, items]) => (
           <div className="appointment-card" key={name}>
@@ -132,7 +115,7 @@ export default function AppointmentManager() {
                       {(item.status === "PENDING" || item.status === "APPROVED") && (
                         <button onClick={() => handleUpdate(item)}>Update</button>
                       )}
-                      <button onClick={() => handleDelete(item.bookingId)}>Delete</button>
+                      
                     </td>
                   </tr>
                 ))}

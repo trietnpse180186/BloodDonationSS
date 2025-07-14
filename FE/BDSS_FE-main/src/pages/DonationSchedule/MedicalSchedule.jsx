@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 import { Modal, Button, Form } from "react-bootstrap";
 import "./MedicalSchedule.css";
 

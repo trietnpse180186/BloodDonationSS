@@ -5,11 +5,11 @@
 }
 
 .medical-schedule h2 {
-  color: #db230b;
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 22px;
   text-align: center;
+  color: #1d4a76;
+  font-size: 2.2rem;
+  font-weight: bold;
+  margin-bottom: 24px;
   letter-spacing: 1px;
 }
 
@@ -46,19 +46,21 @@
 
 .medical-schedule th,
 .medical-schedule td {
-  border: 1px solid #db230b;
+  border: 1px solid black;
   padding: 10px 8px;
   text-align: center;
+
 }
 
 .medical-schedule th {
-  background: #cb0505b6;
-  color: #ffffff;
+  background: none;
+  color: black;
   font-weight: bold;
 }
 
 /* Action buttons in table rows */
 .medical-schedule td button {
+  width: 100%;
   margin: 0 5px;
   padding: 6px 12px;
   border: none;

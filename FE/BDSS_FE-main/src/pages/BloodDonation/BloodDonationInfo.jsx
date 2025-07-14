@@ -25,11 +25,18 @@ function GenderIcon({ sex }) {
   return null;
 }
 
-
-  function formatDate(isoDate) {
-    if (!isoDate) return "";
-    const [year, month, day] = isoDate.split("-");
-    return `${day}-${month}-${year}`;
+  function formatDateToIso(dateStr) {
+    if (!dateStr) return "";
+    // Nếu đã đúng ISO yyyy-MM-dd
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      return dateStr;
+    }
+    // Nếu là dạng dd/MM/yyyy hoặc dd-MM-yyyy
+    if (/^\d{2}[\/-]\d{2}[\/-]\d{4}$/.test(dateStr)) {
+      const [day, month, year] = dateStr.split(/\/|-/);
+      return `${year}-${month}-${day}`;
+    }
+    return dateStr;
   }
 
 export default function BloodDonationInfo({ answers }) {
@@ -106,12 +113,13 @@ export default function BloodDonationInfo({ answers }) {
 
   const renderBookingData = () => {
     if (!bookingData) return <div>No booking information.</div>;
+
     return (
       <div className="info-card-booking">
         <h3>Booking Information</h3>
         <p>
           <strong>Date:</strong> 
-          <span className="info-value">{formatDate(bookingData.date)}</span>
+          <span className="info-value">{bookingData.date}</span>
         </p>
         <p>
           <strong>Location:</strong> 
