@@ -21,6 +21,7 @@ import StaffPage from "../pages/Staff/StaffPage";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import ChangePassword from "../pages/User/ChangePassword";
 
+
 export default function WebRoutes() {
   return (
     <>
