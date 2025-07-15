@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "../../assets/axiosInstance";
-import { getUserIdFromToken } from "../../assets/getUserById";
+import axios from "../../helpers/axiosInstance";
+import { getUserIdFromToken } from "../../helpers/getUserById";
 
 export default function Certificate({ bookingId }) {
   const [data, setData] = useState(null);
