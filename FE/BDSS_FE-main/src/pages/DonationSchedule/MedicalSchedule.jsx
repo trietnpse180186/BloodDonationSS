@@ -93,7 +93,7 @@ export default function MedicalSchedule() {
     setEditingId(schedule.scheduleId);
     setEditForm({
       center: schedule.center,
-      address: schedule.location, // 🟢 Sửa tên thành address
+      address: schedule.location,
       date: schedule.date,
       numberOfDonor: schedule.donorCount,
       timeSlots: schedule.timeSlots.map(slot => ({
@@ -111,7 +111,7 @@ export default function MedicalSchedule() {
         `http://localhost:8080/api/schedule-donations/${editingId}`,
         {
           center: editForm.center,
-          address: editForm.address, // 🟢 Sửa thành address
+          address: editForm.address, 
           date: editForm.date,
           numberOfDonor: Number(editForm.numberOfDonor),
           timeSlots: editForm.timeSlots

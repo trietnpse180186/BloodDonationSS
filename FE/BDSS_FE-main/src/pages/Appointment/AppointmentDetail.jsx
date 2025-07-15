@@ -7,12 +7,11 @@ import { Modal, Button } from "antd";
 import { getUserIdFromToken } from "../../helpers/getUserById";
 import axios from "../../helpers/axiosInstance";
 
-
-  function formatDate(isoDate) {
-    if (!isoDate) return "";
-    const [year, month, day] = isoDate.split("-");
-    return `${day}-${month}-${year}`;
-  }
+function formatDate(isoDate) {
+  if (!isoDate) return "";
+  const [year, month, day] = isoDate.split("-");
+  return `${day}-${month}-${year}`;
+}
 export default function AppointmentDetail() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -126,7 +125,8 @@ export default function AppointmentDetail() {
                     <td>{formatDate(item.dateDonation)}</td>
                     <td>{item.address}</td>
                     <td>
-                      {item.startTime?.slice(0, 5)} - {item.endTime?.slice(0, 5)}
+                      {item.startTime?.slice(0, 5)} -{" "}
+                      {item.endTime?.slice(0, 5)}
                     </td>
                     <td>{renderStatus(item.status)}</td>
                     <td>
