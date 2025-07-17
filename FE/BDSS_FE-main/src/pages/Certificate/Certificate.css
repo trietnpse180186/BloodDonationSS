@@ -122,8 +122,11 @@
 
 .cert-text-underName {
   font-size: 18px;
+  width: 550px;
   color: #333;
-  margin-top: 5px;
+  margin: 20px 190px;
+
+  
 }
 .cert-body strong {
   color: #cf4327;
