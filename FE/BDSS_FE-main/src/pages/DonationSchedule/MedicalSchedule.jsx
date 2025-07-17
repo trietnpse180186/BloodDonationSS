@@ -199,6 +199,7 @@ export default function MedicalSchedule() {
       );
       setSchedules((prev) => prev.filter((s) => s.scheduleId !== scheduleId));
     } catch (err) {
+      console.error("Delete error:", err.response?.data || err.message);
       alert("Failed to delete schedule.");
     }
   };

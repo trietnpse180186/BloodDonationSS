@@ -105,7 +105,6 @@ export default function NotificationCenter() {
       <div className="notification-wrapper">
         <div className="notification-toolbar">
           <h2 className="notification-title">Notification</h2>
-          
         </div>
 
         <div className="notification-list">

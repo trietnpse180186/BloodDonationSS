@@ -120,3 +120,26 @@
   background-color: #388e3c;
 }
 
+
+.certificate-modal {
+  position: relative;
+  z-index: 9999 !important;
+}
+
+.ant-modal-mask {
+  z-index: 9990 !important;
+}
+
+.ant-modal-wrap {
+  z-index: 9995 !important;
+}
+
+/* Đặt lớp overlay để navbar nằm dưới modal */
+body.modal-open {
+  overflow: hidden;
+}
+
+.certificate-modal .ant-modal-content {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+

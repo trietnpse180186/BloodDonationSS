@@ -26,11 +26,13 @@ export default function AppointmentDetail() {
   const openCertificateModal = (bookingId) => {
     setSelectedBookingId(bookingId);
     setIsModalVisible(true);
+    document.body.classList.add("modal-open");
   };
 
   const closeCertificateModal = () => {
     setSelectedBookingId(null);
     setIsModalVisible(false);
+    document.body.classList.remove("modal-open");
   };
 
   const renderStatus = (status) => {
@@ -155,11 +157,21 @@ export default function AppointmentDetail() {
             </table>
 
             <Modal
-              title="Chứng nhận hiến máu"
+              title=""
               open={isModalVisible}
               onCancel={closeCertificateModal}
               footer={null}
-              width={600}
+              zIndex={1050}
+              className="certificate-modal"
+              getContainer={document.body}
+              width="77%"
+              centered
+               maskClosable={false}
+              closeIcon={
+                <div className="custom-close-button">
+                  <span>close</span>
+                </div>
+              }
             >
               {selectedBookingId && (
                 <Certificate bookingId={selectedBookingId} />
