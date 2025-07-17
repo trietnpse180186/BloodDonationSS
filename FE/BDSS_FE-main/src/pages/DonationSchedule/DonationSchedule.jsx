@@ -6,12 +6,15 @@ import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
 import { peopleFill } from "../../icons/icon";
 import axios from "../../helpers/axiosInstance";
+import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 
 export default function DonationSchedule() {
   const [searchName, setSearchName] = useState("");
   const [searchDate, setSearchDate] = useState("");
   const [filteredSchedules, setFilteredSchedules] = useState([]);
   const [schedules, setSchedules] = useState([]);
+  const [userInfo, setUserInfo] = useState(null);
+  const [eligibility, setEligibility] = useState(null);
   const token = sessionStorage.getItem("accessToken");
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,6 +30,20 @@ export default function DonationSchedule() {
         console.error("Error loading schedules", err);
       });
   }, []);
+
+  useEffect(() => {
+    const userIdFromToken = getUserIdFromToken(token);
+    axios
+      .get(
+        `http://localhost:8080/api/reports/user/${userIdFromToken}/eligibility`
+      )
+      .then((res) => {
+        setEligibility(res.data);
+      })
+      .catch((err) => {
+        console.error("Error loading eligibility", err);
+      });
+  }, [token]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -48,6 +65,10 @@ export default function DonationSchedule() {
     setFilteredSchedules(filtered);
   }, [searchName, searchDate, schedules]);
 
+  useEffect(() => {
+    getUserById().then(setUserInfo);
+  }, []);
+
   const handleBooking = (schedule) => {
     navigate(
       `/blood-registration?date=${schedule.date}&location=${encodeURIComponent(
@@ -55,6 +76,8 @@ export default function DonationSchedule() {
       )}&center=${encodeURIComponent(schedule.center)}`
     );
   };
+
+  if (!userInfo) return <div>Loading user info...</div>;
 
   return (
     <>
@@ -111,55 +134,101 @@ export default function DonationSchedule() {
                   </div>
                 </div>
               ) : (
-                filteredSchedules.map((schedule, idx) => (
-                  <div className="schedule-container" key={idx}>
-                    <div className="schedule-detail">
-                      <ul style={{ listStyleType: "none", padding: 0 }}>
-                        <li>
-                          <strong
+                filteredSchedules.map((schedule, idx) => {
+                  const canBookBlood =
+                    userInfo &&
+                    userInfo.bloodType &&
+                    schedule.bloodNeed.some(
+                      (b) =>
+                        b.replace(/\s+/g, "").toUpperCase() ===
+                        userInfo.bloodType.replace(/\s+/g, "").toUpperCase()
+                    );
+                  const canBook = canBookBlood && eligibility === true;
+
+                  return (
+                    <div className="schedule-container" key={idx}>
+                      <div className="schedule-detail">
+                        <ul style={{ listStyleType: "none", padding: 0 }}>
+                          <li>
+                            <strong
+                              style={{
+                                color: "rgb(218, 35, 35)",
+                                fontSize: "1.2em",
+                              }}
+                            >
+                              {schedule.center}
+                            </strong>
+                          </li>
+                          <li>
+                            <strong>Location:</strong> {schedule.location}{" "}
+                          </li>
+                          <li>
+                            <strong>Date:</strong> {schedule.date}
+                          </li>
+                          <li>
+                            <strong>Blood Need:</strong>{" "}
+                            {schedule.bloodNeed.join(" - ")}
+                          </li>
+
+                          <li>
+                            <strong>Time slots:</strong>
+                            <ul style={{ margin: 0, paddingLeft: 16 }}>
+                              {schedule.timeSlots.map((slot) => (
+                                <li key={slot.id}>
+                                  {slot.startTime} - {slot.endTime}
+                                </li>
+                              ))}
+                            </ul>
+                          </li>
+                        </ul>
+                      </div>
+                      <div className="schedule-total">
+                        <div className="schedule-total-icon">
+                          {peopleFill}
+                          <strong>Number of registrations:</strong>
+                        </div>
+                        <div className="schedule-total-count">
+                          {schedule.registrationStatus}
+                          <button
+                            className="schedule-button"
+                            onClick={() => handleBooking(schedule)}
+                            disabled={!canBook}
+                            style={
+                              !canBook
+                                ? { background: "#ccc", cursor: "not-allowed" }
+                                : {}
+                            }
+                          >
+                            Book now
+                          </button>
+                        </div>
+                        {!canBookBlood && (
+                          <div
                             style={{
-                              color: "rgb(218, 35, 35)",
-                              fontSize: "1.2em",
+                              color: "red",
+                              marginTop: 8,
+                              fontWeight: 500,
                             }}
                           >
-                            {schedule.center}
-                          </strong>
-                        </li>
-                        <li>
-                          <strong>Location:</strong> {schedule.location}{" "}
-                        </li>
-                        <li>
-                          <strong>Date:</strong> {schedule.date}
-                        </li>
-                        <li>
-                          <strong>Time slots:</strong>
-                          <ul style={{ margin: 0, paddingLeft: 16 }}>
-                            {schedule.timeSlots.map((slot) => (
-                              <li key={slot.id}>
-                                {slot.startTime} - {slot.endTime}
-                              </li>
-                            ))}
-                          </ul>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="schedule-total">
-                      <div className="schedule-total-icon">
-                        {peopleFill}
-                        <strong>Number of registrations:</strong>
-                      </div>
-                      <div className="schedule-total-count">
-                        {schedule.registrationStatus}
-                        <button
-                          className="schedule-button"
-                          onClick={() => handleBooking(schedule)}
-                        >
-                          Book now
-                        </button>
+                            Your blood type is not needed for this schedule.
+                          </div>
+                        )}
+                        {canBookBlood && eligibility === false && (
+                          <div
+                            style={{
+                              color: "orange",
+                              marginTop: 8,
+                              fontWeight: 500,
+                            }}
+                          >
+                            You are not eligible to donate blood at this time.
+                            Please wait until the required interval has passed.
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>

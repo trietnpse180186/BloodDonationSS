@@ -37,15 +37,31 @@ export default function Certificate({ bookingId }) {
   return (
     <div className="certificate-box">
       <h3>Blood Donation Certificate</h3>
-      <p><strong>Full Name:</strong> {data.user?.fullName}</p>
-      <p><strong>Email:</strong> {data.user?.email}</p>
-      <p><strong>Blood Type:</strong> {data.user?.bloodType}</p>
-      <p><strong>Phone Number:</strong> {data.user?.phone}</p>
-      <p><strong>Date of Birth:</strong> {data.user?.birthDate}</p>
+      <p>
+        <strong>Full Name:</strong> {data.user?.fullName}
+      </p>
+      <p>
+        <strong>Email:</strong> {data.user?.email}
+      </p>
+      <p>
+        <strong>Blood Type:</strong> {data.user?.bloodType}
+      </p>
+      <p>
+        <strong>Phone Number:</strong> {data.user?.phoneNumber}
+      </p>
+      <p>
+        <strong>Date of Birth:</strong> {data.user?.birthday}
+      </p>
       <hr />
-      <p><strong>Donation Date:</strong> {data.donationDate}</p>
-      <p><strong>Volume:</strong> {data.volume} ml</p>
-      <p><strong>Booking ID:</strong> {data.bookingId}</p>
+      <p>
+        <strong>Donation Date:</strong> {data.donationDate}
+      </p>
+      <p>
+        <strong>Volume:</strong> {data.volume} ml
+      </p>
+      <p>
+        <strong>Booking ID:</strong> {data.bookingId}
+      </p>
     </div>
   );
 }

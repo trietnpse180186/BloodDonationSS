@@ -136,6 +136,23 @@ export default function MedicalSchedule() {
     }
   };
 
+
+  const handleEditClick = (schedule) => {
+    setEditingId(schedule.scheduleId);
+    setEditForm({
+      center: schedule.center,
+      address: schedule.location,
+      date: schedule.date,
+      numberOfDonor: schedule.donorCount,
+      timeSlots: schedule.timeSlots.map(slot => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime
+      }))
+    });
+    setShowModal(true);
+  };
+
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     const bloodNeedFiltered = editForm.bloodNeed.filter(bn => bn); // loại bỏ ""
@@ -144,9 +161,11 @@ export default function MedicalSchedule() {
         `http://localhost:8080/api/schedule-donations/${editingId}`,
         {
           center: editForm.center,
+
           address: editForm.address, // Đảm bảo trường này đúng với backend
           bloodNeed: bloodNeedFiltered,
           date: formatDate(editForm.date), // Đảm bảo định dạng ngày đúng
+
           numberOfDonor: Number(editForm.numberOfDonor),
           timeSlots: editForm.timeSlots
         },
