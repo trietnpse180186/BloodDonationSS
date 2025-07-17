@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../helpers/axiosInstance";
 import "./AppointmentManager.css";
-import Table from "react-bootstrap/Table";
+
+import Table from 'react-bootstrap/Table';
+
 export default function AppointmentManager() {
   const [appointments, setAppointments] = useState([]);
   const accessToken = sessionStorage.getItem("accessToken");
-  const [editingId, setEditingId] = useState(null);
-  const [newStatus, setNewStatus] = useState("");
 
-  // Hàm decode JWT payload
 
   useEffect(() => {
     axios
@@ -48,6 +47,7 @@ export default function AppointmentManager() {
         return <span>{status}</span>;
     }
   };
+
   const grouped = appointments.reduce((acc, item) => {
     const name = item.user?.fullName || "Unknown User";
     if (!acc[name]) acc[name] = [];
@@ -55,50 +55,36 @@ export default function AppointmentManager() {
     return acc;
   }, {});
 
-  const handleUpdate = (item) => {
-    setEditingId(item.bookingId);
-    setNewStatus(item.status);
-  };
+  // Tự động cập nhật trạng thái khi nhấn Update
+  const handleUpdate = async (item) => {
+    let nextStatus = "";
+    if (item.status === "PENDING") nextStatus = "APPROVED";
+    else if (item.status === "APPROVED") nextStatus = "COMPLETED";
+    else return; // Không cho update nếu đã CANCELLED hoặc COMPLETED
 
-  // Khi nhấn Save
-  const handleSave = async (bookingId) => {
     try {
       await axios.put(
-        `http://localhost:8080/api/booking/${bookingId}`,
+        `http://localhost:8080/api/booking/${item.bookingId}`,
         {},
         {
-          params: { status: newStatus },
+          params: { status: nextStatus },
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
       setAppointments((prev) =>
-        prev.map((item) =>
-          item.bookingId === bookingId ? { ...item, status: newStatus } : item
+        prev.map((appt) =>
+          appt.bookingId === item.bookingId ? { ...appt, status: nextStatus } : appt
         )
       );
-      setEditingId(null);
     } catch (error) {
       alert("Cập nhật trạng thái thất bại!");
     }
   };
 
-  const handleDelete = async (bookingId) => {
-    if (!window.confirm("Are you sure you want to delete?")) return;
-    try {
-      await axios.delete(`http://localhost:8080/api/booking/${bookingId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      setAppointments((prev) =>
-        prev.filter((item) => item.bookingId !== bookingId)
-      );
-    } catch (error) {
-      alert("Xóa lịch hẹn thất bại!");
-    }
-  };
 
   return (
-    <div>
-      <h2>Users Appointment Details</h2>
+    <div className="appointment-manager-container">
+      <h2>Donor Appointment Details</h2>
       <div className="appointment-manager">
         {Object.entries(grouped).map(([name, items]) => (
           <div className="appointment-card" key={name}>
@@ -122,41 +108,18 @@ export default function AppointmentManager() {
                     <td>{item.user.email}</td>
                     <td>{formatDate(item.dateDonation)}</td>
                     <td>
-                      {item.startTime?.slice(0, 5)} -{" "}
-                      {item.endTime?.slice(0, 5)}
+
+                      {item.startTime?.slice(0, 5)} - {item.endTime?.slice(0, 5)}
+
                     </td>
                     <td>{item.center}</td>
                     <td>{item.address}</td>
                     <td>{formatDateTime(item.bookingTime)}</td>
-                    <td>
-                      {editingId === item.bookingId ? (
-                        <select
-                          value={newStatus}
-                          onChange={(e) => setNewStatus(e.target.value)}
-                        >
-                          <option value="APPROVED">Approved</option>
-                          <option value="COMPLETED">Completed</option>
-                          <option value="CANCELLED">Cancelled</option>
-                        </select>
-                      ) : (
-                        renderStatus(item.status)
-                      )}
-                    </td>
+                    <td>{renderStatus(item.status)}</td>
                     <td className="action-buttons">
-                      {editingId === item.bookingId ? (
-                        <button onClick={() => handleSave(item.bookingId)}>
-                          Save
-                        </button>
-                      ) : (
-                        <>
-                          <button onClick={() => handleUpdate(item)}>
-                            Update
-                          </button>
-                          <button onClick={() => handleDelete(item.bookingId)}>
-                            Delete
-                          </button>
-                        </>
-                      )}
+                      {(item.status === "PENDING" || item.status === "APPROVED") && (
+                        <button onClick={() => handleUpdate(item)}>Update</button>
+                      )}                
                     </td>
                   </tr>
                 ))}

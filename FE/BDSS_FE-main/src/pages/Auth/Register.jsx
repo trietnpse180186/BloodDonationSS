@@ -18,7 +18,7 @@ import { ClipLoader, PulseLoader } from "react-spinners";
 
 function PasswordInput({ value, onChange, name }) {
   const [show, setShow] = useState(false);
-
+  const [userBloodType, setUserBloodType] = sessionStorage.getItem("bloodType");
   return (
     <div className="input-group">
       <FaLock className="input-icon" />
