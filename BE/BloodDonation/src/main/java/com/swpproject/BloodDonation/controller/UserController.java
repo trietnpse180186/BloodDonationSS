@@ -42,7 +42,7 @@ public class UserController {
 
     @DeleteMapping("/users/delete/{id}")
     public void deleteAccount(@PathVariable String id){
-        userService.deleteAccount(id);
+        userService.deleteUserWithCascade(id);
     }
 
     @PostMapping("/api/user/avatar")

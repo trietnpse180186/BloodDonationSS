@@ -9,8 +9,7 @@ import com.swpproject.BloodDonation.entity.Role;
 import com.swpproject.BloodDonation.entity.User;
 import com.swpproject.BloodDonation.entity.UserHasRole;
 import com.swpproject.BloodDonation.enums.BloodType;
-import com.swpproject.BloodDonation.repository.RoleRepository;
-import com.swpproject.BloodDonation.repository.UserRepository;
+import com.swpproject.BloodDonation.repository.*;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.swpproject.BloodDonation.repository.UserHasRoleRepository;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +33,10 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserHasRoleRepository userHasRoleRepository;
+    private final NotificationRepository notificationRepository;
+    private final BookingDonationRepository bookingDonationRepository;
+    private final SurveyRepository surveyRepository;
+    private final CertificateRepository certificateRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final MailService mailService;
@@ -191,12 +194,28 @@ public class UserService {
     }
 
     @Transactional
-    @PreAuthorize("isAuthenticated() AND hasAuthority('DONOR')")
-    public void deleteAccount(String userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-        userHasRoleRepository.deleteByUser(user);
-        userRepository.delete(user);
+    public void deleteUserWithCascade(String userId) {
+        try {
+            // 1. Lấy tất cả donation IDs của user
+            List<String> donationIds = bookingDonationRepository.findDonationIdsByDonorUserId(userId);
+
+            // 2. Xóa tất cả surveys liên quan đến các donations này
+            for (String donationId : donationIds) {
+                surveyRepository.deleteByDonationId(donationId);
+            }
+            certificateRepository.deleteByUserId(userId);   
+            // 3. Xóa notifications
+            notificationRepository.deleteByUserId(userId);
+
+            // 4. Xóa booking donations
+            bookingDonationRepository.deleteByDonorId(userId);
+
+            // 5. Cuối cùng xóa user
+            userRepository.deleteById(userId);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting user: " + e.getMessage(), e);
+        }
     }
 
     @Transactional
