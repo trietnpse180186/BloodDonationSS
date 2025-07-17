@@ -18,9 +18,8 @@ import { ClipLoader, PulseLoader } from "react-spinners";
 
 function PasswordInput({ value, onChange, name }) {
   const [show, setShow] = useState(false);
-  const [userBloodType, setUserBloodType] = sessionStorage.getItem("bloodType");
   return (
-    <div className="input-group">
+    <div className="input-group" style={{ paddingTop: 20 }}>
       <FaLock className="input-icon" />
       <input
         type={show ? "text" : "password"}
@@ -28,8 +27,11 @@ function PasswordInput({ value, onChange, name }) {
         value={value}
         name={name}
         onChange={onChange}
-        required
-        style={{ paddingLeft: 40, paddingRight: 40 }}
+        style={{
+          paddingLeft: 40,
+          paddingRight: 40,
+          paddingBottom: 10,
+        }}
       />
       <span
         className="show-password-btn"
@@ -189,6 +191,7 @@ export default function Register() {
               <div className="field-wrapper">
                 <FaEnvelope className="input-icon" />
                 <input
+                  style={{ marginLeft: 40 }}
                   type="email"
                   name="email"
                   placeholder="Enter your email"
@@ -208,7 +211,6 @@ export default function Register() {
             <div className="register-password">
               <h6>Password</h6>
               <div className="field-wrapper">
-                <FaLock className="input-icon" />
                 <PasswordInput
                   value={formData.password}
                   name="password"
