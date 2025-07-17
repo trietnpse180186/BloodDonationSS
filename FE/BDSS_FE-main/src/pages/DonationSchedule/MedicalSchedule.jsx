@@ -9,9 +9,23 @@ export default function MedicalSchedule() {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState(null);
 
+  // Nếu date là object hoặc không đúng định dạng yyyy-MM-dd, hãy chuẩn hóa:
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+    // Nếu là dd/MM/yyyy
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+      const [day, month, year] = dateStr.split("/");
+      return `${year}-${month}-${day}`;
+    }
+    return dateStr;
+  };
+  // Khi gửi lên BE:
+
   const [formData, setFormData] = useState({
     center: "",
     location: "",
+    bloodNeed: [""], // luôn có ít nhất 1 phần tử rỗng
     date: "",
     numberOfDonor: "",
     timeSlots: [{ startTime: "", endTime: "" }]
@@ -54,14 +68,46 @@ export default function MedicalSchedule() {
     }));
   };
 
+  const bloodTypeLabel = (type) => {
+    switch (type) {
+      case "A_POSITIVE": return "A+";
+      case "A_NEGATIVE": return "A-";
+      case "B_POSITIVE": return "B+";
+      case "B_NEGATIVE": return "B-";
+      case "AB_POSITIVE": return "AB+";
+      case "AB_NEGATIVE": return "AB-";
+      case "O_POSITIVE": return "O+";
+      case "O_NEGATIVE": return "O-";
+      default: return type;
+    }
+  };
+
+  const handleEditClick = (schedule) => {
+    setEditingId(schedule.scheduleId);
+    setEditForm({
+      center: schedule.center,
+      address: schedule.location,
+      date: schedule.date,
+      bloodNeed: schedule.bloodNeed && schedule.bloodNeed.length > 0 ? schedule.bloodNeed : [""],
+      numberOfDonor: schedule.donorCount,
+      timeSlots: schedule.timeSlots.map(slot => ({
+        startTime: slot.startTime,
+        endTime: slot.endTime
+      }))
+    });
+    setShowModal(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const bloodNeedFiltered = formData.bloodNeed.filter(bn => bn);
     try {
       await axios.post(
         "http://localhost:8080/api/schedule-donations",
         {
           center: formData.center,
           address: formData.location,
+          bloodNeed: bloodNeedFiltered,
           date: formData.date,
           numberOfDonor: Number(formData.numberOfDonor),
           timeSlots: formData.timeSlots
@@ -79,6 +125,7 @@ export default function MedicalSchedule() {
       setFormData({
         center: "",
         location: "",
+        bloodNeed: [""],
         date: "",
         numberOfDonor: "",
         timeSlots: [{ startTime: "", endTime: "" }]
@@ -89,30 +136,17 @@ export default function MedicalSchedule() {
     }
   };
 
-  const handleEditClick = (schedule) => {
-    setEditingId(schedule.scheduleId);
-    setEditForm({
-      center: schedule.center,
-      address: schedule.location, // 🟢 Sửa tên thành address
-      date: schedule.date,
-      numberOfDonor: schedule.donorCount,
-      timeSlots: schedule.timeSlots.map(slot => ({
-        startTime: slot.startTime,
-        endTime: slot.endTime
-      }))
-    });
-    setShowModal(true);
-  };
-
   const handleUpdate = async (e) => {
     e.preventDefault();
+    const bloodNeedFiltered = editForm.bloodNeed.filter(bn => bn); // loại bỏ ""
     try {
       await axios.put(
         `http://localhost:8080/api/schedule-donations/${editingId}`,
         {
           center: editForm.center,
-          address: editForm.address, // 🟢 Sửa thành address
-          date: editForm.date,
+          address: editForm.address, // Đảm bảo trường này đúng với backend
+          bloodNeed: bloodNeedFiltered,
+          date: formatDate(editForm.date), // Đảm bảo định dạng ngày đúng
           numberOfDonor: Number(editForm.numberOfDonor),
           timeSlots: editForm.timeSlots
         },
@@ -127,8 +161,9 @@ export default function MedicalSchedule() {
       });
       setSchedules(res.data);
     } catch (err) {
-      console.error(err.response?.data || err.message);
-      alert("Failed to update schedule.");
+      // Log chi tiết lỗi để kiểm tra
+      console.error("Update error:", err.response?.data || err.message);
+      alert("Failed to update schedule.\n" + (err.response?.data?.message || ""));
     }
   };
 
@@ -145,6 +180,64 @@ export default function MedicalSchedule() {
     }
   };
 
+  // --- BLOOD NEED JSX ---
+  const renderBloodNeed = () => {
+    const arr = editingId ? editForm.bloodNeed : formData.bloodNeed;
+    const setArr = editingId
+      ? (newArr) => setEditForm({ ...editForm, bloodNeed: newArr })
+      : (newArr) => setFormData({ ...formData, bloodNeed: newArr });
+
+    return (
+      <Form.Group className="mb-3">
+        <Form.Label>Blood Need</Form.Label>
+        {arr.map((bn, idx) => (
+          <div key={idx} className="d-flex gap-2 mb-2 align-items-center">
+            <Form.Select
+              value={bn}
+              onChange={e => {
+                const newArr = [...arr];
+                newArr[idx] = e.target.value;
+                setArr(newArr);
+              }}
+              required
+            >
+              <option value="">-- Select Blood Type --</option>
+              <option value="A_POSITIVE">A+</option>
+              <option value="A_NEGATIVE">A-</option>
+              <option value="B_POSITIVE">B+</option>
+              <option value="B_NEGATIVE">B-</option>
+              <option value="AB_POSITIVE">AB+</option>
+              <option value="AB_NEGATIVE">AB-</option>
+              <option value="O_POSITIVE">O+</option>
+              <option value="O_NEGATIVE">O-</option>
+            </Form.Select>
+            {arr.length > 1 && (
+              <Button
+                variant="danger"
+                size="sm"
+                onClick={() => {
+                  const newArr = [...arr];
+                  newArr.splice(idx, 1);
+                  setArr(newArr);
+                }}
+              >
+                X
+              </Button>
+            )}
+          </div>
+        ))}
+        <Button
+          variant="secondary"
+          size="sm"
+          className="mt-1"
+          onClick={() => setArr([...arr, ""])}
+        >
+          + Add Blood Need
+        </Button>
+      </Form.Group>
+    );
+  };
+
   return (
     <div className="medical-schedule">
       <h2>Donation Schedules</h2>
@@ -156,6 +249,7 @@ export default function MedicalSchedule() {
           <tr>
             <th>Center</th>
             <th>Location</th>
+            <th>Blood Need</th>
             <th>Date</th>
             <th>Time</th>
             <th>Number of Donor</th>
@@ -166,7 +260,8 @@ export default function MedicalSchedule() {
           {schedules.map((s) => (
             <tr key={s.scheduleId}>
               <td>{s.center}</td>
-              <td>{s.location}</td>
+              <td>{s.address || s.location}</td>
+              <td>{s.bloodNeed && s.bloodNeed.map(bt => bloodTypeLabel(bt)).join(", ")}</td>
               <td>{s.date}</td>
               <td>
                 {s.timeSlots &&
@@ -178,8 +273,10 @@ export default function MedicalSchedule() {
               </td>
               <td>{s.donorCount}</td>
               <td>
-                <button onClick={() => handleEditClick(s)}>Update</button>
-                <button onClick={() => handleDelete(s.scheduleId)}>Delete</button>
+                <div className="schedule-actions">
+                  <button onClick={() => handleEditClick(s)}>Update</button>
+                  <button onClick={() => handleDelete(s.scheduleId)}>Delete</button>
+                </div>
               </td>
             </tr>
           ))}
@@ -212,7 +309,7 @@ export default function MedicalSchedule() {
               <Form.Control
                 type="text"
                 name="location"
-                value={editingId ? editForm.address : formData.location} 
+                value={editingId ? editForm.address : formData.location}
                 onChange={e =>
                   editingId
                     ? setEditForm({ ...editForm, address: e.target.value })
@@ -221,6 +318,9 @@ export default function MedicalSchedule() {
                 required
               />
             </Form.Group>
+
+            {/* BLOOD NEED */}
+            {renderBloodNeed()}
 
             <Form.Group className="mb-3">
               <Form.Label>Date</Form.Label>
