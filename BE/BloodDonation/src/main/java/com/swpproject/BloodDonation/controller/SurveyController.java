@@ -16,9 +16,9 @@ public class SurveyController {
 
     private final BookingService bookingService;
 
-    @GetMapping("/{bookingId}")
-    public ResponseEntity<List<Survey>> getSurveysByBookingId(@PathVariable String bookingId) {
-        List<Survey> surveys = bookingService.getSurveysByBookingId(bookingId);
-        return ResponseEntity.ok(surveys);
-    }
+        @GetMapping("/{bookingId}")
+        public ResponseEntity<List<Survey>> getSurveysByBookingId(@PathVariable String bookingId) {
+            List<Survey> surveys = bookingService.getSurveysByBookingId(bookingId);
+            return ResponseEntity.ok(surveys);
+        }
 }
