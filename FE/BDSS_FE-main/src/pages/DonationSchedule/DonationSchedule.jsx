@@ -16,6 +16,7 @@ export default function DonationSchedule() {
   const [userInfo, setUserInfo] = useState(null);
   const [eligibility, setEligibility] = useState(null);
   const token = sessionStorage.getItem("accessToken");
+  const refreshToken = sessionStorage.getItem("refreshToken");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,19 +32,22 @@ export default function DonationSchedule() {
       });
   }, []);
 
+  // Chỉ gọi eligibility API khi có token
   useEffect(() => {
-    const userIdFromToken = getUserIdFromToken(token);
-    axios
-      .get(
-        `http://localhost:8080/api/reports/user/${userIdFromToken}/eligibility`
-      )
-      .then((res) => {
-        setEligibility(res.data);
-      })
-      .catch((err) => {
-        console.error("Error loading eligibility", err);
-      });
-  }, [token]);
+    if (token && refreshToken) {
+      const userIdFromToken = getUserIdFromToken(token);
+      axios
+        .get(
+          `http://localhost:8080/api/reports/user/${userIdFromToken}/eligibility`
+        )
+        .then((res) => {
+          setEligibility(res.data);
+        })
+        .catch((err) => {
+          console.error("Error loading eligibility", err);
+        });
+    }
+  }, [token, refreshToken]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -65,9 +69,12 @@ export default function DonationSchedule() {
     setFilteredSchedules(filtered);
   }, [searchName, searchDate, schedules]);
 
+  // Chỉ gọi getUserById khi có token
   useEffect(() => {
-    getUserById().then(setUserInfo);
-  }, []);
+    if (token && refreshToken) {
+      getUserById().then(setUserInfo);
+    }
+  }, [token, refreshToken]);
 
   const handleBooking = (schedule) => {
     navigate(
@@ -77,162 +84,170 @@ export default function DonationSchedule() {
     );
   };
 
-  if (!userInfo) return <div>Loading user info...</div>;
-
   return (
     <>
       <Navbar />
       <div className="donation-schedule-page">
         <h1>Donation Schedule</h1>
-        {token ? (
-          <div className="donation-schedule-header">
-            <div className="search-bar">
-              <h3>Search schedule</h3>
-              <div className="search-inputs">
-                <input
-                  className="search-name"
-                  type="text"
-                  placeholder="Search by center name..."
-                  value={searchName}
-                  onChange={(e) => setSearchName(e.target.value)}
-                  aria-label="Search donation centers by name"
-                />
-                <input
-                  className="search-date"
-                  type="date"
-                  value={searchDate}
-                  onChange={(e) => setSearchDate(e.target.value)}
-                  placeholder="Select a date"
-                  aria-label="Search by donation date"
-                />
-                <Button
-                  className="btn-outline-danger"
-                  variant="outline-danger"
-                  onClick={() => {
-                    setSearchName("");
-                    setSearchDate("");
-                  }}
-                  aria-label="Clear search filters"
-                >
-                  Clear
-                </Button>
-              </div>
-            </div>
-            <div className="donation-schedule">
-              {filteredSchedules.length === 0 ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    minHeight: 200,
-                    justifyContent: "center",
-                  }}
-                >
-                  <div className="no-schedule" style={{ marginBottom: 16 }}>
-                    No schedules available.
-                  </div>
+        {token && refreshToken ? (
+          // Nếu có cả accessToken và refreshToken
+          userInfo ? (
+            <div className="donation-schedule-header">
+              <div className="search-bar">
+                <h3>Search schedule</h3>
+                <div className="search-inputs">
+                  <input
+                    className="search-name"
+                    type="text"
+                    placeholder="Search by center name..."
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                    aria-label="Search donation centers by name"
+                  />
+                  <input
+                    className="search-date"
+                    type="date"
+                    value={searchDate}
+                    onChange={(e) => setSearchDate(e.target.value)}
+                    placeholder="Select a date"
+                    aria-label="Search by donation date"
+                  />
+                  <Button
+                    className="btn-outline-danger"
+                    variant="outline-danger"
+                    onClick={() => {
+                      setSearchName("");
+                      setSearchDate("");
+                    }}
+                    aria-label="Clear search filters"
+                  >
+                    Clear
+                  </Button>
                 </div>
-              ) : (
-                filteredSchedules.map((schedule, idx) => {
-                  const canBookBlood =
-                    userInfo &&
-                    userInfo.bloodType &&
-                    schedule.bloodNeed.some(
-                      (b) =>
-                        b.replace(/\s+/g, "").toUpperCase() ===
-                        userInfo.bloodType.replace(/\s+/g, "").toUpperCase()
-                    );
-                  const canBook = canBookBlood && eligibility === true;
+              </div>
+              <div className="donation-schedule">
+                {filteredSchedules.length === 0 ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      minHeight: 200,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <div className="no-schedule" style={{ marginBottom: 16 }}>
+                      No schedules available.
+                    </div>
+                  </div>
+                ) : (
+                  filteredSchedules.map((schedule, idx) => {
+                    const canBookBlood =
+                      userInfo &&
+                      userInfo.bloodType &&
+                      schedule.bloodNeed.some(
+                        (b) =>
+                          b.replace(/\s+/g, "").toUpperCase() ===
+                          userInfo.bloodType.replace(/\s+/g, "").toUpperCase()
+                      );
+                    const canBook = canBookBlood && eligibility === true;
 
-                  return (
-                    <div className="schedule-container" key={idx}>
-                      <div className="schedule-detail">
-                        <ul style={{ listStyleType: "none", padding: 0 }}>
-                          <li>
-                            <strong
+                    return (
+                      <div className="schedule-container" key={idx}>
+                        <div className="schedule-detail">
+                          <ul style={{ listStyleType: "none", padding: 0 }}>
+                            <li>
+                              <strong
+                                style={{
+                                  color: "rgb(218, 35, 35)",
+                                  fontSize: "1.2em",
+                                }}
+                              >
+                                {schedule.center}
+                              </strong>
+                            </li>
+                            <li>
+                              <strong>Location:</strong> {schedule.location}{" "}
+                            </li>
+                            <li>
+                              <strong>Date:</strong> {schedule.date}
+                            </li>
+                            <li>
+                              <strong>Blood Need:</strong>{" "}
+                              {schedule.bloodNeed.join(" - ")}
+                            </li>
+
+                            <li>
+                              <strong>Time slots:</strong>
+                              <ul style={{ margin: 0, paddingLeft: 16 }}>
+                                {schedule.timeSlots.map((slot) => (
+                                  <li key={slot.id}>
+                                    {slot.startTime} - {slot.endTime}
+                                  </li>
+                                ))}
+                              </ul>
+                            </li>
+                          </ul>
+                        </div>
+                        <div className="schedule-total">
+                          <div className="schedule-total-icon">
+                            {peopleFill}
+                            <strong>Number of registrations:</strong>
+                          </div>
+                          <div className="schedule-total-count">
+                            {schedule.registrationStatus}
+                            <button
+                              className="schedule-button"
+                              onClick={() => handleBooking(schedule)}
+                              disabled={!canBook}
+                              style={
+                                !canBook
+                                  ? {
+                                      background: "#ccc",
+                                      cursor: "not-allowed",
+                                    }
+                                  : {}
+                              }
+                            >
+                              Book now
+                            </button>
+                          </div>
+                          {!canBookBlood && (
+                            <div
                               style={{
-                                color: "rgb(218, 35, 35)",
-                                fontSize: "1.2em",
+                                color: "red",
+                                marginTop: 8,
+                                fontWeight: 500,
                               }}
                             >
-                              {schedule.center}
-                            </strong>
-                          </li>
-                          <li>
-                            <strong>Location:</strong> {schedule.location}{" "}
-                          </li>
-                          <li>
-                            <strong>Date:</strong> {schedule.date}
-                          </li>
-                          <li>
-                            <strong>Blood Need:</strong>{" "}
-                            {schedule.bloodNeed.join(" - ")}
-                          </li>
-
-                          <li>
-                            <strong>Time slots:</strong>
-                            <ul style={{ margin: 0, paddingLeft: 16 }}>
-                              {schedule.timeSlots.map((slot) => (
-                                <li key={slot.id}>
-                                  {slot.startTime} - {slot.endTime}
-                                </li>
-                              ))}
-                            </ul>
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="schedule-total">
-                        <div className="schedule-total-icon">
-                          {peopleFill}
-                          <strong>Number of registrations:</strong>
+                              Your blood type is not needed for this schedule.
+                            </div>
+                          )}
+                          {canBookBlood && eligibility === false && (
+                            <div
+                              style={{
+                                color: "orange",
+                                marginTop: 8,
+                                fontWeight: 500,
+                              }}
+                            >
+                              You are not eligible to donate blood at this time.
+                              Please wait until the required interval has
+                              passed.
+                            </div>
+                          )}
                         </div>
-                        <div className="schedule-total-count">
-                          {schedule.registrationStatus}
-                          <button
-                            className="schedule-button"
-                            onClick={() => handleBooking(schedule)}
-                            disabled={!canBook}
-                            style={
-                              !canBook
-                                ? { background: "#ccc", cursor: "not-allowed" }
-                                : {}
-                            }
-                          >
-                            Book now
-                          </button>
-                        </div>
-                        {!canBookBlood && (
-                          <div
-                            style={{
-                              color: "red",
-                              marginTop: 8,
-                              fontWeight: 500,
-                            }}
-                          >
-                            Your blood type is not needed for this schedule.
-                          </div>
-                        )}
-                        {canBookBlood && eligibility === false && (
-                          <div
-                            style={{
-                              color: "orange",
-                              marginTop: 8,
-                              fontWeight: 500,
-                            }}
-                          >
-                            You are not eligible to donate blood at this time.
-                            Please wait until the required interval has passed.
-                          </div>
-                        )}
                       </div>
-                    </div>
-                  );
-                })
-              )}
+                    );
+                  })
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div>Loading user info...</div>
+          )
         ) : (
+          // Nếu không có token hoặc refreshToken
           <div className="login-prompt">
             <h4 style={{ marginBottom: 20 }}>
               Please login to view donation schedules!
