@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import "./UserInfo.css";
 import Footer from "../../components/footer";
-import getUserById, { getUserIdFromToken } from "../../assets/getUserById";
+import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
 import { CiWarning } from "react-icons/ci";
 import { FaKey, FaTrashAlt, FaUserEdit } from "react-icons/fa";
 import { FaPenToSquare } from "react-icons/fa6";
-
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import axios from "axios";
@@ -35,12 +34,30 @@ function UserInfo({ userId }) {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [donationReport, setDonationReport] = useState(null);
   const userIdFromToken = getUserIdFromToken();
   const navigate = useNavigate();
 
   useEffect(() => {
     getUserById(userId).then(setUser).catch(setError);
+    fetchDonationReport(userId);
   }, [userId]);
+
+  const fetchDonationReport = async (uid) => {
+    try {
+      const res = await axios.get(
+        `http://localhost:8080/api/reports/user/${userIdFromToken}`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      setDonationReport(res.data);
+    } catch (err) {
+      setDonationReport(null);
+    }
+  };
 
   const handleDelete = async () => {
     try {
@@ -126,7 +143,20 @@ function UserInfo({ userId }) {
         <div className="user-info-modern-card">
           <div className="user-info-modern-header">
             <div className="user-info-modern-avatar">
-              <FaUserEdit size={56} color="#b30000" />
+              {user.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt="Avatar"
+                  style={{
+                    width: 80,
+                    height: 80,
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <FaUserEdit size={56} color="#b30000" />
+              )}
             </div>
             <div>
               <h2 style={{ marginBottom: 4 }}>{user.fullName}</h2>
@@ -181,19 +211,64 @@ function UserInfo({ userId }) {
           </div>
         </div>
         <div className="user-info-modern-report">
-          <h4 style={{ color: "#b30000", marginBottom: 16 }}>
-            Donation Report
-          </h4>
+          <h4>Your Blood Donation Journey</h4>
           <div className="user-info-modern-report-content">
-            <p>
-              <strong>Total Donations:</strong> {user.totalDonations ?? 0}
-            </p>
-            <p>
-              <strong>Last Donation:</strong>{" "}
-              {user.lastDonationDate
-                ? formatDate(user.lastDonationDate)
-                : "N/A"}
-            </p>
+            {donationReport ? (
+              <>
+                <p>
+                  <strong>Total Donations:</strong>
+                  <span>{donationReport.totalDonations} times</span>
+                </p>
+                <p>
+                  <strong>Total Blood Volume:</strong>
+                  <span>{donationReport.totalBloodVolume} L</span>
+                </p>
+                <p>
+                  <strong>Last Donation:</strong>
+                  <span>
+                    {donationReport.lastDonationDate
+                      ? formatDate(donationReport.lastDonationDate)
+                      : "No record"}
+                  </span>
+                </p>
+                <p>
+                  <strong>Eligible to Donate?</strong>
+                  <span
+                    className={donationReport.eligibleToDonate ? "yes" : "no"}
+                  >
+                    {donationReport.eligibleToDonate
+                      ? "Yes, you are ready!"
+                      : "Not yet"}
+                  </span>
+                </p>
+                {!donationReport.eligibleToDonate && (
+                  <>
+                    <p>
+                      <strong>Next Eligible Date:</strong>
+                      <span className="next-eligible">
+                        {donationReport.nextEligibleDate
+                          ? formatDate(donationReport.nextEligibleDate)
+                          : "Pending"}
+                      </span>
+                    </p>
+                    <div className="report-message">
+                      {donationReport.message}
+                    </div>
+                    <div className="friendly-tip">
+                      Take care and see you at the next donation!
+                    </div>
+                  </>
+                )}
+                {donationReport.eligibleToDonate && (
+                  <div className="friendly-tip">
+                    You are eligible to donate blood. Thank you for your
+                    kindness!
+                  </div>
+                )}
+              </>
+            ) : (
+              <p style={{ color: "#888" }}>No donation report available.</p>
+            )}
           </div>
         </div>
       </div>

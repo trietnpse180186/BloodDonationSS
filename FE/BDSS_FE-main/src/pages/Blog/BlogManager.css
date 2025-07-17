@@ -1,95 +1,189 @@
 .blog-manager {
-  max-width: 100%;
-  margin: auto;
-  padding: 2rem;
-  font-family: "Segoe UI", sans-serif;
+  max-width: 900px;
+  margin: 32px auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px rgba(30, 60, 120, 0.1);
+  padding: 36px 32px 32px 32px;
+  animation: fadeInBlog 0.5s;
 }
+
+@keyframes fadeInBlog {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .blog-manager h2 {
-  color: #b5332b;
   text-align: center;
-  margin-bottom: 2rem;
+  color: #1d4a76;
+  font-size: 2.2rem;
   font-weight: bold;
+  margin-bottom: 24px;
   letter-spacing: 1px;
 }
 
 .blog-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 2rem;
+  gap: 16px;
+  background: #f7fafd;
+  border-radius: 12px;
+  padding: 24px 18px 18px 18px;
+  box-shadow: 0 2px 12px rgba(30, 60, 120, 0.04);
+  margin-bottom: 32px;
 }
 
-.blog-form input,
+.blog-form input[type="text"],
 .blog-form textarea {
-  padding: 10px;
-  border: 1px solid #b5332b;
-  border-radius: 6px;
-  font-size: 16px;
+  border: 1.5px solid #dbeafe;
+  border-radius: 7px;
+  padding: 12px 14px;
+  font-size: 1.08rem;
+  background: #fff;
+  color: #222;
+  transition: border 0.2s;
+  outline: none;
+  resize: none;
+}
+
+.blog-form input[type="text"]:focus,
+.blog-form textarea:focus {
+  border-color: #1d4a76;
+  background: #f0f8ff;
 }
 
 .submit-btn {
-  background-color: #007bff;
-  color: white;
+  background: linear-gradient(90deg, #1d4a76 70%, #e53935 100%);
+  color: #fff;
   border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 6px;
+  border-radius: 7px;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(30, 60, 120, 0.08);
 }
 
 .submit-btn:hover {
-  background-color: #0056b3;
+  background: linear-gradient(90deg, #16365c 70%, #b71c1c 100%);
+  box-shadow: 0 4px 16px rgba(30, 60, 120, 0.13);
+}
+
+.blog-manager h3 {
+  margin-top: 18px;
+  color: #1d4a76;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .blog-list {
   display: grid;
-  justify-items: center;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 22px;
+  margin-top: 18px;
 }
 
 .blog-card {
-  min-width: 350px;
-  border: 1px solid #ddd;
+  background: #f7fafd;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(30, 60, 120, 0.07);
+  padding: 18px 16px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  min-height: 220px;
+}
 
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+.blog-card:hover {
+  box-shadow: 0 6px 24px rgba(30, 60, 120, 0.13);
+  transform: translateY(-2px) scale(1.01);
 }
 
 .blog-card img {
-  margin-top: 10px;
-  max-width: 100%;
-  border-radius: 6px;
+  width: 100%;
+  max-height: 140px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: #e3eaf5;
+}
+
+.blog-card h4 {
+  color: #1d4a76;
+  font-size: 1.18rem;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  word-break: break-word;
+}
+
+.blog-card p {
+  color: #333;
+  font-size: 1.02rem;
+  margin-bottom: 16px;
+  word-break: break-word;
+  flex: 1;
 }
 
 .button-group {
-  margin-top: 1rem;
   display: flex;
-  gap: 1rem;
+  gap: 10px;
+  margin-top: auto;
 }
 
 .edit-btn,
 .delete-btn {
-  padding: 0.4rem 0.8rem;
+  padding: 7px 18px;
+  border-radius: 6px;
   border: none;
-  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  box-shadow: 0 1px 4px rgba(30, 60, 120, 0.05);
 }
 
 .edit-btn {
-  background-color: #ffc107;
+  background: #1d4a76;
   color: #fff;
 }
 
 .edit-btn:hover {
-  background-color: #e0a800;
+  background: #16365c;
 }
 
 .delete-btn {
-  background-color: #dc3545;
+  background: #e53935;
   color: #fff;
 }
 
 .delete-btn:hover {
-  background-color: #c82333;
+  background: #b71c1c;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .blog-manager {
+    padding: 16px 4vw;
+  }
+  .blog-form {
+    padding: 12px 4vw;
+  }
+  .blog-list {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .blog-card {
+    padding: 12px 6px;
+  }
 }

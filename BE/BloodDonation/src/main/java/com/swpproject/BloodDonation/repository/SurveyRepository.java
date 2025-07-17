@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface SurveyRepository extends JpaRepository<Survey, String> {
     List<Survey> findByBookingDonation(BookingDonation bookingDonation);
+    void deleteAllByBookingDonation(BookingDonation bookingDonation);
 }

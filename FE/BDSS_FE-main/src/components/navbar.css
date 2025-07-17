@@ -86,6 +86,12 @@
 
   padding: 0 10px;
 }
+#nav-profile-dropdown {
+  margin-right: 30px;
+  display: flex;
+  align-items: center;
+}
+
 @media (max-width: 800px) {
   .navbar {
     flex-direction: column;

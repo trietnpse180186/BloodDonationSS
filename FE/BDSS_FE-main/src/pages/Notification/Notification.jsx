@@ -77,7 +77,10 @@ export default function Notification() {
       alert("Failed to create notification.");
     }
     setLoading(false);
+
     console.log(dataToSend);
+
+
   };
 
   const [donor, setDonor] = useState([]);

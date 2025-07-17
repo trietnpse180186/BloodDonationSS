@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
 import { peopleFill } from "../../icons/icon";
-import axios from "../../assets/axiosInstance";
+import axios from "../../helpers/axiosInstance";
 
 export default function DonationSchedule() {
   const [searchName, setSearchName] = useState("");

@@ -32,6 +32,7 @@ public class BookingService {
     private final ScheduleDonationRepository scheduleDonationRepository;
     private final UserRepository userRepository;
     private final TimeSlotRepository timeSlotRepository;
+    private final DonationReportService donationReportService;
 
 
     @Transactional
@@ -41,6 +42,11 @@ public class BookingService {
         String userEmail = authentication.getName();
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
+
+        boolean canDonate = donationReportService.canUserDonate(user.getUserID());
+        if (!canDonate) {
+            throw new RuntimeException("You are not eligible to donate blood at this time. Please check your donation history or contact support for more information.");
+        }
 
         ScheduleDonation scheduleDonation;
         if (request.getBooking().getScheduleId() != null && !request.getBooking().getScheduleId().isEmpty()) {
@@ -131,7 +137,7 @@ public class BookingService {
                 .center(savedBookingDonation.getCenter())
                 .message("Booking created successfully")
                 .bookingTime(savedBookingDonation.getBookingTime())
-                .formattedBookingTime("Đã đặt lịch lúc: " + formattedBookingTime)
+                .formattedBookingTime("Booking at: " + formattedBookingTime)
                 .build();
     }
 
@@ -213,19 +219,37 @@ public class BookingService {
         List<BookingDonation> bookings = bookingDonationRepository.findAll();
 
         return bookings.stream()
-                .map(booking -> BookingResponse.builder()
-                        .bookingId(booking.getDonationId())
-                        .dateDonation(booking.getDateDonation())
-                        .startTime(booking.getStartTime())
-                        .endTime(booking.getEndTime())
-                        .address(booking.getAddress())
-                        .status(String.valueOf(booking.getStatus()))
-                        .center(booking.getCenter())
-                        .user(booking.getDonor())
-                        .bookingTime(booking.getBookingTime())
-                        .formattedBookingTime("Booking at: " +
-                                booking.getBookingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                        .build())
+                .map(booking -> {
+                    String formattedTime = null;
+                    if (booking.getBookingTime() != null) {
+                        formattedTime = "Đã đặt lịch lúc: " +
+                                booking.getBookingTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    }
+
+                    return BookingResponse.builder()
+                            .bookingId(booking.getDonationId())
+                            .dateDonation(booking.getDateDonation())
+                            .startTime(booking.getStartTime())
+                            .endTime(booking.getEndTime())
+                            .address(booking.getAddress())
+                            .status(String.valueOf(booking.getStatus()))
+                            .center(booking.getCenter())
+                            .user(booking.getDonor())
+                            .bookingTime(booking.getBookingTime())
+                            .formattedBookingTime(formattedTime)
+                            .build();
+                })
+
                 .collect(Collectors.toList());
     }
+    public void deleteBooking(String bookingId) {
+        BookingDonation booking = bookingDonationRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+
+        List<Survey> surveys = surveyRepository.findByBookingDonation(booking);
+        surveyRepository.deleteAll(surveys);
+
+        bookingDonationRepository.delete(booking);
+    }
+
 }

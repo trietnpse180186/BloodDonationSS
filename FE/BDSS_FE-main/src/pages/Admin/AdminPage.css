@@ -1,11 +1,9 @@
-/* Tổng thể */
 .staff-page {
   display: flex;
   min-height: 100vh;
   font-family: "Segoe UI", sans-serif;
 }
 
-/* Sidebar */
 .sidebar {
   width: 240px;
   background-color: #b23228;
@@ -19,7 +17,6 @@
   height: 100vh;
 }
 
-/* Tiêu đề */
 .sidebar-header h2 {
   font-size: 22px;
   margin-bottom: 30px;
@@ -28,7 +25,6 @@
   padding-bottom: 10px;
 }
 
-/* Danh sách link */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -53,7 +49,6 @@
   font-weight: bold;
 }
 
-/* Nội dung chính */
 .main-content {
   flex-grow: 1;
   background-color: #f5f5f5;
@@ -67,6 +62,5 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   min-height: 85vh;
 
-  /* ✅ Thêm viền đỏ */
   border: 2px solid #b23228;
 }

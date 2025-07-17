@@ -19,4 +19,5 @@ public class UserUpdateResponse {
     private LocalDate birthday;
     private String sex;
     private String occupation;
+    private String avatarUrl;
 }

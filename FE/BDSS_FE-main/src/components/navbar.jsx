@@ -8,11 +8,10 @@ import {
   Button,
   Dropdown,
 } from "react-bootstrap";
-import { VscAccount } from "react-icons/vsc";
 import { FaRegBell } from "react-icons/fa";
-import logout from "../assets/authLogout";
+import logout from "../helpers/authLogout";
 import logo from "../images/logo.jpg";
-import { getUserIdFromToken } from "../assets/getUserById";
+import getUserById, { getUserIdFromToken } from "../helpers/getUserById";
 import "./navbar.css";
 
 export default function AppNavbar() {
@@ -23,7 +22,21 @@ export default function AppNavbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
+
     setUser(userId);
+
+    async function fetchUser() {
+      if (userId) {
+        try {
+          const userData = await getUserById(userId);
+          setUser(userData);
+        } catch {
+          setUser(null);
+        }
+      }
+    }
+    fetchUser();
+
 
     const fetchNotifications = async () => {
       if (!userId) return;
@@ -190,9 +203,28 @@ export default function AppNavbar() {
                 </Dropdown>
                 <NavDropdown
                   title={
-                    <VscAccount
-                      style={{ fontSize: "1.7rem", color: "white" }}
-                    />
+                    <span style={{ display: "flex", alignItems: "center" }}>
+                      <img
+                        src={
+                          user.avatarUrl ||
+                          "https://ui-avatars.com/api/?name=" +
+                            encodeURIComponent(user.fullName)
+                        }
+                        alt="avatar"
+                        style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                          marginRight: 8,
+                          border: "2px solid #fff",
+                          background: "#eee",
+                        }}
+                      />
+                      <span style={{ color: "white", fontWeight: 600 }}>
+                        {user.fullName}
+                      </span>
+                    </span>
                   }
                   id="nav-profile-dropdown"
                   align="end"

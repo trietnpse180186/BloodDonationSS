@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./BloodDonationInfo.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import Navbar from "../../components/navbar";
-import bloodRegister, { getLabelByValue } from "../../assets/bloodRegister";
-import axios from "../../assets/axiosInstance";
-import getUserById, { getUserIdFromToken } from "../../assets/getUserById";
+import bloodRegister, { getLabelByValue } from "../../helpers/bloodRegister";
+import axios from "../../helpers/axiosInstance";
+import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 import Footer from "../../components/footer";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
 
@@ -25,12 +25,12 @@ function GenderIcon({ sex }) {
   return null;
 }
 
-const formatDateToIso = (dateStr) => {
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
+function formatDate(isoDate) {
+  if (!isoDate) return "";
+  const [year, month, day] = isoDate.split("-");
+  return `${day}-${month}-${year}`;
+}
 
-  const [day, month, year] = dateStr.split("/");
-  return `${year}-${month}-${day}`;
-};
 export default function BloodDonationInfo({ answers }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -68,28 +68,38 @@ export default function BloodDonationInfo({ answers }) {
       <div className="info-card">
         <h3>User Information</h3>
         <p>
-          <strong>Full Name:</strong> {user.fullName}
+          <strong>Full Name:</strong>
+          <span className="info-value">{user.fullName}</span>
         </p>
         <p>
-          <strong>Gender:</strong> <GenderIcon sex={user.sex} />
+          <strong>Gender:</strong>
+          <span className="info-value">
+            <GenderIcon sex={user.sex} />
+          </span>
         </p>
         <p>
-          <strong>Date of Birth:</strong> {formatDate(user.birthday)}
+          <strong>Date of Birth:</strong>
+          <span className="info-value">{formatDate(user.birthday)}</span>
         </p>
         <p>
-          <strong>Address:</strong> {user.address}
+          <strong>Address:</strong>
+          <span className="info-value">{user.address}</span>
         </p>
         <p>
-          <strong>Email:</strong> {user.email}
+          <strong>Email:</strong>
+          <span className="info-value">{user.email}</span>
         </p>
         <p>
-          <strong>Occupation:</strong> {user.occupation}
+          <strong>Occupation:</strong>
+          <span className="info-value">{user.occupation}</span>
         </p>
         <p>
-          <strong>Phone Number:</strong> {user.phoneNumber}
+          <strong>Phone Number:</strong>
+          <span className="info-value">{user.phoneNumber}</span>
         </p>
         <p>
-          <strong>Blood Type:</strong> {user.bloodType}
+          <strong>Blood Type:</strong>
+          <span className="info-value">{user.bloodType}</span>
         </p>
       </div>
     );
@@ -98,20 +108,25 @@ export default function BloodDonationInfo({ answers }) {
   const renderBookingData = () => {
     if (!bookingData) return <div>No booking information.</div>;
     return (
-      <div className="info-card">
+      <div className="info-card-booking">
         <h3>Booking Information</h3>
         <p>
-          <strong>Date:</strong> {bookingData.date}
+          <strong>Date:</strong>
+          <span className="info-value">{formatDate(bookingData.date)}</span>
         </p>
         <p>
-          <strong>Location:</strong> {bookingData.location}
+          <strong>Location:</strong>
+          <span className="info-value">{bookingData.location}</span>
         </p>
         <p>
-          <strong>Center:</strong> {bookingData.center}
+          <strong>Center:</strong>
+          <span className="info-value">{bookingData.center}</span>
         </p>
         <p>
-          <strong>Time Slot:</strong> {bookingData.timeSlot.startTime} -{" "}
-          {bookingData.timeSlot.endTime}
+          <strong>Time Slot:</strong>
+          <span className="info-value">
+            {bookingData.timeSlot.startTime} - {bookingData.timeSlot.endTime}
+          </span>
         </p>
       </div>
     );
@@ -120,15 +135,18 @@ export default function BloodDonationInfo({ answers }) {
   const renderSurveyData = () => {
     if (!surveyData) return <div>No survey information.</div>;
     return (
-      <div className="info-card">
+      <div className="info-card-survey">
         <h3>Blood Donation Survey</h3>
         {surveyData.map((q, idx) => (
           <div key={q.questionId} style={{ marginBottom: 10 }}>
-            <i>
+            <i className="question">
               {bloodRegister.find((bq) => bq.id === q.questionId)?.text ||
                 `Question ${idx + 1}`}
             </i>
-            <div style={{ marginLeft: 16, color: "#b30000" }}>
+            <div
+              className="answer"
+              style={{ marginLeft: 16, color: "#b30000" }}
+            >
               {getLabelByValue(q.questionId, q.answer)}
               {q.additionalInfo ? `: ${q.additionalInfo}` : ""}
             </div>
@@ -192,7 +210,10 @@ export default function BloodDonationInfo({ answers }) {
           </div>
           <div className="info-2">{renderSurveyData()}</div>
         </div>
-        <div style={{ textAlign: "center", marginTop: 32 }}>
+        <div
+          className="actions-button"
+          style={{ textAlign: "center", marginTop: 32 }}
+        >
           <button
             className="button-style"
             onClick={handleConfirmBooking}

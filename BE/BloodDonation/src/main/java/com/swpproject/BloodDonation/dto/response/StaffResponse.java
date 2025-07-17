@@ -1,0 +1,26 @@
+package com.swpproject.BloodDonation.dto.response;
+
+import com.swpproject.BloodDonation.enums.BloodType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class StaffResponse {
+    private String userId;
+    private String email;
+    private String fullName;
+    private String phoneNumber;
+    private String address;
+    private BloodType bloodType;
+    private LocalDate birthday;
+    private String sex;
+    private String occupation;
+    private Boolean active;
+}

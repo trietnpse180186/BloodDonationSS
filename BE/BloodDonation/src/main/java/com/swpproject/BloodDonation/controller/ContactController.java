@@ -1,12 +1,11 @@
 package com.swpproject.BloodDonation.controller;
 
+import com.swpproject.BloodDonation.dto.request.ContactRequest;
 import com.swpproject.BloodDonation.dto.response.ContactResponse;
 import com.swpproject.BloodDonation.entity.Contact;
 import com.swpproject.BloodDonation.service.ContactService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,7 +21,18 @@ public class ContactController {
         return contactService.getAll();
     }
 
-//    public ContactResponse createContact (){
-//        return contactService.create();
-//    }
+    @PostMapping
+    public ContactResponse createContact (@RequestBody ContactRequest request){
+        return contactService.create(request);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteContact(@PathVariable Long id){
+        contactService.delete(id);
+    }
+
+    @DeleteMapping("/all")
+    public void deleteAllContacts() {
+        contactService.deleteAll();
+    }
 }
