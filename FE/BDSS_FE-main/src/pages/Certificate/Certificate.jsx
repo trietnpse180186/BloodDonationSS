@@ -66,9 +66,9 @@ export default function Certificate({ bookingId }) {
           </p>
           <strong>Blood Type:</strong> {data.user?.bloodType}
           <br />
-          <strong>Birthday:</strong> {data.user?.birthday}
+          <strong>Birthday:</strong> {new Date(data.user?.birthday).toLocaleDateString('en-GB')}
           <br />
-          <strong>Donation Date:</strong> {data.donationDate}
+          <strong>Donation Date:</strong> {new Date(data.donationDate).toLocaleDateString('en-GB')}
           <br />
           <strong>Volume:</strong> {data.volume} ml
         </div>

@@ -6,7 +6,8 @@ import Certificate from "../Certificate/Certificate";
 
 import { getUserIdFromToken } from "../../helpers/getUserById";
 import axios from "../../helpers/axiosInstance";
-import { Button, Modal } from "react-bootstrap";
+import { Button} from "react-bootstrap";
+import { Modal } from "antd";
 
 function formatDate(isoDate) {
   if (!isoDate) return "";
@@ -169,7 +170,7 @@ export default function AppointmentDetail() {
                maskClosable={false}
               closeIcon={
                 <div className="custom-close-button">
-                  <span>close</span>
+                  <span>x</span>
                 </div>
               }
             >
