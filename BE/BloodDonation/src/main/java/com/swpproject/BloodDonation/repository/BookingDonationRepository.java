@@ -3,8 +3,11 @@ package com.swpproject.BloodDonation.repository;
 import com.swpproject.BloodDonation.entity.BookingDonation;
 import com.swpproject.BloodDonation.entity.ScheduleDonation;
 import com.swpproject.BloodDonation.entity.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,6 +16,15 @@ import java.util.List;
 public interface BookingDonationRepository extends JpaRepository<BookingDonation, String> {
     List<BookingDonation> findByDonor(User donor);
     List<BookingDonation> findByScheduleDonation(ScheduleDonation schedule);
+    @Modifying
+    @Transactional
+    @Query("SELECT b.donationId FROM BookingDonation b WHERE b.donor.userID = :userId")
+    List<String> findDonationIdsByDonorUserId(@Param("userId") String userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM booking_donation WHERE donor_id = :userId", nativeQuery = true)
+    void deleteByDonorId(@Param("userId") String userId);
 
     @Query("SELECT COUNT(b) FROM BookingDonation b WHERE b.scheduleDonation.scheduleId = :scheduleId")
     Long countByScheduleDonationId(String scheduleId);
