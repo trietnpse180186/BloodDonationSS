@@ -136,23 +136,6 @@ export default function MedicalSchedule() {
     }
   };
 
-
-  const handleEditClick = (schedule) => {
-    setEditingId(schedule.scheduleId);
-    setEditForm({
-      center: schedule.center,
-      address: schedule.location,
-      date: schedule.date,
-      numberOfDonor: schedule.donorCount,
-      timeSlots: schedule.timeSlots.map(slot => ({
-        startTime: slot.startTime,
-        endTime: slot.endTime
-      }))
-    });
-    setShowModal(true);
-  };
-
-
   const handleUpdate = async (e) => {
     e.preventDefault();
     const bloodNeedFiltered = editForm.bloodNeed.filter(bn => bn); // loại bỏ ""
@@ -195,6 +178,7 @@ export default function MedicalSchedule() {
       );
       setSchedules(prev => prev.filter(s => s.scheduleId !== scheduleId));
     } catch (err) {
+      console.error("Delete error:", err.response?.data || err.message);
       alert("Failed to delete schedule.");
     }
   };

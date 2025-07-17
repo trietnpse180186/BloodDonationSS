@@ -1,15 +1,191 @@
-.view-certificate-btn {
-  margin-left: 10px;
-  padding: 6px 12px;
-  font-size: 12px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: 0.2s ease;
+.certificate-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 0px 0px;
+  width: 100%;
 }
 
-.view-certificate-btn:hover {
-  background-color: #388e3c;
+.certificate {
+  width: 100%;
+  max-width: 1000px;
+  background: white;
+  border: 8px solid #cf4327;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  font-family: "Georgia", serif;
+  overflow: hidden;
+ 
+  height: auto;
 }
+
+.certificate::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23cf4327' fill-opacity='0.03' fill-rule='evenodd'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+.certificate::after {
+  content: '';
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 100px;
+  height: 100px;
+  background-color: transparent;
+  border: 2px dashed #cf4327;
+  border-radius: 50%;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+.logo-header {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.cert-logo-center {
+  height: 80px;
+  object-fit: contain;
+  clip-path: inset(0 0 2px 2px);
+  border-radius: 9px;
+}
+
+.certificate-title {
+  text-align: center;
+  color: #cf4327;
+  font-size: 32px;
+  font-weight: bold;
+  margin: 20px 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  z-index: 1;
+}
+
+.certificate-title::after {
+  content: '';
+  display: block;
+  width: 200px;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #cf4327, transparent);
+  margin: 15px auto 0;
+}
+
+.cert-name {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin: 30px 0;
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
+}
+
+.cert-body {
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.7;
+  margin: 20px 0;
+  color: #333;
+  position: relative;
+  z-index: 1;
+}
+
+.cert-name {
+  position: relative;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px 0;
+  font-family: 'Great Vibes', cursive;
+  font-size: 52px;
+  color: rgb(236, 174, 17);
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  letter-spacing: 2px;
+  line-height: 1.2;
+  transform: scale(1, 1.05);
+}
+
+
+
+
+.cert-text-underName {
+  font-size: 18px;
+  color: #333;
+  margin-top: 5px;
+}
+.cert-body strong {
+  color: #cf4327;
+}
+
+.certificate-footer {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin: 0 0px 0 90px;
+position: relative;
+z-index: 1;
+}
+
+.cert-signature {
+  flex: 1;
+  text-align: center;
+}
+
+.certificate-logo {
+  max-width: 100px;
+  
+}
+
+.cert-logo {
+  max-width: 100%;
+  height: auto;
+  
+  
+  border-radius: 200px;
+}
+
+.cert-signature-line {
+  width: 250px;
+  height: 1px;
+  background-color: #333;
+  margin: 0 auto 10px;
+}
+
+.cert-signature-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.cert-signature-title {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+/* Trang trí watermark nền */
+.certificate-watermark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 300px;
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23cf4327' fill-opacity='0.03' fill-rule='evenodd'%3E%3Cpath d='M0 20L20 0v20H0zm20 0l20-20v20H20zm0 20L0 20h20v20zm20 0L20 20h20v20z'/%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+
