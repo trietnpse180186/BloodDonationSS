@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
 import Certificate from "../Certificate/Certificate";
-import { Modal, Button } from "antd";
+
 import { getUserIdFromToken } from "../../helpers/getUserById";
 import axios from "../../helpers/axiosInstance";
+import { Button, Modal } from "react-bootstrap";
 
 
   function formatDate(isoDate) {
