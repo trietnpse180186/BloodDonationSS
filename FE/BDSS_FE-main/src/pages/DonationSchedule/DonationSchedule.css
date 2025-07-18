@@ -1,391 +1,450 @@
 .donation-schedule-page {
-  background-color: #ffffff;
-  margin-top: 50px;
-  margin-bottom: 100px;
+  max-width: 1200px;
+  margin: 40px auto 70px;
+  padding: 0 20px;
+  font-family: "Roboto", "Segoe UI", Arial, sans-serif;
 }
 
+/* Page title */
 .donation-schedule-page h1 {
+  color: #b30000;
   text-align: center;
-  color: #db230b;
-  font-size: 2.5rem;
-  margin: 20px 0;
-  font-weight: bold;
-}
-.donation-schedule {
-  max-width: 950px;
-  margin: 36px auto 32px auto;
-  padding: 0 12px;
+  font-size: 32px;
+  margin-bottom: 30px;
+  position: relative;
+  padding-bottom: 15px;
 }
 
-/* Search bar container */
+.donation-schedule-page h1:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: #b30000;
+}
+
+/* Redesigned Search Section */
+
 .search-bar {
-  background: #fff5f5;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(219, 35, 11, 0.07);
-  padding: 24px 28px 18px 28px;
-  margin: 32px auto 24px auto;
-  max-width: 700px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  margin-bottom: 35px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .search-bar h3 {
-  color: #b30000;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 14px;
-  letter-spacing: 0.5px;
+  display: none; 
 }
-
 .search-inputs {
   display: flex;
-  gap: 18px;
-  width: 100%;
   align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
-.search-name,
-.search-date {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1.5px solid #db230b;
-  font-size: 1.08em;
-  outline: none;
-  transition: border 0.2s, box-shadow 0.2s;
-  background: #fff;
-  min-width: 0;
-  flex: 1 1 0;
-}
-
-.search-name:focus,
-.search-date:focus {
-  border: 1.5px solid #b30000;
-  box-shadow: 0 0 0 2px #ffe2e2;
-}
-
-.search-bar .btn,
-.search-bar button {
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-size: 1em;
+.search-inputs:before {
+  content: "Search schedule";
+  display: flex;
+  align-items: center;
+  color: #b30000;
   font-weight: 600;
-  border: 1.5px solid #db230b;
-  background: #fff;
-  color: #db230b;
-  transition: background 0.18s, color 0.18s, border 0.18s;
-  cursor: pointer;
+  font-size: 18px;
+  margin-right: 10px;
 }
 
-.search-bar .btn:hover,
-.search-bar button:hover {
-  background: #db230b;
-  color: #fff;
+.search-name-wrapper {
+  position: relative;
+  flex: 2;
+  min-width: 280px;
+}
+
+.search-name {
+  width: 100%;
+  padding: 12px 20px 12px 45px;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 15px;
+  background-color: #f9f9f9;
+  transition: all 0.2s ease;
+}
+
+.search-name:focus {
+  background-color: #fff;
   border-color: #b30000;
+  box-shadow: 0 0 0 3px rgba(179, 0, 0, 0.1);
+  outline: none;
 }
 
-/* Schedule container */
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b30000;
+  pointer-events: none;
+}
+
+
+.search-date-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 200px;
+}
+
+.date-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #888;
+  pointer-events: none;
+}
+
+.search-date {
+  width: 100%;
+  padding: 12px 20px 12px 45px;
+  border: 1px solid #e0e0e0;
+  border-radius: 25px;
+  font-size: 15px;
+  background-color: #f9f9f9;
+  transition: all 0.2s ease;
+}
+
+.search-date:focus {
+  background-color: #fff;
+  border-color: #b30000;
+  box-shadow: 0 0 0 3px rgba(179, 0, 0, 0.1);
+  outline: none;
+}
+
+/* Enhanced clear button */
+.search-clear-btn {
+  border: 1px solid #b30000;
+  background-color: #fff;
+  color: #b30000;
+  border-radius: 25px;
+  padding: 12px 24px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.search-clear-btn:hover {
+  background-color: #b30000;
+  color: white;
+}
+
+.search-clear-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Schedule containers */
+.donation-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
 .schedule-container {
   display: flex;
-  justify-content: space-between;
-  align-items: stretch;
-  background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(219, 35, 11, 0.08);
-  margin-bottom: 28px;
-  padding: 24px 28px;
-  transition: box-shadow 0.2s, transform 0.2s;
-  border-left: 6px solid #db230b;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding: 0;
+  border-left: 4px solid #b30000;
 }
 
 .schedule-container:hover {
-  box-shadow: 0 4px 24px rgba(218, 35, 35, 0.13);
-  transform: translateY(-2px) scale(1.01);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
-/* Schedule details */
 .schedule-detail {
   flex: 2;
-  font-size: 1.08rem;
+  padding: 25px;
+  position: relative;
+}
+
+.schedule-total {
+  flex: 1;
+  padding: 25px;
+  background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  border-left: 1px solid #f0f0f0;
 }
 
-.schedule-detail strong {
-  font-weight: 600;
-}
-
+/* Schedule details styling */
 .schedule-detail ul {
   margin: 0;
   padding: 0;
 }
 
 .schedule-detail li {
-  margin-bottom: 7px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+  color: #444;
 }
 
-.schedule-detail ul ul {
-  margin-top: 4px;
+.schedule-detail li:last-child {
   margin-bottom: 0;
-  padding-left: 18px;
 }
 
-.schedule-detail ul ul li {
+.schedule-detail strong {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Center name styling */
+.schedule-detail li:first-child strong {
   color: #b30000;
-  font-weight: 500;
-  font-size: 1rem;
-  margin-bottom: 2px;
+  font-size: 20px;
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 700;
 }
 
 /* Time slots styling */
 .schedule-detail ul ul {
   margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .schedule-detail ul ul li {
+  background-color: #f0f0f0;
+  padding: 6px 12px;
+  border-radius: 30px;
+  margin-bottom: 0;
   font-size: 14px;
-  color: #555;
+  color: #333;
+  font-weight: 500;
 }
 
-/* Schedule total (right side) */
-.schedule-total {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  min-width: 180px;
-  padding-left: 24px;
-  gap: 10px;
+/* Blood need styling */
+.schedule-detail li:nth-child(4) {
+  margin-bottom: 15px;
 }
 
+.schedule-detail li:nth-child(4) strong {
+  margin-right: 5px;
+}
+
+/* Registration section */
 .schedule-total-icon {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #b30000;
-  font-size: 1.1rem;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-bottom: 15px;
+  color: #555;
 }
 
 .schedule-total-icon svg {
-  fill: #da2323;
-  width: 24px;
-  height: 24px;
+  color: #b30000;
+  font-size: 20px;
 }
 
 .schedule-total-count {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
   color: #333;
 }
 
 /* Book now button */
 .schedule-button {
-  background: linear-gradient(90deg, #d32f2f 60%, #b30000 100%);
-  color: #fff;
+  background: linear-gradient(to right, #b30000, #d32f2f);
+  color: white;
   border: none;
   border-radius: 8px;
-  padding: 8px 22px;
-  font-size: 1rem;
+  padding: 14px 20px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s;
-  margin-left: 8px;
-  box-shadow: 0 1px 4px rgba(179, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(179, 0, 0, 0.15);
+  margin-top: 5px;
 }
 
-.schedule-button:hover {
-  background: linear-gradient(90deg, #b30000 60%, #d32f2f 100%);
-  box-shadow: 0 2px 8px rgba(179, 0, 0, 0.13);
+.schedule-button:hover:not([disabled]) {
+  background: linear-gradient(to right, #a30000, #c62828);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(179, 0, 0, 0.2);
 }
 
-/* No schedules found message */
+.schedule-button:active:not([disabled]) {
+  transform: translateY(0);
+}
+
+.schedule-button[disabled] {
+  background: #e0e0e0;
+  color: #999;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* Eligibility warning */
+.schedule-total div[style*="color: orange"] {
+  background-color: #fff8e1;
+  color: #f57c00 !important;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.4;
+  border-left: 4px solid #ffa000;
+  margin-top: 15px !important;
+}
+
+/* No schedules available */
 .no-schedule {
   text-align: center;
-  color: #888;
-  font-size: 1.15rem;
-  margin: 48px 0 32px 0;
-  padding: 20px;
-  background-color: #f0f0f0;
-  border-radius: 8px;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+  width: 100%;
+  border: 1px dashed #ddd;
 }
 
-/* Login prompt styling */
+/* Login prompt */
 .login-prompt {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto;
-  min-height: 300px;
-  width: 50%;
-  background-color: #c7c4c44a;
-  border-radius: 20px;
+  text-align: center;
+  padding: 50px 20px;
+  background-color: #f9f9f9;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
+
+.login-prompt h4 {
+  color: #333;
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+/* Loading state */
+.donation-schedule-page
+  > div:first-of-type:not(.donation-schedule-header):not(.login-prompt) {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
 /* Responsive design */
-@media (max-width: 1100px) {
-  .schedule-container {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .schedule-total {
-    align-items: flex-start;
-  }
-
-  .schedule-total-count {
-    align-items: flex-start;
-  }
-
-  .search-bar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .search-name,
-  .search-date {
+@media (max-width: 992px) {
+  .search-inputs:before {
     width: 100%;
+    margin-bottom: 15px;
   }
-  .btn-outline-danger {
-    width: 50%;
-    padding: 10px;
-    height: auto; /* Adjust height */
+
+  .search-inputs {
+    gap: 10px;
   }
 }
 
 @media (max-width: 768px) {
-  .search-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px; /* Tighter gap */
-    padding: 6px;
-  }
-
-  .search-name,
-  .search-date {
-    width: 100%; /* Full width on smaller screens */
-    font-size: 12px; /* Smaller font */
-  }
-
-  .search-bar {
-    width: 100%; /* Full-width button */
-    padding: 6px;
-    height: auto; /* Adjust height */
-  }
-}
-.btn-outline-danger {
-  font-size: 12px; /* Smaller font size */
-  padding: 8px 16px; /* Smaller padding */
-  width: auto; /* Auto width for better responsiveness */
-}
-@media (max-width: 900px) {
-  .donation-schedule {
-    max-width: 100vw;
-    padding: 0 2vw;
-  }
   .schedule-container {
     flex-direction: column;
-    align-items: stretch;
-    padding: 14px 4vw;
-    gap: 12px;
-    min-width: 0;
-    box-sizing: border-box;
   }
-  .schedule-detail,
-  .schedule-total {
-    width: 100%;
-    min-width: 0;
-    max-width: 100%;
-    box-sizing: border-box;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-  }
-  .schedule-total {
-    align-items: flex-start;
-    padding-left: 0;
-    margin-top: 10px;
-    min-width: 0;
-    gap: 8px;
-  }
-  .schedule-total-count {
-    font-size: 1em;
-    gap: 8px;
-  }
-}
 
-@media (max-width: 600px) {
+  .schedule-total {
+    border-left: none;
+    border-top: 1px solid #f0f0f0;
+  }
+
   .donation-schedule-page h1 {
-    font-size: 1.3rem;
-    margin: 12px 0;
+    font-size: 28px;
   }
-  .donation-schedule {
-    padding: 0 1vw;
-    margin: 18px auto 12px auto;
-  }
+}
+
+@media (max-width: 576px) {
   .search-bar {
-    padding: 8px 2vw 8px 2vw;
-    margin: 12px auto 10px auto;
-    max-width: 99vw;
-    border-radius: 8px;
+    padding: 20px;
   }
+
   .search-bar h3 {
-    font-size: 1em;
-    margin-bottom: 8px;
+    font-size: 20px;
   }
-  .search-inputs {
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  .search-name,
-  .search-date {
-    font-size: 11px;
-    padding: 7px 8px;
-    width: 100%;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .search-bar .btn,
-  .search-bar button {
-    font-size: 0.98em;
-    padding: 8px 0;
-    width: 100%;
-    margin-top: 4px;
+}
+
+.schedule-container {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.schedule-container:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.schedule-container:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.schedule-container:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.schedule-container:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.schedule-container:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+/* Badge for blood types needed */
+.blood-type-badge {
+  display: inline-block;
+  background-color: rgba(179, 0, 0, 0.1);
+  color: #b30000;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+  margin-right: 8px;
+  margin-bottom: 5px;
+}
+
+/* Animation for inputs */
+@keyframes focusAnimation {
+  0% {
+    transform: scale(1);
   }
-  .schedule-container {
-    padding: 8px 2vw;
-    border-radius: 8px;
-    margin-bottom: 14px;
+  50% {
+    transform: scale(1.01);
   }
-  .schedule-detail {
-    font-size: 0.98em;
+  100% {
+    transform: scale(1);
   }
-  .schedule-total {
-    margin-top: 8px;
-    padding-left: 0;
-    min-width: 0;
-    gap: 6px;
-  }
-  .schedule-total-icon svg {
-    width: 18px;
-    height: 18px;
-  }
-  .schedule-total-count {
-    font-size: 0.98em;
-    gap: 6px;
-  }
-  .schedule-button {
-    font-size: 0.98em;
-    padding: 7px 10px;
-    margin-left: 0;
-    width: 100%;
-  }
-  .no-schedule {
-    font-size: 1em;
-    margin: 24px 0 12px 0;
-    padding: 10px;
-  }
+}
+
+.search-name:focus,
+.search-date:focus {
+  animation: focusAnimation 0.3s ease;
 }

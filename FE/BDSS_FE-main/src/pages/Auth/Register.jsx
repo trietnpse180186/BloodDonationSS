@@ -16,27 +16,24 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader, PulseLoader } from "react-spinners";
 
-function PasswordInput({ value, onChange, name }) {
+function PasswordInput({ value, onChange, name, placeholder }) {
   const [show, setShow] = useState(false);
   return (
-    <div className="input-group" style={{ paddingTop: 20 }}>
+    <div className="input-group">
       <FaLock className="input-icon" />
       <input
         type={show ? "text" : "password"}
-        placeholder="Password"
+        placeholder={placeholder || "Password"}
         value={value}
         name={name}
         onChange={onChange}
-        style={{
-          paddingLeft: 40,
-          paddingRight: 40,
-          paddingBottom: 10,
-        }}
+        className="password-input"
       />
       <span
         className="show-password-btn"
         onClick={() => setShow((s) => !s)}
         tabIndex={0}
+        aria-label={show ? "Hide password" : "Show password"}
       >
         {show ? <FaEyeSlash /> : <FaEye />}
       </span>
@@ -64,7 +61,9 @@ export default function Register() {
   };
 
   const isValidPassword = (password) => {
-    return /[A-Z]/.test(password) && /\d/.test(password) && password.length > 6;
+    return (
+      /[A-Z]/.test(password) && /\d/.test(password) && password.length >= 8
+    );
   };
 
   const [errors, setErrors] = useState({});
@@ -186,12 +185,14 @@ export default function Register() {
         <div className="register-flex-row">
           <div className="register-account">
             <h4>Account Information</h4>
+            {/* Email field */}
             <div className="register-email">
-              <h6>Email</h6>
-              <div className="field-wrapper">
+              <h6>
+                Email <span className="required-field">*</span>
+              </h6>
+              <div className="input-group-register">
                 <FaEnvelope className="input-icon" />
                 <input
-                  style={{ marginLeft: 40 }}
                   type="email"
                   name="email"
                   placeholder="Enter your email"
@@ -200,17 +201,16 @@ export default function Register() {
                 />
               </div>
               {errors.email && (
-                <div
-                  style={{ color: "red", fontSize: "0.95em", marginBottom: 8 }}
-                >
-                  {errors.email}
-                </div>
+                <div className="error-message">{errors.email}</div>
               )}
             </div>
 
+            {/* Password field */}
             <div className="register-password">
-              <h6>Password</h6>
-              <div className="field-wrapper">
+              <h6>
+                Password <span className="required-field">*</span>
+              </h6>
+              <div className="input-group-register">
                 <PasswordInput
                   value={formData.password}
                   name="password"
@@ -227,7 +227,7 @@ export default function Register() {
                 <ul>
                   <li>Password must contain at least 1 uppercase letter</li>
                   <li>Password must contain at least 1 number</li>
-                  <li>Password must be longer than 6 characters</li>
+                  <li>Password must be at least 8 characters</li>
                 </ul>
               </div>
               {errors.password && (
@@ -238,9 +238,12 @@ export default function Register() {
                 </div>
               )}
             </div>
+            {/* Confirm Password field */}
             <div className="register-confirm-password">
-              <h6>Confirm Password</h6>
-              <div className="field-wrapper">
+              <h6>
+                Confirm Password <span className="required-field">*</span>
+              </h6>
+              <div className="input-group-register">
                 <PasswordInput
                   value={formData.confirmPassword}
                   name="confirmPassword"
@@ -258,9 +261,12 @@ export default function Register() {
           </div>
           <div className="register-profile">
             <h4>Profile Information</h4>
+            {/* Full Name field */}
             <div className="register-full-name">
-              <h6>Full Name</h6>
-              <div className="field-wrapper">
+              <h6>
+                Full Name <span className="required-field">*</span>
+              </h6>
+              <div className="input-group-register">
                 <FaUserEdit className="input-icon" />
                 <input
                   type="text"
@@ -278,31 +284,40 @@ export default function Register() {
                 </div>
               )}
             </div>
+            {/* Gender field */}
+            <h6>
+              Gender <span className="required-field">*</span>
+            </h6>
             <div className="field-wrapper-gender">
-              <label>
+              <div>
                 <input
+                  id="male-radio"
                   type="radio"
                   name="sex"
                   value="Male"
                   checked={formData.sex === "Male"}
                   onChange={handleChange}
                 />
-                Male
-              </label>
-              <label style={{ marginLeft: "10px" }}>
+                <label htmlFor="male-radio">Male</label>
+              </div>
+              <div>
                 <input
+                  id="female-radio"
                   type="radio"
                   name="sex"
                   value="Female"
                   checked={formData.sex === "Female"}
                   onChange={handleChange}
                 />
-                Female
-              </label>
+                <label htmlFor="female-radio">Female</label>
+              </div>
             </div>
+            {/* Birthday field */}
             <div className="register-birth">
-              <h6>Birthday</h6>
-              <div className="field-wrapper" id="birthday">
+              <h6>
+                Birthday <span className="required-field">*</span>
+              </h6>
+              <div className="input-group-register" id="birthday">
                 <MdCake className="input-icon" />
                 <input
                   type="date"
@@ -319,9 +334,12 @@ export default function Register() {
                 </div>
               )}
             </div>
+            {/* Phone Number field */}
             <div className="register-phone">
-              <h6>Phone Number</h6>
-              <div className="field-wrapper">
+              <h6>
+                Phone Number <span className="required-field">*</span>
+              </h6>
+              <div className="input-group-register">
                 <FaPhone className="input-icon" />
                 <input
                   type="text"
@@ -345,7 +363,7 @@ export default function Register() {
             </h6>
 
             <div className="register-address">
-              <div className="field-wrapper">
+              <div className="input-group-register">
                 <FaLocationDot className="input-icon" />
                 <input
                   type="text"
@@ -357,7 +375,7 @@ export default function Register() {
               </div>
             </div>
             <div className="register-blood-type">
-              <div className="field-wrapper">
+              <div className="input-group-register">
                 <select
                   name="bloodType"
                   value={formData.bloodType || ""}
@@ -379,7 +397,7 @@ export default function Register() {
               </div>
             </div>
             <div className="register-occupation">
-              <div className="field-wrapper">
+              <div className="input-group-register">
                 <MdWork className="input-icon" />
                 <input
                   type="text"
