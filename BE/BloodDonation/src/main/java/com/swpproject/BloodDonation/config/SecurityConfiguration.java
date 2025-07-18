@@ -39,7 +39,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-        http.oauth2ResourceServer(oauth2 -> oauth2
+                http.oauth2ResourceServer(oauth2 -> oauth2
                 .jwt(jwtConfigurer -> jwtConfigurer
                         .decoder(decoderCustomizer).jwtAuthenticationConverter(converter())));
 
