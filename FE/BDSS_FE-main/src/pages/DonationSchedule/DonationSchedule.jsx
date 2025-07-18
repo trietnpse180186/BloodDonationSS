@@ -89,33 +89,69 @@ export default function DonationSchedule() {
             <div className="search-bar">
               <h3>Search schedule</h3>
               <div className="search-inputs">
-                <input
-                  className="search-name"
-                  type="text"
-                  placeholder="Search by center name..."
-                  value={searchName}
-                  onChange={(e) => setSearchName(e.target.value)}
-                  aria-label="Search donation centers by name"
-                />
-                <input
-                  className="search-date"
-                  type="date"
-                  value={searchDate}
-                  onChange={(e) => setSearchDate(e.target.value)}
-                  placeholder="Select a date"
-                  aria-label="Search by donation date"
-                />
-                <Button
-                  className="btn-outline-danger"
-                  variant="outline-danger"
+                <div className="search-name-wrapper">
+                  <span className="search-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                    </svg>
+                  </span>
+                  <input
+                    className="search-name"
+                    type="text"
+                    placeholder="Search by center name..."
+                    value={searchName}
+                    onChange={(e) => setSearchName(e.target.value)}
+                    aria-label="Search donation centers by name"
+                  />
+                </div>
+
+                <div className="search-date-wrapper">
+                  <span className="date-icon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
+                    </svg>
+                  </span>
+                  <input
+                    className="search-date"
+                    type="date"
+                    value={searchDate}
+                    onChange={(e) => setSearchDate(e.target.value)}
+                    placeholder="Select a date"
+                    aria-label="Search by donation date"
+                  />
+                </div>
+
+                <button
+                  className="search-clear-btn"
                   onClick={() => {
                     setSearchName("");
                     setSearchDate("");
                   }}
                   aria-label="Clear search filters"
                 >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+                  </svg>
                   Clear
-                </Button>
+                </button>
               </div>
             </div>
             <div className="donation-schedule">
@@ -135,15 +171,7 @@ export default function DonationSchedule() {
                 </div>
               ) : (
                 filteredSchedules.map((schedule, idx) => {
-                  const canBookBlood =
-                    userInfo &&
-                    userInfo.bloodType &&
-                    schedule.bloodNeed.some(
-                      (b) =>
-                        b.replace(/\s+/g, "").toUpperCase() ===
-                        userInfo.bloodType.replace(/\s+/g, "").toUpperCase()
-                    );
-                  const canBook = canBookBlood && eligibility === true;
+                  const canBook = eligibility === true;
 
                   return (
                     <div className="schedule-container" key={idx}>
@@ -167,7 +195,11 @@ export default function DonationSchedule() {
                           </li>
                           <li>
                             <strong>Blood Need:</strong>{" "}
-                            {schedule.bloodNeed.join(" - ")}
+                            {schedule.bloodNeed.map((type) => (
+                              <span key={type} className="blood-type-badge">
+                                {type}
+                              </span>
+                            ))}
                           </li>
 
                           <li>
@@ -202,18 +234,7 @@ export default function DonationSchedule() {
                             Book now
                           </button>
                         </div>
-                        {!canBookBlood && (
-                          <div
-                            style={{
-                              color: "red",
-                              marginTop: 8,
-                              fontWeight: 500,
-                            }}
-                          >
-                            Your blood type is not needed for this schedule.
-                          </div>
-                        )}
-                        {canBookBlood && eligibility === false && (
+                        {eligibility === false && (
                           <div
                             style={{
                               color: "orange",
