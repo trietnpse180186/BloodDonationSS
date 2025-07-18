@@ -62,7 +62,7 @@ export default function Certificate({ bookingId }) {
         <div className="cert-body">
           <p className="cert-text-underName">
             {" "}
-           to honor their selfless act of donating blood. which has helped save lives and bring hope to those in need.
+           To honor their selfless act of donating blood. Which has helped save lives and bring hope to those in need.
           </p>
           <strong>Blood Type:</strong> {data.user?.bloodType}
           <br />
