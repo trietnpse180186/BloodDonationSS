@@ -16,6 +16,7 @@ export default function DonationSchedule() {
   const [userInfo, setUserInfo] = useState(null);
   const [eligibility, setEligibility] = useState(null);
   const token = sessionStorage.getItem("accessToken");
+  const refreshToken = sessionStorage.getItem("refreshToken");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -31,19 +32,22 @@ export default function DonationSchedule() {
       });
   }, []);
 
+  // Chỉ gọi eligibility API khi có token
   useEffect(() => {
-    const userIdFromToken = getUserIdFromToken(token);
-    axios
-      .get(
-        `http://localhost:8080/api/reports/user/${userIdFromToken}/eligibility`
-      )
-      .then((res) => {
-        setEligibility(res.data);
-      })
-      .catch((err) => {
-        console.error("Error loading eligibility", err);
-      });
-  }, [token]);
+    if (token && refreshToken) {
+      const userIdFromToken = getUserIdFromToken(token);
+      axios
+        .get(
+          `http://localhost:8080/api/reports/user/${userIdFromToken}/eligibility`
+        )
+        .then((res) => {
+          setEligibility(res.data);
+        })
+        .catch((err) => {
+          console.error("Error loading eligibility", err);
+        });
+    }
+  }, [token, refreshToken]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -65,9 +69,12 @@ export default function DonationSchedule() {
     setFilteredSchedules(filtered);
   }, [searchName, searchDate, schedules]);
 
+  // Chỉ gọi getUserById khi có token
   useEffect(() => {
-    getUserById().then(setUserInfo);
-  }, []);
+    if (token && refreshToken) {
+      getUserById().then(setUserInfo);
+    }
+  }, [token, refreshToken]);
 
   const handleBooking = (schedule) => {
     navigate(
@@ -77,13 +84,12 @@ export default function DonationSchedule() {
     );
   };
 
-  if (!userInfo) return <div>Loading user info...</div>;
-
   return (
     <>
       <Navbar />
       <div className="donation-schedule-page">
         <h1>Donation Schedule</h1>
+
         {token ? (
           <div className="donation-schedule-header">
             <div className="search-bar">
@@ -101,6 +107,7 @@ export default function DonationSchedule() {
                       <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                     </svg>
                   </span>
+
                   <input
                     className="search-name"
                     type="text"
@@ -109,6 +116,7 @@ export default function DonationSchedule() {
                     onChange={(e) => setSearchName(e.target.value)}
                     aria-label="Search donation centers by name"
                   />
+
                 </div>
 
                 <div className="search-date-wrapper">
@@ -123,6 +131,7 @@ export default function DonationSchedule() {
                       <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z" />
                     </svg>
                   </span>
+
                   <input
                     className="search-date"
                     type="date"
@@ -131,6 +140,7 @@ export default function DonationSchedule() {
                     placeholder="Select a date"
                     aria-label="Search by donation date"
                   />
+
                 </div>
 
                 <button
@@ -152,22 +162,24 @@ export default function DonationSchedule() {
                   </svg>
                   Clear
                 </button>
+
               </div>
-            </div>
-            <div className="donation-schedule">
-              {filteredSchedules.length === 0 ? (
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    minHeight: 200,
-                    justifyContent: "center",
-                  }}
-                >
-                  <div className="no-schedule" style={{ marginBottom: 16 }}>
-                    No schedules available.
+              <div className="donation-schedule">
+                {filteredSchedules.length === 0 ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      minHeight: 200,
+                      justifyContent: "center",
+                    }}
+                  >
+                    <div className="no-schedule" style={{ marginBottom: 16 }}>
+                      No schedules available.
+                    </div>
                   </div>
+
                 </div>
               ) : (
                 filteredSchedules.map((schedule, idx) => {
@@ -202,23 +214,20 @@ export default function DonationSchedule() {
                             ))}
                           </li>
 
-                          <li>
-                            <strong>Time slots:</strong>
-                            <ul style={{ margin: 0, paddingLeft: 16 }}>
-                              {schedule.timeSlots.map((slot) => (
-                                <li key={slot.id}>
-                                  {slot.startTime} - {slot.endTime}
-                                </li>
-                              ))}
-                            </ul>
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="schedule-total">
-                        <div className="schedule-total-icon">
-                          {peopleFill}
-                          <strong>Number of registrations:</strong>
+
+                            <li>
+                              <strong>Time slots:</strong>
+                              <ul style={{ margin: 0, paddingLeft: 16 }}>
+                                {schedule.timeSlots.map((slot) => (
+                                  <li key={slot.id}>
+                                    {slot.startTime} - {slot.endTime}
+                                  </li>
+                                ))}
+                              </ul>
+                            </li>
+                          </ul>
                         </div>
+
                         <div className="schedule-total-count">
                           {schedule.registrationStatus}
                           <button
@@ -244,16 +253,44 @@ export default function DonationSchedule() {
                           >
                             You are not eligible to donate blood at this time.
                             Please wait until the required interval has passed.
+
                           </div>
-                        )}
+                          {!canBookBlood && (
+                            <div
+                              style={{
+                                color: "red",
+                                marginTop: 8,
+                                fontWeight: 500,
+                              }}
+                            >
+                              Your blood type is not needed for this schedule.
+                            </div>
+                          )}
+                          {canBookBlood && eligibility === false && (
+                            <div
+                              style={{
+                                color: "orange",
+                                marginTop: 8,
+                                fontWeight: 500,
+                              }}
+                            >
+                              You are not eligible to donate blood at this time.
+                              Please wait until the required interval has
+                              passed.
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })
-              )}
+                    );
+                  })
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div>Loading user info...</div>
+          )
         ) : (
+          // Nếu không có token hoặc refreshToken
           <div className="login-prompt">
             <h4 style={{ marginBottom: 20 }}>
               Please login to view donation schedules!

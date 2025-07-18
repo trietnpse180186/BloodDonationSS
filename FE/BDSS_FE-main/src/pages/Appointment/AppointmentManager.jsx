@@ -82,7 +82,7 @@ export default function AppointmentManager() {
         )
       );
     } catch (error) {
-      alert("Cập nhật trạng thái thất bại!");
+      alert("Update Failed!");
     }
   };
 
@@ -118,6 +118,49 @@ export default function AppointmentManager() {
     setDetailData({ show: true, data: bookingData });
   };
 
+  const handleCancel = async (item) => {
+    if (item.status !== "PENDING") return; // Chỉ cho phép cancel khi đang pending
+    const confirm = window.confirm("Bạn có chắc muốn hủy lịch này không?");
+    if (!confirm) return;
+    try {
+      await axios.put(
+        `http://localhost:8080/api/booking/${item.bookingId}`,
+        {},
+        {
+          params: { status: "CANCELLED" },
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt.bookingId === item.bookingId ? { ...appt, status: "CANCELLED" } : appt
+        )
+      );
+    } catch (error) {
+      alert("Cancel Failed!");
+    }
+  };
+
+  const handleRestore = async (item) => {
+    try {
+      await axios.put(
+        `http://localhost:8080/api/booking/${item.bookingId}`,
+        {},
+        {
+          params: { status: "PENDING" },
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt.bookingId === item.bookingId ? { ...appt, status: "PENDING" } : appt
+        )
+      );
+    } catch (error) {
+      alert("Restore Failed!");
+    }
+  };
+
   return (
     <div className="appointment-manager-container">
       <h2>Donor Appointment Details</h2>
@@ -146,6 +189,12 @@ export default function AppointmentManager() {
                       <button onClick={() => handleSurvey(item)}>View Survey</button>
                       {(item.status === "PENDING" || item.status === "APPROVED") && (
                         <button onClick={() => handleUpdate(item)}>Update</button>
+                      )}
+                      {item.status === "PENDING" && (
+                        <button onClick={() => handleCancel(item)}>Cancel</button>
+                      )}
+                      {item.status === "CANCELLED" && (
+                        <button onClick={() => handleRestore(item)}>Restore</button>
                       )}
                     </td>
                   </tr>
