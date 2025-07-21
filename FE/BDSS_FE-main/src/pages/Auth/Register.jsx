@@ -64,7 +64,7 @@ export default function Register() {
   };
 
   const isValidPassword = (password) => {
-    return /[A-Z]/.test(password) && /\d/.test(password) && password.length > 6;
+    return /[A-Z]/.test(password) && /\d/.test(password) && password.length > 8;
   };
 
   const [errors, setErrors] = useState({});
@@ -187,14 +187,16 @@ export default function Register() {
           <div className="register-account">
             <h4>Account Information</h4>
             <div className="register-email">
-              <h6>Email</h6>
+              <h6>
+                Email <span style={{ color: "red" }}>*</span>
+              </h6>
               <div className="field-wrapper">
                 <FaEnvelope className="input-icon" />
                 <input
                   style={{ marginLeft: 40 }}
                   type="email"
                   name="email"
-                  placeholder="Enter your email"
+                  placeholder="Enter your email *"
                   value={formData.email}
                   onChange={handleChange}
                 />
@@ -209,7 +211,9 @@ export default function Register() {
             </div>
 
             <div className="register-password">
-              <h6>Password</h6>
+              <h6>
+                Password <span style={{ color: "red" }}>*</span>
+              </h6>
               <div className="field-wrapper">
                 <PasswordInput
                   value={formData.password}
@@ -227,7 +231,7 @@ export default function Register() {
                 <ul>
                   <li>Password must contain at least 1 uppercase letter</li>
                   <li>Password must contain at least 1 number</li>
-                  <li>Password must be longer than 6 characters</li>
+                  <li>Password must be longer than 8 characters</li>
                 </ul>
               </div>
               {errors.password && (
@@ -239,7 +243,9 @@ export default function Register() {
               )}
             </div>
             <div className="register-confirm-password">
-              <h6>Confirm Password</h6>
+              <h6>
+                Confirm Password <span style={{ color: "red" }}>*</span>
+              </h6>
               <div className="field-wrapper">
                 <PasswordInput
                   value={formData.confirmPassword}
@@ -259,13 +265,15 @@ export default function Register() {
           <div className="register-profile">
             <h4>Profile Information</h4>
             <div className="register-full-name">
-              <h6>Full Name</h6>
+              <h6>
+                Full Name <span style={{ color: "red" }}>*</span>
+              </h6>
               <div className="field-wrapper">
                 <FaUserEdit className="input-icon" />
                 <input
                   type="text"
                   name="fullName"
-                  placeholder="Enter your full name"
+                  placeholder="Enter your full name *"
                   value={formData.fullName}
                   onChange={handleChange}
                 />
@@ -278,7 +286,10 @@ export default function Register() {
                 </div>
               )}
             </div>
-            <div className="field-wrapper-gender">
+            <div className="field-wrapper-gender" style={{ marginTop: 20 }}>
+              <h6 style={{ marginBottom: 10 }}>
+                Gender <span style={{ color: "red" }}>*</span>
+              </h6>
               <label>
                 <input
                   type="radio"
@@ -301,7 +312,9 @@ export default function Register() {
               </label>
             </div>
             <div className="register-birth">
-              <h6>Birthday</h6>
+              <h6>
+                Birthday <span style={{ color: "red" }}>*</span>
+              </h6>
               <div className="field-wrapper" id="birthday">
                 <MdCake className="input-icon" />
                 <input
@@ -320,13 +333,15 @@ export default function Register() {
               )}
             </div>
             <div className="register-phone">
-              <h6>Phone Number</h6>
+              <h6>
+                Phone Number <span style={{ color: "red" }}>*</span>
+              </h6>
               <div className="field-wrapper">
                 <FaPhone className="input-icon" />
                 <input
                   type="text"
                   name="phoneNumber"
-                  placeholder="Enter your phone number"
+                  placeholder="Enter your phone number *"
                   value={formData.phoneNumber}
                   onChange={handleChange}
                 />

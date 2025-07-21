@@ -142,15 +142,8 @@ export default function DonationSchedule() {
                   </div>
                 ) : (
                   filteredSchedules.map((schedule, idx) => {
-                    const canBookBlood =
-                      userInfo &&
-                      userInfo.bloodType &&
-                      schedule.bloodNeed.some(
-                        (b) =>
-                          b.replace(/\s+/g, "").toUpperCase() ===
-                          userInfo.bloodType.replace(/\s+/g, "").toUpperCase()
-                      );
-                    const canBook = canBookBlood && eligibility === true;
+                    // Bỏ logic kiểm tra nhóm máu, chỉ kiểm tra eligibility
+                    const canBook = eligibility === true;
 
                     return (
                       <div className="schedule-container" key={idx}>
@@ -176,7 +169,6 @@ export default function DonationSchedule() {
                               <strong>Blood Need:</strong>{" "}
                               {schedule.bloodNeed.join(" - ")}
                             </li>
-
                             <li>
                               <strong>Time slots:</strong>
                               <ul style={{ margin: 0, paddingLeft: 16 }}>
@@ -212,18 +204,8 @@ export default function DonationSchedule() {
                               Book now
                             </button>
                           </div>
-                          {!canBookBlood && (
-                            <div
-                              style={{
-                                color: "red",
-                                marginTop: 8,
-                                fontWeight: 500,
-                              }}
-                            >
-                              Your blood type is not needed for this schedule.
-                            </div>
-                          )}
-                          {canBookBlood && eligibility === false && (
+                          {/* Chỉ hiển thị thông báo về eligibility, bỏ thông báo về nhóm máu */}
+                          {eligibility === false && (
                             <div
                               style={{
                                 color: "orange",
@@ -234,6 +216,17 @@ export default function DonationSchedule() {
                               You are not eligible to donate blood at this time.
                               Please wait until the required interval has
                               passed.
+                            </div>
+                          )}
+                          {eligibility === null && (
+                            <div
+                              style={{
+                                color: "#888",
+                                marginTop: 8,
+                                fontWeight: 500,
+                              }}
+                            >
+                              Checking eligibility...
                             </div>
                           )}
                         </div>
@@ -247,7 +240,6 @@ export default function DonationSchedule() {
             <div>Loading user info...</div>
           )
         ) : (
-          // Nếu không có token hoặc refreshToken
           <div className="login-prompt">
             <h4 style={{ marginBottom: 20 }}>
               Please login to view donation schedules!
