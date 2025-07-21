@@ -3,9 +3,12 @@ import axios from "../../helpers/axiosInstance";
 import "./AppointmentManager.css";
 
 import Table from 'react-bootstrap/Table';
-
+import { Button, Modal } from "react-bootstrap";
+import { getQuestionTextById, getLabelByValue } from "../../helpers/bloodRegister";
 export default function AppointmentManager() {
   const [appointments, setAppointments] = useState([]);
+  const [surveyData, setSurveyData] = useState({ show: false, data: [] });
+  const [detailData, setDetailData] = useState({ show: false, data: {} });
   const accessToken = sessionStorage.getItem("accessToken");
 
 
@@ -50,8 +53,10 @@ export default function AppointmentManager() {
 
   const grouped = appointments.reduce((acc, item) => {
     const name = item.user?.fullName || "Unknown User";
-    if (!acc[name]) acc[name] = [];
-    acc[name].push(item);
+    const email = item.user?.email || "Unknown Email";
+    const key = `${name} (${email})`;
+    if (!acc[key]) acc[key] = [];
+    acc[key].push(item);
     return acc;
   }, {});
 
@@ -77,26 +82,97 @@ export default function AppointmentManager() {
         )
       );
     } catch (error) {
-      alert("Cập nhật trạng thái thất bại!");
+      alert("Update Failed!");
     }
   };
 
+  const handleSurvey = async (item) => {
+    try{
+      const res = await axios.get(
+        `http://localhost:8080/api/survey/${item.bookingId}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      setSurveyData({ show: true, data: res.data });
+    } catch (error) {
+      console.error("Error fetching survey data:", error);
+      alert("Load Survey Failed!");
+    }
+  }
+  const handleDetail = (item) => {
+    const bookingData = {
+      
+      center: item.center,
+      location: item.location || item.address,
+      date: formatDate(item.dateDonation),
+      timeSlot: item.startTime && item.endTime 
+      ? `${item.startTime.slice(0, 5)} - ${item.endTime.slice(0, 5)}` 
+      : "N/A",
+      status: item.status,
+      bloodType: item.bloodType,
+      user: item.user,
+      bookingTime: formatDateTime(item.bookingTime)
+    };
+
+    setDetailData({ show: true, data: bookingData });
+  };
+
+  const handleCancel = async (item) => {
+    if (item.status !== "PENDING") return; // Chỉ cho phép cancel khi đang pending
+    const confirm = window.confirm("Bạn có chắc muốn hủy lịch này không?");
+    if (!confirm) return;
+    try {
+      await axios.put(
+        `http://localhost:8080/api/booking/${item.bookingId}`,
+        {},
+        {
+          params: { status: "CANCELLED" },
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt.bookingId === item.bookingId ? { ...appt, status: "CANCELLED" } : appt
+        )
+      );
+    } catch (error) {
+      alert("Cancel Failed!");
+    }
+  };
+
+  const handleRestore = async (item) => {
+    try {
+      await axios.put(
+        `http://localhost:8080/api/booking/${item.bookingId}`,
+        {},
+        {
+          params: { status: "PENDING" },
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt.bookingId === item.bookingId ? { ...appt, status: "PENDING" } : appt
+        )
+      );
+    } catch (error) {
+      alert("Restore Failed!");
+    }
+  };
 
   return (
     <div className="appointment-manager-container">
       <h2>Donor Appointment Details</h2>
       <div className="appointment-manager">
-        {Object.entries(grouped).map(([name, items]) => (
-          <div className="appointment-card" key={name}>
-            <h3>{name}</h3>
-            <Table bordered>
+        {Object.entries(grouped).map(([key, items]) => (
+          <div className="appointment-card" key={key}>
+            <h3>{key}</h3>
+            <div className="appointment-table">
+            <Table bordered responsive>
               <thead>
                 <tr>
-                  <th>Email</th>
-                  <th>Date</th>
-                  <th>Time</th>
                   <th>Center</th>
-                  <th>Address</th>
                   <th>Booking Time</th>
                   <th>Status</th>
                   <th></th>
@@ -105,29 +181,117 @@ export default function AppointmentManager() {
               <tbody>
                 {items.map((item) => (
                   <tr key={item.bookingId}>
-                    <td>{item.user.email}</td>
-                    <td>{formatDate(item.dateDonation)}</td>
-                    <td>
-
-                      {item.startTime?.slice(0, 5)} - {item.endTime?.slice(0, 5)}
-
-                    </td>
                     <td>{item.center}</td>
-                    <td>{item.address}</td>
                     <td>{formatDateTime(item.bookingTime)}</td>
                     <td>{renderStatus(item.status)}</td>
                     <td className="action-buttons">
+                      <button onClick={() => handleDetail(item)}>View Details</button>
+                      <button onClick={() => handleSurvey(item)}>View Survey</button>
                       {(item.status === "PENDING" || item.status === "APPROVED") && (
                         <button onClick={() => handleUpdate(item)}>Update</button>
-                      )}                
+                      )}
+                      {item.status === "PENDING" && (
+                        <button onClick={() => handleCancel(item)}>Cancel</button>
+                      )}
+                      {item.status === "CANCELLED" && (
+                        <button onClick={() => handleRestore(item)}>Restore</button>
+                      )}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </Table>
+            </div>
           </div>
         ))}
       </div>
+      <Modal show={surveyData.show} onHide={() => setSurveyData({ show: false, data: [] })}>
+        <Modal.Header closeButton>
+          <Modal.Title>Survey Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {!Array.isArray(surveyData.data) || surveyData.data.length === 0 ? (
+            <div>No survey found.</div>
+          ) : (
+            <ul>
+              {surveyData.data
+                .slice() // tạo bản sao để sort không ảnh hưởng state
+                .sort((a, b) => {
+                  const order = [
+                    "q1","q2","q3","q4","q5","q6","q7","q8","q9"
+                  ];
+                  return order.indexOf(a.description) - order.indexOf(b.description);
+                })
+                .map((s, idx) => {
+                  let audit = {};
+                  try {
+                    audit = JSON.parse(s.answerAudit);
+                  } catch {
+                    audit = {};
+                  }
+                  return (
+                    <li key={idx}>
+                      <strong>{getQuestionTextById(s.description)}</strong><br />
+                      <strong>Đáp án:</strong> {getLabelByValue(s.description, audit.answer)}
+                      {audit.additionalInfo && audit.additionalInfo !== "" && (
+                        <span><br /><strong>Info:</strong> {audit.additionalInfo}</span>
+                      )}
+                    </li>
+                  );
+                })}
+            </ul>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setSurveyData({ show: false, data: [] })}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={detailData.show} onHide={() => setDetailData({ show: false, data: {} })}>
+        <Modal.Header closeButton>
+          <Modal.Title>Booking Details</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {!detailData.data ? (
+            <div>No details available.</div>
+          ) : (
+            <div className="booking-details">
+              <div className="detail-row">
+                <strong>Donor:</strong> {detailData.data.user?.fullName}
+              </div>
+              <div className="detail-row">
+                <strong>Email:</strong> {detailData.data.user?.email}
+              </div>
+              <div className="detail-card">
+                <div className="detail-row">
+                  <strong>Center:</strong> {detailData.data.center}
+                </div>
+                <div className="detail-row">
+                  <strong>Location:</strong> {detailData.data.location}
+                </div>
+                <div className="detail-row">
+                  <strong>Date:</strong> {detailData.data.date}
+                </div>
+                <div className="detail-row">
+                  <strong>Time:</strong> {detailData.data.timeSlot}
+                </div>
+              </div>
+              <div className="detail-row">
+                <strong>Booking Time:</strong> {detailData.data.bookingTime}
+              </div>
+              <div className="detail-row">
+                <strong>Status:</strong> {detailData.data.status}
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setDetailData({ show: false, data: null })}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

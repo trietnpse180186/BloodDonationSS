@@ -173,6 +173,7 @@ export default function BloodRegister() {
       timeSlot: selectedTimeSlotObj,
     };
 
+    toast.success("Booking information saved!"); // Thêm dòng này
     navigate("/blood-registration2", { state: { bookingData } });
     console.log("Booking Data:", bookingData);
   };
