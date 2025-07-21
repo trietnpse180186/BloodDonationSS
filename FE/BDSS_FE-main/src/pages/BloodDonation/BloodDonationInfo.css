@@ -1,188 +1,420 @@
 .donation-info-container {
-  padding: 24px;
-  background: #fff;
-  font-family: "Segoe UI", sans-serif;
-  background-color: #fdfdfc;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: "Roboto", "Segoe UI", Arial, sans-serif;
 }
+
 .donation-info-container h2 {
   text-align: center;
-  color: black;
-  font-size: 2.5rem;
-  margin-bottom: 16px;
-}
-.donation-info-container strong{
-  color: #1B2950;
-}
-/* Chia thành 2 cột */
-.donation-grid {
-  display: flex;
-  gap: 24px;
-}
-
-/* Cột trái: chứa 2 info-card */
-.left-column {
-  flex: 1 1 60%;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-/* Cột phải: chỉ chứa lịch sử */
-.right-column {
-  flex: 1 1 40%;
-}
-
-/* Khung thẻ thông tin */
-.info-card {
-  width: 100%;
-  background: white;
-  border: 1px solid #fefefe;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-.info-card-booking {
-  background: white;
-  border: 1px solid #fefefe;
-  border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  margin-top: 18px;
-}
-.info-card p, .info-card-booking p {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 8px;
-}
-
-.info-card strong, .info-card-booking strong {
-  min-width: 120px; /* Fixed width for labels */
-  display: inline-block;
-  color: #1B2950;
-  margin-right: 10px;
-}
-
-/* Add a little space between label and value */
-.info-card p::after, .info-card-booking p::after {
-  content: "";
-  flex-grow: 1;
-}
-
-/* Style the value part */
-.info-value {
-  flex-grow: 1;
-  max-width: 60%;
-}
-.info-card-survey {
-  background: rgb(248, 221, 221);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 16px;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 1400px;
-}
-.info-card h3 {
-  text-align: center;
-  color: #1a284f;
-  font-size: 1.5rem;
-  margin-bottom: 16px;
-}
-.info-card-booking h3 {
-  text-align: center;
-  color: #1a284f;
-  font-size: 1.5rem;
-  margin-bottom: 16px;
-}
-.info-card-survey h3 {
-  text-align: center;
   color: #b30000;
-  font-size: 1.5rem;
-  margin-bottom: 16px;
+  font-size: 28px;
+  margin-bottom: 30px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.donation-info-container h2::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: #b30000;
+}
+
+/* Grid layout for desktop */
+.donation-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+/* Card styles - thêm background-color rõ ràng */
+.info-card,
+.info-card-booking,
+.info-card-survey {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 25px;
+  margin-bottom: 25px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-card:hover,
+.info-card-booking:hover,
+.info-card-survey:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* Card headers */
+.info-card h3,
+.info-card-booking h3,
+.info-card-survey h3 {
+  color: #b30000;
+  font-size: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f0f0f0;
+  position: relative;
+}
+
+.info-card h3::after,
+.info-card-booking h3::after,
+.info-card-survey h3::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background-color: #b30000;
+}
+
+/* Content styling */
+.info-card p,
+.info-card-booking p {
+  display: flex;
+  margin-bottom: 12px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
+
+.info-card p strong,
+.info-card-booking p strong {
+  flex: 0 0 130px;
+  color: #555;
+  font-weight: 500;
+}
+
+.info-value {
+  flex: 1;
+  padding-left: 15px;
+}
+
+/* Survey question styling */
+.info-card-survey .question {
+  display: block;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 5px;
+  font-size: 15px;
+  font-style: normal;
+}
+
+.info-card-survey .answer {
+  padding: 8px 15px;
+  border-radius: 6px;
+  color: #2c5282 !important; /* Màu xanh dương đậm */
+  font-weight: 500;
+  margin-left: 0 !important;
+  margin-bottom: 15px;
+  border-left: 3px solid #4299e1; /* Viền bên trái màu xanh */
+}
+
+/* Gender icons styling */
+.info-card span:has(svg) {
+  display: flex;
+  align-items: center;
+}
+
+.info-card span svg {
+  margin-right: 6px;
+  font-size: 18px;
+}
+
+/* Button styles */
+.actions-button {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 60px;
 }
 
 .button-style {
-  display: flex;
-  margin-top: 0px;
-  padding: 10px 28px;
-  border-radius: 6px;
+  background-color: #b30000;
+  color: white;
   border: none;
-  background: #1D4A76;
-  color: #fff;
+  padding: 14px 35px;
   font-size: 16px;
-  margin-left: auto;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(179, 0, 0, 0.2);
 }
-.question{
+
+.button-style:hover {
+  background-color: #950000;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(179, 0, 0, 0.3);
+}
+
+.button-style:active {
+  transform: translateY(0);
+}
+
+.button-style:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* Booking summary */
+.booking-summary {
+  background: linear-gradient(to right, #b30000, #d32f2f);
+  color: white;
+  border-radius: 10px;
+  padding: 20px 30px;
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 5px 15px rgba(179, 0, 0, 0.2);
+}
+
+.summary-icon {
+  font-size: 36px;
+  margin-right: 20px;
+}
+
+.summary-content h3 {
+  color: white !important;
+  margin: 0 0 5px 0;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.summary-content p {
+  margin: 0;
+  font-size: 18px;
+  opacity: 0.95;
+}
+
+/* Progress indicator */
+.booking-progress {
+  display: flex;
+  justify-content: space-around;
+  margin: 0 auto 40px;
+  max-width: 800px;
+  position: relative;
+}
+
+.booking-progress::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-color: #e0e0e0;
+  z-index: 1;
+}
+
+.progress-step {
+  position: relative;
+  z-index: 2;
+  background-color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-weight: 500;
+  color: #757575;
+  border: 2px solid #e0e0e0;
+}
+
+.progress-step.completed {
+  background-color: #f0f8ff;
+  border-color: #4299e1;
+  color: #2c5282;
+}
+
+.progress-step.active {
+  background-color: #b30000;
+  border-color: #b30000;
+  color: white;
+  box-shadow: 0 3px 10px rgba(179, 0, 0, 0.2);
+}
+
+/* Sections styling */
+.donation-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background: transparent;
+}
+
+.section-container {
+  margin-bottom: 30px;
+  background: transparent; /* Đảm bảo không có background */
+}
+
+.section-title {
   color: #333;
-  font-size: 1.2rem;
-  margin-bottom: 15px;
+  font-size: 22px;
+  margin: 35px 0 15px 0;
+  position: relative;
+  padding-left: 15px;
+  border-left: 4px solid #b30000;
 }
 
-@media (max-width: 1100px) {
+/* Highlight card */
+.highlight-card {
+  border-left: 4px solid #b30000;
+  background-color: #fff9f9;
+}
+
+/* Action buttons */
+.actions-button {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 40px;
+  margin-bottom: 60px;
+}
+
+.button-primary {
+  background-color: #b30000;
+  color: white;
+  border: none;
+  padding: 14px 35px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(179, 0, 0, 0.2);
+}
+
+.button-primary:hover {
+  background-color: #950000;
+  transform: translateY(-2px);
+}
+
+.button-secondary {
+  background-color: white;
+  color: #555;
+  border: 1px solid #ccc;
+  padding: 14px 25px;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.button-secondary:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+/* Make the page responsive */
+@media (max-width: 900px) {
   .donation-grid {
-    flex-direction: column;
-    gap: 18px;
+    grid-template-columns: 1fr;
   }
-  .left-column,
-  .right-column {
-    flex: 1 1 100%;
-    max-width: 100%;
+
+  .info-card p strong,
+  .info-card-booking p strong {
+    flex: 0 0 120px;
   }
 }
 
-@media (max-width: 700px) {
-  .donation-info-container {
-    padding: 8px;
-  }
+@media (max-width: 600px) {
   .donation-info-container h2 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
+    font-size: 24px;
   }
-  .donation-grid {
+
+  .info-card p,
+  .info-card-booking p {
+    flex-direction: column;
+  }
+
+  .info-card p strong,
+  .info-card-booking p strong {
+    margin-bottom: 5px;
+  }
+
+  .info-value {
+    padding-left: 0;
+  }
+
+  .button-style {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .booking-progress {
     flex-direction: column;
     gap: 10px;
+    align-items: center;
   }
-  .info-card,
-  .info-contact,
-  .wide-card,
-  .appointment-list,
-  .appointment-card {
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 0.98em;
+
+  .booking-progress::before {
+    display: none;
   }
-  .appointment-card {
+
+  .actions-button {
     flex-direction: column;
-    gap: 8px;
-    padding: 10px;
   }
-  .modal-content {
-    padding: 16px 6px 12px 6px;
-    min-width: unset;
-    max-width: 98vw;
-    max-height: 90vh;
+
+  .button-secondary,
+  .button-primary {
+    width: 100%;
   }
 }
 
-@media (max-width: 480px) {
-  .donation-info-container {
-    padding: 2px;
+/* Special style for blood type */
+p:has(strong:contains("Blood Type")) .info-value {
+  color: #b30000;
+  font-weight: 600;
+}
+
+/* Style for booking information */
+.info-card-booking {
+  background-color: #fff;
+  border-left: 4px solid #b30000;
+}
+
+/* Style to highlight time slot */
+.info-card-booking p:has(strong:contains("Time Slot")) .info-value {
+  color: #b30000;
+  font-weight: 600;
+}
+
+/* Add some animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  .donation-info-container h2 {
-    font-size: 1.1rem;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .info-card,
-  .info-contact,
-  .wide-card,
-  .appointment-list,
-  .appointment-card {
-    padding: 6px;
-    border-radius: 5px;
-    font-size: 0.95em;
-  }
-  .modal-content {
-    padding: 8px 2px 8px 2px;
-    max-width: 100vw;
-  }
+}
+
+.info-card,
+.info-card-booking,
+.info-card-survey {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.info-card-booking {
+  animation-delay: 0.1s;
+}
+
+.info-card-survey {
+  animation-delay: 0.2s;
+}
+
+/* Thêm border top để phân tách các section */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(to right, #f0f0f0, #e0e0e0, #f0f0f0);
+  margin: 40px 0;
 }

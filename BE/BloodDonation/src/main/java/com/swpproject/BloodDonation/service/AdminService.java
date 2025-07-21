@@ -48,6 +48,11 @@ public class AdminService {
             throw new RuntimeException("Email đã tồn tại trong hệ thống");
         }
 
+        String occupation = request.getOccupation();
+        if( occupation == null && occupation.trim().isEmpty()) {
+            occupation = "System Staff";
+        }
+
         // Tạo người dùng mới với vai trò STAFF
         User staff = User.builder()
                 .userID(UUID.randomUUID().toString())
@@ -59,7 +64,7 @@ public class AdminService {
                 .bloodType(request.getBloodType())
                 .birthday(request.getBirthday())
                 .sex(request.getSex())
-                .occupation(request.getOccupation())
+                .occupation(occupation)
                 .active(true)
                 .build();
 
@@ -176,19 +181,32 @@ public class AdminService {
     @PreAuthorize("hasAuthority('ADMIN')")
     @Transactional
     public void deleteStaff(String staffId) {
-        User staff = userRepository.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với ID: " + staffId));
+        try {
+            // Tìm nhân viên theo ID
+            User staff = userRepository.findById(staffId)
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với ID: " + staffId));
 
-        // Kiểm tra xem người dùng có vai trò STAFF không
-        boolean isStaff = staff.getUserHasRoles().stream()
-                .anyMatch(userHasRole -> userHasRole.getRole().getName().equals("STAFF"));
+            // Kiểm tra xem người dùng có vai trò STAFF không
+            boolean isStaff = staff.getUserHasRoles().stream()
+                    .anyMatch(userHasRole -> userHasRole.getRole().getName().equals("STAFF"));
 
-        if (!isStaff) {
-            throw new RuntimeException("Người dùng không phải là nhân viên");
+            if (!isStaff) {
+                throw new RuntimeException("Người dùng không phải là nhân viên");
+            }
+            // Lấy tất cả vai trò của nhân viên
+            List<UserHasRole> userHasRoles = userHasRoleRepository.findByUser(staff);
+
+            // Xóa tất cả vai trò của nhân viên
+            if (userHasRoles != null && !userHasRoles.isEmpty()) {
+                userHasRoleRepository.deleteAll(userHasRoles);
+            }
+            // Xóa nhân viên khỏi hệ thống
+            userRepository.delete(staff);
+            log.info("Đã xóa nhân viên với ID: {}", staffId);
+        } catch (Exception e) {
+            log.error("Lỗi khi xóa nhân viên với ID: {}", staffId, e.getMessage(), e);
+            throw new RuntimeException("Không thể xóa nhân viên: " + e.getMessage(), e);
         }
-
-        userHasRoleRepository.deleteByUser(staff);
-        userRepository.delete(staff);
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

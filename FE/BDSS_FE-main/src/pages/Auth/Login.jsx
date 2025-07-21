@@ -14,7 +14,7 @@ function PasswordInput({ value, onChange }) {
   const [show, setShow] = useState(false);
 
   return (
-    <div className="input-group">
+    <div className="input-group-login">
       <FaLock className="input-icon" />
       <input
         type={show ? "text" : "password"}
@@ -122,7 +122,7 @@ export default function LoginForm() {
       >
         <form className="login-wrapper" onSubmit={handleSubmit}>
           <h1>SIGN IN</h1>
-          <div className="input-group">
+          <div className="input-group-login">
             <FaEnvelope className="input-icon" />
             <input
               type="email"

@@ -13,7 +13,6 @@
   padding: 130px 60px;
   background: #ffffff;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  border-radius: 12px 0px 0px 12px;
   margin-left: 40px;
 }
 
@@ -88,7 +87,6 @@ button[type="submit"]:hover {
   max-width: 281px;
   display: flex;
   justify-content: flex-start;
-  border-radius: 0 12px 12px 0;
   overflow: hidden;
   box-shadow: 10px 10px 25px rgba(0, 0, 0, 0.1);
 }
@@ -97,6 +95,41 @@ button[type="submit"]:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.input-group-login {
+  position: relative;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.input-group-login input {
+  width: 100%;
+  padding: 12px 40px;
+  border: 1px solid #ddd;
+  border-radius: 0;
+  font-size: 16px;
+}
+
+.input-group-login .input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #d32f2f;
+}
+
+.input-group-login .show-password-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #d32f2f;
+}
+
+.input-group-login .show-password-btn:hover {
+  color: #b41919;
 }
 
 @media screen and (max-width: 960px) {

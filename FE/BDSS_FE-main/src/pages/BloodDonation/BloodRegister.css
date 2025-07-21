@@ -14,6 +14,61 @@
   margin-bottom: 2rem;
 }
 
+.booking-progress-survey,
+.booking-progress-selectDate {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 100px;
+  margin: 0 auto 40px;
+  max-width: 800px;
+  position: relative;
+}
+
+.booking-progress-survey::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-color: #e0e0e0;
+  z-index: 1;
+}
+
+.booking-progress-selectDate::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-color: #e0e0e0;
+  z-index: 1;
+}
+
+.progress-step {
+  position: relative;
+  z-index: 2;
+  background-color: white;
+  padding: 5px 15px;
+  border-radius: 20px;
+  font-weight: 500;
+  color: #757575;
+  border: 2px solid #e0e0e0;
+}
+
+.progress-step.completed {
+  background-color: #f0f8ff;
+  border-color: #4299e1;
+  color: #2c5282;
+}
+
+.progress-step.active {
+  background-color: #b30000;
+  border-color: #b30000;
+  color: white;
+  box-shadow: 0 3px 10px rgba(179, 0, 0, 0.2);
+}
 /* Steps indicator */
 .blood-form-steps {
   display: flex;
@@ -332,10 +387,10 @@
   display: inline-block;
 }
 
-.clear-answer-button{
+.clear-answer-button {
   width: 100px;
   border: none;
-  background: #FFFFFF;
+  background: #ffffff;
 }
 .clear-answer-container {
   display: flex;
@@ -343,7 +398,7 @@
   padding-right: 10px;
 }
 
-.bloodform-body2{
+.bloodform-body2 {
   flex: 3;
   min-width: 500px;
   display: flex;
@@ -487,7 +542,7 @@ input[type="radio"]:checked::after {
   padding: 10px 28px;
   border-radius: 6px;
   border: none;
-  background: #1D4A76;
+  background: #1d4a76;
   color: #fff;
   font-size: 16px;
   transition: background 0.2s;
@@ -498,7 +553,7 @@ input[type="radio"]:checked::after {
 .button-style-register button:hover {
   background: #1976d2;
 }
-.button-submit{
+.button-submit {
   display: flex;
   justify-content: flex-end;
 }

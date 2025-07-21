@@ -16,27 +16,24 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader, PulseLoader } from "react-spinners";
 
-function PasswordInput({ value, onChange, name }) {
+function PasswordInput({ value, onChange, name, placeholder }) {
   const [show, setShow] = useState(false);
   return (
-    <div className="input-group" style={{ paddingTop: 20 }}>
+    <div className="input-group">
       <FaLock className="input-icon" />
       <input
         type={show ? "text" : "password"}
-        placeholder="Password"
+        placeholder={placeholder || "Password"}
         value={value}
         name={name}
         onChange={onChange}
-        style={{
-          paddingLeft: 40,
-          paddingRight: 40,
-          paddingBottom: 10,
-        }}
+        className="password-input"
       />
       <span
         className="show-password-btn"
         onClick={() => setShow((s) => !s)}
         tabIndex={0}
+        aria-label={show ? "Hide password" : "Show password"}
       >
         {show ? <FaEyeSlash /> : <FaEye />}
       </span>
@@ -52,10 +49,10 @@ export default function Register() {
     email: "",
     password: "",
     confirmPassword: "",
-    phoneNumber: null,
-    address: null,
-    bloodType: null,
-    occupation: null,
+    phoneNumber: "",
+    address: "",
+    bloodType: "",
+    occupation: "",
   });
 
   const isValidEmail = (email) => {
@@ -80,6 +77,9 @@ export default function Register() {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match.";
     }
+    if (!formData.sex) {
+      newErrors.sex = "Gender is required.";
+    }
     if (!formData.birthday) {
       newErrors.birthday = "Birthday is required.";
     }
@@ -87,7 +87,10 @@ export default function Register() {
       newErrors.phoneNumber = "Phone number is required.";
     } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
       newErrors.phoneNumber = "Phone number must be 10 digits.";
-    } else {
+    }
+
+    // Age validation
+    if (formData.birthday) {
       const today = new Date();
       const birthDate = new Date(formData.birthday);
       let age = today.getFullYear() - birthDate.getFullYear();
@@ -99,6 +102,7 @@ export default function Register() {
         newErrors.birthday = "You must be at least 18 years old to register.";
       }
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -141,7 +145,11 @@ export default function Register() {
       }, 1500);
     } catch (error) {
       setLoading(false);
-      toast.error("Registration failed. Please check your information.");
+      if (error.response?.status === 409) {
+        toast.error("Email already exists. Please use a different email.");
+      } else {
+        toast.error("Registration failed. Please check your information.");
+      }
     }
   };
 
@@ -186,6 +194,8 @@ export default function Register() {
         <div className="register-flex-row">
           <div className="register-account">
             <h4>Account Information</h4>
+
+            {/* Email field */}
             <div className="register-email">
               <h6>
                 Email <span style={{ color: "red" }}>*</span>
@@ -193,7 +203,6 @@ export default function Register() {
               <div className="field-wrapper">
                 <FaEnvelope className="input-icon" />
                 <input
-                  style={{ marginLeft: 40 }}
                   type="email"
                   name="email"
                   placeholder="Enter your email *"
@@ -202,14 +211,11 @@ export default function Register() {
                 />
               </div>
               {errors.email && (
-                <div
-                  style={{ color: "red", fontSize: "0.95em", marginBottom: 8 }}
-                >
-                  {errors.email}
-                </div>
+                <div className="error-message">{errors.email}</div>
               )}
             </div>
 
+            {/* Password field */}
             <div className="register-password">
               <h6>
                 Password <span style={{ color: "red" }}>*</span>
@@ -228,7 +234,7 @@ export default function Register() {
                   marginBottom: 8,
                 }}
               >
-                <ul>
+                <ul style={{ margin: 0, paddingLeft: 16 }}>
                   <li>Password must contain at least 1 uppercase letter</li>
                   <li>Password must contain at least 1 number</li>
                   <li>Password must be longer than 8 characters</li>
@@ -242,6 +248,8 @@ export default function Register() {
                 </div>
               )}
             </div>
+
+            {/* Confirm Password field */}
             <div className="register-confirm-password">
               <h6>
                 Confirm Password <span style={{ color: "red" }}>*</span>
@@ -262,8 +270,11 @@ export default function Register() {
               )}
             </div>
           </div>
+
           <div className="register-profile">
             <h4>Profile Information</h4>
+
+            {/* Full Name field */}
             <div className="register-full-name">
               <h6>
                 Full Name <span style={{ color: "red" }}>*</span>
@@ -286,31 +297,54 @@ export default function Register() {
                 </div>
               )}
             </div>
+
+            {/* Gender field - SỬA PHẦN NÀY */}
             <div className="field-wrapper-gender" style={{ marginTop: 20 }}>
               <h6 style={{ marginBottom: 10 }}>
                 Gender <span style={{ color: "red" }}>*</span>
               </h6>
-              <label>
-                <input
-                  type="radio"
-                  name="sex"
-                  value="Male"
-                  checked={formData.sex === "Male"}
-                  onChange={handleChange}
-                />
-                Male
-              </label>
-              <label style={{ marginLeft: "10px" }}>
-                <input
-                  type="radio"
-                  name="sex"
-                  value="Female"
-                  checked={formData.sex === "Female"}
-                  onChange={handleChange}
-                />
-                Female
-              </label>
+              <div style={{ display: "flex", gap: "16px" }}>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="sex"
+                    value="Male"
+                    checked={formData.sex === "Male"}
+                    onChange={handleChange}
+                  />
+                  Male
+                </label>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
+                  <input
+                    type="radio"
+                    name="sex"
+                    value="Female"
+                    checked={formData.sex === "Female"}
+                    onChange={handleChange}
+                  />
+                  Female
+                </label>
+              </div>
+              {errors.sex && (
+                <div style={{ color: "red", fontSize: "0.95em", marginTop: 8 }}>
+                  {errors.sex}
+                </div>
+              )}
             </div>
+
+            {/* Birthday field */}
             <div className="register-birth">
               <h6>
                 Birthday <span style={{ color: "red" }}>*</span>
@@ -332,6 +366,8 @@ export default function Register() {
                 </div>
               )}
             </div>
+
+            {/* Phone Number field */}
             <div className="register-phone">
               <h6>
                 Phone Number <span style={{ color: "red" }}>*</span>
@@ -354,13 +390,15 @@ export default function Register() {
                 </div>
               )}
             </div>
+
+            {/* Optional fields */}
             <h6 style={{ color: "#888", fontWeight: 400, marginTop: 20 }}>
               The following fields are optional. You can complete them later in
               your profile.
             </h6>
 
             <div className="register-address">
-              <div className="field-wrapper">
+              <div className="input-group-register">
                 <FaLocationDot className="input-icon" />
                 <input
                   type="text"
@@ -371,8 +409,9 @@ export default function Register() {
                 />
               </div>
             </div>
+
             <div className="register-blood-type">
-              <div className="field-wrapper">
+              <div className="input-group-register">
                 <select
                   name="bloodType"
                   value={formData.bloodType || ""}
@@ -393,8 +432,9 @@ export default function Register() {
                 </select>
               </div>
             </div>
+
             <div className="register-occupation">
-              <div className="field-wrapper">
+              <div className="input-group-register">
                 <MdWork className="input-icon" />
                 <input
                   type="text"
@@ -407,23 +447,23 @@ export default function Register() {
             </div>
           </div>
         </div>
+
         <div className="field-wrapper-btn">
-          <button className="wrap-button" type="submit">
-            SIGN UP
+          <button className="wrap-button" type="submit" disabled={loading}>
+            {loading ? "SIGNING UP..." : "SIGN UP"}
           </button>
         </div>
+
         <div className="back-btn">
-          <a
-            type="button"
-            className="back-btn-back"
-            onClick={() => navigate(-1)}
-            style={{ marginRight: 8 }}
+          <Link
+            to="/login"
+            style={{ textDecoration: "none", color: "#b30000" }}
           >
-            ⟵ Back
-          </a>
+            Already have an account? Login here
+          </Link>
         </div>
       </form>
-      <ToastContainer position="top-center" autoClose={2000} />
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 }
