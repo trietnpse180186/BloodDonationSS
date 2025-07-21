@@ -6,7 +6,8 @@ import Certificate from "../Certificate/Certificate";
 
 import { getUserIdFromToken } from "../../helpers/getUserById";
 import axios from "../../helpers/axiosInstance";
-import { Button, Modal } from "react-bootstrap";
+import { Button} from "react-bootstrap";
+import { Modal } from "antd";
 
 function formatDate(isoDate) {
   if (!isoDate) return "";
@@ -26,11 +27,13 @@ export default function AppointmentDetail() {
   const openCertificateModal = (bookingId) => {
     setSelectedBookingId(bookingId);
     setIsModalVisible(true);
+    document.body.classList.add("modal-open");
   };
 
   const closeCertificateModal = () => {
     setSelectedBookingId(null);
     setIsModalVisible(false);
+    document.body.classList.remove("modal-open");
   };
 
   const renderStatus = (status) => {
@@ -155,11 +158,21 @@ export default function AppointmentDetail() {
             </table>
 
             <Modal
-              title="Chứng nhận hiến máu"
+              title=""
               open={isModalVisible}
               onCancel={closeCertificateModal}
               footer={null}
-              width={600}
+              zIndex={1050}
+              className="certificate-modal"
+              getContainer={document.body}
+              width="77%"
+              centered
+               maskClosable={false}
+              closeIcon={
+                <div className="custom-close-button">
+                  <span>x</span>
+                </div>
+              }
             >
               {selectedBookingId && (
                 <Certificate bookingId={selectedBookingId} />

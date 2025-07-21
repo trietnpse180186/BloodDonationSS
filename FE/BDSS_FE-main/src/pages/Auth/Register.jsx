@@ -16,25 +16,24 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader, PulseLoader } from "react-spinners";
 
-function PasswordInput({ value, onChange, name }) {
+function PasswordInput({ value, onChange, name, placeholder }) {
   const [show, setShow] = useState(false);
-  const [userBloodType, setUserBloodType] = sessionStorage.getItem("bloodType");
   return (
-    <div className="input-group">
-      <FaLock className="input-icon" />
+    <div className="register-input-group">
+      <FaLock className="register-input-icon" />
       <input
         type={show ? "text" : "password"}
-        placeholder="Password"
+        placeholder={placeholder || "Password"}
         value={value}
         name={name}
         onChange={onChange}
-        required
-        style={{ paddingLeft: 40, paddingRight: 40 }}
+        className="register-password-input"
       />
       <span
-        className="show-password-btn"
+        className="register-show-password-btn"
         onClick={() => setShow((s) => !s)}
         tabIndex={0}
+        aria-label={show ? "Hide password" : "Show password"}
       >
         {show ? <FaEyeSlash /> : <FaEye />}
       </span>
@@ -50,10 +49,10 @@ export default function Register() {
     email: "",
     password: "",
     confirmPassword: "",
-    phoneNumber: null,
-    address: null,
-    bloodType: null,
-    occupation: null,
+    phoneNumber: "",
+    address: "",
+    bloodType: "",
+    occupation: "",
   });
 
   const isValidEmail = (email) => {
@@ -62,7 +61,7 @@ export default function Register() {
   };
 
   const isValidPassword = (password) => {
-    return /[A-Z]/.test(password) && /\d/.test(password) && password.length > 6;
+    return /[A-Z]/.test(password) && /\d/.test(password) && password.length > 8;
   };
 
   const [errors, setErrors] = useState({});
@@ -78,6 +77,9 @@ export default function Register() {
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match.";
     }
+    if (!formData.sex) {
+      newErrors.sex = "Gender is required.";
+    }
     if (!formData.birthday) {
       newErrors.birthday = "Birthday is required.";
     }
@@ -85,7 +87,10 @@ export default function Register() {
       newErrors.phoneNumber = "Phone number is required.";
     } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
       newErrors.phoneNumber = "Phone number must be 10 digits.";
-    } else {
+    }
+
+    // Age validation
+    if (formData.birthday) {
       const today = new Date();
       const birthDate = new Date(formData.birthday);
       let age = today.getFullYear() - birthDate.getFullYear();
@@ -97,6 +102,7 @@ export default function Register() {
         newErrors.birthday = "You must be at least 18 years old to register.";
       }
     }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -139,27 +145,18 @@ export default function Register() {
       }, 1500);
     } catch (error) {
       setLoading(false);
-      toast.error("Registration failed. Please check your information.");
+      if (error.response?.status === 409) {
+        toast.error("Email already exists. Please use a different email.");
+      } else {
+        toast.error("Registration failed. Please check your information.");
+      }
     }
   };
 
   return (
     <div className="register-page">
       {loading && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100vw",
-            height: "100vh",
-            background: "rgba(255,255,255,0.6)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 9999,
-          }}
-        >
+        <div className="register-loading-overlay">
           <PulseLoader
             color="#b30000"
             size={60}
@@ -180,35 +177,38 @@ export default function Register() {
           pointerEvents: loading ? "none" : "auto",
         }}
       >
-        <h1>SIGN UP</h1>
+        <h1 className="register-title">SIGN UP</h1>
         <div className="register-flex-row">
           <div className="register-account">
-            <h4>Account Information</h4>
-            <div className="register-email">
-              <h6>Email</h6>
-              <div className="field-wrapper">
-                <FaEnvelope className="input-icon" />
+            <h4 className="register-section-title">Account Information</h4>
+
+            {/* Email field */}
+            <div className="register-field">
+              <h6 className="register-label">
+                Email <span className="register-required">*</span>
+              </h6>
+              <div className="register-field-wrapper">
+                <FaEnvelope className="register-input-icon" />
                 <input
                   type="email"
                   name="email"
-                  placeholder="Enter your email"
+                  placeholder="Enter your email *"
                   value={formData.email}
                   onChange={handleChange}
+                  className="register-input"
                 />
               </div>
               {errors.email && (
-                <div
-                  style={{ color: "red", fontSize: "0.95em", marginBottom: 8 }}
-                >
-                  {errors.email}
-                </div>
+                <div className="register-error-message">{errors.email}</div>
               )}
             </div>
 
-            <div className="register-password">
-              <h6>Password</h6>
-              <div className="field-wrapper">
-                <FaLock className="input-icon" />
+            {/* Password field */}
+            <div className="register-field">
+              <h6 className="register-label">
+                Password <span className="register-required">*</span>
+              </h6>
+              <div className="register-field-wrapper">
                 <PasswordInput
                   value={formData.password}
                   name="password"
@@ -216,29 +216,26 @@ export default function Register() {
                 />
               </div>
               <div
-                style={{
-                  color: passwordHintColor,
-                  fontSize: "0.85em",
-                  marginBottom: 8,
-                }}
+                className="register-password-hints"
+                style={{ color: passwordHintColor }}
               >
-                <ul>
+                <ul className="register-hints-list">
                   <li>Password must contain at least 1 uppercase letter</li>
                   <li>Password must contain at least 1 number</li>
-                  <li>Password must be longer than 6 characters</li>
+                  <li>Password must be longer than 8 characters</li>
                 </ul>
               </div>
               {errors.password && (
-                <div
-                  style={{ color: "red", fontSize: "0.95em", marginBottom: 8 }}
-                >
-                  {errors.password}
-                </div>
+                <div className="register-error-message">{errors.password}</div>
               )}
             </div>
-            <div className="register-confirm-password">
-              <h6>Confirm Password</h6>
-              <div className="field-wrapper">
+
+            {/* Confirm Password field */}
+            <div className="register-field">
+              <h6 className="register-label">
+                Confirm Password <span className="register-required">*</span>
+              </h6>
+              <div className="register-field-wrapper">
                 <PasswordInput
                   value={formData.confirmPassword}
                   name="confirmPassword"
@@ -246,121 +243,141 @@ export default function Register() {
                 />
               </div>
               {errors.confirmPassword && (
-                <div
-                  style={{ color: "red", fontSize: "0.95em", marginBottom: 8 }}
-                >
+                <div className="register-error-message">
                   {errors.confirmPassword}
                 </div>
               )}
             </div>
           </div>
+
           <div className="register-profile">
-            <h4>Profile Information</h4>
-            <div className="register-full-name">
-              <h6>Full Name</h6>
-              <div className="field-wrapper">
-                <FaUserEdit className="input-icon" />
+            <h4 className="register-section-title">Profile Information</h4>
+
+            {/* Full Name field */}
+            <div className="register-field">
+              <h6 className="register-label">
+                Full Name <span className="register-required">*</span>
+              </h6>
+              <div className="register-field-wrapper">
+                <FaUserEdit className="register-input-icon" />
                 <input
                   type="text"
                   name="fullName"
-                  placeholder="Enter your full name"
+                  placeholder="Enter your full name *"
                   value={formData.fullName}
                   onChange={handleChange}
+                  className="register-input"
                 />
               </div>
               {errors.fullName && (
-                <div
-                  style={{ color: "red", fontSize: "0.95em", marginBottom: 8 }}
-                >
-                  {errors.fullName}
-                </div>
+                <div className="register-error-message">{errors.fullName}</div>
               )}
             </div>
-            <div className="field-wrapper-gender">
-              <label>
-                <input
-                  type="radio"
-                  name="sex"
-                  value="Male"
-                  checked={formData.sex === "Male"}
-                  onChange={handleChange}
-                />
-                Male
-              </label>
-              <label style={{ marginLeft: "10px" }}>
-                <input
-                  type="radio"
-                  name="sex"
-                  value="Female"
-                  checked={formData.sex === "Female"}
-                  onChange={handleChange}
-                />
-                Female
-              </label>
+
+            {/* Gender field */}
+            <div className="register-field">
+              <h6 className="register-label">
+                Gender <span className="register-required">*</span>
+              </h6>
+              <div className="register-gender-options">
+                <label className="register-radio-label">
+                  <input
+                    type="radio"
+                    name="sex"
+                    value="Male"
+                    checked={formData.sex === "Male"}
+                    onChange={handleChange}
+                    className="register-radio-input"
+                  />
+                  <span className="register-radio-text">Male</span>
+                </label>
+                <label className="register-radio-label">
+                  <input
+                    type="radio"
+                    name="sex"
+                    value="Female"
+                    checked={formData.sex === "Female"}
+                    onChange={handleChange}
+                    className="register-radio-input"
+                  />
+                  <span className="register-radio-text">Female</span>
+                </label>
+              </div>
+              {errors.sex && (
+                <div className="register-error-message">{errors.sex}</div>
+              )}
             </div>
-            <div className="register-birth">
-              <h6>Birthday</h6>
-              <div className="field-wrapper" id="birthday">
-                <MdCake className="input-icon" />
+
+            {/* Birthday field */}
+            <div className="register-field">
+              <h6 className="register-label">
+                Birthday <span className="register-required">*</span>
+              </h6>
+              <div className="register-field-wrapper">
+                <MdCake className="register-input-icon" />
                 <input
                   type="date"
                   name="birthday"
                   value={formData.birthday}
                   onChange={handleChange}
+                  className="register-input register-date-input"
                 />
               </div>
               {errors.birthday && (
-                <div
-                  style={{ color: "red", fontSize: "0.95em", marginBottom: 8 }}
-                >
-                  {errors.birthday}
-                </div>
+                <div className="register-error-message">{errors.birthday}</div>
               )}
             </div>
-            <div className="register-phone">
-              <h6>Phone Number</h6>
-              <div className="field-wrapper">
-                <FaPhone className="input-icon" />
+
+            {/* Phone Number field */}
+            <div className="register-field">
+              <h6 className="register-label">
+                Phone Number <span className="register-required">*</span>
+              </h6>
+              <div className="register-field-wrapper">
+                <FaPhone className="register-input-icon" />
                 <input
                   type="text"
                   name="phoneNumber"
-                  placeholder="Enter your phone number"
+                  placeholder="Enter your phone number *"
                   value={formData.phoneNumber}
                   onChange={handleChange}
+                  className="register-input"
                 />
               </div>
               {errors.phoneNumber && (
-                <div
-                  style={{ color: "red", fontSize: "0.95em", marginBottom: 8 }}
-                >
+                <div className="register-error-message">
                   {errors.phoneNumber}
                 </div>
               )}
             </div>
-            <h6 style={{ color: "#888", fontWeight: 400, marginTop: 20 }}>
+
+            {/* Optional fields */}
+            <h6 className="register-optional-label">
               The following fields are optional. You can complete them later in
               your profile.
             </h6>
 
-            <div className="register-address">
-              <div className="field-wrapper">
-                <FaLocationDot className="input-icon" />
+            <div className="register-field">
+              <div className="register-field-wrapper">
+                <FaLocationDot className="register-input-icon" />
                 <input
                   type="text"
                   name="address"
                   placeholder="Address"
                   value={formData.address}
                   onChange={handleChange}
+                  className="register-input"
                 />
               </div>
             </div>
-            <div className="register-blood-type">
-              <div className="field-wrapper">
+
+            <div className="register-field">
+              <div className="register-field-wrapper">
                 <select
                   name="bloodType"
                   value={formData.bloodType || ""}
                   onChange={handleChange}
-                  style={{ color: formData.bloodType ? "#333" : "#aaa" }}
+                  className="register-select"
                 >
                   <option value="" disabled>
                     Select Blood Type
@@ -376,37 +393,40 @@ export default function Register() {
                 </select>
               </div>
             </div>
-            <div className="register-occupation">
-              <div className="field-wrapper">
-                <MdWork className="input-icon" />
+
+            <div className="register-field">
+              <div className="register-field-wrapper">
+                <MdWork className="register-input-icon" />
                 <input
                   type="text"
                   name="occupation"
                   placeholder="Occupation"
                   value={formData.occupation}
                   onChange={handleChange}
+                  className="register-input"
                 />
               </div>
             </div>
           </div>
         </div>
-        <div className="field-wrapper-btn">
-          <button className="wrap-button" type="submit">
-            SIGN UP
+
+        <div className="register-button-wrapper">
+          <button
+            className="register-submit-button"
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "SIGNING UP..." : "SIGN UP"}
           </button>
         </div>
-        <div className="back-btn">
-          <a
-            type="button"
-            className="back-btn-back"
-            onClick={() => navigate(-1)}
-            style={{ marginRight: 8 }}
-          >
-            ⟵ Back
-          </a>
+
+        <div className="register-back-link">
+          <Link to="/login" className="register-link">
+            Already have an account? Login here
+          </Link>
         </div>
       </form>
-      <ToastContainer position="top-center" autoClose={2000} />
+      <ToastContainer position="top-center" autoClose={3000} />
     </div>
   );
 }

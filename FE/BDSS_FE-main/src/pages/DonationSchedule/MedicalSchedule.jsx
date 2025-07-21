@@ -28,7 +28,7 @@ export default function MedicalSchedule() {
     bloodNeed: [""], // luôn có ít nhất 1 phần tử rỗng
     date: "",
     numberOfDonor: "",
-    timeSlots: [{ startTime: "", endTime: "" }]
+    timeSlots: [{ startTime: "", endTime: "" }],
   });
 
   const accessToken = sessionStorage.getItem("accessToken");
@@ -36,7 +36,7 @@ export default function MedicalSchedule() {
   useEffect(() => {
     axios
       .get("http://localhost:8080/api/schedule-donations/", {
-        headers: { Authorization: `Bearer ${accessToken}` }
+        headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then((res) => setSchedules(res.data))
       .catch((err) => {
@@ -48,7 +48,7 @@ export default function MedicalSchedule() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -57,28 +57,37 @@ export default function MedicalSchedule() {
     updatedSlots[index][field] = value;
     setFormData((prev) => ({
       ...prev,
-      timeSlots: updatedSlots
+      timeSlots: updatedSlots,
     }));
   };
 
   const addTimeSlot = () => {
     setFormData((prev) => ({
       ...prev,
-      timeSlots: [...prev.timeSlots, { startTime: "", endTime: "" }]
+      timeSlots: [...prev.timeSlots, { startTime: "", endTime: "" }],
     }));
   };
 
   const bloodTypeLabel = (type) => {
     switch (type) {
-      case "A_POSITIVE": return "A+";
-      case "A_NEGATIVE": return "A-";
-      case "B_POSITIVE": return "B+";
-      case "B_NEGATIVE": return "B-";
-      case "AB_POSITIVE": return "AB+";
-      case "AB_NEGATIVE": return "AB-";
-      case "O_POSITIVE": return "O+";
-      case "O_NEGATIVE": return "O-";
-      default: return type;
+      case "A_POSITIVE":
+        return "A+";
+      case "A_NEGATIVE":
+        return "A-";
+      case "B_POSITIVE":
+        return "B+";
+      case "B_NEGATIVE":
+        return "B-";
+      case "AB_POSITIVE":
+        return "AB+";
+      case "AB_NEGATIVE":
+        return "AB-";
+      case "O_POSITIVE":
+        return "O+";
+      case "O_NEGATIVE":
+        return "O-";
+      default:
+        return type;
     }
   };
 
@@ -88,19 +97,22 @@ export default function MedicalSchedule() {
       center: schedule.center,
       address: schedule.location,
       date: schedule.date,
-      bloodNeed: schedule.bloodNeed && schedule.bloodNeed.length > 0 ? schedule.bloodNeed : [""],
+      bloodNeed:
+        schedule.bloodNeed && schedule.bloodNeed.length > 0
+          ? schedule.bloodNeed
+          : [""],
       numberOfDonor: schedule.donorCount,
-      timeSlots: schedule.timeSlots.map(slot => ({
+      timeSlots: schedule.timeSlots.map((slot) => ({
         startTime: slot.startTime,
-        endTime: slot.endTime
-      }))
+        endTime: slot.endTime,
+      })),
     });
     setShowModal(true);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const bloodNeedFiltered = formData.bloodNeed.filter(bn => bn);
+    const bloodNeedFiltered = formData.bloodNeed.filter((bn) => bn);
     try {
       await axios.post(
         "http://localhost:8080/api/schedule-donations",
@@ -110,16 +122,19 @@ export default function MedicalSchedule() {
           bloodNeed: bloodNeedFiltered,
           date: formData.date,
           numberOfDonor: Number(formData.numberOfDonor),
-          timeSlots: formData.timeSlots
+          timeSlots: formData.timeSlots,
         },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
       alert("Schedule created successfully!");
       setShowModal(false);
 
-      const res = await axios.get("http://localhost:8080/api/schedule-donations/", {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      });
+      const res = await axios.get(
+        "http://localhost:8080/api/schedule-donations/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
       setSchedules(res.data);
 
       setFormData({
@@ -128,7 +143,7 @@ export default function MedicalSchedule() {
         bloodNeed: [""],
         date: "",
         numberOfDonor: "",
-        timeSlots: [{ startTime: "", endTime: "" }]
+        timeSlots: [{ startTime: "", endTime: "" }],
       });
     } catch (err) {
       console.error(err.response?.data || err.message);
@@ -136,26 +151,9 @@ export default function MedicalSchedule() {
     }
   };
 
-
-  const handleEditClick = (schedule) => {
-    setEditingId(schedule.scheduleId);
-    setEditForm({
-      center: schedule.center,
-      address: schedule.location,
-      date: schedule.date,
-      numberOfDonor: schedule.donorCount,
-      timeSlots: schedule.timeSlots.map(slot => ({
-        startTime: slot.startTime,
-        endTime: slot.endTime
-      }))
-    });
-    setShowModal(true);
-  };
-
-
   const handleUpdate = async (e) => {
     e.preventDefault();
-    const bloodNeedFiltered = editForm.bloodNeed.filter(bn => bn); // loại bỏ ""
+    const bloodNeedFiltered = editForm.bloodNeed.filter((bn) => bn); // loại bỏ ""
     try {
       await axios.put(
         `http://localhost:8080/api/schedule-donations/${editingId}`,
@@ -167,7 +165,7 @@ export default function MedicalSchedule() {
           date: formatDate(editForm.date), // Đảm bảo định dạng ngày đúng
 
           numberOfDonor: Number(editForm.numberOfDonor),
-          timeSlots: editForm.timeSlots
+          timeSlots: editForm.timeSlots,
         },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
@@ -175,26 +173,33 @@ export default function MedicalSchedule() {
       setShowModal(false);
       setEditingId(null);
 
-      const res = await axios.get("http://localhost:8080/api/schedule-donations/", {
-        headers: { Authorization: `Bearer ${accessToken}` }
-      });
+      const res = await axios.get(
+        "http://localhost:8080/api/schedule-donations/",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
       setSchedules(res.data);
     } catch (err) {
       // Log chi tiết lỗi để kiểm tra
       console.error("Update error:", err.response?.data || err.message);
-      alert("Failed to update schedule.\n" + (err.response?.data?.message || ""));
+      alert(
+        "Failed to update schedule.\n" + (err.response?.data?.message || "")
+      );
     }
   };
 
   const handleDelete = async (scheduleId) => {
-    if (!window.confirm("Are you sure you want to delete this schedule?")) return;
+    if (!window.confirm("Are you sure you want to delete this schedule?"))
+      return;
     try {
       await axios.delete(
         `http://localhost:8080/api/schedule-donations/${scheduleId}`,
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      setSchedules(prev => prev.filter(s => s.scheduleId !== scheduleId));
+      setSchedules((prev) => prev.filter((s) => s.scheduleId !== scheduleId));
     } catch (err) {
+      console.error("Delete error:", err.response?.data || err.message);
       alert("Failed to delete schedule.");
     }
   };
@@ -213,7 +218,7 @@ export default function MedicalSchedule() {
           <div key={idx} className="d-flex gap-2 mb-2 align-items-center">
             <Form.Select
               value={bn}
-              onChange={e => {
+              onChange={(e) => {
                 const newArr = [...arr];
                 newArr[idx] = e.target.value;
                 setArr(newArr);
@@ -280,7 +285,10 @@ export default function MedicalSchedule() {
             <tr key={s.scheduleId}>
               <td>{s.center}</td>
               <td>{s.address || s.location}</td>
-              <td>{s.bloodNeed && s.bloodNeed.map(bt => bloodTypeLabel(bt)).join(", ")}</td>
+              <td>
+                {s.bloodNeed &&
+                  s.bloodNeed.map((bt) => bloodTypeLabel(bt)).join(", ")}
+              </td>
               <td>{s.date}</td>
               <td>
                 {s.timeSlots &&
@@ -294,7 +302,9 @@ export default function MedicalSchedule() {
               <td>
                 <div className="schedule-actions">
                   <button onClick={() => handleEditClick(s)}>Update</button>
-                  <button onClick={() => handleDelete(s.scheduleId)}>Delete</button>
+                  <button onClick={() => handleDelete(s.scheduleId)}>
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
@@ -302,10 +312,18 @@ export default function MedicalSchedule() {
         </tbody>
       </table>
 
-      <Modal show={showModal} onHide={() => { setShowModal(false); setEditingId(null); }}>
+      <Modal
+        show={showModal}
+        onHide={() => {
+          setShowModal(false);
+          setEditingId(null);
+        }}
+      >
         <Form onSubmit={editingId ? handleUpdate : handleSubmit}>
           <Modal.Header closeButton>
-            <Modal.Title>{editingId ? "Update Schedule" : "Add New Schedule"}</Modal.Title>
+            <Modal.Title>
+              {editingId ? "Update Schedule" : "Add New Schedule"}
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form.Group className="mb-3">
@@ -314,7 +332,7 @@ export default function MedicalSchedule() {
                 type="text"
                 name="center"
                 value={editingId ? editForm.center : formData.center}
-                onChange={e =>
+                onChange={(e) =>
                   editingId
                     ? setEditForm({ ...editForm, center: e.target.value })
                     : handleInputChange(e)
@@ -329,7 +347,7 @@ export default function MedicalSchedule() {
                 type="text"
                 name="location"
                 value={editingId ? editForm.address : formData.location}
-                onChange={e =>
+                onChange={(e) =>
                   editingId
                     ? setEditForm({ ...editForm, address: e.target.value })
                     : handleInputChange(e)
@@ -347,7 +365,7 @@ export default function MedicalSchedule() {
                 type="date"
                 name="date"
                 value={editingId ? editForm.date : formData.date}
-                onChange={e =>
+                onChange={(e) =>
                   editingId
                     ? setEditForm({ ...editForm, date: e.target.value })
                     : handleInputChange(e)
@@ -362,10 +380,15 @@ export default function MedicalSchedule() {
                 type="number"
                 name="numberOfDonor"
                 min="1"
-                value={editingId ? editForm.numberOfDonor : formData.numberOfDonor}
-                onChange={e =>
+                value={
+                  editingId ? editForm.numberOfDonor : formData.numberOfDonor
+                }
+                onChange={(e) =>
                   editingId
-                    ? setEditForm({ ...editForm, numberOfDonor: e.target.value })
+                    ? setEditForm({
+                        ...editForm,
+                        numberOfDonor: e.target.value,
+                      })
                     : handleInputChange(e)
                 }
                 required
@@ -379,7 +402,7 @@ export default function MedicalSchedule() {
                     <Form.Control
                       type="time"
                       value={slot.startTime}
-                      onChange={e => {
+                      onChange={(e) => {
                         const updated = [...editForm.timeSlots];
                         updated[idx].startTime = e.target.value;
                         setEditForm({ ...editForm, timeSlots: updated });
@@ -389,7 +412,7 @@ export default function MedicalSchedule() {
                     <Form.Control
                       type="time"
                       value={slot.endTime}
-                      onChange={e => {
+                      onChange={(e) => {
                         const updated = [...editForm.timeSlots];
                         updated[idx].endTime = e.target.value;
                         setEditForm({ ...editForm, timeSlots: updated });
@@ -403,7 +426,7 @@ export default function MedicalSchedule() {
                     <Form.Control
                       type="time"
                       value={slot.startTime}
-                      onChange={e =>
+                      onChange={(e) =>
                         handleTimeSlotChange(idx, "startTime", e.target.value)
                       }
                       required
@@ -411,14 +434,13 @@ export default function MedicalSchedule() {
                     <Form.Control
                       type="time"
                       value={slot.endTime}
-                      onChange={e =>
+                      onChange={(e) =>
                         handleTimeSlotChange(idx, "endTime", e.target.value)
                       }
                       required
                     />
                   </div>
-                ))
-            }
+                ))}
 
             {editingId ? (
               <Button
@@ -427,7 +449,10 @@ export default function MedicalSchedule() {
                 onClick={() =>
                   setEditForm({
                     ...editForm,
-                    timeSlots: [...editForm.timeSlots, { startTime: "", endTime: "" }]
+                    timeSlots: [
+                      ...editForm.timeSlots,
+                      { startTime: "", endTime: "" },
+                    ],
                   })
                 }
               >

@@ -41,7 +41,6 @@ function WeeklyDatePicker({ selectedDate, onChange }) {
     if (currentWeek.getTime() !== startOfSelectedWeek.getTime()) {
       setCurrentWeek(startOfSelectedWeek);
     }
-    // eslint-disable-next-line
   }, [selectedDate]);
 
   const weekDays = getWeekDays(currentWeek);
@@ -197,6 +196,11 @@ export default function BloodRegister() {
           rel="stylesheet"
         ></link>
         <h2 className="blood-form-title">Booking for donation</h2>
+        <div className="booking-progress-selectDate">
+          <div className="progress-step active">1. Select Date</div>
+          <div className="progress-step completed">2. Complete Survey</div>
+          <div className="progress-step completed">3. Review & Confirm</div>
+        </div>
         <div className="blood-form-body">
           <div className="blood-form-steps">
             <p className="blood-form-step active">
@@ -313,7 +317,6 @@ export default function BloodRegister() {
               <div className="button-style-register">
                 <button onClick={goToNext}>Next</button>
               </div>
-
             </div>
           </div>
         </div>

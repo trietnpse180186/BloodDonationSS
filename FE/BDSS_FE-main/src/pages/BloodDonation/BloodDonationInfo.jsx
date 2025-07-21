@@ -25,21 +25,19 @@ function GenderIcon({ sex }) {
   return null;
 }
 
-
-  function formatDateToIso(dateStr) {
-    if (!dateStr) return "";
-    // Nếu đã đúng ISO yyyy-MM-dd
-    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-      return dateStr;
-    }
-    // Nếu là dạng dd/MM/yyyy hoặc dd-MM-yyyy
-    if (/^\d{2}[\/-]\d{2}[\/-]\d{4}$/.test(dateStr)) {
-      const [day, month, year] = dateStr.split(/\/|-/);
-      return `${year}-${month}-${day}`;
-    }
+function formatDateToIso(dateStr) {
+  if (!dateStr) return "";
+  // Nếu đã đúng ISO yyyy-MM-dd
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
     return dateStr;
   }
-
+  // Nếu là dạng dd/MM/yyyy hoặc dd-MM-yyyy
+  if (/^\d{2}[\/-]\d{2}[\/-]\d{4}$/.test(dateStr)) {
+    const [day, month, year] = dateStr.split(/\/|-/);
+    return `${year}-${month}-${day}`;
+  }
+  return dateStr;
+}
 
 export default function BloodDonationInfo({ answers }) {
   const location = useLocation();
@@ -62,20 +60,18 @@ export default function BloodDonationInfo({ answers }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const renderUserData = () => {
-    if (!user)
-      return (
-        <div className="info-card">
-          <h3>User Information</h3>
-          <p>No user information found.</p>
-        </div>
-      );
+    // Không bọc thêm div.info-card nữa
+    if (!user) return <p>No user information found.</p>;
+
     function formatDate(dateStr) {
       if (!dateStr) return "";
       const [year, month, day] = dateStr.split("-");
       return `${day}/${month}/${year}`;
     }
+
+    // Chỉ trả về nội dung, không bọc thêm div.info-card nữa
     return (
-      <div className="info-card">
+      <>
         <h3>User Information</h3>
         <p>
           <strong>Full Name:</strong>
@@ -111,21 +107,20 @@ export default function BloodDonationInfo({ answers }) {
           <strong>Blood Type:</strong>
           <span className="info-value">{user.bloodType}</span>
         </p>
-      </div>
+      </>
     );
   };
 
   const renderBookingData = () => {
     if (!bookingData) return <div>No booking information.</div>;
 
+    // Chỉ trả về nội dung, không bọc thêm div.info-card-booking nữa
     return (
-      <div className="info-card-booking">
+      <>
         <h3>Booking Information</h3>
         <p>
-
-          <strong>Date:</strong> 
+          <strong>Date:</strong>
           <span className="info-value">{bookingData.date}</span>
-
         </p>
         <p>
           <strong>Location:</strong>
@@ -141,14 +136,15 @@ export default function BloodDonationInfo({ answers }) {
             {bookingData.timeSlot.startTime} - {bookingData.timeSlot.endTime}
           </span>
         </p>
-      </div>
+      </>
     );
   };
 
   const renderSurveyData = () => {
     if (!surveyData) return <div>No survey information.</div>;
+    // Loại bỏ div.info-card-survey bên ngoài
     return (
-      <div className="info-card-survey">
+      <>
         <h3>Blood Donation Survey</h3>
         {surveyData.map((q, idx) => (
           <div key={q.questionId} style={{ marginBottom: 10 }}>
@@ -156,16 +152,17 @@ export default function BloodDonationInfo({ answers }) {
               {bloodRegister.find((bq) => bq.id === q.questionId)?.text ||
                 `Question ${idx + 1}`}
             </i>
+            {/* Thay đổi màu đỏ sang xanh */}
             <div
               className="answer"
-              style={{ marginLeft: 16, color: "#b30000" }}
+              style={{ marginLeft: 16, color: "#2c5282" }}
             >
               {getLabelByValue(q.questionId, q.answer)}
               {q.additionalInfo ? `: ${q.additionalInfo}` : ""}
             </div>
           </div>
         ))}
-      </div>
+      </>
     );
   };
 
@@ -211,28 +208,60 @@ export default function BloodDonationInfo({ answers }) {
     }
   };
 
+  // Phần return của component
   return (
     <>
       <Navbar />
       <div className="donation-info-container">
-        <h2>Blood Donation Registration Information</h2>
-        <div className="donation-grid">
-          <div className="info-1">
-            {renderUserData()}
-            {renderBookingData()}
+        <h2>Blood Donation Registration Confirmation</h2>
+
+        {/* Summary box */}
+        <div className="booking-summary">
+          <div className="summary-icon">
+            <i className="fas fa-calendar-check"></i>
           </div>
-          <div className="info-2">{renderSurveyData()}</div>
+          <div className="summary-content">
+            <h3>Booking Summary</h3>
+            <p>
+              <strong>{bookingData?.center}</strong> • {bookingData?.date} •{" "}
+              {bookingData?.timeSlot?.startTime} -{" "}
+              {bookingData?.timeSlot?.endTime}
+            </p>
+          </div>
         </div>
-        <div
-          className="actions-button"
-          style={{ textAlign: "center", marginTop: 32 }}
-        >
+
+        {/* Progress indicator */}
+        <div className="booking-progress">
+          <div className="progress-step completed">1. Select Date</div>
+          <div className="progress-step completed">2. Complete Survey</div>
+          <div className="progress-step active">3. Review & Confirm</div>
+        </div>
+
+        {/* Appointment Details */}
+        <h3 className="section-title">1. Appointment Details</h3>
+        <div className="info-card-booking highlight-card">
+          {renderBookingData()}
+        </div>
+
+        {/* Personal Information */}
+        <h3 className="section-title">2. Personal Information</h3>
+        <div className="info-card">{renderUserData()}</div>
+
+        {/* Health Questionnaire */}
+        <h3 className="section-title">3. Health Questionnaire</h3>
+        <div className="info-card-survey">{renderSurveyData()}</div>
+
+        {/* Action buttons */}
+        <div className="actions-button">
+          <button className="button-secondary" onClick={() => navigate(-1)}>
+            Back to Survey
+          </button>
           <button
-            className="button-style"
+            className="button-primary"
             onClick={handleConfirmBooking}
             disabled={isSubmitting}
           >
-            {isSubmitting ? "Submitting..." : "Confirm Booking"}
+            {isSubmitting ? "Processing..." : "Confirm Booking"}
           </button>
         </div>
       </div>

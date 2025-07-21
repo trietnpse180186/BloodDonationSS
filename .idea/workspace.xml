@@ -2,9 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="17510ae8-a878-42d4-9f31-5033d155c51e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/BloodRegister.css" beforeDir="false" afterPath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/BloodRegister.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/BloodRegister.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/BloodRegister.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/BloodRegister2.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/BloodRegister2.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BE/BloodDonation/src/main/java/com/swpproject/BloodDonation/service/AuthenticationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/BE/BloodDonation/src/main/java/com/swpproject/BloodDonation/service/AuthenticationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/BDSS_FE-main/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/FE/BDSS_FE-main/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/BDSS_FE-main/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/FE/BDSS_FE-main/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/Admin/AdminPage.css" beforeDir="false" afterPath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/Admin/AdminPage.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/Admin/AdminPage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/Admin/AdminPage.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/Blog/Blog.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/Blog/Blog.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/FAQ/FAQ.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/FE/BDSS_FE-main/src/pages/FAQ/FAQ.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,9 +18,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2ycWQm4GeIHW3KXY46nbiCaZyJh" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -27,8 +31,9 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "TruongLeThanhNha",
-    "ignore.virus.scanning.warn.message": "true"
+    "git-widget-placeholder": "TrungHieu",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "D:/BloodDonationSS"
   }
 }]]></component>
   <component name="TaskManager">
