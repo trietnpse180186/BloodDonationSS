@@ -1,283 +1,453 @@
+/* Register Page Container */
 .register-page {
-  display: flex;
-  justify-content: center;
-  background: #fdfdfd;
   min-height: 100vh;
-  font-family: "Segoe UI", sans-serif;
-}
-
-.register-form {
-  background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 22px;
-  width: 100%;
-  max-width: 980px;
-}
-
-.register-form h1 {
-  text-align: center;
-  color: #b30000;
-  font-weight: bold;
-  margin-bottom: 28px;
-}
-
-.register-flex-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-}
-
-.register-account,
-.register-profile {
-  flex: 1;
-  min-width: 300px;
-}
-.register-account {
-  padding-right: 20px;
-  border-right: 1px solid #e0e0e0;
-}
-
-h6 {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
-  font-weight: 500;
+  justify-content: center;
+  padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.field-wrapper {
+/* Loading Overlay */
+.register-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Form Container */
+.register-form {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Title */
+.register-title {
+  text-align: center;
+  color: #b30000;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+}
+
+/* Layout */
+.register-flex-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 30px;
+}
+
+/* Section Titles */
+.register-section-title {
+  color: #333;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #b30000;
+  padding-bottom: 8px;
+}
+
+/* Field Container */
+.register-field {
+  margin-bottom: 20px;
+}
+
+/* Labels */
+.register-label {
+  display: block;
+  color: #333;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.register-required {
+  color: #b30000;
+  margin-left: 2px;
+}
+
+.register-optional-label {
+  color: #666;
+  font-size: 0.9rem;
+  font-weight: 400;
+  margin: 20px 0 15px 0;
+  font-style: italic;
+}
+
+/* Field Wrapper */
+.register-field-wrapper {
   position: relative;
   width: 100%;
-  margin-bottom: 16px;
 }
 
-.input-icon {
+/* Input Styles */
+.register-input {
+  width: 100%;
+  padding: 14px 16px 14px 50px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  outline: none;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  box-sizing: border-box;
+  color: #333;
+}
+
+.register-input:focus {
+  border-color: #b30000;
+  box-shadow: 0 0 0 4px rgba(179, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.register-input:hover {
+  border-color: #999;
+}
+
+.register-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Date Input */
+.register-date-input {
+  color: #333 !important;
+}
+
+.register-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  color: #b30000;
+}
+
+/* Icons */
+.register-input-icon {
   position: absolute;
   left: 16px;
   top: 50%;
   transform: translateY(-50%);
   color: #b30000;
-  font-size: 20px;
+  font-size: 16px;
   pointer-events: none;
+  z-index: 1;
 }
 
-.field-wrapper .input-icon {
-  font-size: 20px;
-}
-
-.field-wrapper input[type="date"] {
-  padding-left: 48px;
-}
-
-.field-wrapper input[type="text"] {
-  padding-left: 48px;
-}
-
-.field-wrapper input {
+/* Password Input Group */
+.register-input-group {
+  position: relative;
   width: 100%;
-  padding-left: 42px;
-  border: 1px solid #925353;
+}
+
+.register-password-input {
+  width: 100%;
+  padding: 14px 50px 14px 50px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
   font-size: 14px;
   outline: none;
-  transition: border 0.2s;
-}
-
-.field-wrapper input:focus {
-  border-color: #b30000;
-}
-
-.field-wrapper-gender {
-  display: flex;
-  gap: 30px;
-  margin-bottom: 16px;
-  padding-top: 5px;
-}
-
-.field-wrapper-gender label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 16px;
-  position: relative;
-  padding-left: 30px;
-}
-
-/* Ẩn input radio gốc */
-.field-wrapper-gender input[type="radio"] {
-  opacity: 0;
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-
-/* Tạo radio button tùy chỉnh */
-.field-wrapper-gender label::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  border: 2px solid #b30000;
-  border-radius: 50%;
-  background-color: #fff;
-}
-
-/* Tạo dấu chấm bên trong khi được chọn */
-.field-wrapper-gender input[type="radio"]:checked + label::after {
-  content: "";
-  position: absolute;
-  left: 5px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: #b30000;
-}
-
-.register-hidden {
-  display: none;
-}
-
-.field-wrapper-btn {
-  text-align: center;
-  margin-top: 18px;
-}
-
-.wrap-button {
-  background-color: #b30000;
-  color: white;
-  padding: 12px 28px;
-  border: none;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.back-btn {
-  text-align: center;
-  margin-top: 16px;
-}
-
-.back-btn-back {
-  color: #333;
-  text-decoration: none;
-  font-size: 14px;
-  display: inline-block;
-  padding: 6px 12px;
   transition: all 0.3s ease;
+  background-color: #fff;
+  box-sizing: border-box;
 }
 
-.show-password-btn {
+.register-password-input:focus {
+  border-color: #b30000;
+  box-shadow: 0 0 0 4px rgba(179, 0, 0, 0.1);
+}
+
+.register-show-password-btn {
   position: absolute;
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  font-size: 20px;
-  width: 28px;
-  height: 28px;
+  color: #666;
+  font-size: 16px;
+  z-index: 2;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s ease;
+}
+
+.register-show-password-btn:hover {
+  color: #b30000;
+  background-color: rgba(179, 0, 0, 0.1);
+}
+
+/* Password Hints */
+.register-password-hints {
+  margin-top: 8px;
+  font-size: 0.85em;
+  transition: color 0.3s ease;
+}
+
+.register-hints-list {
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+}
+
+.register-hints-list li {
+  margin-bottom: 2px;
+}
+
+
+.register-gender-options {
+  display: flex;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.register-radio-label {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #888;
-  transition: color 0.2s;
+  gap: 8px;
+  cursor: pointer;
+  padding: 10px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  font-weight: 500;
+  min-width: 80px;
+  justify-content: flex-start;
+  position: relative;
 }
 
-.show-password-btn:active,
-.show-password-btn:focus {
-  color: #b30600;
+.register-radio-label:hover {
+  border-color: #b30000;
+  background-color: rgba(179, 0, 0, 0.05);
 }
 
-.show-password-btn svg {
-  width: 20px;
-  height: 20px;
-  display: block;
+.register-radio-input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #b30000;
+  flex-shrink: 0; /* Thêm để radio không bị co lại */
+  position: relative; /* Thêm để kiểm soát vị trí */
 }
 
-.input-group input[type="password"],
-.input-group input[type="text"] {
-  font-size: 1em;
-  height: 49px;
-  line-height: 44px;
+.register-radio-text {
+  flex: 1;
+  text-align: left;
+  line-height: 18px; /* Căn chỉnh với height của radio */
+}
+
+.register-radio-input:checked + .register-radio-text {
+  color: #b30000;
+  font-weight: 600;
+}
+
+.register-radio-label:has(.register-radio-input:checked) {
+  border-color: #b30000;
+  background-color: rgba(179, 0, 0, 0.1);
+  color: #b30000;
+}
+
+/* Nếu vẫn không được, sử dụng cách này để reset radio button style */
+.register-radio-input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: #b30000;
+  flex-shrink: 0;
+  appearance: none; /* Reset default style */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  background-color: white;
+  position: relative;
+  vertical-align: middle;
+}
+
+.register-radio-input:checked {
+  border-color: #b30000;
+  background-color: #b30000;
+}
+
+.register-radio-input:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.register-radio-input:focus {
+  outline: 2px solid rgba(179, 0, 0, 0.3);
+  outline-offset: 2px;
+}
+
+/* Select Dropdown */
+.register-select {
+  width: 100%;
+  padding: 14px 16px 14px 50px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+  background-color: #fff;
+  cursor: pointer;
+  color: #333;
   box-sizing: border-box;
 }
 
-/* Định dạng dấu * cho các trường bắt buộc */
-.required-field {
-  color: #ff0000; /* Màu đỏ tươi */
-  font-weight: bold;
-  font-size: 16px;
-  margin-left: 4px;
+.register-select:focus {
+  border-color: #b30000;
+  box-shadow: 0 0 0 4px rgba(179, 0, 0, 0.1);
 }
 
-@media screen and (max-width: 960px) {
-  .register-account {
-    border-right: none;
-    padding-left: 20px;
-    border-bottom: 1px solid #e0e0e0;
+.register-select option {
+  color: #333;
+  background-color: #fff;
+}
+
+.register-select option:disabled {
+  color: #aaa;
+}
+
+/* Submit Button */
+.register-button-wrapper {
+  text-align: center;
+  margin: 30px 0 20px 0;
+}
+
+.register-submit-button {
+  background: linear-gradient(135deg, #b30000, #d62d20);
+  color: white;
+  border: none;
+  padding: 16px 40px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(179, 0, 0, 0.3);
+}
+
+.register-submit-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a00000, #c62d20);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(179, 0, 0, 0.4);
+}
+
+.register-submit-button:active {
+  transform: translateY(0);
+}
+
+.register-submit-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Back Link */
+.register-back-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.register-link {
+  color: #b30000;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.register-link:hover {
+  color: #a00000;
+  text-decoration: underline;
+}
+
+/* Error Messages */
+.register-error-message {
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .register-form {
+    padding: 20px;
+    margin: 10px;
+  }
+
+  .register-flex-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .register-title {
+    font-size: 2rem;
+  }
+
+  .register-input,
+  .register-password-input,
+  .register-select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 16px 16px 16px 50px;
+  }
+
+  .register-submit-button {
+    width: 100%;
+    padding: 18px;
+  }
+
+  .register-gender-options {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .register-radio-label {
+    justify-content: flex-start;
   }
 }
 
-/* Sửa vị trí icon trong input-group-register */
-.input-group-register {
-  position: relative;
-  margin-bottom: 20px;
-  width: 100%;
-}
+@media screen and (max-width: 480px) {
+  .register-page {
+    padding: 10px;
+  }
 
-.input-group-register input,
-.input-group-register select {
-  width: 100%;
-  padding: 12px 12px 12px 40px;
-  border: 1px solid #ddd;
-  border-radius: 0; /* Bỏ border-radius */
-  height: 45px;
-  font-size: 16px;
-}
+  .register-form {
+    padding: 15px;
+  }
 
-.input-group-register .input-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #b30000; /* Màu đỏ đậm */
-  z-index: 1;
-}
+  .register-title {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+  }
 
-/* Sửa vị trí icon trong input-group (cho password) */
-.input-group {
-  position: relative;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.input-group .password-input {
-  width: 100%;
-  padding: 12px 12px 12px 40px;
-  padding-right: 40px;
-  border: 1px solid #ddd;
-  border-radius: 0; /* Bỏ border-radius */
-  height: 45px;
-  font-size: 16px;
-}
-
-.input-group .input-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #b30000;
-  z-index: 1;
-}
-
-.input-group .show-password-btn {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #b30000;
+  .register-section-title {
+    font-size: 1.2rem;
+  }
 }
