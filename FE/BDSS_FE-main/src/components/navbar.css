@@ -1,10 +1,10 @@
 .navbar {
   position: relative;
-  z-index: 2001;
   display: flex;
   padding: 0px 30px;
   background-color: #cf4327;
   min-height: 13vh;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); /* Thêm đổ bóng rõ hơn */
 }
 .navbar-item {
   display: flex;
@@ -132,3 +132,5 @@
     font-size: 0.98em;
   }
 }
+
+
