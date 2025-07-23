@@ -209,7 +209,7 @@ public class EmergencyBloodController {
     public ResponseEntity<List<EmergencyDonorDTO>> getUserDonationHistory(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String userId = jwt.getClaim("userId");
-        
+
         List<EmergencyDonorDTO> history = emergencyService.getUserDonationHistory(userId);
         return ResponseEntity.ok(history);
     }

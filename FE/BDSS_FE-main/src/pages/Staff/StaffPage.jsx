@@ -9,8 +9,18 @@ import Notification from "../Notification/Notification";
 import FAQManager from "../FAQ/FAQManager";
 import AppointmentManager from "../Appointment/AppointmentManager";
 
-import { FaBell, FaBlog, FaCalendarAlt, FaEnvelope, FaQuestionCircle, FaSignOutAlt, FaUserFriends } from "react-icons/fa";
+import {
+  FaBell,
+  FaBlog,
+  FaCalendarAlt,
+  FaEnvelope,
+  FaFileMedical,
+  FaQuestionCircle,
+  FaSignOutAlt,
+  FaUserFriends,
+} from "react-icons/fa";
 import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
+import EmergencyRequest from "../Emergency/EmergencyRequest";
 
 const menuItems = [
   { key: "schedule", label: "Donation Schedule", icon: <FaCalendarAlt /> },
@@ -18,6 +28,11 @@ const menuItems = [
     key: "appointment",
     label: "Donor Appointment Manager",
     icon: <FaUserFriends />,
+  },
+  {
+    key: "emergency",
+    label: "Emergency Donation Request",
+    icon: <FaFileMedical />,
   },
   { key: "blog", label: "Blog Manager", icon: <FaBlog /> },
   { key: "faq", label: "FAQ Manager", icon: <FaQuestionCircle /> },
@@ -43,6 +58,12 @@ export default function StaffPage() {
         return (
           <div className="admin-content-box">
             <AppointmentManager />
+          </div>
+        );
+      case "emergency":
+        return (
+          <div className="staff-content-box">
+            <EmergencyRequest />
           </div>
         );
       case "blog":
