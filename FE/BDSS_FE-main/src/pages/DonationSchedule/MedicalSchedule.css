@@ -2,147 +2,287 @@
   max-width: 1500px;
   margin: 36px auto;
   padding: 32px 24px 28px 24px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
 }
 
 .medical-schedule h2 {
   text-align: center;
-  color: #1d4a76;
-  font-size: 2.2rem;
-  font-weight: bold;
-  margin-bottom: 24px;
-  letter-spacing: 1px;
+  color: #e63946;
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.medical-schedule h2:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, #e63946, #ff8c94);
+  border-radius: 3px;
 }
 
 /* Styling for the "Add New Schedule" button */
 .schedule-actions {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   text-align: right;
 }
 
 .schedule-actions button {
-  background-color: #db230b;
+  background: linear-gradient(135deg, #e63946, #d62828);
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 4px;
-  font-weight: 500;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1.05rem;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 8px rgba(214, 40, 40, 0.2);
 }
 
 .schedule-actions button:hover {
-  background-color: #b51c09;
-  transform: translateY(-2px);
-  box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, #d62828, #c81c1c);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(214, 40, 40, 0.3);
+}
+
+.schedule-actions button:active {
+  transform: translateY(-1px);
 }
 
 /* Table styling */
 .medical-schedule table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+/* Highlight each time slot (row) */
+.medical-schedule tr {
+  transition: all 0.3s ease;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.medical-schedule tr:last-child {
+  border-bottom: none;
 }
 
 .medical-schedule th,
 .medical-schedule td {
-  border: 1px solid black;
-  padding: 10px 8px;
+  padding: 16px 12px;
   text-align: center;
+  transition: background-color 0.2s;
+  border: none;
+  border-right: 1px solid #e0e0e0;
+}
 
+.medical-schedule td:last-child,
+.medical-schedule th:last-child {
+  border-right: none;
 }
 
 .medical-schedule th {
-  background: none;
-  color: black;
-  font-weight: bold;
+  background: #1d3557;
+  color: white;
+  font-weight: 600;
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 18px 12px;
+}
+
+/* Simpler row hover effect */
+.medical-schedule tr:hover {
+  background-color: #f1f4f9;
 }
 
 /* Action buttons in table rows */
 .medical-schedule td button {
   width: 100%;
-  margin: 0 5px;
-  padding: 6px 12px;
+  margin: 3px 0;
+  padding: 10px 12px;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .medical-schedule td button:first-child {
-  background-color: #4285f4;
+  background: linear-gradient(135deg, #4285f4, #356ac3);
   color: white;
 }
 
 .medical-schedule td button:first-child:hover {
-  background-color: #3367d6;
+  background: linear-gradient(135deg, #356ac3, #2a569e);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(53, 106, 195, 0.3);
 }
 
 .medical-schedule td button:last-child {
-  background-color: #ea4335;
+  background: linear-gradient(135deg, #ea4335, #d33426);
   color: white;
 }
 
 .medical-schedule td button:last-child:hover {
-  background-color: #d33426;
+  background: linear-gradient(135deg, #d33426, #b62b1e);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(211, 52, 38, 0.3);
+}
+
+.medical-schedule td button:active {
+  transform: translateY(0);
+}
+
+/* Time slot information */
+.medical-schedule td.time-slot-info {
+  font-weight: 500;
+  color: #1d3557;
+}
+
+.medical-schedule td div {
+  margin-bottom: 6px;
+  padding: 6px 0;
+  transition: all 0.2s;
+  border-radius: 4px;
+}
+
+.medical-schedule td div:hover {
+  background-color: rgba(29, 53, 87, 0.05);
+  padding-left: 4px;
 }
 
 /* Modal form buttons */
 .modal-footer button {
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: 5px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .modal-footer button:last-child {
-  background-color: #db230b;
+  background: linear-gradient(135deg, #e63946, #d62828);
   color: white;
   border: none;
 }
 
 .modal-footer button:last-child:hover {
-  background-color: #b51c09;
+  background: linear-gradient(135deg, #d62828, #c81c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(214, 40, 40, 0.25);
 }
 
 /* Add Time Slot button */
 button.btn-secondary {
-  background-color: #6c757d;
+  background: linear-gradient(135deg, #6c757d, #5a6268);
   color: white;
   border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  margin-top: 10px;
-  transition: background-color 0.2s;
+  padding: 10px 16px;
+  border-radius: 5px;
+  margin-top: 12px;
+  font-weight: 500;
+  transition: all 0.3s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 button.btn-secondary:hover {
-  background-color: #5a6268;
+  background: linear-gradient(135deg, #5a6268, #495057);
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
-.medical-schedule td {
-  color: #333;
+/* Thêm vào cuối file hoặc trong khu vực CSS cho bảng */
+
+.medical-schedule td.time-column {
+  min-width: 160px; /* Độ rộng tối thiểu */
+  white-space: nowrap;
 }
 
-.medical-schedule td div {
-  margin-bottom: 2px;
+.medical-schedule td.time-column div {
+  padding: 6px 0;
+  margin-bottom: 8px;
+}
+
+/* Thêm cho header tương ứng */
+.medical-schedule th:nth-child(5) {
+  min-width: 160px;
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .medical-schedule h2 {
+    font-size: 2.1rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .medical-schedule {
+    padding: 24px 16px;
+  }
+  
+  .medical-schedule h2 {
+    font-size: 1.9rem;
+  }
 }
 
 @media (max-width: 700px) {
   .medical-schedule {
-    padding: 10px 2px;
+    padding: 16px 8px;
+    margin: 20px auto;
   }
+  
+  .medical-schedule h2 {
+    font-size: 1.7rem;
+    margin-bottom: 20px;
+  }
+  
   .medical-schedule table,
   .medical-schedule th,
   .medical-schedule td {
-    font-size: 0.98em;
-    padding: 7px 2px;
+    font-size: 0.9rem;
+    padding: 8px 4px;
   }
   
   .medical-schedule td button {
-    padding: 4px 8px;
-    font-size: 0.9em;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    margin: 2px 0;
+  }
+  
+  .schedule-actions button {
+    padding: 10px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .medical-schedule h2 {
+    font-size: 1.5rem;
+  }
+  
+  .medical-schedule table,
+  .medical-schedule th,
+  .medical-schedule td {
+    font-size: 0.8rem;
+    padding: 6px 2px;
   }
 }

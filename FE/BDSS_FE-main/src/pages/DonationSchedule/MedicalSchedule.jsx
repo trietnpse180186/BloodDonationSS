@@ -20,6 +20,11 @@ export default function MedicalSchedule() {
     }
     return dateStr;
   };
+  const formatTime = (timeString) => {
+  if (!timeString) return "";
+  if (/^\d{2}:\d{2}:\d{2}$/.test(timeString)) return timeString.substring(0, 5);
+  return timeString;
+};
   // Khi gửi lên BE:
 
   const [formData, setFormData] = useState({
@@ -290,11 +295,11 @@ export default function MedicalSchedule() {
                   s.bloodNeed.map((bt) => bloodTypeLabel(bt)).join(", ")}
               </td>
               <td>{s.date}</td>
-              <td>
+              <td className="time-column">
                 {s.timeSlots &&
                   s.timeSlots.map((slot, idx) => (
                     <div key={idx}>
-                      {slot.startTime} - {slot.endTime}
+                      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                     </div>
                   ))}
               </td>
