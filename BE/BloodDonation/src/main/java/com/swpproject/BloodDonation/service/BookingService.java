@@ -32,6 +32,7 @@ public class BookingService {
     private final ScheduleDonationRepository scheduleDonationRepository;
     private final UserRepository userRepository;
     private final TimeSlotRepository timeSlotRepository;
+    private final CertificateRepository certificateRepository;
     private final DonationReportService donationReportService;
 
 
@@ -213,6 +214,14 @@ public class BookingService {
         Status statusEnum = Status.valueOf(status);
         booking.setStatus(statusEnum);
         bookingDonationRepository.save(booking);
+        if (booking.getStatus() == Status.COMPLETED) {
+            Certificate cert = new Certificate();
+            cert.setUser(booking.getDonor());
+            cert.setDonationDate(booking.getDateDonation());
+            cert.setBookingId(booking.getDonationId());
+            certificateRepository.save(cert);
+        }
+
     }
 
     public List<BookingResponse> getAllBookings() {

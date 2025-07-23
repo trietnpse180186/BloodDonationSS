@@ -1,0 +1,159 @@
+package com.swpproject.BloodDonation.service;
+
+import com.swpproject.BloodDonation.dto.response.NotificationMessageDTO;
+import com.swpproject.BloodDonation.dto.request.NotificationRequest;
+import com.swpproject.BloodDonation.entity.Notification;
+import com.swpproject.BloodDonation.entity.User;
+import com.swpproject.BloodDonation.enums.NotificationStatus;
+import com.swpproject.BloodDonation.repository.NotificationRepository;
+import com.swpproject.BloodDonation.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+/**
+ * Service xử lý gửi thông báo real-time qua WebSocket
+ */
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class WebSocketNotificationService {
+
+    private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final UserLocationService userLocationService;
+    private final NotificationEventPublisher eventPublisher;
+
+    /**
+     * Lắng nghe sự kiện thông báo đã được đọc
+     */
+    @EventListener
+    @Async
+    public void handleNotificationReadEvent(NotificationReadEvent event) {
+        String userId = event.getUserId();
+        String notificationId = event.getNotificationId();
+
+        // Gửi thông báo WebSocket
+        notifyNotificationRead(userId, notificationId);
+    }
+
+    /**
+     * Gửi thông báo trực tiếp cho một người dùng
+     */
+    @Async
+    public void sendDirectNotification(String userId, String title, String message,
+                                       String actionUrl, String type, String priority) {
+        try {
+            // Tìm thông báo trong DB (đã được tạo bởi NotificationService)
+            Notification notification = notificationRepository.findByDonor_UserIDAndTitleAndDetail(
+                    userId, title, message).orElse(null);
+
+            if (notification != null) {
+                // Tìm thông tin người gửi (hệ thống)
+                String senderUsername = "system";
+                String senderName = "Hệ thống";
+                String senderRole = "SYSTEM";
+
+                NotificationMessageDTO wsMessage = NotificationMessageDTO.builder()
+                        .id(notification.getId())
+                        .title(title)
+                        .message(message)
+                        .type(type != null ? type : "NOTIFICATION")
+                        .actionUrl(actionUrl)
+                        .timestamp(LocalDateTime.of(notification.getDate(), notification.getTime()))
+                        .isRead(notification.getStatus() == NotificationStatus.READ)
+                        .priority(priority != null ? priority : "NORMAL")
+                        .build();
+
+                // Gửi đến người dùng cụ thể qua WebSocket
+                messagingTemplate.convertAndSendToUser(
+                        userId,
+                        "/queue/notifications",
+                        wsMessage
+                );
+
+                log.info("Đã gửi thông báo WebSocket đến người dùng: {}", userId);
+            }
+        } catch (Exception e) {
+            log.error("Lỗi khi gửi thông báo WebSocket: {}", e.getMessage());
+        }
+    }
+
+    /**
+     * Gửi thông báo đến tất cả người dùng trong phạm vi bán kính
+     */
+    @Async
+    public void notifyNearbyUsers(double latitude, double longitude, double radiusKm,
+                                  String title, String message, String actionUrl,
+                                  String type, String bloodType) {
+        try {
+            // Tìm người dùng trong phạm vi
+            List<User> nearbyUsers = userLocationService.findNearbyUsers(
+                    latitude, longitude, radiusKm, bloodType
+            );
+
+            log.info("Tìm thấy {} người dùng trong bán kính {}km", nearbyUsers.size(), radiusKm);
+
+            // Gửi thông báo cho từng người
+            for (User user : nearbyUsers) {
+                // Tính khoảng cách để thêm vào thông báo
+                double distance = userLocationService.calculateDistance(
+                        latitude, longitude, user.getLatitude(), user.getLongitude()
+                );
+
+                String distanceMessage = message + "\n(Cách vị trí của bạn khoảng "
+                        + String.format("%.1f", distance) + " km)";
+
+                // Gửi thông báo với priority cao hơn cho người gần hơn
+                String priority = distance <= 5 ? "HIGH" : "NORMAL";
+
+                // Phát ra event thay vì gọi trực tiếp
+                eventPublisher.publishNotificationCreatedEvent(
+                        user.getUserID(),
+                        title,
+                        distanceMessage,
+                        actionUrl,
+                        type,
+                        priority
+                );
+            }
+        } catch (Exception e) {
+            log.error("Lỗi khi gửi thông báo đến người dùng gần đó: {}", e.getMessage());
+        }
+    }
+
+    /**
+     * Thông báo đã đọc một notification
+     */
+    public void notifyNotificationRead(String userId, String notificationId) {
+        messagingTemplate.convertAndSendToUser(
+                userId,
+                "/queue/notifications/read",
+                notificationId
+        );
+    }
+
+    /**
+     * Gửi thông báo broadcast đến tất cả người dùng
+     */
+    public void broadcastNotification(String title, String message, String type) {
+        NotificationMessageDTO notification = NotificationMessageDTO.builder()
+                .id(UUID.randomUUID().toString())
+                .title(title)
+                .message(message)
+                .type(type)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        messagingTemplate.convertAndSend("/topic/notifications", notification);
+    }
+}

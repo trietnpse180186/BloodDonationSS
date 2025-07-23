@@ -2,21 +2,39 @@ import "./AppointmentDetail.css";
 import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
+import Certificate from "../Certificate/Certificate";
+
 import { getUserIdFromToken } from "../../helpers/getUserById";
 import axios from "../../helpers/axiosInstance";
+import { Button} from "react-bootstrap";
+import { Modal } from "antd";
 
-
-  function formatDate(isoDate) {
-    if (!isoDate) return "";
-    const [year, month, day] = isoDate.split("-");
-    return `${day}-${month}-${year}`;
-  }
+function formatDate(isoDate) {
+  if (!isoDate) return "";
+  const [year, month, day] = isoDate.split("-");
+  return `${day}-${month}-${year}`;
+}
 export default function AppointmentDetail() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
   const token = sessionStorage.getItem("accessToken");
   const userId = getUserIdFromToken();
+
+  const openCertificateModal = (bookingId) => {
+    setSelectedBookingId(bookingId);
+    setIsModalVisible(true);
+    document.body.classList.add("modal-open");
+  };
+
+  const closeCertificateModal = () => {
+    setSelectedBookingId(null);
+    setIsModalVisible(false);
+    document.body.classList.remove("modal-open");
+  };
 
   const renderStatus = (status) => {
     switch (status) {
@@ -28,8 +46,11 @@ export default function AppointmentDetail() {
         return <span className="status-cancelled">Cancelled</span>;
       case "COMPLETED":
         return <span className="status-complete">Complete</span>;
+      default:
+        return null;
     }
   };
+
   useEffect(() => {
     if (!userId) {
       setError("User information not found.");
@@ -98,7 +119,7 @@ export default function AppointmentDetail() {
                   <th>Location</th>
                   <th>Time Slot</th>
                   <th>Status</th>
-                  <th></th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -112,13 +133,16 @@ export default function AppointmentDetail() {
                       {item.endTime?.slice(0, 5)}
                     </td>
                     <td>{renderStatus(item.status)}</td>
-                    <td
-                      style={{
-                        minWidth: "50px",
-                        padding: "0",
-                        translate: "-20px 0px",
-                      }}
-                    >
+                    <td>
+                      {item.status === "COMPLETED" && (
+                        <Button
+                          type="primary"
+                          size="small"
+                          onClick={() => openCertificateModal(item.bookingId)}
+                        >
+                          View Certificate
+                        </Button>
+                      )}
                       {item.status === "PENDING" && (
                         <button
                           className="cancel-button"
@@ -132,6 +156,28 @@ export default function AppointmentDetail() {
                 ))}
               </tbody>
             </table>
+
+            <Modal
+              title=""
+              open={isModalVisible}
+              onCancel={closeCertificateModal}
+              footer={null}
+              zIndex={1050}
+              className="certificate-modal"
+              getContainer={document.body}
+              width="77%"
+              centered
+               maskClosable={false}
+              closeIcon={
+                <div className="custom-close-button">
+                  <span>x</span>
+                </div>
+              }
+            >
+              {selectedBookingId && (
+                <Certificate bookingId={selectedBookingId} />
+              )}
+            </Modal>
           </div>
         )}
       </div>

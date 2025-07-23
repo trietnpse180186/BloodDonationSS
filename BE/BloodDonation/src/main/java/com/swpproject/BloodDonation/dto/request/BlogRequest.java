@@ -10,7 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlogRequest {
-
     private String title;
     private String content;
     private String imageUrl;

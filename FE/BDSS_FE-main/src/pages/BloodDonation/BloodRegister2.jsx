@@ -14,7 +14,7 @@ export default function BloodRegister2() {
 
   const handleSubmit = () => {
     if (!allAnswered) {
-      toast.error("Vui lòng trả lời tất cả câu hỏi");
+      toast.error("Please complete all answers.");
       return;
     }
     const surveyData = bloodRegister.map((q) => ({
@@ -22,6 +22,7 @@ export default function BloodRegister2() {
       answer: answers[q.id],
       additionalInfo: inputs[q.id] || "",
     }));
+    toast.success("Save Survey Data Successfully!");
     navigate("/blood-donation-info", {
       state: {
         bookingData: bookingData,
@@ -52,6 +53,11 @@ export default function BloodRegister2() {
       ></link>
       <div className="blood-form-container">
         <h2 className="bloodform-title">Đặt lịch hiến máu</h2>
+        <div className="booking-progress-survey">
+          <div className="progress-step completed">1. Select Date</div>
+          <div className="progress-step active">2. Complete Survey</div>
+          <div className="progress-step completed">3. Review & Confirm</div>
+        </div>
         <div className="bloodform-steps">
           <p className="bloodform-step ">
             <i className="bi bi-calendar-check-fill"></i>Thời gian & Địa điểm
@@ -132,6 +138,7 @@ export default function BloodRegister2() {
         </div>
       </div>
       <Footer />
+      <ToastContainer />
     </>
   );
 }

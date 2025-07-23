@@ -32,6 +32,10 @@ export default function UserUpdate() {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [selectedFileName, setSelectedFileName] = useState("");
+  const [errors, setErrors] = useState({
+    birthday: "",
+    phoneNumber: "",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,6 +67,35 @@ export default function UserUpdate() {
       ...prev,
       [name]: value,
     }));
+
+    // Validate ngay khi người dùng thay đổi giá trị
+    if (name === "birthday") {
+      if (!isOver18Years(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          birthday: "You must be at least 18 years old.",
+        }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          birthday: "",
+        }));
+      }
+    }
+
+    if (name === "phoneNumber") {
+      if (!isValidPhoneNumber(value)) {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: "Phone number must be exactly 10 digits.",
+        }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          phoneNumber: "",
+        }));
+      }
+    }
   };
 
   const handleFileChange = (e) => {
@@ -80,6 +113,29 @@ export default function UserUpdate() {
     const token = sessionStorage.getItem("accessToken");
     if (!userId || !token) {
       toast.error("User not found or not logged in");
+      return;
+    }
+
+    // Kiểm tra các trường trước khi submit
+    let formIsValid = true;
+    const newErrors = { birthday: "", phoneNumber: "" };
+
+    // Validate birthday
+    if (formData.birthday && !isOver18Years(formData.birthday)) {
+      newErrors.birthday = "You must be at least 18 years old.";
+      formIsValid = false;
+    }
+
+    // Validate phoneNumber
+    if (formData.phoneNumber && !isValidPhoneNumber(formData.phoneNumber)) {
+      newErrors.phoneNumber = "Phone number must be exactly 10 digits.";
+      formIsValid = false;
+    }
+
+    setErrors(newErrors);
+
+    if (!formIsValid) {
+      toast.error("Please correct the errors before submitting.");
       return;
     }
 
@@ -110,6 +166,29 @@ export default function UserUpdate() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Hàm kiểm tra người dùng có trên 18 tuổi không
+  const isOver18Years = (birthDate) => {
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+
+    return age >= 18;
+  };
+
+  // Hàm kiểm tra định dạng số điện thoại
+  const isValidPhoneNumber = (phone) => {
+    // Kiểm tra số điện thoại có đúng 10 chữ số
+    return /^\d{10}$/.test(phone);
   };
 
   return (
@@ -159,29 +238,34 @@ export default function UserUpdate() {
               value={formData.birthday}
               onChange={handleChange}
             />
+            {errors.birthday && (
+              <div className="error-message">{errors.birthday}</div>
+            )}
           </div>
 
           <div className="field-wrapper-gender">
-            <label>
+            <div>
               <input
+                id="male-radio"
                 type="radio"
                 name="sex"
                 value="Male"
                 checked={formData.sex === "Male"}
                 onChange={handleChange}
               />
-              Male
-            </label>
-            <label style={{ marginLeft: "10px" }}>
+              <label htmlFor="male-radio">Male</label>
+            </div>
+            <div>
               <input
+                id="female-radio"
                 type="radio"
                 name="sex"
                 value="Female"
                 checked={formData.sex === "Female"}
                 onChange={handleChange}
               />
-              Female
-            </label>
+              <label htmlFor="female-radio">Female</label>
+            </div>
           </div>
 
           <div className="field-wrapper">
@@ -191,7 +275,11 @@ export default function UserUpdate() {
               name="phoneNumber"
               value={formData.phoneNumber}
               onChange={handleChange}
+              placeholder="Phone Number (10 digits)"
             />
+            {errors.phoneNumber && (
+              <div className="error-message">{errors.phoneNumber}</div>
+            )}
           </div>
 
           <div className="field-wrapper">

@@ -1,10 +1,10 @@
 .navbar {
   position: relative;
-  z-index: 2001;
   display: flex;
   padding: 0px 30px;
   background-color: #cf4327;
   min-height: 13vh;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15); /* Thêm đổ bóng rõ hơn */
 }
 .navbar-item {
   display: flex;
@@ -86,6 +86,12 @@
 
   padding: 0 10px;
 }
+#nav-profile-dropdown {
+  margin-right: 30px;
+  display: flex;
+  align-items: center;
+}
+
 @media (max-width: 800px) {
   .navbar {
     flex-direction: column;
@@ -106,6 +112,7 @@
     width: 100%;
   }
 }
+
 @media (max-width: 500px) {
   .navbar {
     padding: 0 2vw;
@@ -125,3 +132,5 @@
     font-size: 0.98em;
   }
 }
+
+

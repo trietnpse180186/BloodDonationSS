@@ -41,6 +41,7 @@ public class JwtService {
                 .subject(user.getEmail())
                 .issueTime(new Date())
                 .claim("userId", user.getUserID())
+                .claim("bloodType", user.getBloodType())
                 .claim("authorities", authorityName)
                 .claim("fullName",user.getFullName())
                 .expirationTime(new Date(Instant.now().plus(30, ChronoUnit.MINUTES).toEpochMilli()))

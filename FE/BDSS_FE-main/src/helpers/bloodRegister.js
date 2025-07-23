@@ -166,4 +166,8 @@ export function getLabelByValue(questionId, value) {
   const option = question.options.find((opt) => opt.value === value);
   return option ? option.label : "";
 }
+export function getQuestionTextById(questionId) {
+  const question = bloodRegister.find((q) => q.id === questionId);
+  return question ? question.text : "";
+}
 export default bloodRegister;

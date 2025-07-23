@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+        import java.util.List;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -49,7 +49,7 @@ public class BookingController {
         return ResponseEntity.ok(updatedBooking);
     }
 
-    // xem tất cả các lịch hẹn
+    // xem tất cả các lịch hẹn9
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<List<BookingResponse>> getAllBookings() {

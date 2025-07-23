@@ -123,7 +123,7 @@ public class ScheduleDonationService {
         existingSchedule.setAddress(request.getAddress());
         existingSchedule.setCenter(request.getCenter());
         existingSchedule.setNumberOfDonor(request.getNumberOfDonor());
-        existingSchedule.setBloodNeed(Arrays.asList(request.getBloodNeed().toArray(new BloodType[0])));
+        existingSchedule.setBloodNeed(request.getBloodNeed());
         existingSchedule.setUpdateBy(currentUser);
 
         // Xóa tất cả time slot hiện có

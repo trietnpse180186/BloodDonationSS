@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Setter
 @Builder
 public class UserDetailResponse {
+    private String userId;
     private String fullName;
     private String email;
     private String phoneNumber;
