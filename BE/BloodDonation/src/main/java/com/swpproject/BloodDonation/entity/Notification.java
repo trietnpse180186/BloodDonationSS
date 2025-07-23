@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "notification")
+@Table(name = "notifications")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,20 +20,20 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    @Column(columnDefinition = "NVARCHAR(4000)")
+    @Column(nullable = false, columnDefinition = "NVARCHAR(255)")
     private String title;
 
-    @Column(columnDefinition = "NVARCHAR(4000)")
+    @Column(nullable = false, columnDefinition = "NVARCHAR(4000)")
     private String detail;
 
     private LocalDate date;
+
     private LocalTime time;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "Status")
-    private NotificationStatus status = NotificationStatus.UNREAD;
-
     @ManyToOne
-    @JoinColumn(name = "userid")
+    @JoinColumn(name = "donor_id")
     private User donor;
+
+    @Enumerated(EnumType.STRING)
+    private NotificationStatus status = NotificationStatus.UNREAD;
 }

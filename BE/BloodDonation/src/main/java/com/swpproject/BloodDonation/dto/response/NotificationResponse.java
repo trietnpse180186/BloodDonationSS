@@ -1,22 +1,25 @@
 package com.swpproject.BloodDonation.dto.response;
 
+import com.swpproject.BloodDonation.enums.NotificationStatus;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.UUID;
 
+@Data
 @Builder
-@Getter
-@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class NotificationResponse {
     private String id;
     private String title;
     private String detail;
     private LocalDate date;
     private LocalTime time;
-    private String status;
     private String donorId;
+    private String donorName;
+    private NotificationStatus status;
 }

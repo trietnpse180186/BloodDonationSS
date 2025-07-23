@@ -49,7 +49,7 @@ public class BookingController {
         return ResponseEntity.ok(updatedBooking);
     }
 
-    // xem tất cả các lịch hẹn
+    // xem tất cả các lịch hẹn9
     @GetMapping("/all")
     @PreAuthorize("hasAuthority('STAFF')")
     public ResponseEntity<List<BookingResponse>> getAllBookings() {

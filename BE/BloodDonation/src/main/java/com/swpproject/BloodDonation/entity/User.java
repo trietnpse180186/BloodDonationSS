@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -62,6 +63,18 @@ public class User implements UserDetails {
     @Column(name = "IsActive")
     private boolean active = true; // Mặc định là đang hoạt động
 
+    // Thông tin vị trí (adding 22/07/2025)
+    @Column(name = "latitude")
+    private Double latitude;
+
+    @Column(name = "longitude")
+    private Double longitude;
+
+    @Column(name = "location_last_updated")
+    private LocalDateTime locationLastUpdated;
+
+    @Column(name = "allow_location_tracking")
+    private boolean allowLocationTracking = false;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
