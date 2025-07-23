@@ -14,12 +14,17 @@ import java.util.List;
 
 @Repository
 public interface BookingDonationRepository extends JpaRepository<BookingDonation, String> {
+
     List<BookingDonation> findByDonor(User donor);
     List<BookingDonation> findByScheduleDonation(ScheduleDonation schedule);
-    @Modifying
-    @Transactional
+
     @Query("SELECT b.donationId FROM BookingDonation b WHERE b.donor.userID = :userId")
     List<String> findDonationIdsByDonorUserId(@Param("userId") String userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM survey WHERE donation_id IN (:donationIds)", nativeQuery = true)
+    void deleteSurveysByDonationIds(@Param("donationIds") List<String> donationIds);
 
     @Modifying
     @Transactional

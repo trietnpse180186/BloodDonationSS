@@ -8,10 +8,7 @@ import com.swpproject.BloodDonation.entity.Role;
 import com.swpproject.BloodDonation.entity.User;
 import com.swpproject.BloodDonation.entity.UserHasRole;
 import com.swpproject.BloodDonation.enums.Status;
-import com.swpproject.BloodDonation.repository.BookingDonationRepository;
-import com.swpproject.BloodDonation.repository.RoleRepository;
-import com.swpproject.BloodDonation.repository.UserHasRoleRepository;
-import com.swpproject.BloodDonation.repository.UserRepository;
+import com.swpproject.BloodDonation.repository.*;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +34,8 @@ public class AdminService {
     private final BookingDonationRepository bookingDonationRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
-
+    private final NotificationRepository  notificationRepository;
+    private final SurveyRepository surveyRepository;
     // Lượng máu tiêu chuẩn cho mỗi lần hiến (tính bằng lít)
     private static final double STANDARD_DONATION_VOLUME = 0.35;
 
@@ -193,6 +191,14 @@ public class AdminService {
             if (!isStaff) {
                 throw new RuntimeException("Người dùng không phải là nhân viên");
             }
+            notificationRepository.deleteByUserId(staffId);
+            List<String> donationIds = bookingDonationRepository.findDonationIdsByDonorUserId(staffId);
+
+            if (!donationIds.isEmpty()) {
+                bookingDonationRepository.deleteSurveysByDonationIds(donationIds);
+            }
+            bookingDonationRepository.deleteByDonorId(staffId);
+
             // Lấy tất cả vai trò của nhân viên
             List<UserHasRole> userHasRoles = userHasRoleRepository.findByUser(staff);
 

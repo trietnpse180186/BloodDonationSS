@@ -241,7 +241,7 @@ export default function AdminPage() {
                   <td>
                     <div className="action-buttons">
                       <button className="view-btn" onClick={() => setModalUser(user)}>View</button>
-                      <button className="delete-btn" onClick={() => handleDelete(user.id)}>Delete</button>
+                      <button className="delete-btn" onClick={() => handleDelete(user.userId)}>Delete</button>
                    
                     </div>
                   </td>
