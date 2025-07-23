@@ -196,7 +196,7 @@ export default function Notification() {
               <td>
                 {note.date} - {note.time}
               </td>
-              <td>{note.donorId}</td>
+              <td>{note.donorName}</td>
             </tr>
           ))}
         </tbody>
