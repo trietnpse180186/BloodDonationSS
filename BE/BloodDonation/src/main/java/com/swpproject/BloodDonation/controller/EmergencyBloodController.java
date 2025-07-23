@@ -19,6 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,7 +43,9 @@ public class EmergencyBloodController {
             @RequestBody EmergencyBloodRequestDTO request,
             Authentication authentication) {
 
-        String staffId = authentication.getName();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String staffId = jwt.getClaim("userId");
+
         EmergencyBloodResponseDTO response = emergencyService.createEmergencyRequest(request, staffId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -57,7 +60,9 @@ public class EmergencyBloodController {
             @RequestBody EmergencyBloodRequestDTO updateDTO,
             Authentication authentication) {
 
-        String staffId = authentication.getName();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String staffId = jwt.getClaim("userId");
+
         EmergencyBloodResponseDTO updated = emergencyService.updateEmergencyRequest(requestId, updateDTO, staffId);
         return ResponseEntity.ok(updated);
     }
@@ -97,7 +102,9 @@ public class EmergencyBloodController {
             @PathVariable String requestId,
             Authentication authentication) {
 
-        String donorId = authentication.getName();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String donorId = jwt.getClaim("userId");
+
         EmergencyDonorDTO response = emergencyService.respondToEmergencyRequest(requestId, donorId);
         return ResponseEntity.ok(response);
     }
@@ -113,7 +120,9 @@ public class EmergencyBloodController {
             @RequestParam(required = false) String notes,
             Authentication authentication) {
 
-        String staffId = authentication.getName();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String staffId = jwt.getClaim("userId");
+
         emergencyService.updateDonationStatus(donationId, status, notes, staffId);
         return ResponseEntity.ok().build();
     }
@@ -128,7 +137,9 @@ public class EmergencyBloodController {
             @RequestParam(required = false) String reason,
             Authentication authentication) {
 
-        String staffId = authentication.getName();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String staffId = jwt.getClaim("userId");
+
         emergencyService.cancelEmergencyRequest(requestId, reason, staffId);
         return ResponseEntity.noContent().build();
     }
@@ -196,7 +207,9 @@ public class EmergencyBloodController {
     @GetMapping("/user/history")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<EmergencyDonorDTO>> getUserDonationHistory(Authentication authentication) {
-        String userId = authentication.getName();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String userId = jwt.getClaim("userId");
+        
         List<EmergencyDonorDTO> history = emergencyService.getUserDonationHistory(userId);
         return ResponseEntity.ok(history);
     }
