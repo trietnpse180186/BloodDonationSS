@@ -104,6 +104,7 @@ public class EmergencyBloodController {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String donorId = jwt.getClaim("userId");
+
         EmergencyDonorDTO response = emergencyService.respondToEmergencyRequest(requestId, donorId);
         return ResponseEntity.ok(response);
     }
@@ -121,6 +122,7 @@ public class EmergencyBloodController {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String staffId = jwt.getClaim("userId");
+
         emergencyService.updateDonationStatus(donationId, status, notes, staffId);
         return ResponseEntity.ok().build();
     }
@@ -137,6 +139,7 @@ public class EmergencyBloodController {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String staffId = jwt.getClaim("userId");
+
         emergencyService.cancelEmergencyRequest(requestId, reason, staffId);
         return ResponseEntity.noContent().build();
     }
@@ -206,6 +209,7 @@ public class EmergencyBloodController {
     public ResponseEntity<List<EmergencyDonorDTO>> getUserDonationHistory(Authentication authentication) {
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String userId = jwt.getClaim("userId");
+
         List<EmergencyDonorDTO> history = emergencyService.getUserDonationHistory(userId);
         return ResponseEntity.ok(history);
     }
