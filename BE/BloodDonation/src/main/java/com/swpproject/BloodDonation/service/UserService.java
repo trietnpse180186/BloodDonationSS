@@ -40,7 +40,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final MailService mailService;
-
+    private final EmergencyDonationRepository emergencyDonationRepository;
     // Tạo người dùng mới với vai trò mặc định là DONOR
     public UserCreationResponse createUser(UserCreationRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -205,12 +205,15 @@ public class UserService {
             }
             certificateRepository.deleteByUserId(userId);   
             // 3. Xóa notifications
-            notificationRepository.deleteByUserId(userId);
+            notificationRepository.deleteByDonorId(userId);
 
             // 4. Xóa booking donations
             bookingDonationRepository.deleteByDonorId(userId);
 
-            // 5. Cuối cùng xóa user
+            // 5. Xóa emergency donation
+            emergencyDonationRepository.deleteByDonorId(userId);
+
+            // 6. Xóa user
             userRepository.deleteById(userId);
 
         } catch (Exception e) {

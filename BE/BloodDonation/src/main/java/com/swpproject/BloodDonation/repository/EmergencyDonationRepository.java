@@ -4,7 +4,9 @@ import com.swpproject.BloodDonation.entity.EmergencyBloodRequest;
 import com.swpproject.BloodDonation.entity.EmergencyDonation;
 import com.swpproject.BloodDonation.entity.User;
 import com.swpproject.BloodDonation.enums.EmergencyDonationStatus;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,6 +25,11 @@ public interface EmergencyDonationRepository extends JpaRepository<EmergencyDona
     List<EmergencyDonation> findByStatus(EmergencyDonationStatus status);
 
     List<EmergencyDonation> findByResponseTimeBetween(LocalDateTime start, LocalDateTime end);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM EmergencyDonation e WHERE e.donor.id = :userId")
+    void deleteByDonorId(@Param("userId") String userId);
 
     @Query("SELECT COUNT(ed) FROM EmergencyDonation ed WHERE ed.emergencyRequest.requestId = :requestId " +
             "AND ed.status IN ('CONFIRMED', 'COMPLETED')")
