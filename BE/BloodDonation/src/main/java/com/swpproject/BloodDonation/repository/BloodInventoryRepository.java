@@ -38,4 +38,32 @@ public interface BloodInventoryRepository extends JpaRepository<BloodInventory, 
 
     @Query("SELECT SUM(b.quantity) FROM BloodInventory b WHERE b.bloodType = :bloodType AND b.receivedDate BETWEEN :start AND :end")
     Double getReceivedBloodByTypeInPeriod(@Param("bloodType") BloodType bloodType, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
+
+    @Query("SELECT b FROM BloodInventory b WHERE b.status = 'USED' AND b.bloodType = :bloodType AND b.lastUpdatedTime BETWEEN :startDate AND :endDate ORDER BY b.lastUpdatedTime DESC")
+    List<BloodInventory> findUsageHistoryByBloodType(
+            @Param("bloodType") BloodType bloodType,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT b FROM BloodInventory b WHERE b.status = 'USED' AND b.lastUpdatedTime BETWEEN :startDate AND :endDate ORDER BY b.lastUpdatedTime DESC")
+    List<BloodInventory> findAllUsageHistory(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT SUM(b.quantity) FROM BloodInventory b WHERE b.bloodType = :bloodType AND b.status = 'USED' AND b.lastUpdatedTime BETWEEN :startDate AND :endDate")
+    Double getUsageAmountByBloodTypeAndDateRange(
+            @Param("bloodType") BloodType bloodType,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT COUNT(b) FROM BloodInventory b WHERE b.bloodType = :bloodType AND b.status = 'USED' AND b.lastUpdatedTime BETWEEN :startDate AND :endDate")
+    Integer getUsageCountByBloodTypeAndDateRange(
+            @Param("bloodType") BloodType bloodType,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
+    @Query("SELECT b.bloodType, SUM(b.quantity) FROM BloodInventory b WHERE b.status = 'USED' AND b.lastUpdatedTime BETWEEN :startDate AND :endDate GROUP BY b.bloodType")
+    List<Object[]> getUsageStatsByDateRange(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
 }

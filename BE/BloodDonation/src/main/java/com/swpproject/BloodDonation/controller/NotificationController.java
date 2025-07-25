@@ -5,6 +5,7 @@ import com.swpproject.BloodDonation.dto.response.NotificationResponse;
 import com.swpproject.BloodDonation.service.NotificationEventPublisher;
 import com.swpproject.BloodDonation.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequestMapping("/notifications")
 @CrossOrigin
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationController {
 
     private final NotificationService notificationService;

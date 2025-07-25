@@ -1,5 +1,9 @@
 package com.swpproject.BloodDonation.service;
 
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.nimbusds.jose.util.Resource;
 import com.swpproject.BloodDonation.dto.request.BloodUsageRequestDTO;
 import com.swpproject.BloodDonation.dto.response.BloodInventoryDetailDTO;
 import com.swpproject.BloodDonation.dto.response.BloodInventorySummaryDTO;
@@ -12,12 +16,22 @@ import com.swpproject.BloodDonation.repository.BloodInventoryRepository;
 import com.swpproject.BloodDonation.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -356,6 +370,7 @@ public class BloodInventoryService {
                 .status(inventory.getStatus())
                 .notes(inventory.getNotes())
                 .daysUntilExpiry((int) daysUntilExpiry)
+                .lastUpdatedTime(inventory.getLastUpdatedTime()) // Thêm dòng này
                 .build();
     }
 
@@ -569,5 +584,325 @@ public class BloodInventoryService {
                 batchId, batch.getBloodType(), batch.getTotalQuantity(), deletedBy);
 
         batchRepository.delete(batch);
+    }
+
+    // Thêm phương thức này vào BloodInventoryService hiện có
+
+    /**
+     * Lấy lịch sử sử dụng máu
+     */
+    public List<BloodInventoryDetailDTO> getBloodUsageHistory(BloodType bloodType, LocalDateTime startDate, LocalDateTime endDate) {
+        List<BloodInventory> usageHistory;
+
+        if (bloodType != null) {
+            usageHistory = inventoryRepository.findUsageHistoryByBloodType(bloodType, startDate, endDate);
+        } else {
+            usageHistory = inventoryRepository.findAllUsageHistory(startDate, endDate);
+        }
+
+        return usageHistory.stream()
+                .map(this::mapToDetailDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Map<String, Object> getBloodUsageStatistics(LocalDateTime startDate, LocalDateTime endDate) {
+        Map<String, Object> statistics = new HashMap<>();
+
+        // Lấy thống kê theo từng nhóm máu
+        List<Object[]> usageStats = inventoryRepository.getUsageStatsByDateRange(startDate, endDate);
+
+        // Tính tổng lượng máu đã sử dụng
+        double totalUsed = 0.0;
+        Map<String, Double> usageByBloodType = new HashMap<>();
+
+        for (Object[] stat : usageStats) {
+            BloodType bloodType = (BloodType) stat[0];
+            Double amount = ((Number) stat[1]).doubleValue();
+            usageByBloodType.put(bloodType.toString(), amount);
+            totalUsed += amount;
+        }
+
+        // Thêm tổng lượng sử dụng
+        statistics.put("totalUsed", totalUsed);
+        statistics.put("usageByBloodType", usageByBloodType);
+
+        // Thêm thông tin chi tiết cho từng nhóm máu
+        Map<String, Map<String, Object>> bloodTypeDetails = new HashMap<>();
+
+        for (BloodType bloodType : BloodType.values()) {
+            Map<String, Object> detail = new HashMap<>();
+
+            Double amount = inventoryRepository.getUsageAmountByBloodTypeAndDateRange(bloodType, startDate, endDate);
+            if (amount == null) amount = 0.0;
+
+            Integer count = inventoryRepository.getUsageCountByBloodTypeAndDateRange(bloodType, startDate, endDate);
+            if (count == null) count = 0;
+
+            detail.put("amount", amount);
+            detail.put("count", count);
+            detail.put("units", amount / 350.0); // Đơn vị tiêu chuẩn
+
+            bloodTypeDetails.put(bloodType.toString(), detail);
+        }
+
+        statistics.put("bloodTypeDetails", bloodTypeDetails);
+
+        // Thêm khoảng thời gian cho thống kê
+        statistics.put("startDate", startDate);
+        statistics.put("endDate", endDate);
+
+        return statistics;
+    }
+    // Thêm phương thức tạo báo cáo
+
+    /**
+     * Tạo báo cáo PDF về lịch sử sử dụng máu
+     */
+    public FileSystemResource generateUsagePdfReport(BloodType bloodType, LocalDateTime startDate, LocalDateTime endDate) {
+        try {
+            // Lấy dữ liệu lịch sử
+            List<BloodInventoryDetailDTO> usageHistory = getBloodUsageHistory(bloodType, startDate, endDate);
+            Map<String, Object> statistics = getBloodUsageStatistics(startDate, endDate);
+
+            // Tạo file tạm thời
+            File tempFile = File.createTempFile("blood-usage-report", ".pdf");
+
+            // Sử dụng thư viện tạo PDF (ví dụ: iText)
+            Document document = new Document(PageSize.A4);
+            PdfWriter.getInstance(document, new FileOutputStream(tempFile));
+
+            document.open();
+
+            // Thêm tiêu đề
+            com.itextpdf.text.Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 16);
+            Paragraph title = new Paragraph("Báo Cáo Lịch Sử Sử Dụng Máu", titleFont);
+            title.setAlignment(Element.ALIGN_CENTER);
+            document.add(title);
+
+            // Thêm thông tin khoảng thời gian
+            document.add(new Paragraph("\nThời gian: " +
+                    startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " - " +
+                    endDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+
+            if (bloodType != null) {
+                document.add(new Paragraph("Nhóm máu: " + bloodType.toString()));
+            }
+
+            document.add(new Paragraph("\n"));
+
+            // Thêm thống kê tổng quan
+            document.add(new Paragraph("Thống kê tổng quan:", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+            document.add(new Paragraph("Tổng lượng máu đã sử dụng: " + statistics.get("totalUsed") + " ml"));
+            document.add(new Paragraph("Số lần sử dụng: " + usageHistory.size()));
+            document.add(new Paragraph("\n"));
+
+            // Thêm bảng thống kê theo nhóm máu
+            PdfPTable statsTable = new PdfPTable(4);
+            statsTable.setWidthPercentage(100);
+
+            // Thêm header cho bảng
+            statsTable.addCell("Nhóm máu");
+            statsTable.addCell("Số lượng (ml)");
+            statsTable.addCell("Số lần sử dụng");
+            statsTable.addCell("Đơn vị máu");
+
+            // Thêm dữ liệu cho bảng
+            Map<String, Map<String, Object>> bloodTypeDetails =
+                    (Map<String, Map<String, Object>>) statistics.get("bloodTypeDetails");
+
+            for (Map.Entry<String, Map<String, Object>> entry : bloodTypeDetails.entrySet()) {
+                if (bloodType != null && !entry.getKey().equals(bloodType.toString())) {
+                    continue;
+                }
+
+                Map<String, Object> detail = entry.getValue();
+                Double amount = (Double) detail.get("amount");
+                if (amount > 0) {
+                    statsTable.addCell(entry.getKey());
+                    statsTable.addCell(String.format("%.0f", amount));
+                    statsTable.addCell(String.valueOf(detail.get("count")));
+                    statsTable.addCell(String.format("%.1f", (Double) detail.get("units")));
+                }
+            }
+
+            document.add(statsTable);
+            document.add(new Paragraph("\n"));
+
+            // Thêm bảng chi tiết lịch sử sử dụng
+            document.add(new Paragraph("Chi tiết lịch sử sử dụng:", FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
+
+            PdfPTable detailTable = new PdfPTable(6);
+            detailTable.setWidthPercentage(100);
+
+            // Thêm header cho bảng chi tiết
+            detailTable.addCell("ID");
+            detailTable.addCell("Nhóm máu");
+            detailTable.addCell("Số lượng");
+            detailTable.addCell("Ngày sử dụng");
+            detailTable.addCell("Nguồn máu");
+            detailTable.addCell("Ghi chú");
+
+            // Thêm dữ liệu cho bảng chi tiết
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            for (BloodInventoryDetailDTO item : usageHistory) {
+                detailTable.addCell(item.getId());
+                detailTable.addCell(item.getBloodType().toString());
+                detailTable.addCell(String.format("%.0f ml", item.getQuantity()));
+                detailTable.addCell(item.getLastUpdatedTime() != null ?
+                        item.getLastUpdatedTime().format(formatter) : "");
+                detailTable.addCell(item.getSource() != null ? item.getSource() : "");
+                detailTable.addCell(item.getNotes() != null ? item.getNotes() : "");
+            }
+
+            document.add(detailTable);
+
+            // Đóng tài liệu
+            document.close();
+
+            // Trả về file dưới dạng Resource
+            return new FileSystemResource(tempFile);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi tạo báo cáo PDF: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Tạo báo cáo Excel về lịch sử sử dụng máu
+     */
+    public FileSystemResource generateUsageExcelReport(BloodType bloodType, LocalDateTime startDate, LocalDateTime endDate) {
+        try {
+            // Lấy dữ liệu lịch sử
+            List<BloodInventoryDetailDTO> usageHistory = getBloodUsageHistory(bloodType, startDate, endDate);
+            Map<String, Object> statistics = getBloodUsageStatistics(startDate, endDate);
+
+            // Tạo workbook mới
+            XSSFWorkbook workbook = new XSSFWorkbook();
+
+            // Tạo sheet thống kê
+            XSSFSheet statsSheet = workbook.createSheet("Thống kê");
+
+            // Tạo các style
+            CellStyle headerStyle = workbook.createCellStyle();
+            org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerStyle.setFont(headerFont);
+
+            // Thêm tiêu đề báo cáo
+            Row titleRow = statsSheet.createRow(0);
+            Cell titleCell = titleRow.createCell(0);
+            titleCell.setCellValue("BÁO CÁO LỊCH SỬ SỬ DỤNG MÁU");
+            titleCell.setCellStyle(headerStyle);
+
+            // Thêm thông tin khoảng thời gian
+            Row dateRow = statsSheet.createRow(1);
+            dateRow.createCell(0).setCellValue("Thời gian: " +
+                    startDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + " - " +
+                    endDate.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+
+            if (bloodType != null) {
+                Row bloodTypeRow = statsSheet.createRow(2);
+                bloodTypeRow.createCell(0).setCellValue("Nhóm máu: " + bloodType.toString());
+            }
+
+            // Thêm thống kê tổng quan
+            int rowNum = bloodType != null ? 3 : 2;
+
+            Row overviewHeaderRow = statsSheet.createRow(rowNum++);
+            overviewHeaderRow.createCell(0).setCellValue("THỐNG KÊ TỔNG QUAN");
+
+            Row totalRow = statsSheet.createRow(rowNum++);
+            totalRow.createCell(0).setCellValue("Tổng lượng máu đã sử dụng (ml)");
+            totalRow.createCell(1).setCellValue(Double.parseDouble(statistics.get("totalUsed").toString()));
+
+            Row countRow = statsSheet.createRow(rowNum++);
+            countRow.createCell(0).setCellValue("Số lần sử dụng");
+            countRow.createCell(1).setCellValue(usageHistory.size());
+
+            // Thêm header cho bảng thống kê theo nhóm máu
+            rowNum++;
+            Row statsHeaderRow = statsSheet.createRow(rowNum++);
+            statsHeaderRow.createCell(0).setCellValue("Nhóm máu");
+            statsHeaderRow.createCell(1).setCellValue("Số lượng (ml)");
+            statsHeaderRow.createCell(2).setCellValue("Số lần sử dụng");
+            statsHeaderRow.createCell(3).setCellValue("Đơn vị máu");
+
+            // Thêm dữ liệu cho bảng thống kê
+            Map<String, Map<String, Object>> bloodTypeDetails =
+                    (Map<String, Map<String, Object>>) statistics.get("bloodTypeDetails");
+
+            for (Map.Entry<String, Map<String, Object>> entry : bloodTypeDetails.entrySet()) {
+                if (bloodType != null && !entry.getKey().equals(bloodType.toString())) {
+                    continue;
+                }
+
+                Map<String, Object> detail = entry.getValue();
+                Double amount = (Double) detail.get("amount");
+
+                if (amount > 0) {
+                    Row dataRow = statsSheet.createRow(rowNum++);
+                    dataRow.createCell(0).setCellValue(entry.getKey());
+                    dataRow.createCell(1).setCellValue(amount);
+                    dataRow.createCell(2).setCellValue((Integer) detail.get("count"));
+                    dataRow.createCell(3).setCellValue((Double) detail.get("units"));
+                }
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < 4; i++) {
+                statsSheet.autoSizeColumn(i);
+            }
+
+            // Tạo sheet chi tiết
+            XSSFSheet detailSheet = workbook.createSheet("Chi tiết");
+
+            // Header cho sheet chi tiết
+            Row detailHeaderRow = detailSheet.createRow(0);
+            detailHeaderRow.createCell(0).setCellValue("ID");
+            detailHeaderRow.createCell(1).setCellValue("Nhóm máu");
+            detailHeaderRow.createCell(2).setCellValue("Số lượng (ml)");
+            detailHeaderRow.createCell(3).setCellValue("Ngày sử dụng");
+            detailHeaderRow.createCell(4).setCellValue("Nguồn máu");
+            detailHeaderRow.createCell(5).setCellValue("Người hiến");
+            detailHeaderRow.createCell(6).setCellValue("Ghi chú");
+
+            // Thêm style cho header
+            for (int i = 0; i < 7; i++) {
+                detailHeaderRow.getCell(i).setCellStyle(headerStyle);
+            }
+
+            // Thêm dữ liệu chi tiết
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+            rowNum = 1;
+            for (BloodInventoryDetailDTO item : usageHistory) {
+                Row row = detailSheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(item.getId());
+                row.createCell(1).setCellValue(item.getBloodType().toString());
+                row.createCell(2).setCellValue(item.getQuantity());
+                row.createCell(3).setCellValue(item.getLastUpdatedTime() != null ?
+                        item.getLastUpdatedTime().format(formatter) : "");
+                row.createCell(4).setCellValue(item.getSource() != null ? item.getSource() : "");
+                row.createCell(5).setCellValue(item.getDonorName() != null ? item.getDonorName() : "");
+                row.createCell(6).setCellValue(item.getNotes() != null ? item.getNotes() : "");
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < 7; i++) {
+                detailSheet.autoSizeColumn(i);
+            }
+
+            // Ghi workbook vào file tạm thời
+            File tempFile = File.createTempFile("blood-usage-report", ".xlsx");
+            FileOutputStream fileOut = new FileOutputStream(tempFile);
+            workbook.write(fileOut);
+            fileOut.close();
+            workbook.close();
+
+            // Trả về file dưới dạng Resource
+            return new FileSystemResource(tempFile);
+        } catch (Exception e) {
+            // log và ném lại exception để caller xử lý
+            log.error("Lỗi khi tạo báo cáo Excel", e);
+            throw new RuntimeException("Lỗi khi tạo báo cáo Excel: " + e.getMessage(), e);
+        }
     }
 }
