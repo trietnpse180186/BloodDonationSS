@@ -34,34 +34,6 @@ public class WebSocketNotificationService {
     private final NotificationEventPublisher eventPublisher;
 
     /**
-     * Gửi notification qua WebSocket (CHỈ gửi, không tạo trong DB)
-     */
-    public void sendNotificationToUser(String userId, String notificationId,
-                                       String title, String message) {
-        try {
-            NotificationMessageDTO wsMessage = NotificationMessageDTO.builder()
-                    .id(notificationId)
-                    .title(title)
-                    .message(message)
-                    .type("NOTIFICATION")
-                    .timestamp(LocalDateTime.now())
-                    .isRead(false)
-                    .priority("NORMAL")
-                    .build();
-
-            // Gửi đến user cụ thể
-            messagingTemplate.convertAndSendToUser(
-                    userId,
-                    "/queue/notifications",
-                    wsMessage
-            );
-
-            log.info("✅ Sent WebSocket notification {} to user: {}", notificationId, userId);
-        } catch (Exception e) {
-            log.error("❌ Error sending WebSocket notification: {}", e.getMessage(), e);
-        }
-    }
-    /**
      * Lắng nghe sự kiện thông báo đã được đọc
      */
     @EventListener

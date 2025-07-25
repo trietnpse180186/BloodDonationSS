@@ -2,10 +2,9 @@ package com.swpproject.BloodDonation.controller;
 
 import com.swpproject.BloodDonation.dto.request.NotificationRequest;
 import com.swpproject.BloodDonation.dto.response.NotificationResponse;
+import com.swpproject.BloodDonation.service.NotificationEventPublisher;
 import com.swpproject.BloodDonation.service.NotificationService;
-import com.swpproject.BloodDonation.service.WebSocketNotificationService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
@@ -14,29 +13,25 @@ import java.util.List;
 @RequestMapping("/notifications")
 @CrossOrigin
 @RequiredArgsConstructor
-@Slf4j
 public class NotificationController {
 
     private final NotificationService notificationService;
-    private final WebSocketNotificationService webSocketNotificationService;
+    private final NotificationEventPublisher eventPublisher;
 
     @PostMapping
     public NotificationResponse createNotification(@RequestBody NotificationRequest request) {
-        log.info("🔔 Creating notification for user: {}", request.getDonorId());
-
-        // 1. Tạo notification trong database
         NotificationResponse response = notificationService.create(request);
-        log.info("✅ Notification created with ID: {}", response.getId());
 
-        // 2. CHỈ gửi WebSocket notification (không tạo thêm)
+        // Gửi thông báo qua WebSocket sau khi tạo thông báo
         if (response != null && request.getDonorId() != null) {
-            webSocketNotificationService.sendNotificationToUser(
+            eventPublisher.publishNotificationCreatedEvent(
                     request.getDonorId(),
-                    response.getId(),
                     request.getTitle(),
-                    request.getDetail()
+                    request.getDetail(),
+                    null, // actionUrl
+                    "NOTIFICATION", // type
+                    "NORMAL" // priority
             );
-            log.info("📤 WebSocket notification sent to user: {}", request.getDonorId());
         }
 
         return response;
@@ -61,9 +56,16 @@ public class NotificationController {
     @PutMapping("/{id}/read")
     public ResponseEntity<NotificationResponse> markAsRead(@PathVariable String id) {
         NotificationResponse response = notificationService.markAsRead(id);
+
+        // Thông báo qua WebSocket rằng notification đã được đọc
+        if (response != null && response.getDonorId() != null) {
+            eventPublisher.publishNotificationReadEvent(response.getDonorId(), id);
+        }
+
         return ResponseEntity.ok(response);
     }
 
+    // Thêm endpoint mới cho thông báo WebSocket
     @GetMapping("/unread/count/{userId}")
     public ResponseEntity<Integer> getUnreadCount(@PathVariable String userId) {
         int unreadCount = notificationService.getUnreadCount(userId);

@@ -16,4 +16,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     Optional<User> findByEmail(String email);
 
     List<User> findByBloodType(BloodType bloodType);
+
+    @Query("SELECT DISTINCT u FROM User u JOIN u.userHasRoles uhr JOIN uhr.role r WHERE r.name IN ('STAFF', 'ADMIN')")
+    List<User> findAllStaffAndAdmin();
 }
