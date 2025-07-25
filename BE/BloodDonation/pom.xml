@@ -87,12 +87,6 @@
 			<artifactId>logback-core</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.2.0</version>
-		</dependency>
-
 		<!-- Thêm các dependency sau vào file pom.xml hiện tại -->
 
 		<!-- WebSocket dependencies -->
@@ -124,7 +118,6 @@
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>5.2.3</version>
-
 		</dependency>
 		
 	</dependencies>
