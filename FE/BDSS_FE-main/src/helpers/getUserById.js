@@ -14,7 +14,6 @@ export function getUserIdFromToken() {
   }
 }
 
-// Hàm gọi API lấy thông tin user
 export default async function getUserById() {
   const token = sessionStorage.getItem("accessToken");
   const userId = getUserIdFromToken();

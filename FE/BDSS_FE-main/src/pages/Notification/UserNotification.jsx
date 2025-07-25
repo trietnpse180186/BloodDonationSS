@@ -1,23 +1,113 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./UserNotification.css";
 import Navbar from "../../components/navbar";
-import axios from "axios";
-
-
-
 import { getUserNotifications } from "../../helpers/getNotification";
-
+import NotificationModal from "../../components/NotificationModal";
+import { useLocation } from "react-router-dom";
 
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState(null);
   const menuRefs = useRef({});
+  const pollingInterval = useRef(null);
+  const processedNotifications = useRef(new Set());
+  const location = useLocation();
+
+  const checkForNewNotifications = async () => {
+    try {
+      const data = await getUserNotifications();
+
+      const newNotifications = data.filter(
+        (notification) => !processedNotifications.current.has(notification.id)
+      );
+
+      if (newNotifications.length > 0) {
+        setNotifications((prevNotifications) => {
+          const updatedNotifications = [
+            ...newNotifications,
+            ...prevNotifications,
+          ];
+
+          newNotifications.forEach((notification) => {
+            processedNotifications.current.add(notification.id);
+          });
+
+          return updatedNotifications;
+        });
+
+        if (
+          newNotifications.length > 0 &&
+          Notification.permission === "granted"
+        ) {
+          const latestNotification = newNotifications[0];
+          new Notification(latestNotification.title, {
+            body: latestNotification.detail,
+            icon: "/favicon.ico",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error checking for new notifications:", error);
+    }
+  };
+
+  const startPolling = () => {
+    if (pollingInterval.current) return;
+
+    checkForNewNotifications();
+
+    pollingInterval.current = setInterval(() => {
+      checkForNewNotifications();
+    }, 5000);
+  };
+
+  const stopPolling = () => {
+    if (pollingInterval.current) {
+      clearInterval(pollingInterval.current);
+      pollingInterval.current = null;
+    }
+  };
 
   useEffect(() => {
-    getUserNotifications().then(setNotifications).catch(console.error);
+    getUserNotifications()
+      .then((data) => {
+        setNotifications(data);
+        data.forEach((n) => processedNotifications.current.add(n.id));
+        startPolling();
+      })
+      .catch((error) => {
+        console.error("Error loading notifications:", error);
+      });
+
+    return () => {
+      stopPolling();
+    };
   }, []);
 
-  // Đánh dấu đã đọc
+  useEffect(() => {
+    if (Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stopPolling();
+      } else {
+        startPolling();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, []);
+
   const markAsRead = async (notificationId) => {
     try {
       const token = sessionStorage.getItem("accessToken");
@@ -33,55 +123,41 @@ export default function NotificationCenter() {
       );
 
       if (response.ok) {
-        // Cập nhật local state
         setNotifications((prev) =>
           prev.map((n) =>
             n.id === notificationId ? { ...n, status: "READ" } : n
           )
         );
-
-        setActiveMenuId(null);
-        window.dispatchEvent(new CustomEvent("notificationUpdated"));
-        console.log("Notification marked as read successfully");
-      } else {
-        console.error("Failed to mark notification as read");
       }
     } catch (error) {
-      console.error("Error marking notification as read:", error);
+      console.error("Error marking as read:", error);
     }
   };
 
-  // Xóa thông báo
   const deleteNotification = async (notificationId) => {
-    if (window.confirm("Are you sure you want to delete this notification?")) {
-      try {
-        const token = sessionStorage.getItem("accessToken");
-        const response = await fetch(
-          `http://localhost:8080/notifications/${notificationId}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    if (!window.confirm("Delete this notification?")) return;
 
-        if (response.ok) {
-          setNotifications((prev) =>
-            prev.filter((n) => n.id !== notificationId)
-          );
-          setActiveMenuId(null);
-          window.dispatchEvent(new CustomEvent("notificationUpdated"));
-        } else {
-          alert("Failed to delete notification. Please try again.");
+    try {
+      const token = sessionStorage.getItem("accessToken");
+      const response = await fetch(
+        `http://localhost:8080/notifications/${notificationId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      } catch (error) {
-        alert("Error occurred while deleting notification.");
+      );
+
+      if (response.ok) {
+        setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+        processedNotifications.current.delete(notificationId);
       }
+    } catch (error) {
+      console.error("Error deleting notification:", error);
     }
   };
 
-  // Đóng menu khi click bên ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -94,61 +170,110 @@ export default function NotificationCenter() {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [activeMenuId]);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedNotification(null);
+  };
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const notificationId = searchParams.get("id");
+
+    if (notificationId && notifications.length > 0) {
+      const notification = notifications.find(
+        (n) => n.id.toString() === notificationId
+      );
+
+      if (notification) {
+        setSelectedNotification(notification);
+        setShowModal(true);
+      }
+    }
+  }, [location.search, notifications]);
 
   return (
     <>
       <Navbar />
       <div className="notification-wrapper">
         <div className="notification-toolbar">
-          <h2 className="notification-title">Notification</h2>
+          <h2 className="notification-title">Notifications</h2>
         </div>
 
         <div className="notification-list">
-          {notifications.map((notify) => (
+          {notifications.length === 0 ? (
             <div
-              key={notify.id}
-              className={`notification-card ${
-                notify.status === "UNREAD" ? "UNREAD" : ""
-              }`}
-              onClick={() => {
-                if (notify.status === "UNREAD") {
-                  markAsRead(notify.id);
-                }
-              }}
+              style={{ textAlign: "center", padding: "40px", color: "#666" }}
             >
-              <div className="notification-icon">
-                <span className="icon">🔔</span>
-                {notify.status === "UNREAD" && <span className="dot" />}
-              </div>
-
-              <div className="notification-content">
-                <h4 className="note-title">{notify.title}</h4>
-                <p className="note-message">{notify.detail}</p>
-                <span className="note-date">{notify.date}</span>
-                <span className="note-time">{notify.time}</span>
-              </div>
-
-              <div
-                className="notification-actions"
-                ref={(el) => (menuRefs.current[notify.id] = el)}
-              >
-                <button
-                  className="menu-button"
-                  onClick={(e) => {
-                    e.stopPropagation(); // tránh click trùng với markAsRead
-                    deleteNotification(notify.id);
-                  }}
-                >
-                  ×
-                </button>
-              </div>
+              <p>No notifications yet</p>
+              <small>New notifications will appear automatically</small>
             </div>
-          ))}
+          ) : (
+            notifications.map((notify) => (
+              <div
+                key={notify.id}
+                className={`notification-card ${
+                  notify.status === "UNREAD" ? "UNREAD" : ""
+                }`}
+                onClick={() => {
+                  if (notify.status === "UNREAD") {
+                    markAsRead(notify.id);
+                  }
+                  setSelectedNotification(notify);
+                  setShowModal(true);
+                }}
+              >
+                <div className="notification-icon">
+                  <span className="icon">🔔</span>
+                  {notify.status === "UNREAD" && <span className="dot" />}
+                </div>
+
+                <div className="notification-content">
+                  <h4 className="note-title">{notify.title}</h4>
+                  <p className="note-message">{notify.detail}</p>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      color: "#666",
+                      marginTop: "5px",
+                    }}
+                  >
+                    {notify.date} at {notify.time}
+                  </div>
+                </div>
+
+                <div className="notification-actions">
+                  <button
+                    className="menu-button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteNotification(notify.id);
+                    }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      fontSize: "18px",
+                      cursor: "pointer",
+                      color: "#999",
+                    }}
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
         </div>
+
+        {selectedNotification && (
+          <NotificationModal
+            show={showModal}
+            onHide={handleCloseModal}
+            notification={selectedNotification}
+          />
+        )}
       </div>
     </>
   );

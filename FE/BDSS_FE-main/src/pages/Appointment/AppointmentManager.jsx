@@ -60,13 +60,20 @@ export default function AppointmentManager() {
     return acc;
   }, {});
 
-  // Tự động cập nhật trạng thái khi nhấn Update
   const handleUpdate = async (item) => {
     let nextStatus = "";
-    if (item.status === "PENDING") nextStatus = "APPROVED";
-    else if (item.status === "APPROVED") nextStatus = "COMPLETED";
-    else return; // Không cho update nếu đã CANCELLED hoặc COMPLETED
+    let notifyTitle = "";
+    let notifyDetail = "";
 
+    if (item.status === "PENDING") {
+      nextStatus = "APPROVED";
+      notifyTitle = "Appointment Approved";
+      notifyDetail = "Your blood donation appointment has been approved.";
+    } else if (item.status === "APPROVED") {
+      nextStatus = "COMPLETED";
+      notifyTitle = "Appointment Completed";
+      notifyDetail = "Your blood donation appointment has been marked as completed. Thank you for your contribution!";
+    } else return; 
     try {
       await axios.put(
         `http://localhost:8080/api/booking/${item.bookingId}`,
@@ -81,6 +88,27 @@ export default function AppointmentManager() {
           appt.bookingId === item.bookingId ? { ...appt, status: nextStatus } : appt
         )
       );
+
+      const userId = item.user?.userID || item.user?.userId;
+      if (userId) {
+        await axios.post(
+          "http://localhost:8080/notifications",
+          {
+            title: notifyTitle,
+            detail: notifyDetail,
+            donorId: userId,
+            date: new Date().toISOString().slice(0, 10),
+            time: new Date().toTimeString().slice(0, 5),
+            type: "NOTIFICATION",
+            priority: "NORMAL"
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      }
     } catch (error) {
       alert("Update Failed!");
     }
@@ -118,25 +146,54 @@ export default function AppointmentManager() {
     setDetailData({ show: true, data: bookingData });
   };
 
-  const handleCancel = async (item) => {
-    if (item.status !== "PENDING") return; // Chỉ cho phép cancel khi đang pending
-    const confirm = window.confirm("Bạn có chắc muốn hủy lịch này không?");
-    if (!confirm) return;
-    try {
-      await axios.put(
-        `http://localhost:8080/api/booking/${item.bookingId}`,
-        {},
-        {
-          params: { status: "CANCELLED" },
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      setAppointments((prev) =>
-        prev.map((appt) =>
-          appt.bookingId === item.bookingId ? { ...appt, status: "CANCELLED" } : appt
-        )
-      );
+const handleCancel = async (item) => {
+  const confirm = window.confirm("Bạn có chắc muốn hủy lịch này không?");
+  if (!confirm) return;
+
+  try {
+    await axios.put(
+      `http://localhost:8080/api/booking/${item.bookingId}`,
+      {},
+      {
+        params: { status: "CANCELLED" },
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    setAppointments((prev) =>
+      prev.map((appt) =>
+        appt.bookingId === item.bookingId ? { ...appt, status: "CANCELLED" } : appt
+      )
+    );
+
+    const bookingRes = await axios.get(
+      `http://localhost:8080/api/booking/${item.bookingId}`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    const userId = bookingRes.data?.user?.userID;
+
+      if (userId) {
+        await axios.post("http://localhost:8080/notifications", {
+          title: "Appointment Cancelled",
+          detail: "Your blood donation appointment has been cancelled by the staff. Reason: You do not meet the eligibility requirements for blood donation.",
+          donorId: userId,
+          date: new Date().toISOString().slice(0, 10),
+          time: new Date().toTimeString().slice(0, 5),
+          type: "NOTIFICATION",     
+          priority: "NORMAL",       
+        }, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+      } else {
+        console.warn("Không tìm thấy userId để gửi thông báo.");
+      }
     } catch (error) {
+      console.error("Cancel or notification failed:", error);
       alert("Cancel Failed!");
     }
   };

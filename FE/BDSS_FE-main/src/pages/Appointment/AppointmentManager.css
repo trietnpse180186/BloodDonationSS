@@ -1,161 +1,234 @@
-/* //////////////////////////////////////////////////////////////////////////// */
-.appointment-manager-container h2{
-    text-align: center;
-    color: #1d4a76;
-    font-size: 2.2rem;
-    font-weight: bold;
-    margin-bottom: 24px;    
-    letter-spacing: 1px;
+/* Root variables for consistent colors */
+:root {
+  --primary: #1d4a76;
+  --primary-light: #2a5c8a;
+  --primary-dark: #173b5f;
+  --accent: #e63946;
+  --accent-light: #f3686f;
+  --accent-dark: #d62828;
+  --blue: #4285f4;
+  --blue-dark: #3367d6;
+  --green: #34a853;
+  --green-dark: #2c8a42;
+  --yellow: #fbbc05;
+  --yellow-dark: #e0a800;
+  --red: #ea4335;
+  --red-dark: #d33426;
+  --neutral-50: #fafafa;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e0e0e0;
+  --neutral-300: #c1c1c1;
+  --neutral-400: #a1a1a1;
+  --neutral-500: #757575;
+  --neutral-600: #595959;
+  --neutral-700: #424242;
+  --neutral-800: #292929;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  /* Thêm màu button mới */
+  --btn-color: #ebe3fd;
+  --btn-hover: #2196f3;
 }
-.appointment-manager-container td{
-    max-width: 100px;
+
+/* Main Container Styling */
+.appointment-manager-container {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
 }
+
+.appointment-manager-container h2 {
+  text-align: center;
+  color: var(--primary);
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: 0.5px;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.appointment-manager-container h2:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--blue));
+  border-radius: 3px;
+}
+
+/* Appointment Card */
 .appointment-card {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    padding: 16px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: var(--shadow-md);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
 }
-.appointment-table{
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 16px;
-    overflow: hidden;
+
+/* Table Styling */
+.appointment-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1.5rem;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
 }
+
+.appointment-table table {
+  width: 100%;
+}
+
+.appointment-table th,
+.appointment-table td {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.appointment-table th {
+  background-color: var(--primary);
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.appointment-table tbody tr {
+  transition: background-color var(--transition-fast);
+}
+
+.appointment-table tbody tr:hover {
+  background-color: var(--neutral-50);
+}
+
+/* Action Buttons - Đơn giản hóa */
 .action-buttons {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
-    
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
 }
+
 .action-buttons button {
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: none;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  min-width: 125px;
+  width: 100%;
+  padding: 0.65rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--primary-dark);  /* Màu chữ tối để tương phản với nền sáng */
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+  box-shadow: var(--shadow-sm);
+  background-color: var(--btn-color);  /* Màu nền mới: #e3f2fd */
 }
 
 .action-buttons button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  background-color: var(--btn-hover);  /* Màu hover mới: #90caf9 */
+  box-shadow: var(--shadow-md);
 }
 
+.action-buttons button:active {
+  transform: translateY(1px);
+}
+
+/* Màu đơn giản cho từng loại nút */
 .action-buttons button:first-child {
-    background-color: #4285f4;
-    color: white;
+  background-color: var(--btn-color);
+  color: var(--primary-dark);
 }
 
 .action-buttons button:first-child:hover {
-    background-color: #3367d6;
+  background-color: var(--btn-hover);
 }
+
 .action-buttons button:nth-child(2) {
-    background-color: #34a853;
-    color: white;
+  background-color: var(--btn-color);
+  color: var(--primary-dark);
 }
+
 .action-buttons button:nth-child(2):hover {
-    background-color: #2c8a42;
+  background-color: var(--btn-hover);
 }
+
 .action-buttons button:nth-child(3) {
-    background-color: #fbbc05;
-    color: black;
+  background-color: var(--btn-color);
+  color: var(--primary-dark);
 }
+
 .action-buttons button:nth-child(3):hover {
-    background-color: #e0a800;
+  background-color: var(--btn-hover);
 }
+
 .action-buttons button:last-child {
-    background-color: #ea4335;
-    color: white;
+  background-color: var(--btn-color);
+  color: var(--primary-dark);
 }
 
 .action-buttons button:last-child:hover {
-    background-color: #d33426;
+  background-color: var(--btn-hover);
 }
 
-/* Status styling */
+/* Status Styling */
+.status-pending, 
+.status-confirmed, 
+.status-complete, 
+.status-cancelled {
+  display: inline-block;
+  min-width: 100px;
+  padding: 0.4rem 0.75rem;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.875rem;
+  letter-spacing: 0.3px;
+}
+
 .status-pending {
-    min-width: 100px;
-    color: #f29900;
-    font-weight: 500;
+  background-color: #fff8e1;
+  color: #f29900;
+  border: 1px solid rgba(242, 153, 0, 0.3);
 }
 
-.status-confirmed, .status-complete {
-    min-width: 100px;
-    color: #34a853;
-    font-weight: 500;
+.status-confirmed, 
+.status-complete {
+  background-color: #e8f5e9;
+  color: var(--green);
+  border: 1px solid rgba(52, 168, 83, 0.3);
 }
 
 .status-cancelled {
-    min-width: 100px;
-    color: #ea4335;
-    font-weight: 500;
-}
-.action-buttons {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 8px;
-}
-.action-buttons button {
-    min-width: 125px;
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
-    border-radius: 5px;
-}
-/* Fit content cho tất cả các cột */
-.appointment-table table td,
-.appointment-table table th {
-  width: auto;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  background-color: #ffebee;
+  color: var(--red);
+  border: 1px solid rgba(234, 67, 53, 0.3);
 }
 
-/* Đặt max-width cho từng cột để tránh quá rộng */
-.appointment-table table td:nth-child(1), 
-.appointment-table table th:nth-child(1) {
-  max-width: 100px; /* Email */
-}
-
-.appointment-table table td:nth-child(2), 
-.appointment-table table th:nth-child(2) {
-  max-width: 100px; /* Date */
-}
-
-.appointment-table table td:nth-child(3), 
-.appointment-table table th:nth-child(3) {
-  max-width: 100px; /* Time */
-}
-
-/* Loại bỏ giới hạn width cho tất cả các cột */
-.appointment-table td {
-  max-width: none !important; /* Ghi đè lên rule chung */
-}
-/* Điều chỉnh cho cột có action buttons */
-.appointment-table td:last-child {
-    white-space: normal;
-    overflow: visible;
-}
-/* ///////////////////////////////////////////////////////////////////// */
-/* Styling cho Modal Detail */
+/* Detail Modal Styling */
 .booking-details {
-  padding: 15px;
-  color: #3c4043;
-  font-size: 15px;
+  padding: 1.25rem;
+  color: var(--neutral-700);
+  font-size: 0.95rem;
 }
 
 .detail-row {
-  padding: 12px 0;
+  padding: 0.875rem 0;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #f1f3f4;
+  border-bottom: 1px solid var(--neutral-200);
+  transition: background-color var(--transition-fast);
 }
 
 .detail-row:last-child {
@@ -163,85 +236,90 @@
 }
 
 .detail-row strong {
-  min-width: 120px;
+  min-width: 135px;
   font-weight: 600;
-  color: #1d4a76;
+  color: var(--primary);
 }
 
-/* Thẻ chứa thông tin chi tiết */
 .detail-card {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  padding: 15px;
-  margin: 15px 0;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  background-color: var(--neutral-50);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin: 1.25rem 0;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--neutral-200);
 }
 
 .detail-card .detail-row {
-  padding: 10px 0;
-  border-bottom: 1px dashed #e0e0e0;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed var(--neutral-200);
 }
 
 .detail-card .detail-row:last-child {
   border-bottom: none;
 }
 
-/* Status badges */
 .detail-row .status-pending,
 .detail-row .status-confirmed,
 .detail-row .status-cancelled,
 .detail-row .status-complete {
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-weight: 500;
-  display: inline-block;
+  min-width: auto;
 }
 
-.detail-row .status-pending {
-  background-color: #fff8e1;
-  color: #f29900;
-}
-
-.detail-row .status-confirmed,
-.detail-row .status-complete {
-  background-color: #e8f5e9;
-  color: #34a853;
-}
-
-.detail-row .status-cancelled {
-  background-color: #ffebee;
-  color: #ea4335;
-}
-
-/* Hover effect */
 .detail-row:hover {
-  background-color: #f8f9fa;
+  background-color: var(--neutral-100);
+  border-radius: 4px;
+  padding-left: 0.5rem;
 }
 
+/* Modal Styling */
 .modal-header {
-  background-color: #1d4a76;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
   border-radius: 8px 8px 0 0;
+  padding: 1.25rem;
 }
 
 .modal-title {
-    font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-size: 1.25rem;
 }
 
 .modal-footer {
-  border-top: 1px solid #f1f3f4;
+  border-top: 1px solid var(--neutral-200);
+  padding: 1rem 1.25rem;
 }
 
 .modal-footer .btn-secondary {
-  background-color: #4285f4;
-  border-color: #4285f4;
+  background-color: var(--btn-color);
+  color: var(--primary-dark);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color var(--transition-fast);
 }
 
 .modal-footer .btn-secondary:hover {
-  background-color: #3367d6;
-  border-color: #3367d6;
+  background-color: var(--btn-hover);
 }
-/* /////////////////////////////////////////////////////////////////// */
+
+button.btn-secondary {
+  background-color: var(--btn-color);
+  color: var(--primary-dark);
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  margin-top: 12px;
+  font-weight: 500;
+  transition: background-color var(--transition-fast);
+}
+
+button.btn-secondary:hover {
+  background-color: var(--btn-hover);
+}
+
 /* Survey Modal Styling */
 .modal-body ul {
   list-style: none;
@@ -250,99 +328,156 @@
 }
 
 .modal-body ul li {
-  background-color: #f8f9fa;
+  background-color: var(--neutral-50);
   border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-left: 4px solid #4285f4;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  border-left: 4px solid var(--blue);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
 }
 
 .modal-body ul li:hover {
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-md);
   transform: translateY(-2px);
-  transition: all 0.2s ease;
 }
 
 .modal-body ul li strong:first-child {
   display: block;
-  color: #1d4a76;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  border-bottom: 1px solid #e0e0e0;
-  padding-bottom: 8px;
+  color: var(--primary);
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--neutral-200);
+  padding-bottom: 0.75rem;
 }
 
 .modal-body ul li strong:nth-child(3) {
-  color: black;
+  color: var(--neutral-800);
   margin-right: 5px;
+  font-weight: 600;
 }
 
-/* Styling for info */
 .modal-body ul li span {
   display: block;
-  margin-top: 10px;
-  padding-top: 8px;
-  border-top: 1px dashed #e0e0e0;
+  margin-top: 0.875rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--neutral-200);
+  color: var(--neutral-600);
 }
 
 .modal-body ul li span strong {
-  color: #ea4335;
+  color: var(--red);
   margin-right: 5px;
+  font-weight: 600;
 }
 
-/* Màu sắc khác nhau cho các câu hỏi */
-.modal-body ul li:nth-child {
-  border-left-color: #1d4a76;
-}
-
-/* Modal footer và header */
+/* Modal content */
 .modal-content {
   border-radius: 10px;
   overflow: hidden;
+  border: none;
+  box-shadow: var(--shadow-lg);
 }
 
 .modal-header.survey-header {
-  background-color: #1d4a76;
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
   color: white;
 }
 
 .modal-title.survey-title {
-  font-weight: 600;
+  font-weight: 700;
 }
 
-/* Nút đóng */
 .modal-header .btn-close {
   color: white;
   opacity: 0.8;
+  filter: brightness(5);
 }
 
 .modal-header .btn-close:hover {
   opacity: 1;
 }
 
-/* Custom scrollbar cho phần nội dung dài */
+/* Custom scrollbar */
 .modal-body {
   max-height: 70vh;
   overflow-y: auto;
-  padding: 20px;
+  padding: 1.5rem;
 }
 
 .modal-body::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .modal-body::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--neutral-100);
   border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: var(--neutral-300);
   border-radius: 4px;
 }
 
 .modal-body::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: var(--neutral-400);
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+  .appointment-manager-container h2 {
+    font-size: 2rem;
+  }
+  
+  .action-buttons button {
+    min-width: 110px;
+    padding: 0.625rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .appointment-manager-container {
+    padding: 1.5rem 1rem;
+  }
+  
+  .appointment-manager-container h2 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .appointment-table th,
+  .appointment-table td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .status-pending, 
+  .status-confirmed, 
+  .status-complete, 
+  .status-cancelled {
+    min-width: 80px;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .appointment-manager-container h2 {
+    font-size: 1.5rem;
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .detail-row strong {
+    margin-bottom: 0.3rem;
+  }
+  
+  .modal-title {
+    font-size: 1.1rem;
+  }
 }
