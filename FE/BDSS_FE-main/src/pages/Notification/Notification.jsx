@@ -73,14 +73,12 @@ export default function Notification() {
     };
 
     try {
-      // Tạo notification - backend sẽ tự động gửi WebSocket
       await axios.post("http://localhost:8080/notifications", dataToSend, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
 
-      // Reset form
       setForm({
         title: "",
         detail: "",
@@ -89,12 +87,9 @@ export default function Notification() {
         donorId: "",
       });
 
-      // Fetch lại danh sách notifications để cập nhật table
       await fetchNotifications();
 
-      alert(
-        "Notification sent successfully! User will receive it in real-time."
-      );
+      alert("Notification sent successfully!");
     } catch (error) {
       alert("Failed to create notification.");
       console.error(error);

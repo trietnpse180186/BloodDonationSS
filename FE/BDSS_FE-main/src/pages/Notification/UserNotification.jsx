@@ -2,14 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import "./UserNotification.css";
 import Navbar from "../../components/navbar";
 import { getUserNotifications } from "../../helpers/getNotification";
-import { getUserIdFromToken } from "../../helpers/getUserById";
+import NotificationModal from "../../components/NotificationModal";
+import { useLocation } from "react-router-dom";
 
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState(null);
   const menuRefs = useRef({});
   const pollingInterval = useRef(null);
   const processedNotifications = useRef(new Set());
+  const location = useLocation();
 
   const checkForNewNotifications = async () => {
     try {
@@ -169,6 +173,27 @@ export default function NotificationCenter() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [activeMenuId]);
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedNotification(null);
+  };
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const notificationId = searchParams.get("id");
+
+    if (notificationId && notifications.length > 0) {
+      const notification = notifications.find(
+        (n) => n.id.toString() === notificationId
+      );
+
+      if (notification) {
+        setSelectedNotification(notification);
+        setShowModal(true);
+      }
+    }
+  }, [location.search, notifications]);
+
   return (
     <>
       <Navbar />
@@ -196,6 +221,8 @@ export default function NotificationCenter() {
                   if (notify.status === "UNREAD") {
                     markAsRead(notify.id);
                   }
+                  setSelectedNotification(notify);
+                  setShowModal(true);
                 }}
               >
                 <div className="notification-icon">
@@ -239,6 +266,14 @@ export default function NotificationCenter() {
             ))
           )}
         </div>
+
+        {selectedNotification && (
+          <NotificationModal
+            show={showModal}
+            onHide={handleCloseModal}
+            notification={selectedNotification}
+          />
+        )}
       </div>
     </>
   );
