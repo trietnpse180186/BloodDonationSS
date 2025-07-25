@@ -17,10 +17,10 @@ import java.util.UUID;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, String> {
     List<Notification> findByDonor(User donor);
+
     @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM notification WHERE userid = :userId", nativeQuery = true)
-    void deleteByUserId(@Param("userId") String userId);
+    @Query("DELETE FROM Notification e WHERE e.donor.id = :userId")
+    void deleteByDonorId(@Param("userId") String userId);
 
     List<Notification> findByDonor_UserIDOrderByDateDescTimeDesc(String donorId);
 

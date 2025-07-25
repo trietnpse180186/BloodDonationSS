@@ -22,7 +22,7 @@ import ForgotPassword from "../pages/Auth/ForgotPassword";
 import ChangePassword from "../pages/User/ChangePassword";
 import { NotificationProvider } from "../contexts/NotificationContext";
 import EmergencyDonation from "../pages/Emergency/EmergencyDonation";
-
+import BloodInventory from "../pages/BloodInventory/BloodInventory";
 export default function WebRoutes() {
   return (
     <>
@@ -42,6 +42,7 @@ export default function WebRoutes() {
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/appointment" element={<AppointmentDetail />} />
           <Route path="/emergency-donation" element={<EmergencyDonation />} />
+          <Route path="/blood-inventory" element={<BloodInventory />} />
           <Route path="/schedule" element={<DonationSchedule />} />
           <Route path="/blood-registration" element={<BloodRegister />} />
           <Route path="/blood-registration2" element={<BloodRegister2 />} />
