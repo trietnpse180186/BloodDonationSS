@@ -4,10 +4,8 @@ import { ToastContainer } from "react-toastify";
 function App() {
   return (
     <>
-      <NotificationProvider>
-        <ToastContainer position="top-right" autoClose={3000} />
-        <WebRoutes />
-      </NotificationProvider>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <WebRoutes />
     </>
   );
 }

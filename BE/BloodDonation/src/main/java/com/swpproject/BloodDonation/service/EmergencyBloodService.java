@@ -243,28 +243,25 @@ public class EmergencyBloodService {
         }
     }
 
-    /**
-     * Gửi thông báo cho người có nhóm máu phù hợp
-     */
     private void notifyEligibleDonors(EmergencyBloodRequest request) {
-        // Tìm các người dùng có nhóm máu phù hợp
+        // Find users with matching blood type
         List<User> eligibleDonors = userRepository.findByBloodType(request.getBloodTypeNeeded());
 
         String title = request.isRareBloodType() ?
-                "YÊU CẦU HIẾN MÁU HIẾM KHẨN CẤP!" :
-                "Yêu cầu hiến máu khẩn cấp!";
+                "EMERGENCY BLOOD REQUEST" :
+                "Emergency Blood Request";
 
-        String message = "Cần gấp nhóm máu " + request.getBloodTypeNeeded() +
-                " tại " + request.getHospitalName() + ". " +
+        String message = "Urgent need for blood type " + request.getBloodTypeNeeded() +
+                " at " + request.getHospitalName() + ". " +
                 (request.isRareBloodType() ?
-                        "Nhóm máu của bạn rất hiếm và đặc biệt cần thiết cho tình huống này!" :
-                        "Mỗi đơn vị máu đều quan trọng, hãy giúp đỡ nếu bạn có thể!");
+                        "Your blood type is rare and especially needed for this situation!" :
+                        "Every unit of blood is important, please help if you can!")+"\n\n" + request.getRequestId();;
 
         String actionUrl = "/emergency/" + request.getRequestId();
 
-        log.info("Gửi thông báo đến {} người hiến máu phù hợp", eligibleDonors.size());
+        log.info("Sending notifications to {} eligible donors", eligibleDonors.size());
 
-        // Gửi thông báo qua WebSocket và Email
+        // Send notifications via WebSocket and Email
         for (User donor : eligibleDonors) {
             eventPublisher.publishNotificationCreatedEvent(
                     donor.getUserID(),
@@ -278,24 +275,24 @@ public class EmergencyBloodService {
     }
 
     /**
-     * Gửi thông báo cho người dùng gần đó
+     * Send notifications to nearby users
      */
     private void notifyNearbyDonors(EmergencyBloodRequest request) {
         if (request.getLatitude() == null || request.getLongitude() == null) {
-            log.warn("Không có thông tin vị trí cho yêu cầu khẩn cấp này");
+            log.warn("No location information for this emergency request");
             return;
         }
 
-        // Bán kính tìm kiếm: 10km
+        // Search radius: 10km
         double radiusKm = 10.0;
 
-        String title = "Yêu cầu hiến máu khẩn cấp gần bạn!";
-        String message = "Cần gấp nhóm máu " + request.getBloodTypeNeeded() +
-                " tại " + request.getHospitalName() + " gần vị trí của bạn. " +
-                "Sự giúp đỡ của bạn có thể cứu sống người khác!";
+        String title = "Emergency blood donation request near you!";
+        String message = "Urgent need for blood type " + request.getBloodTypeNeeded() +
+                " at " + request.getHospitalName() + " near your location. " +
+                "Your help could save lives!";
         String actionUrl = "/emergency/" + request.getRequestId();
 
-        // Gửi thông báo đến người dùng trong bán kính
+        // Send notifications to users within radius
         webSocketNotificationService.notifyNearbyUsers(
                 request.getLatitude(),
                 request.getLongitude(),
@@ -304,10 +301,10 @@ public class EmergencyBloodService {
                 message,
                 actionUrl,
                 "EMERGENCY_NEARBY",
-                request.getBloodTypeNeeded().toString() // Ưu tiên nhóm máu phù hợp
+                request.getBloodTypeNeeded().toString() // Prioritize matching blood type
         );
 
-        log.info("Đã gửi thông báo đến người dùng trong bán kính {}km", radiusKm);
+        log.info("Notifications sent to users within {}km radius", radiusKm);
     }
 
     /**
@@ -378,7 +375,7 @@ public class EmergencyBloodService {
                 .emergencyRequest(request)
                 .donor(donor)
                 .responseTime(LocalDateTime.now())
-                .status(EmergencyDonationStatus.PENDING)
+                .status(EmergencyDonationStatus.CONFIRMED)
                 .donorDistance(donorDistance)
                 .lastUpdatedTime(LocalDateTime.now())
                 .build();

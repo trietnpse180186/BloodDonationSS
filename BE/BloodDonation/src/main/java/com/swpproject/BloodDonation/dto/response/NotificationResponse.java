@@ -19,6 +19,7 @@ public class NotificationResponse {
     private String detail;
     private LocalDate date;
     private LocalTime time;
+    private String actionUrl;
     private String donorId;
     private String donorName;
     private NotificationStatus status;

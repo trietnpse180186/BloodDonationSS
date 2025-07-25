@@ -30,13 +30,11 @@ export const NotificationProvider = ({ children }) => {
     try {
       const data = await getUserNotifications();
 
-      // Check for new notifications
       const newNotifications = data.filter(
         (notification) => !processedNotifications.current.has(notification.id)
       );
 
       if (newNotifications.length > 0) {
-        // Show browser notification for newest one
         if (
           newNotifications.length > 0 &&
           Notification.permission === "granted"
@@ -48,7 +46,6 @@ export const NotificationProvider = ({ children }) => {
           });
         }
 
-        // Mark as processed
         newNotifications.forEach((notification) => {
           processedNotifications.current.add(notification.id);
         });
@@ -56,7 +53,6 @@ export const NotificationProvider = ({ children }) => {
 
       setNotifications(data);
 
-      // Count unread notifications
       const unreadNotifications = data.filter(
         (item) =>
           item.status === "UNREAD" || (!item.read && item.status !== "READ")
