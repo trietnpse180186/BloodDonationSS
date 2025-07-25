@@ -806,91 +806,241 @@ export default function EmergencyRequest() {
         </Modal.Body>
       </Modal>
 
-      {/* Detail Modal */}
+      {/* Detail Modal - cập nhật hiển thị thông tin chi tiết hơn */}
       <Modal
         show={showDetailModal}
         onHide={() => setShowDetailModal(false)}
         size="lg"
       >
-        <Modal.Header closeButton>
-          <Modal.Title>Emergency Request Details</Modal.Title>
+        <Modal.Header closeButton className="bg-light">
+          <Modal.Title>
+            <span className="text-danger">Emergency Request Details</span>
+            <div className="mt-1">
+              <Badge bg="secondary" className="me-2">
+                ID: {selectedRequest?.requestId}
+              </Badge>
+              {getStatusBadge(selectedRequest?.status)}
+            </div>
+          </Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
           {selectedRequest && (
-            <div>
-              <div className="row mb-3">
-                <div className="col-md-6">
-                  <strong>Hospital:</strong> {selectedRequest.hospitalName}
+            <>
+              <div className="card mb-4">
+                <div className="card-header bg-light">
+                  <h5 className="mb-0">Hospital Information</h5>
                 </div>
-                <div className="col-md-6">
-                  <strong>Contact:</strong> {selectedRequest.contactPerson}
-                </div>
-              </div>
+                <div className="card-body">
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <strong>Hospital:</strong> {selectedRequest.hospitalName}
+                    </div>
+                    <div className="col-md-6">
+                      <strong>Contact Person:</strong>{" "}
+                      {selectedRequest.contactPerson}
+                    </div>
+                  </div>
 
-              <div className="row mb-3">
-                <div className="col-md-6">
-                  <strong>Phone:</strong> {selectedRequest.contactPhone}
-                </div>
-                <div className="col-md-6">
-                  <strong>Blood Type:</strong> {selectedRequest.bloodTypeNeeded}
-                  {selectedRequest.isRareBloodType && (
-                    <Badge bg="warning" className="ms-1">
-                      Rare
-                    </Badge>
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <strong>Phone:</strong> {selectedRequest.contactPhone}
+                    </div>
+                    <div className="col-md-6">
+                      <strong>Address:</strong> {selectedRequest.address}
+                    </div>
+                  </div>
+
+                  {selectedRequest.latitude && selectedRequest.longitude && (
+                    <div className="row mb-3">
+                      <div className="col-md-6">
+                        <strong>Coordinates:</strong> {selectedRequest.latitude}
+                        , {selectedRequest.longitude}
+                      </div>
+                      {selectedRequest.distance && (
+                        <div className="col-md-6">
+                          <strong>Distance:</strong>{" "}
+                          {Math.round(selectedRequest.distance * 10) / 10} km
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               </div>
 
-              <div className="row mb-3">
-                <div className="col-md-6">
-                  <strong>Units Needed:</strong> {selectedRequest.unitsNeeded}
+              <div className="card mb-4">
+                <div className="card-header bg-light">
+                  <h5 className="mb-0">Request Details</h5>
                 </div>
-                <div className="col-md-6">
-                  <strong>Priority:</strong>{" "}
-                  {getPriorityBadge(selectedRequest.priority)}
+                <div className="card-body">
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <strong>Blood Type:</strong>{" "}
+                      <span className="text-danger fw-bold">
+                        {selectedRequest.bloodTypeNeeded}
+                        {selectedRequest.isRareBloodType && (
+                          <Badge bg="warning" text="dark" className="ms-1">
+                            Rare
+                          </Badge>
+                        )}
+                      </span>
+                    </div>
+                    <div className="col-md-6">
+                      <strong>Category:</strong>{" "}
+                      {selectedRequest.bloodTypeCategory || "Standard"}
+                    </div>
+                  </div>
+
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <strong>Units Needed:</strong>{" "}
+                      {selectedRequest.unitsNeeded}
+                    </div>
+                    <div className="col-md-6">
+                      <strong>Units Donated:</strong>{" "}
+                      <span
+                        className={
+                          selectedRequest.unitsDonated >=
+                          selectedRequest.unitsNeeded
+                            ? "text-success"
+                            : "text-danger"
+                        }
+                      >
+                        {selectedRequest.unitsDonated || 0} /{" "}
+                        {selectedRequest.unitsNeeded}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <strong>Priority:</strong>{" "}
+                      {getPriorityBadge(selectedRequest.priority)}
+                    </div>
+                    <div className="col-md-6">
+                      <strong>Status:</strong>{" "}
+                      {getStatusBadge(selectedRequest.status)}
+                    </div>
+                  </div>
+
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <strong>Created:</strong>{" "}
+                      {formatDateTime(selectedRequest.requestTime)}
+                    </div>
+                    <div className="col-md-6">
+                      <strong>Expires:</strong>{" "}
+                      <span
+                        className={
+                          isExpired(selectedRequest.expirationTime)
+                            ? "text-danger"
+                            : ""
+                        }
+                      >
+                        {formatDateTime(selectedRequest.expirationTime)}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="row mb-3">
+                    <div className="col-md-6">
+                      <strong>Created By:</strong>{" "}
+                      {selectedRequest.createdByName || "N/A"}
+                    </div>
+                    <div className="col-md-6">
+                      <strong>Last Updated:</strong>{" "}
+                      {formatDateTime(selectedRequest.lastUpdatedTime)}
+                    </div>
+                  </div>
+
+                  {selectedRequest.description && (
+                    <div className="mb-3">
+                      <strong>Description:</strong>
+                      <div className="p-2 border rounded mt-1 bg-light">
+                        {selectedRequest.description}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="row mb-3">
-                <div className="col-md-6">
-                  <strong>Status:</strong>{" "}
-                  {getStatusBadge(selectedRequest.status)}
+              {/* Donor Information Section - Phần mới */}
+              <div className="card mb-4">
+                <div className="card-header bg-light d-flex justify-content-between">
+                  <h5 className="mb-0">Donor Information</h5>
+                  <Badge bg="info">
+                    {selectedRequest.donors?.length || 0} Donors
+                  </Badge>
                 </div>
-                <div className="col-md-6">
-                  <strong>Created:</strong>{" "}
-                  {formatDateTime(selectedRequest.requestTime)}
+                <div className="card-body">
+                  {selectedRequest.donors &&
+                  selectedRequest.donors.length > 0 ? (
+                    <div className="table-responsive">
+                      <table className="table table-striped table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Blood Type</th>
+                            <th>Status</th>
+                            <th>Response Time</th>
+                            <th>Contact</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {selectedRequest.donors.map((donor) => (
+                            <tr key={donor.donationId}>
+                              <td>{donor.donorName || "Anonymous"}</td>
+                              <td>{donor.bloodType}</td>
+                              <td>
+                                <Badge
+                                  bg={
+                                    donor.status === "COMPLETED"
+                                      ? "success"
+                                      : donor.status === "PENDING"
+                                      ? "warning"
+                                      : donor.status === "CANCELLED"
+                                      ? "danger"
+                                      : "secondary"
+                                  }
+                                >
+                                  {donor.status}
+                                </Badge>
+                              </td>
+                              <td>{formatDateTime(donor.responseTime)}</td>
+                              <td>{donor.phoneNumber || "N/A"}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  ) : (
+                    <div className="text-center p-3">
+                      <p className="text-muted mb-0">
+                        No donors have responded yet
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
-
-              <div className="mb-3">
-                <strong>Address:</strong>
-                <div>{selectedRequest.address}</div>
-              </div>
-
-              <div className="mb-3">
-                <strong>Description:</strong>
-                <div>{selectedRequest.description}</div>
-              </div>
-
-              <div className="mb-3">
-                <strong>Expires:</strong>
-                <span
-                  className={
-                    isExpired(selectedRequest.expirationTime)
-                      ? "text-danger ms-1"
-                      : "ms-1"
-                  }
-                >
-                  {formatDateTime(selectedRequest.expirationTime)}
-                </span>
-              </div>
-            </div>
+            </>
           )}
         </Modal.Body>
+
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDetailModal(false)}>
             Close
           </Button>
+          {selectedRequest?.status === "ACTIVE" && (
+            <Button
+              variant="primary"
+              onClick={() => {
+                // Chuyển đến trang chi tiết để phản hồi
+                navigate(`/emergency/${selectedRequest.requestId}`);
+              }}
+            >
+              View Full Details
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
 

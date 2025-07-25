@@ -22,11 +22,11 @@ public class NotificationController {
 
     @PostMapping
     public NotificationResponse createNotification(@RequestBody NotificationRequest request) {
-        log.info("🔔 Creating notification for user: {}", request.getDonorId());
+        log.info("Creating notification for user: {}", request.getDonorId());
 
         // 1. Tạo notification trong database
         NotificationResponse response = notificationService.create(request);
-        log.info("✅ Notification created with ID: {}", response.getId());
+        log.info("Notification created with ID: {}", response.getId());
 
         // 2. CHỈ gửi WebSocket notification (không tạo thêm)
         if (response != null && request.getDonorId() != null) {
@@ -36,7 +36,7 @@ public class NotificationController {
                     request.getTitle(),
                     request.getDetail()
             );
-            log.info("📤 WebSocket notification sent to user: {}", request.getDonorId());
+            log.info("WebSocket notification sent to user: {}", request.getDonorId());
         }
 
         return response;
