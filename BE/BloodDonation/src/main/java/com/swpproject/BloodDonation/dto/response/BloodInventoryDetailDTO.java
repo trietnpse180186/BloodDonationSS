@@ -25,4 +25,5 @@ public class BloodInventoryDetailDTO {
     private String status;
     private String notes;
     private int daysUntilExpiry;
+    private LocalDateTime lastUpdatedTime;
 }
