@@ -10,7 +10,11 @@ import com.swpproject.BloodDonation.repository.BloodInventoryBatchRepository;
 import com.swpproject.BloodDonation.repository.BloodInventoryRepository;
 import com.swpproject.BloodDonation.service.BloodInventoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/blood-inventory")
@@ -203,5 +208,108 @@ public class BloodInventoryController {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy lô máu"));
 
         return ResponseEntity.ok(batch);
+    }
+
+    // Thêm endpoint này vào BloodInventoryController hiện có
+
+    /**
+     * Lấy lịch sử sử dụng máu
+     */
+    @GetMapping("/usage-history")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
+    public ResponseEntity<List<BloodInventoryDetailDTO>> getBloodUsageHistory(
+            @RequestParam(required = false) BloodType bloodType,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+        // Nếu không có ngày bắt đầu, mặc định lấy 30 ngày gần nhất
+        if (startDate == null) {
+            startDate = LocalDateTime.now().minusDays(30);
+        }
+
+        // Nếu không có ngày kết thúc, mặc định là hiện tại
+        if (endDate == null) {
+            endDate = LocalDateTime.now();
+        }
+
+        List<BloodInventoryDetailDTO> usageHistory = bloodInventoryService.getBloodUsageHistory(bloodType, startDate, endDate);
+        return ResponseEntity.ok(usageHistory);
+    }
+
+    /**
+     * Lấy thống kê sử dụng máu
+     */
+    @GetMapping("/usage-statistics")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
+    public ResponseEntity<Map<String, Object>> getBloodUsageStatistics(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+        // Nếu không có ngày bắt đầu, mặc định lấy 30 ngày gần nhất
+        if (startDate == null) {
+            startDate = LocalDateTime.now().minusDays(30);
+        }
+
+        // Nếu không có ngày kết thúc, mặc định là hiện tại
+        if (endDate == null) {
+            endDate = LocalDateTime.now();
+        }
+
+        Map<String, Object> statistics = bloodInventoryService.getBloodUsageStatistics(startDate, endDate);
+        return ResponseEntity.ok(statistics);
+    }
+
+    /**
+     * Xuất báo cáo sử dụng máu dạng PDF
+     */
+    @GetMapping("/usage-report/pdf")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
+    public ResponseEntity<FileSystemResource> exportUsageReportPdf(
+            @RequestParam(required = false) BloodType bloodType,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+        if (startDate == null) {
+            startDate = LocalDateTime.now().minusDays(30);
+        }
+
+        if (endDate == null) {
+            endDate = LocalDateTime.now();
+        }
+
+        // Tạo báo cáo PDF từ dữ liệu lịch sử sử dụng máu
+        FileSystemResource pdfResource = bloodInventoryService.generateUsagePdfReport(bloodType, startDate, endDate);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=blood-usage-report.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfResource);
+    }
+
+    /**
+     * Xuất báo cáo sử dụng máu dạng Excel
+     */
+    @GetMapping("/usage-report/excel")
+    @PreAuthorize("hasAnyAuthority('STAFF', 'ADMIN')")
+    public ResponseEntity<FileSystemResource> exportUsageReportExcel(
+            @RequestParam(required = false) BloodType bloodType,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+
+        if (startDate == null) {
+            startDate = LocalDateTime.now().minusDays(30);
+        }
+
+        if (endDate == null) {
+            endDate = LocalDateTime.now();
+        }
+
+        // Tạo báo cáo Excel từ dữ liệu lịch sử sử dụng máu
+        FileSystemResource excelResource = bloodInventoryService.generateUsageExcelReport(bloodType, startDate, endDate);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=blood-usage-report.xlsx")
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(excelResource);
     }
 }
