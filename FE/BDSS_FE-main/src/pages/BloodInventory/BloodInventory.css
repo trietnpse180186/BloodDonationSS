@@ -1,3 +1,23 @@
+/* Use Blood button modern style */
+.btn-use-blood {
+  background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 32px;
+  box-shadow: 0 4px 18px 0 rgba(33, 150, 243, 0.13);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  outline: none;
+}
+.btn-use-blood:hover,
+.btn-use-blood:focus {
+  background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%);
+  color: #fff;
+  box-shadow: 0 8px 32px 0 rgba(33, 150, 243, 0.18);
+  transform: translateY(-2px) scale(1.04);
+}
 .blood-inventory-container {
   padding: 20px;
   background-color: #f8f9fa;
@@ -187,6 +207,35 @@
 .form-check-input:checked {
   background-color: #dc3545;
   border-color: #dc3545;
+}
+
+/* Blood type detail section */
+.bloodtype-detail-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.btn-bloodtype-detail {
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 1.08rem;
+  padding: 8px 24px;
+  border: 2px solid #00bcd4;
+  color: #00bcd4;
+  background: #fff;
+  box-shadow: 0 2px 8px 0 rgba(0, 188, 212, 0.07);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.btn-bloodtype-detail:hover,
+.btn-bloodtype-detail:focus {
+  background: #e0f7fa;
+  color: #007c91;
+  border-color: #007c91;
+  box-shadow: 0 4px 16px 0 rgba(0, 188, 212, 0.13);
 }
 
 /* Responsive adjustments */
