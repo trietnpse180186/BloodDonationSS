@@ -159,7 +159,7 @@ public class EmergencyBloodService {
         notifyEligibleDonors(savedRequest);
 
         // Nếu có thông tin vị trí, thông báo cho người dùng gần đó
-        notifyNearbyDonors(savedRequest);
+        //notifyNearbyDonors(savedRequest);
 
         return mapToResponseDTO(savedRequest);
     }
@@ -243,36 +243,42 @@ public class EmergencyBloodService {
         }
     }
 
-    private void notifyEligibleDonors(EmergencyBloodRequest request) {
-        // Find users with matching blood type
-        List<User> eligibleDonors = userRepository.findByBloodType(request.getBloodTypeNeeded());
+        private void notifyEligibleDonors(EmergencyBloodRequest request) {
+            // Find users with matching blood type
+            List<User> eligibleDonors = userRepository.findByBloodType(request.getBloodTypeNeeded());
 
-        String title = request.isRareBloodType() ?
-                "EMERGENCY BLOOD REQUEST" :
-                "Emergency Blood Request";
+            String title = request.isRareBloodType() ?
+                    "EMERGENCY BLOOD REQUEST" :
+                    "Emergency Blood Request";
 
-        String message = "Urgent need for blood type " + request.getBloodTypeNeeded() +
-                " at " + request.getHospitalName() + ". " +
-                (request.isRareBloodType() ?
-                        "Your blood type is rare and especially needed for this situation!" :
-                        "Every unit of blood is important, please help if you can!")+"\n\n" + request.getRequestId();;
+            String message = "Urgent need for blood type " + request.getBloodTypeNeeded() +
+                    " at " + request.getHospitalName(   ) + ".\n" +
+                    "Address: " + request.getAddress() + "\n" +
+                    "Contact Person: " + request.getContactPerson() + "\n" +
+                    "Contact Phone: " + request.getContactPhone() + "\n" +
+                    "Units Needed: " + request.getUnitsNeeded() + "\n" +
+                    "Description: " + request.getDescription() + "\n" +
+                    (request.isRareBloodType() ?
+                            "Your blood type is rare and especially needed for this situation!" :
+                            "Every unit of blood is important, please help if you can!") +
+                    "\n\nRequest ID: " + request.getRequestId();
 
-        String actionUrl = "/emergency/" + request.getRequestId();
+            String actionUrl = "/emergency/" + request.getRequestId();
 
-        log.info("Sending notifications to {} eligible donors", eligibleDonors.size());
+            log.info("Sending notifications to {} eligible donors", eligibleDonors.size());
 
-        // Send notifications via WebSocket and Email
-        for (User donor : eligibleDonors) {
-            eventPublisher.publishNotificationCreatedEvent(
-                    donor.getUserID(),
-                    title,
-                    message,
-                    actionUrl,
-                    request.isRareBloodType() ? "RARE_BLOOD_REQUEST" : "EMERGENCY_REQUEST",
-                    request.getPriority()
-            );
+            // Send notifications via WebSocket and Email
+            for (User donor : eligibleDonors) {
+                eventPublisher.publishNotificationCreatedEvent(
+                        donor.getUserID(),
+                        title,
+                        message,
+                        actionUrl,
+                        request.isRareBloodType() ? "RARE_BLOOD_REQUEST" : "EMERGENCY_REQUEST",
+                        request.getPriority()
+                );
+            }
         }
-    }
 
     /**
      * Send notifications to nearby users

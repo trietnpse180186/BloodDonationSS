@@ -265,37 +265,37 @@ public class BloodInventoryService {
             Double availableQuantity = getAvailableQuantityByBloodType(bloodType);
 
             // Nếu số lượng máu dưới ngưỡng (dưới 1050ml tương đương 3 đơn vị máu)
-            if (availableQuantity != null && availableQuantity < 1050) {
-                // Tìm tất cả admin và staff để thông báo
-                notifyLowBloodInventory(bloodType, availableQuantity);
-            }
+//            if (availableQuantity != null && availableQuantity < 1050) {
+//                // Tìm tất cả admin và staff để thông báo
+//                notifyLowBloodInventory(bloodType, availableQuantity);
+//            }
         }
     }
 
     /**
      * Gửi thông báo về lượng máu thấp
      */
-    private void notifyLowBloodInventory(BloodType bloodType, Double quantity) {
-        String title = "CẢNH BÁO: Lượng máu " + bloodType + " sắp hết!";
-        String message = "Hiện kho máu chỉ còn " + String.format("%.0f", quantity) +
-                " ml máu " + bloodType + " (khoảng " +
-                String.format("%.1f", quantity / STANDARD_DONATION_AMOUNT) +
-                " đơn vị). Cần bổ sung gấp!";
-
-        // Cách hiệu quả hơn - lấy trực tiếp từ database
-        List<User> staffAndAdmins = userRepository.findAllStaffAndAdmin();
-
-        for (User staff : staffAndAdmins) {
-            notificationPublisher.publishNotificationCreatedEvent(
-                    staff.getUserID(),
-                    title,
-                    message,
-                    "/blood-inventory",
-                    "LOW_BLOOD_INVENTORY",
-                    "HIGH"
-            );
-        }
-    }
+//    private void notifyLowBloodInventory(BloodType bloodType, Double quantity) {
+//        String title = "CẢNH BÁO: Lượng máu " + bloodType + " sắp hết!";
+//        String message = "Hiện kho máu chỉ còn " + String.format("%.0f", quantity) +
+//                " ml máu " + bloodType + " (khoảng " +
+//                String.format("%.1f", quantity / STANDARD_DONATION_AMOUNT) +
+//                " đơn vị). Cần bổ sung gấp!";
+//
+//        // Cách hiệu quả hơn - lấy trực tiếp từ database
+//        List<User> staffAndAdmins = userRepository.findAllStaffAndAdmin();
+//
+//        for (User staff : staffAndAdmins) {
+//            notificationPublisher.publishNotificationCreatedEvent(
+//                    staff.getUserID(),
+//                    title,
+//                    message,
+//                    "/blood-inventory",
+//                    "LOW_BLOOD_INVENTORY",
+//                    "HIGH"
+//            );
+//        }
+//    }
 
     /**
      * Lấy tóm tắt tồn kho theo nhóm máu

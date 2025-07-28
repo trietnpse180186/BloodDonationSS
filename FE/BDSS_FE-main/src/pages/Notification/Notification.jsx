@@ -64,7 +64,7 @@ export default function Notification() {
 
     const now = new Date();
     const currentDate = now.toISOString().slice(0, 10);
-    const currentTime = now.toTimeString().slice(0, 5);
+    const currentTime = now.toLocaleTimeString("en-GB", { hour12: false });
 
     const dataToSend = {
       ...form,

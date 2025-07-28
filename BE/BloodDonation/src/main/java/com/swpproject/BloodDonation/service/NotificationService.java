@@ -39,7 +39,7 @@ public class NotificationService {
                         .title(event.getTitle())
                         .detail(event.getMessage())
                         .date(LocalDateTime.now().toLocalDate())
-                        .time(LocalDateTime.now().toLocalTime())
+                        .time(LocalDateTime.now().toLocalTime().withNano(0))
                         .donorId(event.getUserId())
                         .build();
 
@@ -59,7 +59,7 @@ public class NotificationService {
                         .title(request.getTitle())
                         .detail(request.getDetail())
                         .date(request.getDate() != null ? request.getDate() : LocalDateTime.now().toLocalDate())
-                        .time(request.getTime() != null ? request.getTime() : LocalDateTime.now().toLocalTime())
+                        .time((request.getTime() != null ? request.getTime() : LocalDateTime.now().toLocalTime()).withNano(0)) // Thêm .withNano(0)
                         .donor(donor)
                         .status(NotificationStatus.UNREAD)
                         .build();

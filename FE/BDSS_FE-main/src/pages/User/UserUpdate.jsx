@@ -156,7 +156,7 @@ export default function UserUpdate() {
       });
 
       toast.success("Update successful!");
-      navigate("/user-profile");
+      navigate(-1);
     } catch (error) {
       console.error("Update error:", error);
       toast.error("Update failed. Please check your information.");

@@ -13,7 +13,6 @@ import logout from "../helpers/authLogout";
 import logo from "../images/logo.jpg";
 import getUserById, { getUserIdFromToken } from "../helpers/getUserById";
 import { getUserNotifications } from "../helpers/getNotification";
-import { useNotifications } from "../contexts/NotificationContext";
 import "./navbar.css";
 
 export default function AppNavbar() {
@@ -59,8 +58,7 @@ export default function AppNavbar() {
   useEffect(() => {
     if (user) {
       fetchNotifications();
-
-      const interval = setInterval(fetchNotifications, 30000); // 30 giây
+      const interval = setInterval(fetchNotifications, 5000);
       return () => clearInterval(interval);
     } else {
       setNotifications([]);

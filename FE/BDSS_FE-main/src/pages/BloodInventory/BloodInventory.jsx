@@ -224,7 +224,6 @@ export default function BloodInventory() {
     (sum, item) => sum + item.expiringUnits,
     0
   );
-  // Tổng lượng máu đã dùng trong tháng (ml)
   const totalUsedThisMonth = usageStats.totalUsed ? usageStats.totalUsed : 0;
   const totalReceivedThisMonth = inventoryData.reduce(
     (sum, item) => sum + item.receivedThisMonth,
@@ -277,7 +276,6 @@ export default function BloodInventory() {
     ],
   };
 
-  // Biểu đồ đường: số lần dùng máu (count) theo nhóm máu
   const lineChartData = {
     labels: inventoryData.map(
       (item) => bloodTypeDisplay[item.bloodType] || item.bloodType
@@ -290,6 +288,19 @@ export default function BloodInventory() {
         backgroundColor: "rgba(76, 175, 80, 0.2)",
         tension: 0.4,
         fill: true,
+      },
+      {
+        label: "Used This Month (ml)",
+        data: inventoryData.map((item) =>
+          usageStats.bloodTypeDetails &&
+          usageStats.bloodTypeDetails[item.bloodType]
+            ? usageStats.bloodTypeDetails[item.bloodType].amount || 0
+            : 0
+        ),
+        borderColor: "#FF5722",
+        backgroundColor: "rgba(255, 87, 34, 0.1)",
+        tension: 0.4,
+        fill: false,
       },
     ],
   };

@@ -92,7 +92,7 @@ export default function ForgotPassword() {
         confirmPassword,
       });
       toast.success("Password reset successfully. Please login!");
-      setStep(1);
+      navigate("/user-profile");
     } catch (err) {
       toast.error(err?.response?.data?.message || "Failed to reset password.");
     }

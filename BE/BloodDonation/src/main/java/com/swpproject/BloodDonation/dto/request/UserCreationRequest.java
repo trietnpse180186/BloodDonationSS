@@ -2,6 +2,7 @@ package com.swpproject.BloodDonation.dto.request;
 
 import com.swpproject.BloodDonation.entity.Role;
 import com.swpproject.BloodDonation.enums.BloodType;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,6 +38,7 @@ public class UserCreationRequest {
 
     private Role role;
 
+    @Nullable
     private BloodType bloodType;
 
     @Past(message = "Birthday must be a date in the past")

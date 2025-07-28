@@ -1,5 +1,6 @@
 package com.swpproject.BloodDonation.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.swpproject.BloodDonation.enums.NotificationStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,6 +29,7 @@ public class Notification {
 
     private LocalDate date;
 
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime time;
 
     @ManyToOne

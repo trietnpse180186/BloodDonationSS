@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./NotificationModal.css";
 import { useNavigate } from "react-router-dom";
 import {
   Modal,
@@ -23,6 +24,11 @@ import {
 } from "react-icons/fa";
 
 function NotificationModal({ show, onHide, notification }) {
+  useEffect(() => {
+    if (notification) {
+      console.log("[VN] Notification object nhận được:", notification);
+    }
+  }, [notification]);
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
@@ -86,27 +92,59 @@ function NotificationModal({ show, onHide, notification }) {
 
     const unitsMatch =
       detail.match(/Units.*?:\s*(\d+)/i) || detail.match(/(\d+)\s+units?/i);
-    const units = unitsMatch ? unitsMatch[1] : "Multiple";
+    const unitsNeeded = unitsMatch
+      ? unitsMatch[1]
+      : notification.unitsNeeded || "Multiple";
 
     const priorityMatch = detail.match(/Priority:\s*([A-Za-z]+)/i);
-    const priority = priorityMatch ? priorityMatch[1] : "NORMAL";
+    const priority = priorityMatch
+      ? priorityMatch[1]
+      : notification.priority || "NORMAL";
 
     const contactMatch =
       detail.match(/Contact:?\s*([^,\n]+)/i) ||
       detail.match(/Call:?\s*([^,\n]+)/i);
-    const contact = contactMatch ? contactMatch[1].trim() : "";
+    const contact = contactMatch
+      ? contactMatch[1].trim()
+      : notification.contactPhone || "";
+
+    // Capture everything after 'Address:' up to next field or end
+    const addressMatch = detail.match(
+      /Address:?\s*([\s\S]*?)(?=(Contact Person:|Contact:|Description:|Priority:|$))/i
+    );
+    const address = addressMatch
+      ? addressMatch[1].trim()
+      : notification.address || "";
+
+    const contactPersonMatch = detail.match(/Contact Person:?\s*([^,\n]+)/i);
+    const contactPerson = contactPersonMatch
+      ? contactPersonMatch[1].trim()
+      : notification.contactPerson || "";
+
+    const descriptionMatch = detail.match(/Description:?\s*([^,\n]+)/i);
+    const description = descriptionMatch
+      ? descriptionMatch[1].trim()
+      : notification.description || "";
 
     return {
       requestId,
       bloodType,
       hospital,
-      units,
+      unitsNeeded,
       priority,
       contact,
+      address,
+      contactPerson,
+      description,
     };
   };
 
   const emergencyDetails = isEmergencyRequest ? getEmergencyDetails() : null;
+  useEffect(() => {
+    if (emergencyDetails) {
+      console.log("[VN] emergencyDetails đã parse:", emergencyDetails);
+    }
+  }, [emergencyDetails]);
 
   const handleRespondClick = async (requestId) => {
     const confirmed = window.confirm(
@@ -142,7 +180,7 @@ function NotificationModal({ show, onHide, notification }) {
 
       setTimeout(() => {
         onHide();
-        navigate("/appointment");
+        navigate("/emergency-donation");
       }, 3000);
     } catch (error) {
       console.error("Error responding to request:", error);
@@ -214,9 +252,8 @@ function NotificationModal({ show, onHide, notification }) {
           )}
         </div>
 
-        {/* Special formatted view for emergency requests */}
         {isEmergencyRequest && emergencyDetails && (
-          <Card className="mb-4 emergency-card">
+          <Card className="mb-4 emergency-card custom-emergency-card">
             <Card.Header
               className={
                 isRareBloodRequest
@@ -231,70 +268,148 @@ function NotificationModal({ show, onHide, notification }) {
               </h5>
             </Card.Header>
             <Card.Body>
-              <Row className="emergency-details">
-                <Col xs={12} md={6} className="mb-3">
+              <Row className="emergency-details custom-emergency-details">
+                <Col xs={12} md={6} className="mb-2">
                   <div className="d-flex align-items-center">
-                    <FaTint className="me-2" style={{ color: "#dc3545" }} />
+                    <FaTint
+                      className="me-2"
+                      style={{ color: "#dc3545", fontSize: 20 }}
+                    />
                     <div>
                       <div className="text-muted small">
                         Blood Type Required
                       </div>
-                      <div className="fw-bold fs-4">
+                      <div className="fw-bold" style={{ fontSize: 18 }}>
                         {emergencyDetails.bloodType}
                       </div>
                     </div>
                   </div>
                 </Col>
-
-                <Col xs={12} md={6} className="mb-3">
+                <Col xs={12} md={6} className="mb-2">
                   <div className="d-flex align-items-center">
                     <FaHourglassHalf
                       className="me-2"
-                      style={{ color: "#fd7e14" }}
+                      style={{ color: "#fd7e14", fontSize: 18 }}
                     />
                     <div>
                       <div className="text-muted small">Units Needed</div>
-                      <div className="fw-bold">
-                        {emergencyDetails.units} unit(s)
+                      <div className="fw-bold" style={{ fontSize: 18 }}>
+                        {emergencyDetails.unitsNeeded} unit(s)
                       </div>
                     </div>
                   </div>
                 </Col>
-
-                <Col xs={12} className="mb-3">
+                <Col xs={12} md={6} className="mb-2">
                   <div className="d-flex align-items-center">
-                    <FaHospital className="me-2" style={{ color: "#0d6efd" }} />
+                    <FaHospital
+                      className="me-2"
+                      style={{ color: "#0d6efd", fontSize: 18 }}
+                    />
                     <div>
                       <div className="text-muted small">Hospital</div>
-                      <div className="fw-bold">{emergencyDetails.hospital}</div>
+                      <div className="fw-bold" style={{ fontSize: 16 }}>
+                        {emergencyDetails.hospital}
+                      </div>
                     </div>
                   </div>
                 </Col>
+              </Row>
 
-                {emergencyDetails.contact && (
-                  <Col xs={12} className="mb-3">
-                    <div className="d-flex align-items-center">
-                      <FaPhoneAlt
-                        className="me-2"
-                        style={{ color: "#198754" }}
-                      />
-                      <div>
-                        <div className="text-muted small">
-                          Emergency Contact
-                        </div>
-                        <div className="fw-bold">
-                          {emergencyDetails.contact}
-                        </div>
-                      </div>
-                    </div>
-                  </Col>
-                )}
+              {/* Address section centered below the first row */}
+              {emergencyDetails.address && (
+                <div className="d-flex align-items-start justify-content-center mb-3">
+                  <FaMapMarkerAlt
+                    className="me-2"
+                    style={{ color: "#6c757d", fontSize: 18, marginTop: 2 }}
+                  />
+                  <div className="text-center">
+                    <div className="text-muted small">Address</div>
+                    <pre
+                      className="fw-bold address-text"
+                      style={{
+                        margin: 0,
+                        background: "none",
+                        padding: 0,
+                        textAlign: "center",
+                      }}
+                    >
+                      {emergencyDetails.address}
+                    </pre>
+                  </div>
+                </div>
+              )}
+              <hr
+                style={{
+                  borderTop: "2px solid #dee2e6",
+                  margin: "12px 0 16px 0",
+                }}
+              />
 
-                <Col xs={12}>
+              <Row className="emergency-details custom-emergency-details">
+                <Col xs={12} md={6} className="mb-2">
+                  <div className="d-flex align-items-center">
+                    {emergencyDetails.contactPerson ? (
+                      <>
+                        <FaPhoneAlt
+                          className="me-2"
+                          style={{ color: "#198754", fontSize: 18 }}
+                        />
+                        <div>
+                          <div className="text-muted small">Contact Person</div>
+                          <div className="fw-bold" style={{ fontSize: 16 }}>
+                            {emergencyDetails.contactPerson}
+                          </div>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                </Col>
+                <Col xs={12} md={6} className="mb-2">
+                  <div className="d-flex align-items-center">
+                    {emergencyDetails.contact ? (
+                      <>
+                        <FaPhoneAlt
+                          className="me-2"
+                          style={{ color: "#198754", fontSize: 18 }}
+                        />
+                        <div>
+                          <div className="text-muted small">
+                            Emergency Contact
+                          </div>
+                          <div className="fw-bold" style={{ fontSize: 16 }}>
+                            {emergencyDetails.contact}
+                          </div>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                </Col>
+              </Row>
+
+              <Row className="emergency-details custom-emergency-details">
+                <Col xs={12} md={8} className="mb-2">
+                  <div className="d-flex align-items-center">
+                    {emergencyDetails.description ? (
+                      <>
+                        <FaInfoCircle
+                          className="me-2"
+                          style={{ color: "#0d6efd", fontSize: 18 }}
+                        />
+                        <div>
+                          <div className="text-muted small">Description</div>
+                          <div className="fw-bold" style={{ fontSize: 15 }}>
+                            {emergencyDetails.description}
+                          </div>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                </Col>
+                <Col xs={12} md={4} className="mb-2">
                   <div className="d-flex align-items-center">
                     <FaMapMarkerAlt
                       className="me-2"
-                      style={{ color: "#6c757d" }}
+                      style={{ color: "#6c757d", fontSize: 16 }}
                     />
                     <div>
                       <div className="text-muted small">Priority</div>
@@ -307,6 +422,7 @@ function NotificationModal({ show, onHide, notification }) {
                               ? "warning"
                               : "info"
                           }
+                          style={{ fontSize: 13 }}
                         >
                           {emergencyDetails.priority}
                         </Badge>
@@ -319,27 +435,13 @@ function NotificationModal({ show, onHide, notification }) {
           </Card>
         )}
 
-        {/* Original notification content */}
-        <div
-          className={`notification-detail ${
-            isEmergencyRequest ? "emergency-detail" : ""
-          }`}
-        >
-          {notification.detail.split("\n").map((line, index) => (
-            <p
-              key={index}
-              className={
-                line.includes("EMERGENCY") || line.includes("Urgent need")
-                  ? "text-danger fw-bold"
-                  : line.includes("RARE BLOOD")
-                  ? "text-warning fw-bold"
-                  : ""
-              }
-            >
-              {line}
-            </p>
-          ))}
-        </div>
+        {!isEmergencyRequest && (
+          <div className="notification-detail">
+            {notification.detail.split("\n").map((line, index) => (
+              <p key={index}>{line}</p>
+            ))}
+          </div>
+        )}
 
         {responseMessage && (
           <Alert variant="success" className="mt-3">

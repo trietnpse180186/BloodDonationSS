@@ -51,8 +51,8 @@ export default function Register() {
     confirmPassword: "",
     phoneNumber: "",
     address: "",
-    bloodType: "",
     occupation: "",
+    bloodType: null,
   });
 
   const isValidEmail = (email) => {
@@ -83,12 +83,6 @@ export default function Register() {
     if (!formData.birthday) {
       newErrors.birthday = "Birthday is required.";
     }
-    if (!formData.phoneNumber) {
-      newErrors.phoneNumber = "Phone number is required.";
-    } else if (!/^\d{10}$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = "Phone number must be 10 digits.";
-    }
-
     if (formData.birthday) {
       const today = new Date();
       const birthDate = new Date(formData.birthday);
@@ -101,7 +95,6 @@ export default function Register() {
         newErrors.birthday = "You must be at least 18 years old to register.";
       }
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -132,6 +125,8 @@ export default function Register() {
     e.preventDefault();
     if (!validateForm()) return;
     setLoading(true);
+    // Log form data gửi đi
+    console.log("Form data gửi đi:", formData);
     try {
       const response = await axios.post(
         "http://localhost:8080/api/v1/users",
@@ -177,37 +172,43 @@ export default function Register() {
         }}
       >
         <h1 className="register-title">SIGN UP</h1>
-        <div className="register-flex-row">
-          <div className="register-account">
+        <div className="register-flex-row" style={{ gap: 32 }}>
+          <div className="register-account" style={{ flex: 1, minWidth: 320 }}>
             <h4 className="register-section-title">Account Information</h4>
-
             {/* Email field */}
-            <div className="register-field">
-              <h6 className="register-label">
+            <div className="register-field" style={{ marginBottom: 18 }}>
+              <label className="register-label" htmlFor="email">
                 Email <span className="register-required">*</span>
-              </h6>
-              <div className="register-field-wrapper">
+              </label>
+              <div
+                className="register-field-wrapper"
+                style={{ alignItems: "center" }}
+              >
                 <FaEnvelope className="register-input-icon" />
                 <input
                   type="email"
+                  id="email"
                   name="email"
                   placeholder="Enter your email *"
                   value={formData.email}
                   onChange={handleChange}
                   className="register-input"
+                  style={{ width: "100%" }}
                 />
               </div>
               {errors.email && (
                 <div className="register-error-message">{errors.email}</div>
               )}
             </div>
-
             {/* Password field */}
-            <div className="register-field">
-              <h6 className="register-label">
+            <div className="register-field" style={{ marginBottom: 18 }}>
+              <label className="register-label" htmlFor="password">
                 Password <span className="register-required">*</span>
-              </h6>
-              <div className="register-field-wrapper">
+              </label>
+              <div
+                className="register-field-wrapper"
+                style={{ alignItems: "center" }}
+              >
                 <PasswordInput
                   value={formData.password}
                   name="password"
@@ -216,7 +217,7 @@ export default function Register() {
               </div>
               <div
                 className="register-password-hints"
-                style={{ color: passwordHintColor }}
+                style={{ color: passwordHintColor, marginLeft: 32 }}
               >
                 <ul className="register-hints-list">
                   <li>Password must contain at least 1 uppercase letter</li>
@@ -228,13 +229,15 @@ export default function Register() {
                 <div className="register-error-message">{errors.password}</div>
               )}
             </div>
-
             {/* Confirm Password field */}
-            <div className="register-field">
-              <h6 className="register-label">
+            <div className="register-field" style={{ marginBottom: 18 }}>
+              <label className="register-label" htmlFor="confirmPassword">
                 Confirm Password <span className="register-required">*</span>
-              </h6>
-              <div className="register-field-wrapper">
+              </label>
+              <div
+                className="register-field-wrapper"
+                style={{ alignItems: "center" }}
+              >
                 <PasswordInput
                   value={formData.confirmPassword}
                   name="confirmPassword"
@@ -248,38 +251,46 @@ export default function Register() {
               )}
             </div>
           </div>
-
-          <div className="register-profile">
+          <div className="register-profile" style={{ flex: 1, minWidth: 320 }}>
             <h4 className="register-section-title">Profile Information</h4>
-
             {/* Full Name field */}
-            <div className="register-field">
-              <h6 className="register-label">
+            <div className="register-field" style={{ marginBottom: 18 }}>
+              <label className="register-label" htmlFor="fullName">
                 Full Name <span className="register-required">*</span>
-              </h6>
-              <div className="register-field-wrapper">
+              </label>
+              <div
+                className="register-field-wrapper"
+                style={{ alignItems: "center" }}
+              >
                 <FaUserEdit className="register-input-icon" />
                 <input
                   type="text"
+                  id="fullName"
                   name="fullName"
                   placeholder="Enter your full name *"
                   value={formData.fullName}
                   onChange={handleChange}
                   className="register-input"
+                  style={{ width: "100%" }}
                 />
               </div>
               {errors.fullName && (
                 <div className="register-error-message">{errors.fullName}</div>
               )}
             </div>
-
             {/* Gender field */}
-            <div className="register-field">
-              <h6 className="register-label">
+            <div className="register-field" style={{ marginBottom: 18 }}>
+              <label className="register-label">
                 Gender <span className="register-required">*</span>
-              </h6>
-              <div className="register-gender-options">
-                <label className="register-radio-label">
+              </label>
+              <div
+                className="register-gender-options"
+                style={{ display: "flex", gap: 24, marginTop: 4 }}
+              >
+                <label
+                  className="register-radio-label"
+                  style={{ display: "flex", alignItems: "center", gap: 6 }}
+                >
                   <input
                     type="radio"
                     name="sex"
@@ -290,7 +301,10 @@ export default function Register() {
                   />
                   <span className="register-radio-text">Male</span>
                 </label>
-                <label className="register-radio-label">
+                <label
+                  className="register-radio-label"
+                  style={{ display: "flex", alignItems: "center", gap: 6 }}
+                >
                   <input
                     type="radio"
                     name="sex"
@@ -306,105 +320,33 @@ export default function Register() {
                 <div className="register-error-message">{errors.sex}</div>
               )}
             </div>
-
             {/* Birthday field */}
-            <div className="register-field">
-              <h6 className="register-label">
+            <div className="register-field" style={{ marginBottom: 18 }}>
+              <label className="register-label" htmlFor="birthday">
                 Birthday <span className="register-required">*</span>
-              </h6>
-              <div className="register-field-wrapper">
+              </label>
+              <div
+                className="register-field-wrapper"
+                style={{ alignItems: "center" }}
+              >
                 <MdCake className="register-input-icon" />
                 <input
                   type="date"
+                  id="birthday"
                   name="birthday"
                   value={formData.birthday}
                   onChange={handleChange}
                   className="register-input register-date-input"
+                  style={{ width: "100%" }}
                 />
               </div>
+
               {errors.birthday && (
                 <div className="register-error-message">{errors.birthday}</div>
               )}
-            </div>
-
-            {/* Phone Number field */}
-            <div className="register-field">
-              <h6 className="register-label">
-                Phone Number <span className="register-required">*</span>
+              <h6 className="register-optional-label">
+                (You must be at least 18 years old to register)
               </h6>
-              <div className="register-field-wrapper">
-                <FaPhone className="register-input-icon" />
-                <input
-                  type="text"
-                  name="phoneNumber"
-                  placeholder="Enter your phone number *"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  className="register-input"
-                />
-              </div>
-              {errors.phoneNumber && (
-                <div className="register-error-message">
-                  {errors.phoneNumber}
-                </div>
-              )}
-            </div>
-
-            {/* Optional fields */}
-            <h6 className="register-optional-label">
-              The following fields are optional. You can complete them later in
-              your profile.
-            </h6>
-
-            <div className="register-field">
-              <div className="register-field-wrapper">
-                <FaLocationDot className="register-input-icon" />
-                <input
-                  type="text"
-                  name="address"
-                  placeholder="Address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="register-input"
-                />
-              </div>
-            </div>
-
-            <div className="register-field">
-              <div className="register-field-wrapper">
-                <select
-                  name="bloodType"
-                  value={formData.bloodType || ""}
-                  onChange={handleChange}
-                  className="register-select"
-                >
-                  <option value="" disabled>
-                    Select Blood Type
-                  </option>
-                  <option value="A_POSITIVE">A+</option>
-                  <option value="A_NEGATIVE">A-</option>
-                  <option value="B_POSITIVE">B+</option>
-                  <option value="B_NEGATIVE">B-</option>
-                  <option value="AB_POSITIVE">AB+</option>
-                  <option value="AB_NEGATIVE">AB-</option>
-                  <option value="O_POSITIVE">O+</option>
-                  <option value="O_NEGATIVE">O-</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="register-field">
-              <div className="register-field-wrapper">
-                <MdWork className="register-input-icon" />
-                <input
-                  type="text"
-                  name="occupation"
-                  placeholder="Occupation"
-                  value={formData.occupation}
-                  onChange={handleChange}
-                  className="register-input"
-                />
-              </div>
             </div>
           </div>
         </div>
