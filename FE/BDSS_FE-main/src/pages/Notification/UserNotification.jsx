@@ -240,7 +240,10 @@ export default function NotificationCenter() {
                       marginTop: "5px",
                     }}
                   >
-                    {notify.date} at {notify.time}
+                    {notify.date} at{" "}
+                    {notify.time
+                      ? notify.time.match(/^\d{2}:\d{2}:\d{2}/)?.[0] || ""
+                      : ""}
                   </div>
                 </div>
 

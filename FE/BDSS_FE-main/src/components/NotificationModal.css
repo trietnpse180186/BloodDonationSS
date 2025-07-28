@@ -1,0 +1,84 @@
+/* Ensure long addresses wrap and preserve line breaks */
+.address-text {
+  display: block;
+  white-space: pre-line;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  min-height: 1.5em;
+  background: #f8f9fa;
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin-top: 2px;
+  font-size: 1rem;
+}
+.custom-emergency-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 24px 0 rgba(220, 53, 69, 0.08);
+  border: none;
+  background: #fff;
+  padding: 12px 0 18px 0;
+}
+
+.custom-emergency-card .card-header {
+  border-radius: 16px 16px 0 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+  padding: 18px 0 12px 0;
+}
+
+.custom-emergency-details {
+  margin-top: 8px;
+}
+
+.custom-emergency-details .d-flex {
+  align-items: flex-start;
+}
+
+.custom-emergency-details .text-muted.small {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #495057 !important;
+  margin-bottom: 2px;
+}
+
+.custom-emergency-details .fw-bold {
+  font-size: 1.15rem;
+  color: #212529;
+}
+
+.custom-emergency-details .fs-4,
+.custom-emergency-details .fs-3 {
+  font-size: 2rem !important;
+  font-weight: 700;
+  color: #c82333;
+  letter-spacing: 1px;
+}
+
+.custom-emergency-details svg {
+  min-width: 28px;
+  min-height: 28px;
+  margin-right: 10px;
+}
+
+.custom-emergency-details .badge {
+  font-size: 1rem;
+  padding: 0.4em 1em;
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .custom-emergency-details .fw-bold {
+    font-size: 1rem;
+  }
+  .custom-emergency-details .fs-4,
+  .custom-emergency-details .fs-3 {
+    font-size: 1.3rem !important;
+  }
+  .custom-emergency-details svg {
+    min-width: 22px;
+    min-height: 22px;
+  }
+}

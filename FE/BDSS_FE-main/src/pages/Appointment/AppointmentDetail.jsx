@@ -6,7 +6,7 @@ import Certificate from "../Certificate/Certificate";
 
 import { getUserIdFromToken } from "../../helpers/getUserById";
 import axios from "../../helpers/axiosInstance";
-import { Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { Modal } from "antd";
 
 function formatDate(isoDate) {
@@ -80,9 +80,8 @@ export default function AppointmentDetail() {
     try {
       await axios.put(
         `http://localhost:8080/api/booking/${bookingId}`,
-        { bookingId },
+        { status: "CANCELLED" },
         {
-          params: { status: "CANCELLED" },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -167,7 +166,7 @@ export default function AppointmentDetail() {
               getContainer={document.body}
               width="77%"
               centered
-               maskClosable={false}
+              maskClosable={false}
               closeIcon={
                 <div className="custom-close-button">
                   <span>x</span>
