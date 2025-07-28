@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import UseBloodHistoryModal from "../../components/UseBloodHistoryModal";
 import axios from "axios";
 import {
   Container,
@@ -34,6 +35,7 @@ import {
   FaTriangleExclamation,
 } from "react-icons/fa6";
 import "./BloodInventory.css";
+import { saveAs } from "file-saver";
 
 ChartJS.register(
   CategoryScale,
@@ -70,13 +72,31 @@ const bloodTypeColors = {
 };
 
 export default function BloodInventory() {
+  const handleDownloadPdf = async () => {
+    try {
+      const token = sessionStorage.getItem("accessToken");
+      const response = await axios.get(
+        "http://localhost:8080/api/blood-inventory/usage-report/pdf",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: "blob",
+        }
+      );
+      saveAs(response.data, "blood-usage-report.pdf");
+    } catch (err) {
+      alert("Failed to download PDF report.");
+    }
+  };
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [inventoryData, setInventoryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("summary");
   const [showLowStock, setShowLowStock] = useState(false);
+  const [usageStats, setUsageStats] = useState({});
+  const [usageStatsLoading, setUsageStatsLoading] = useState(false);
+  const [usageStatsError, setUsageStatsError] = useState(null);
 
-  // State cho chức năng dùng máu
   const [useBloodModal, setUseBloodModal] = useState(false);
   const [useBloodForm, setUseBloodForm] = useState({
     bloodType: "",
@@ -85,7 +105,6 @@ export default function BloodInventory() {
   });
   const [useBloodResult, setUseBloodResult] = useState(null);
 
-  // State & handler cho modal chi tiết tồn kho
   const [detailModal, setDetailModal] = useState({
     show: false,
     bloodType: null,
@@ -94,7 +113,6 @@ export default function BloodInventory() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailError, setDetailError] = useState(null);
 
-  // Handler mở modal và fetch chi tiết tồn kho
   const handleShowDetail = async (bloodType) => {
     setDetailModal({ show: true, bloodType });
     setDetailLoading(true);
@@ -107,7 +125,7 @@ export default function BloodInventory() {
       );
       setDetailData(res.data);
     } catch (err) {
-      setDetailError("Không thể tải chi tiết tồn kho!");
+      setDetailError("Can not load!");
       setDetailData([]);
     } finally {
       setDetailLoading(false);
@@ -139,7 +157,6 @@ export default function BloodInventory() {
     }
   };
 
-  // Handler gọi API dùng máu
   const handleUseBlood = async () => {
     setUseBloodResult(null);
     try {
@@ -155,7 +172,6 @@ export default function BloodInventory() {
       );
       setUseBloodResult({ success: true, message: "Blood used successfully!" });
       setUseBloodForm({ bloodType: "", quantity: "", reason: "" });
-      // Gọi lại fetchInventoryData để load lại dữ liệu kho máu
       fetchInventoryData();
     } catch (err) {
       setUseBloodResult({
@@ -165,9 +181,39 @@ export default function BloodInventory() {
     }
   };
 
+  function getCurrentMonthRange() {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+    return {
+      startDate: start.toISOString(),
+      endDate: end.toISOString(),
+    };
+  }
+
   useEffect(() => {
     fetchInventoryData();
-    // eslint-disable-next-line
+    const { startDate, endDate } = getCurrentMonthRange();
+    const fetchUsageStats = async () => {
+      setUsageStatsLoading(true);
+      setUsageStatsError(null);
+      try {
+        const token = sessionStorage.getItem("accessToken");
+        const res = await axios.get(
+          `http://localhost:8080/api/blood-inventory/usage-statistics?startDate=${encodeURIComponent(
+            startDate
+          )}&endDate=${encodeURIComponent(endDate)}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setUsageStats(res.data);
+      } catch (err) {
+        setUsageStatsError("Can not load!");
+        setUsageStats({});
+      } finally {
+        setUsageStatsLoading(false);
+      }
+    };
+    fetchUsageStats();
   }, []);
 
   const totalAvailableUnits = inventoryData.reduce(
@@ -178,10 +224,8 @@ export default function BloodInventory() {
     (sum, item) => sum + item.expiringUnits,
     0
   );
-  const totalUsedThisMonth = inventoryData.reduce(
-    (sum, item) => sum + item.usedThisMonth,
-    0
-  );
+  // Tổng lượng máu đã dùng trong tháng (ml)
+  const totalUsedThisMonth = usageStats.totalUsed ? usageStats.totalUsed : 0;
   const totalReceivedThisMonth = inventoryData.reduce(
     (sum, item) => sum + item.receivedThisMonth,
     0
@@ -233,6 +277,7 @@ export default function BloodInventory() {
     ],
   };
 
+  // Biểu đồ đường: số lần dùng máu (count) theo nhóm máu
   const lineChartData = {
     labels: inventoryData.map(
       (item) => bloodTypeDisplay[item.bloodType] || item.bloodType
@@ -243,14 +288,6 @@ export default function BloodInventory() {
         data: inventoryData.map((item) => item.receivedThisMonth),
         borderColor: "#4CAF50",
         backgroundColor: "rgba(76, 175, 80, 0.2)",
-        tension: 0.4,
-        fill: true,
-      },
-      {
-        label: "Used This Month",
-        data: inventoryData.map((item) => item.usedThisMonth),
-        borderColor: "#FF5722",
-        backgroundColor: "rgba(255, 87, 34, 0.2)",
         tension: 0.4,
         fill: true,
       },
@@ -277,22 +314,41 @@ export default function BloodInventory() {
   const filteredData = showLowStock
     ? inventoryData.filter((item) => item.availableUnits < 10)
     : inventoryData;
-
   return (
     <Container fluid className="blood-inventory-container">
       <h1 className="blood-inventory-title">Blood Inventory Management</h1>
 
-      {/* Khu vực quản trị kho máu: Dùng máu */}
       <Row className="mb-3">
         <Col md={3} className="mb-2">
           <button
-            className="btn btn-primary"
+            className="btn-use-blood"
             onClick={() => setUseBloodModal(true)}
           >
             Use Blood
           </button>
         </Col>
+        <Col md={3} className="mb-2">
+          <button
+            className="btn btn-outline-primary w-100"
+            onClick={() => setShowHistoryModal(true)}
+          >
+            View Usage History
+          </button>
+        </Col>
+        <Col md={3} className="mb-2">
+          <button
+            className="btn btn-outline-success w-100"
+            onClick={handleDownloadPdf}
+          >
+            Download Usage Report (PDF)
+          </button>
+        </Col>
       </Row>
+
+      <UseBloodHistoryModal
+        show={showHistoryModal}
+        onHide={() => setShowHistoryModal(false)}
+      />
 
       <Modal show={useBloodModal} onHide={() => setUseBloodModal(false)}>
         <Modal.Header closeButton>
@@ -365,7 +421,6 @@ export default function BloodInventory() {
         </Modal.Footer>
       </Modal>
 
-      {/* ...existing code... */}
       <Row className="mb-4">
         <Col xs={12} md={6} lg={3}>
           <Card className="dashboard-card">
@@ -379,27 +434,14 @@ export default function BloodInventory() {
                   <p>Available Units</p>
                 </div>
               </div>
-              <div className="mt-2 text-center">
-                {Array.from(
-                  new Set(inventoryData.map((item) => item.bloodType))
-                ).map((type) => (
-                  <button
-                    key={type}
-                    className="btn btn-outline-info btn-sm m-1"
-                    onClick={() => handleShowDetail(type)}
-                  >
-                    View {bloodTypeDisplay[type] || type} Details
-                  </button>
-                ))}
-              </div>
+              <div className="mt-2 text-center"></div>
             </Card.Body>
           </Card>
         </Col>
-        {/* Modal chi tiết tồn kho nhóm máu */}
         <Modal show={detailModal.show} onHide={handleCloseDetail} size="lg">
           <Modal.Header closeButton>
             <Modal.Title>
-              Chi tiết tồn kho{" "}
+              Detail:{" "}
               {detailModal.bloodType && bloodTypeDisplay[detailModal.bloodType]}
             </Modal.Title>
           </Modal.Header>
@@ -478,7 +520,7 @@ export default function BloodInventory() {
                   <FaArrowTrendDown />
                 </div>
                 <div className="dashboard-card-stats">
-                  <h3>{totalUsedThisMonth.toFixed(1)} L</h3>
+                  <h3>{totalUsedThisMonth.toFixed(1)} ml</h3>
                   <p>Used This Month</p>
                 </div>
               </div>
@@ -494,12 +536,30 @@ export default function BloodInventory() {
                   <FaArrowTrendUp />
                 </div>
                 <div className="dashboard-card-stats">
-                  <h3>{totalReceivedThisMonth.toFixed(1)} L</h3>
+                  <h3>{totalReceivedThisMonth.toFixed(1)} ml</h3>
                   <p>Received This Month</p>
                 </div>
               </div>
             </Card.Body>
           </Card>
+        </Col>
+      </Row>
+
+      <Row className="mb-4 justify-content-center">
+        <Col xs={12}>
+          <div className="bloodtype-detail-grid">
+            {Array.from(
+              new Set(inventoryData.map((item) => item.bloodType))
+            ).map((type) => (
+              <button
+                key={type}
+                className="btn btn-bloodtype-detail m-2"
+                onClick={() => handleShowDetail(type)}
+              >
+                View {bloodTypeDisplay[type] || type} Details
+              </button>
+            ))}
+          </div>
         </Col>
       </Row>
 
@@ -623,7 +683,7 @@ export default function BloodInventory() {
                       <th>Available Quantity (L)</th>
                       <th>Available Units</th>
                       <th>Expiring Units</th>
-                      <th>Used This Month (L)</th>
+                      <th>Used This Month (ml)</th>
                       <th>Received This Month (L)</th>
                       <th>Status</th>
                     </tr>
@@ -655,11 +715,18 @@ export default function BloodInventory() {
                             item.expiringUnits
                           )}
                         </td>
-                        <td>{item.usedThisMonth.toFixed(1)}</td>
+                        <td>
+                          {usageStats.bloodTypeDetails &&
+                          usageStats.bloodTypeDetails[item.bloodType]
+                            ? usageStats.bloodTypeDetails[
+                                item.bloodType
+                              ].amount.toFixed(1)
+                            : 0}
+                        </td>
                         <td>{item.receivedThisMonth.toFixed(1)}</td>
                         <td>
                           {item.availableUnits < 5 ? (
-                            <Badge bg="danger">Critical</Badge>
+                            <Badge bg="danger">Used up</Badge>
                           ) : item.availableUnits < 10 ? (
                             <Badge bg="warning" text="dark">
                               Low

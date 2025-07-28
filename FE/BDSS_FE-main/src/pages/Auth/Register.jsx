@@ -89,7 +89,6 @@ export default function Register() {
       newErrors.phoneNumber = "Phone number must be 10 digits.";
     }
 
-    // Age validation
     if (formData.birthday) {
       const today = new Date();
       const birthDate = new Date(formData.birthday);

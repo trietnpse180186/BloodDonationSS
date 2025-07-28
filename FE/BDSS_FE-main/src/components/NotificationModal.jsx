@@ -24,12 +24,10 @@ import {
 
 function NotificationModal({ show, onHide, notification }) {
   const navigate = useNavigate();
-  // Thêm state để theo dõi quá trình gọi API
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [responseMessage, setResponseMessage] = useState(null);
   const [responseError, setResponseError] = useState(null);
 
-  // Log notification để kiểm tra
   useEffect(() => {
     if (notification) {
       console.log("Notification object:", notification);
@@ -41,7 +39,6 @@ function NotificationModal({ show, onHide, notification }) {
     return null;
   }
 
-  // Check notification types
   const isEmergencyRequest =
     notification.detail &&
     (notification.detail.includes("EMERGENCY BLOOD REQUEST") ||
@@ -55,22 +52,18 @@ function NotificationModal({ show, onHide, notification }) {
 
   const isRegularNotification = !isEmergencyRequest;
 
-  // Extract important information for emergency requests
   const getEmergencyDetails = () => {
     if (!isEmergencyRequest) return null;
 
     const detail = notification.detail;
 
-    // Thứ tự ưu tiên khi lấy requestId:
     let requestId = null;
 
-    // 1. Từ actionUrl (nếu có)
     if (notification.actionUrl) {
       requestId = notification.actionUrl.split("/").pop();
       console.log("ID extracted from actionUrl:", requestId);
     }
 
-    // 2. Tìm UUID pattern trong toàn bộ nội dung thông báo
     if (!requestId) {
       const uuidPattern =
         /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i;
@@ -81,28 +74,23 @@ function NotificationModal({ show, onHide, notification }) {
       }
     }
 
-    // Các phần trích xuất khác giữ nguyên
     const bloodTypeMatch =
       detail.match(/blood type ([A-Z_+-]+)/i) ||
       detail.match(/type:\s*([A-Z_+-]+)/i);
     const bloodType = bloodTypeMatch ? bloodTypeMatch[1] : "Unknown";
 
-    // Extract hospital name
     const hospitalMatch =
       detail.match(/at\s+(.+?)(?=\.|near|$)/i) ||
       detail.match(/Hospital:\s*(.+?)(?=\.|$)/i);
     const hospital = hospitalMatch ? hospitalMatch[1].trim() : "Local Hospital";
 
-    // Extract units needed
     const unitsMatch =
       detail.match(/Units.*?:\s*(\d+)/i) || detail.match(/(\d+)\s+units?/i);
     const units = unitsMatch ? unitsMatch[1] : "Multiple";
 
-    // Extract priority
     const priorityMatch = detail.match(/Priority:\s*([A-Za-z]+)/i);
     const priority = priorityMatch ? priorityMatch[1] : "NORMAL";
 
-    // Extract contact
     const contactMatch =
       detail.match(/Contact:?\s*([^,\n]+)/i) ||
       detail.match(/Call:?\s*([^,\n]+)/i);
@@ -120,16 +108,14 @@ function NotificationModal({ show, onHide, notification }) {
 
   const emergencyDetails = isEmergencyRequest ? getEmergencyDetails() : null;
 
-  // Sửa hàm handleRespondClick để gọi API
   const handleRespondClick = async (requestId) => {
-    // Hiển thị hộp thoại xác nhận
     const confirmed = window.confirm(
       "Are you sure you want to respond to this emergency blood request? " +
         "By confirming, you're agreeing to donate blood for this emergency."
     );
 
     if (!confirmed) {
-      return; // Người dùng đã hủy
+      return;
     }
 
     try {
@@ -137,13 +123,11 @@ function NotificationModal({ show, onHide, notification }) {
       setResponseMessage(null);
       setResponseError(null);
 
-      // Lấy token từ session storage
       const token = sessionStorage.getItem("accessToken");
 
-      // Gọi API để phản hồi yêu cầu khẩn cấp
       const response = await axios.post(
         `http://localhost:8080/api/emergency/${requestId}/respond`,
-        {}, // Không cần body cho request này
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -357,7 +341,6 @@ function NotificationModal({ show, onHide, notification }) {
           ))}
         </div>
 
-        {/* Hiển thị thông báo phản hồi thành công hoặc lỗi */}
         {responseMessage && (
           <Alert variant="success" className="mt-3">
             {responseMessage}
@@ -380,7 +363,7 @@ function NotificationModal({ show, onHide, notification }) {
             <Button
               variant={isRareBloodRequest ? "warning" : "danger"}
               onClick={() => handleRespondClick(emergencyDetails.requestId)}
-              disabled={isSubmitting} // Vô hiệu hóa nút khi đang gửi yêu cầu
+              disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <Spinner

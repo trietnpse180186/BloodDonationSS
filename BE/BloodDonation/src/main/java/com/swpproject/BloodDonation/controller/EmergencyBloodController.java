@@ -43,8 +43,10 @@ public class EmergencyBloodController {
             @RequestBody EmergencyBloodRequestDTO request,
             Authentication authentication) {
 
+
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String staffId = jwt.getClaim("userId");
+      
         EmergencyBloodResponseDTO response = emergencyService.createEmergencyRequest(request, staffId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -61,6 +63,7 @@ public class EmergencyBloodController {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String staffId = jwt.getClaim("userId");
+      
         EmergencyBloodResponseDTO updated = emergencyService.updateEmergencyRequest(requestId, updateDTO, staffId);
         return ResponseEntity.ok(updated);
     }
@@ -102,6 +105,7 @@ public class EmergencyBloodController {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String donorId  = jwt.getClaim("userId");
+      
         EmergencyDonorDTO response = emergencyService.respondToEmergencyRequest(requestId, donorId);
         return ResponseEntity.ok(response);
     }
@@ -118,7 +122,8 @@ public class EmergencyBloodController {
             Authentication authentication) {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
-        String staffId = jwt.getClaim("userId");;
+        String staffId = jwt.getClaim("userId");
+
         emergencyService.updateDonationStatus(donationId, status, notes, staffId);
         return ResponseEntity.ok().build();
     }
@@ -135,6 +140,7 @@ public class EmergencyBloodController {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String staffId = jwt.getClaim("userId");
+
         emergencyService.cancelEmergencyRequest(requestId, reason, staffId);
         return ResponseEntity.noContent().build();
     }
@@ -202,7 +208,9 @@ public class EmergencyBloodController {
     @GetMapping("/user/history")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<EmergencyDonorDTO>> getUserDonationHistory(Authentication authentication) {
-        String userId = authentication.getName();
+
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String userId = jwt.getClaim("userId");
         List<EmergencyDonorDTO> history = emergencyService.getUserDonationHistory(userId);
         return ResponseEntity.ok(history);
     }
