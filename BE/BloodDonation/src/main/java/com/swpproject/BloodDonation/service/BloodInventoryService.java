@@ -164,9 +164,11 @@ public class BloodInventoryService {
                 // Nếu sử dụng hết đơn vị
                 if (unit.getQuantity().equals(remainingRequest)) {
                     unit.setStatus("USED");
+                    unit.setUsedQuantity(remainingRequest); // luu lượng đã sử dụng
                     unit.setQuantity(0.0);
                 } else {
                     // Nếu chỉ sử dụng một phần
+                    unit.setUsedQuantity(remainingRequest);
                     unit.setQuantity(unit.getQuantity() - remainingRequest);
                 }
 
@@ -180,6 +182,7 @@ public class BloodInventoryService {
                 // Nếu đơn vị này không đủ
                 remainingRequest -= unit.getQuantity();
                 unit.setStatus("USED");
+                unit.setUsedQuantity(unit.getQuantity()); // lưu lượng đã sử dụng
                 unit.setNotes((unit.getNotes() != null ? unit.getNotes() : "") + "\nĐã sử dụng hết cho: " +
                         request.getReason() + " vào " + now);
                 unit.setQuantity(0.0);
@@ -262,7 +265,7 @@ public class BloodInventoryService {
         String title = "CẢNH BÁO: Lượng máu " + bloodType + " sắp hết!";
         String message = "Hiện kho máu chỉ còn " + String.format("%.0f", quantity) +
                 " ml máu " + bloodType + " (khoảng " +
-                String.format("%.1f", quantity/STANDARD_DONATION_AMOUNT) +
+                String.format("%.1f", quantity / STANDARD_DONATION_AMOUNT) +
                 " đơn vị). Cần bổ sung gấp!";
 
         // Cách hiệu quả hơn - lấy trực tiếp từ database

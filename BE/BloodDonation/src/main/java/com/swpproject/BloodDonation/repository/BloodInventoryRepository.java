@@ -50,7 +50,8 @@ public interface BloodInventoryRepository extends JpaRepository<BloodInventory, 
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT SUM(b.quantity) FROM BloodInventory b WHERE b.bloodType = :bloodType AND b.status = 'USED' AND b.lastUpdatedTime BETWEEN :startDate AND :endDate")
+    @Query("SELECT SUM(b.usedQuantity) FROM BloodInventory b " +
+            "WHERE b.bloodType = :bloodType AND b.status = 'USED' AND b.lastUpdatedTime BETWEEN :startDate AND :endDate")
     Double getUsageAmountByBloodTypeAndDateRange(
             @Param("bloodType") BloodType bloodType,
             @Param("startDate") LocalDateTime startDate,
@@ -62,8 +63,21 @@ public interface BloodInventoryRepository extends JpaRepository<BloodInventory, 
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
 
-    @Query("SELECT b.bloodType, SUM(b.quantity) FROM BloodInventory b WHERE b.status = 'USED' AND b.lastUpdatedTime BETWEEN :startDate AND :endDate GROUP BY b.bloodType")
+    @Query("SELECT b.bloodType, SUM(b.usedQuantity) FROM BloodInventory b " +
+            "WHERE b.status = 'USED' AND b.lastUpdatedTime BETWEEN :startDate AND :endDate " +
+            "GROUP BY b.bloodType")
     List<Object[]> getUsageStatsByDateRange(
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate);
+
+    long countByStatus(String status);
+
+    @Query("SELECT DISTINCT b.status FROM BloodInventory b")
+    List<String> findDistinctStatuses();
+
+    @Query("SELECT SUM(b.quantity) FROM BloodInventory b WHERE b.status = :status")
+    Double getTotalQuantityByStatus(@Param("status") String status);
+
+    @Query("SELECT COUNT(b) FROM BloodInventory b WHERE b.status = 'USED' AND b.lastUpdatedTime IS NOT NULL")
+    long countUsedWithUpdatedTime();
 }
