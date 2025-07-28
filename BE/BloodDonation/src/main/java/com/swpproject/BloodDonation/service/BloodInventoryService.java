@@ -634,7 +634,14 @@ public class BloodInventoryService {
 
         for (Object[] stat : usageStats) {
             BloodType bloodType = (BloodType) stat[0];
-            Double amount = ((Number) stat[1]).doubleValue();
+
+            // Xử lý trường hợp null để tránh NullPointerException
+            Double amount = 0.0;
+            if (stat[1] != null) {
+                amount = ((Number) stat[1]).doubleValue();
+            }
+
+            log.info("Nhóm máu {} đã sử dụng: {} ml", bloodType, amount);
             usageByBloodType.put(bloodType.toString(), amount);
             totalUsed += amount;
         }
