@@ -3,90 +3,9 @@ import Navbar from "../../components/navbar";
 import "./BloodRegister.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "../../helpers/axiosInstance";
-function getStartOfWeek(date) {
-  const d = new Date(date);
-  const day = d.getDay() || 7;
-  d.setDate(d.getDate() - day + 1);
-  return d;
-}
-
-function getWeekDays(startDate) {
-  const days = [];
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(startDate);
-    d.setDate(d.getDate() + i);
-    days.push(d);
-  }
-  return days;
-}
-
-function WeeklyDatePicker({ selectedDate, onChange }) {
-  const parseDate = (dateStr) => {
-    const [d, m, y] = dateStr.split("/");
-    return new Date(`${y}-${m}-${d}`);
-  };
-
-  const safeDate =
-    selectedDate && /^\d{2}\/\d{2}\/\d{4}$/.test(selectedDate)
-      ? parseDate(selectedDate)
-      : new Date();
-
-  const [currentWeek, setCurrentWeek] = useState(getStartOfWeek(safeDate));
-
-  useEffect(() => {
-    const startOfSelectedWeek = getStartOfWeek(safeDate);
-    if (currentWeek.getTime() !== startOfSelectedWeek.getTime()) {
-      setCurrentWeek(startOfSelectedWeek);
-    }
-  }, [selectedDate]);
-
-  const weekDays = getWeekDays(currentWeek);
-
-  const handlePrevWeek = () => {
-    const prev = new Date(currentWeek);
-    prev.setDate(prev.getDate() - 7);
-    setCurrentWeek(getStartOfWeek(prev));
-  };
-
-  const handleNextWeek = () => {
-    const next = new Date(currentWeek);
-    next.setDate(next.getDate() + 7);
-    setCurrentWeek(getStartOfWeek(next));
-  };
-
-  return (
-    <div className="weekly-date-picker">
-      <button type="button" className="weekly-nav-btn" onClick={handlePrevWeek}>
-        {"<"}
-      </button>
-      {weekDays.map((day) => {
-        const ddmmyyyy = day.toLocaleDateString("vi-VN");
-        return (
-          <button
-            key={ddmmyyyy}
-            type="button"
-            className={`weekly-day-btn ${
-              selectedDate === ddmmyyyy ? "selected" : ""
-            }`}
-            onClick={() => onChange(ddmmyyyy)}
-          >
-            {day.toLocaleDateString("vi-VN", {
-              weekday: "short",
-              day: "2-digit",
-              month: "2-digit",
-            })}
-          </button>
-        );
-      })}
-      <button type="button" className="weekly-nav-btn" onClick={handleNextWeek}>
-        {">"}
-      </button>
-    </div>
-  );
-}
 
 export default function BloodRegister() {
   const location = useLocation();
@@ -172,7 +91,7 @@ export default function BloodRegister() {
       timeSlot: selectedTimeSlotObj,
     };
 
-    toast.success("Booking information saved!"); // Thêm dòng này
+    toast.success("Booking information saved!"); 
     navigate("/blood-registration2", { state: { bookingData } });
     console.log("Booking Data:", bookingData);
   };
@@ -190,6 +109,7 @@ export default function BloodRegister() {
   return (
     <>
       <Navbar />
+      <ToastContainer />
       <div className="blood-form-container">
         <link
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"
@@ -220,15 +140,10 @@ export default function BloodRegister() {
                   type="date"
                   className="blood-form-date-input"
                   value={convertDateForInput(selectedDate)}
-                  onChange={(e) =>
-                    setSelectedDate(convertDateFromInput(e.target.value))
-                  }
-                />
-              </div>
-              <div className="blood-form-weekly-picker">
-                <WeeklyDatePicker
-                  selectedDate={selectedDate}
-                  onChange={setSelectedDate}
+                  onChange={(e) => {
+                    const syncDate = convertDateForInput(e.target.value);
+                    setSelectedDate(syncDate);
+                  }}
                 />
               </div>
             </div>
