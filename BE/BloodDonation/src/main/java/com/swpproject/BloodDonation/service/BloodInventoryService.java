@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -170,6 +171,18 @@ public class BloodInventoryService {
                     // Nếu chỉ sử dụng một phần
                     unit.setUsedQuantity(remainingRequest);
                     unit.setQuantity(unit.getQuantity() - remainingRequest);
+
+                    // Tạo bản ghi mới cho phần đã sử dụng
+                    BloodInventory usedPortion = new BloodInventory();
+                    BeanUtils.copyProperties(unit, usedPortion); // Copy thông tin cơ bản
+                    usedPortion.setId(null); // Để tạo ID mới
+                    usedPortion.setQuantity(0.0);
+                    usedPortion.setUsedQuantity(remainingRequest);
+                    usedPortion.setStatus("USED");
+                    usedPortion.setLastUpdatedTime(now);
+                    usedPortion.setLastUpdatedBy(updatedBy);
+                    usedPortion.setNotes("Sử dụng " + remainingRequest + "ml cho: " + request.getReason() + " vào " + now);
+                    inventoryRepository.save(usedPortion);
                 }
 
                 unit.setLastUpdatedBy(updatedBy);
@@ -183,6 +196,7 @@ public class BloodInventoryService {
                 remainingRequest -= unit.getQuantity();
                 unit.setStatus("USED");
                 unit.setUsedQuantity(unit.getQuantity()); // lưu lượng đã sử dụng
+                unit.setQuantity(0.0);
                 unit.setNotes((unit.getNotes() != null ? unit.getNotes() : "") + "\nĐã sử dụng hết cho: " +
                         request.getReason() + " vào " + now);
                 unit.setQuantity(0.0);

@@ -50,8 +50,8 @@ public class BloodInventory {
     @Column(columnDefinition = "NVARCHAR(1000)")
     private String notes;
 
-    @Column
-    private Double usedQuantity; // Lưu lượng máu đã được sử dụng
+    @Column(name = "used_quantity")
+    private Double usedQuantity;
 
     // Người cập nhật và thời gian
     private String lastUpdatedBy;
