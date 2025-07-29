@@ -62,6 +62,7 @@ public class UserService {
                 .birthday(request.getBirthday())
                 .sex(request.getSex())
                 .occupation(request.getOccupation())
+                .active(true)
                 .isVerified(false) // Mặc định là false, cần xác thực sau
                 .build();
 
