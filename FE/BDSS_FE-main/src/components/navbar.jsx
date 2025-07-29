@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Navbar,
@@ -12,82 +12,97 @@ import { FaRegBell } from "react-icons/fa";
 import logout from "../helpers/authLogout";
 import logo from "../images/logo.jpg";
 import getUserById, { getUserIdFromToken } from "../helpers/getUserById";
+import { getUserNotifications } from "../helpers/getNotification";
 import "./navbar.css";
 
 export default function AppNavbar() {
-  const [notification, setNotification] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const userId = getUserIdFromToken();
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-
-    setUser(userId);
-
-    async function fetchUser() {
-      if (userId) {
+    const checkAuth = async () => {
+      const token = sessionStorage.getItem("accessToken");
+      if (token) {
         try {
-          const userData = await getUserById(userId);
-          setUser(userData);
-        } catch {
+          const userId = getUserIdFromToken(token);
+          if (userId) {
+            const userData = await getUserById(userId);
+            setUser(userData);
+          }
+        } catch (error) {
+          console.error("Error getting user data:", error);
+          sessionStorage.removeItem("accessToken");
           setUser(null);
         }
+      } else {
+        setUser(null);
       }
+    };
+
+    checkAuth();
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const data = await getUserNotifications();
+      setNotifications(data);
+      const unread = data.filter((n) => n.status === "UNREAD").length;
+      setUnreadCount(unread);
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
     }
-    fetchUser();
+  };
 
-
-    const fetchNotifications = async () => {
-      if (!userId) return;
-
-      try {
-        const response = await fetch(
-          `http://localhost:8080/notifications/user/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-            },
-          }
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setNotification(data);
-
-          // Đếm số thông báo chưa đọc
-          const unreadNotifications = data.filter(
-            (item) =>
-              item.status !== "read" && item.status !== "READ" && !item.read
-          );
-          setUnreadCount(unreadNotifications.length);
-        }
-      } catch (error) {
-        console.error("Failed to fetch notifications:", error);
-      }
-    };
-
-    // Fetch notifications initially
-    fetchNotifications();
-
-    // Listen for notification updates từ UserNotification
-    const handleNotificationUpdate = () => {
+  useEffect(() => {
+    if (user) {
       fetchNotifications();
-    };
-
-    window.addEventListener("notificationUpdated", handleNotificationUpdate);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener(
-        "notificationUpdated",
-        handleNotificationUpdate
-      );
-    };
-  }, [userId]);
+      const interval = setInterval(fetchNotifications, 5000);
+      return () => clearInterval(interval);
+    } else {
+      setNotifications([]);
+      setUnreadCount(0);
+    }
+  }, [user]);
 
   const handleLogout = () => {
     logout();
+    setUser(null);
     navigate("/");
+  };
+
+  const markAsRead = async (notificationId) => {
+    try {
+      const token = sessionStorage.getItem("accessToken");
+      await fetch(
+        `http://localhost:8080/notifications/${notificationId}/read`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setNotifications((prevNotifications) =>
+        prevNotifications.map((n) =>
+          n.id === notificationId ? { ...n, status: "READ" } : n
+        )
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    } catch (error) {
+      console.error("Error marking notification as read:", error);
+    }
+  };
+
+  const handleNotificationClick = (notificationId, status) => {
+    if (status === "UNREAD") {
+      markAsRead(notificationId);
+    }
+
+    navigate(`/user-notification?id=${notificationId}`);
   };
 
   return (
@@ -168,6 +183,7 @@ export default function AppNavbar() {
                     )}
                   </Dropdown.Toggle>
                   <Dropdown.Menu
+                    className="notification-dropdown"
                     style={{
                       minWidth: 320,
                       maxHeight: 400,
@@ -175,17 +191,60 @@ export default function AppNavbar() {
                     }}
                   >
                     <Dropdown.Header>Notifications</Dropdown.Header>
-                    {notification.length === 0 ? (
+                    {notifications.length === 0 ? (
                       <Dropdown.Item disabled>No notifications</Dropdown.Item>
                     ) : (
-                      notification.map((item, idx) => (
-                        <Dropdown.Item key={item.id || idx}>
-                          <div style={{ fontWeight: 600 }}>{item.title}</div>
-                          <div>{item.detail}</div>
+                      notifications.slice(0, 5).map((item, idx) => (
+                        <Dropdown.Item
+                          key={item.id || idx}
+                          onClick={() =>
+                            handleNotificationClick(item.id, item.status)
+                          }
+                          style={{
+                            backgroundColor:
+                              item.status === "UNREAD"
+                                ? "#f8f9fa"
+                                : "transparent",
+                            borderLeft:
+                              item.status === "UNREAD"
+                                ? "3px solid #007bff"
+                                : "3px solid transparent",
+                          }}
+                        >
                           <div
                             style={{
-                              fontSize: "0.95em",
+                              fontWeight: item.status === "UNREAD" ? 600 : 400,
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
+                          >
+                            {item.status === "UNREAD" && (
+                              <span
+                                style={{
+                                  width: "8px",
+                                  height: "8px",
+                                  backgroundColor: "#007bff",
+                                  borderRadius: "50%",
+                                }}
+                              ></span>
+                            )}
+                            {item.title}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "0.9em",
+                              color: "#666",
+                              marginTop: "4px",
+                            }}
+                          >
+                            {item.detail}
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "0.8em",
                               color: "#888",
+                              marginTop: "4px",
                             }}
                           >
                             {item.date} {item.time}
@@ -196,11 +255,13 @@ export default function AppNavbar() {
                     <Dropdown.Divider />
                     <Dropdown.Item
                       onClick={() => navigate("/user-notification")}
+                      style={{ textAlign: "center", fontWeight: "bold" }}
                     >
-                      View all
+                      View all notifications
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
+
                 <NavDropdown
                   title={
                     <span style={{ display: "flex", alignItems: "center" }}>
@@ -242,6 +303,13 @@ export default function AppNavbar() {
                     to="/appointment"
                   >
                     Your Appointments
+                  </NavDropdown.Item>
+                  <NavDropdown.Item
+                    className="dropdown-item"
+                    as={Link}
+                    to="/emergency-donation"
+                  >
+                    Emergency Donation
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item

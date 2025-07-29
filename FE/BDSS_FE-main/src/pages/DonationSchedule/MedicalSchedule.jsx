@@ -9,23 +9,26 @@ export default function MedicalSchedule() {
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState(null);
 
-  // Nếu date là object hoặc không đúng định dạng yyyy-MM-dd, hãy chuẩn hóa:
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
     if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return dateStr;
-    // Nếu là dd/MM/yyyy
     if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
       const [day, month, year] = dateStr.split("/");
       return `${year}-${month}-${day}`;
     }
     return dateStr;
   };
-  // Khi gửi lên BE:
+  const formatTime = (timeString) => {
+    if (!timeString) return "";
+    if (/^\d{2}:\d{2}:\d{2}$/.test(timeString))
+      return timeString.substring(0, 5);
+    return timeString;
+  };
 
   const [formData, setFormData] = useState({
     center: "",
     location: "",
-    bloodNeed: [""], // luôn có ít nhất 1 phần tử rỗng
+    bloodNeed: [""],
     date: "",
     numberOfDonor: "",
     timeSlots: [{ startTime: "", endTime: "" }],
@@ -153,17 +156,15 @@ export default function MedicalSchedule() {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
-    const bloodNeedFiltered = editForm.bloodNeed.filter((bn) => bn); // loại bỏ ""
+    const bloodNeedFiltered = editForm.bloodNeed.filter((bn) => bn);
     try {
       await axios.put(
         `http://localhost:8080/api/schedule-donations/${editingId}`,
         {
           center: editForm.center,
 
-          address: editForm.address, // Đảm bảo trường này đúng với backend
-          bloodNeed: bloodNeedFiltered,
-          date: formatDate(editForm.date), // Đảm bảo định dạng ngày đúng
-
+          address: editForm.address,
+          date: formatDate(editForm.date),
           numberOfDonor: Number(editForm.numberOfDonor),
           timeSlots: editForm.timeSlots,
         },
@@ -181,7 +182,6 @@ export default function MedicalSchedule() {
       );
       setSchedules(res.data);
     } catch (err) {
-      // Log chi tiết lỗi để kiểm tra
       console.error("Update error:", err.response?.data || err.message);
       alert(
         "Failed to update schedule.\n" + (err.response?.data?.message || "")
@@ -204,7 +204,6 @@ export default function MedicalSchedule() {
     }
   };
 
-  // --- BLOOD NEED JSX ---
   const renderBloodNeed = () => {
     const arr = editingId ? editForm.bloodNeed : formData.bloodNeed;
     const setArr = editingId
@@ -290,11 +289,11 @@ export default function MedicalSchedule() {
                   s.bloodNeed.map((bt) => bloodTypeLabel(bt)).join(", ")}
               </td>
               <td>{s.date}</td>
-              <td>
+              <td className="time-column">
                 {s.timeSlots &&
                   s.timeSlots.map((slot, idx) => (
                     <div key={idx}>
-                      {slot.startTime} - {slot.endTime}
+                      {formatTime(slot.startTime)} - {formatTime(slot.endTime)}
                     </div>
                   ))}
               </td>

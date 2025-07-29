@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Table, Form, Button } from "react-bootstrap";
+import { Table, Form, Button, Toast } from "react-bootstrap";
 import { ClipLoader } from "react-spinners";
 
 export default function Notification() {
@@ -14,9 +14,15 @@ export default function Notification() {
 
   const [notification, setNotification] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [donor, setDonor] = useState([]);
 
   useEffect(() => {
-    const fetchNotifications = async () => {
+    fetchNotifications();
+    fetchDonors();
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
       const response = await axios.get(
         "http://localhost:8080/notifications/all",
         {
@@ -26,9 +32,23 @@ export default function Notification() {
         }
       );
       setNotification(response.data);
-    };
-    fetchNotifications();
-  }, []);
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+    }
+  };
+
+  const fetchDonors = async () => {
+    try {
+      const response = await axios.get("http://localhost:8080/users", {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+        },
+      });
+      setDonor(response.data);
+    } catch (error) {
+      console.error("Failed to fetch donors:", error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -41,30 +61,24 @@ export default function Notification() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     const now = new Date();
     const currentDate = now.toISOString().slice(0, 10);
-    const currentTime = now.toTimeString().slice(0, 5);
+    const currentTime = now.toLocaleTimeString("en-GB", { hour12: false });
 
     const dataToSend = {
       ...form,
       date: form.date || currentDate,
       time: form.time || currentTime,
     };
+
     try {
       await axios.post("http://localhost:8080/notifications", dataToSend, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
       });
-      const response = await axios.get(
-        "http://localhost:8080/notifications/all",
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-          },
-        }
-      );
-      setNotification(response.data);
+
       setForm({
         title: "",
         detail: "",
@@ -72,34 +86,16 @@ export default function Notification() {
         time: "",
         donorId: "",
       });
-      
+
+      await fetchNotifications();
+
+      alert("Notification sent successfully!");
     } catch (error) {
       alert("Failed to create notification.");
+      console.error(error);
     }
     setLoading(false);
-
-    console.log(dataToSend);
-
-
   };
-
-  const [donor, setDonor] = useState([]);
-  useEffect(() => {
-    const fetchDonors = async () => {
-      try {
-        const response = await axios.get("http://localhost:8080/users", {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-          },
-        });
-        setDonor(response.data);
-        console.log("Donor list:", response.data);
-      } catch (error) {
-        console.error("Failed to fetch donors:", error);
-      }
-    };
-    fetchDonors();
-  }, []);
 
   return (
     <>
@@ -108,6 +104,7 @@ export default function Notification() {
           <ClipLoader color="#b30000" size={48} speedMultiplier={1.1} />
         </div>
       )}
+
       <Form
         onSubmit={handleSubmit}
         style={{
@@ -127,6 +124,7 @@ export default function Notification() {
             required
           />
         </Form.Group>
+
         <Form.Group className="mb-2">
           <Form.Label>Details</Form.Label>
           <Form.Control
@@ -137,24 +135,7 @@ export default function Notification() {
             required
           />
         </Form.Group>
-        <Form.Group className="mb-2">
-          <Form.Control
-            type="hidden"
-            name="date"
-            value={form.date}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
-        <Form.Group className="mb-2">
-          <Form.Control
-            type="hidden"
-            name="time"
-            value={form.time}
-            onChange={handleChange}
-            required
-          />
-        </Form.Group>
+
         <Form.Group className="mb-2">
           <Form.Label>For Donor</Form.Label>
           <Form.Select
@@ -171,8 +152,9 @@ export default function Notification() {
             ))}
           </Form.Select>
         </Form.Group>
-        <Button variant="danger" type="submit">
-          Create Notification
+
+        <Button variant="danger" type="submit" disabled={loading}>
+          {loading ? "Sending..." : "Create Notification"}
         </Button>
       </Form>
 
@@ -196,7 +178,7 @@ export default function Notification() {
               <td>
                 {note.date} - {note.time}
               </td>
-              <td>{note.donorId}</td>
+              <td>{note.donorName}</td>
             </tr>
           ))}
         </tbody>

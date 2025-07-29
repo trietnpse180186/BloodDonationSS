@@ -19,4 +19,16 @@ public interface SurveyRepository extends JpaRepository<Survey, String> {
     @Transactional
     @Query(value = "DELETE FROM survey WHERE donation_id = :donationId", nativeQuery = true)
     void deleteByDonationId(@Param("donationId") String donationId);
+
+    @Modifying
+    @Transactional
+    @Query("""
+    DELETE FROM Survey s 
+    WHERE s.bookingDonation.id IN (
+        SELECT b.id FROM BookingDonation b 
+        WHERE b.scheduleDonation.id = :scheduleId
+    )
+""")
+    void deleteSurveysByScheduleId(@Param("scheduleId") String scheduleId);
+
 }

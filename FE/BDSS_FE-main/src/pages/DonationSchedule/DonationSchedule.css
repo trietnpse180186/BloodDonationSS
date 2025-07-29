@@ -40,7 +40,7 @@
 }
 
 .search-bar h3 {
-  display: none; 
+  display: none;
 }
 .search-inputs {
   display: flex;
@@ -90,7 +90,6 @@
   color: #b30000;
   pointer-events: none;
 }
-
 
 .search-date-wrapper {
   position: relative;

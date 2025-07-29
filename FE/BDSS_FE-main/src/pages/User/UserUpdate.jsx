@@ -5,6 +5,7 @@ import {
   FaMapMarkerAlt,
   FaBriefcase,
   FaSpinner,
+  FaArrowLeft,
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "../../helpers/axiosInstance";
@@ -68,7 +69,6 @@ export default function UserUpdate() {
       [name]: value,
     }));
 
-    // Validate ngay khi người dùng thay đổi giá trị
     if (name === "birthday") {
       if (!isOver18Years(value)) {
         setErrors((prev) => ({
@@ -116,17 +116,14 @@ export default function UserUpdate() {
       return;
     }
 
-    // Kiểm tra các trường trước khi submit
     let formIsValid = true;
     const newErrors = { birthday: "", phoneNumber: "" };
 
-    // Validate birthday
     if (formData.birthday && !isOver18Years(formData.birthday)) {
       newErrors.birthday = "You must be at least 18 years old.";
       formIsValid = false;
     }
 
-    // Validate phoneNumber
     if (formData.phoneNumber && !isValidPhoneNumber(formData.phoneNumber)) {
       newErrors.phoneNumber = "Phone number must be exactly 10 digits.";
       formIsValid = false;
@@ -159,7 +156,7 @@ export default function UserUpdate() {
       });
 
       toast.success("Update successful!");
-      navigate("/user-profile");
+      navigate(-1);
     } catch (error) {
       console.error("Update error:", error);
       toast.error("Update failed. Please check your information.");
@@ -168,7 +165,6 @@ export default function UserUpdate() {
     }
   };
 
-  // Hàm kiểm tra người dùng có trên 18 tuổi không
   const isOver18Years = (birthDate) => {
     const today = new Date();
     const birth = new Date(birthDate);
@@ -185,22 +181,20 @@ export default function UserUpdate() {
     return age >= 18;
   };
 
-  // Hàm kiểm tra định dạng số điện thoại
   const isValidPhoneNumber = (phone) => {
-    // Kiểm tra số điện thoại có đúng 10 chữ số
     return /^\d{10}$/.test(phone);
   };
 
   return (
     <>
-      <div className="update-page">
-        <form className="form" onSubmit={handleSubmit}>
+      <div className="user-update-page">
+        <form className="user-update-form" onSubmit={handleSubmit}>
           <h1>EDIT YOUR PROFILE</h1>
 
-          <div className="field-wrapper avatar-upload-wrapper">
-            <div className="avatar-upload-label">
+          <div className="user-update-avatar-wrapper">
+            <div className="user-update-avatar-row">
               <label>Upload Avatar:</label>
-              <label className="custom-file-btn">
+              <label className="user-update-file-label">
                 Choose File
                 <input
                   type="file"
@@ -209,29 +203,30 @@ export default function UserUpdate() {
                   style={{ display: "none" }}
                 />
               </label>
-              <span className="selected-file-name">
+              <span className="user-update-file-name">
                 {selectedFileName || "No file chosen"}
               </span>
             </div>
             {avatarPreview && (
-              <div className="avatar-preview">
+              <div className="user-update-preview">
                 <img src={avatarPreview} alt="Avatar Preview" />
               </div>
             )}
           </div>
 
-          <div className="field-wrapper">
-            <FaUserEdit className="input-icon" />
+          <div className="user-update-field">
+            <FaUserEdit className="user-update-icon" />
             <input
               type="text"
               name="fullName"
               value={formData.fullName}
               onChange={handleChange}
+              placeholder="Full Name"
             />
           </div>
 
-          <div className="field-wrapper">
-            <MdCake className="input-icon" />
+          <div className="user-update-field">
+            <MdCake className="user-update-icon" />
             <input
               type="date"
               name="birthday"
@@ -239,12 +234,12 @@ export default function UserUpdate() {
               onChange={handleChange}
             />
             {errors.birthday && (
-              <div className="error-message">{errors.birthday}</div>
+              <div className="user-update-error">{errors.birthday}</div>
             )}
           </div>
 
-          <div className="field-wrapper-gender">
-            <div>
+          <div className="user-update-gender-wrapper">
+            <div className="user-update-gender-option">
               <input
                 id="male-radio"
                 type="radio"
@@ -255,7 +250,7 @@ export default function UserUpdate() {
               />
               <label htmlFor="male-radio">Male</label>
             </div>
-            <div>
+            <div className="user-update-gender-option">
               <input
                 id="female-radio"
                 type="radio"
@@ -268,8 +263,8 @@ export default function UserUpdate() {
             </div>
           </div>
 
-          <div className="field-wrapper">
-            <FaPhoneAlt className="input-icon" />
+          <div className="user-update-field">
+            <FaPhoneAlt className="user-update-icon" />
             <input
               type="text"
               name="phoneNumber"
@@ -278,22 +273,24 @@ export default function UserUpdate() {
               placeholder="Phone Number (10 digits)"
             />
             {errors.phoneNumber && (
-              <div className="error-message">{errors.phoneNumber}</div>
+              <div className="user-update-error">{errors.phoneNumber}</div>
             )}
           </div>
 
-          <div className="field-wrapper">
-            <FaMapMarkerAlt className="input-icon" />
+          <div className="user-update-field">
+            <FaMapMarkerAlt className="user-update-icon" />
             <input
               type="text"
               name="address"
               value={formData.address}
               onChange={handleChange}
+              placeholder="Address"
             />
           </div>
 
-          <div className="field-wrapper">
+          <div className="user-update-field">
             <select
+              className="user-update-select"
               name="bloodType"
               value={formData.bloodType}
               onChange={handleChange}
@@ -310,21 +307,26 @@ export default function UserUpdate() {
             </select>
           </div>
 
-          <div className="field-wrapper">
-            <FaBriefcase className="input-icon" />
+          <div className="user-update-field">
+            <FaBriefcase className="user-update-icon" />
             <input
               type="text"
               name="occupation"
               value={formData.occupation}
               onChange={handleChange}
+              placeholder="Occupation"
             />
           </div>
 
-          <div className="field-wrapper-btn">
-            <button className="wrap-submit" type="submit" disabled={loading}>
+          <div className="user-update-button-wrapper">
+            <button
+              className="user-update-submit"
+              type="submit"
+              disabled={loading}
+            >
               {loading ? (
                 <>
-                  <FaSpinner className="loading-spinner" /> Saving...
+                  <FaSpinner className="user-update-spinner" /> Saving...
                 </>
               ) : (
                 "SAVE CHANGES"
@@ -332,8 +334,9 @@ export default function UserUpdate() {
             </button>
           </div>
 
-          <br />
-          <Link to="/user-profile">Back</Link>
+          <Link className="user-update-back" to="/user-profile">
+            <FaArrowLeft /> Back to Profile
+          </Link>
         </form>
       </div>
       <ToastContainer position="top-center" autoClose={2000} />

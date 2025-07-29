@@ -191,7 +191,7 @@ public class AdminService {
             if (!isStaff) {
                 throw new RuntimeException("Người dùng không phải là nhân viên");
             }
-            notificationRepository.deleteByUserId(staffId);
+            notificationRepository.deleteByDonorId(staffId);
             List<String> donationIds = bookingDonationRepository.findDonationIdsByDonorUserId(staffId);
 
             if (!donationIds.isEmpty()) {

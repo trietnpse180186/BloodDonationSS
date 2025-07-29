@@ -36,4 +36,10 @@ public interface BookingDonationRepository extends JpaRepository<BookingDonation
 
     @Query("SELECT b FROM BookingDonation b WHERE b.donor = :donor AND b.status = 'COMPLETED' ORDER BY b.dateDonation DESC")
     List<BookingDonation> findCompletedDonationsByDonorOrderByDateDesc(User donor);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM BookingDonation b WHERE b.scheduleDonation.id = :scheduleId")
+    void deleteByScheduleId(@Param("scheduleId") String scheduleId);
+
 }

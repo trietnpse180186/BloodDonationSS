@@ -4,6 +4,8 @@ import Footer from "../../components/footer";
 import bloodRegister from "../../helpers/bloodRegister";
 import { Link, useLocation, useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function BloodRegister2() {
   const [answers, setAnswers] = useState({});
   const [inputs, setInputs] = useState({});

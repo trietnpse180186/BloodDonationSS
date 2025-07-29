@@ -1,3 +1,4 @@
+import { NotificationProvider } from "./contexts/NotificationContext";
 import WebRoutes from "./routes/WebRoutes";
 import { ToastContainer } from "react-toastify";
 function App() {
