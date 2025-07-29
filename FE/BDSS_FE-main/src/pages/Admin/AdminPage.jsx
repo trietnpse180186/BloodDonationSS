@@ -81,29 +81,31 @@ export default function AdminPage() {
   };
 
   const handleDelete = async (userId) => {
-  const confirmDelete = window.confirm("Are you sure you want to delete this staff?");
-  if (!confirmDelete) return;
-
-  console.log("Attempting to delete staff with ID:", userId);
-
-  try {
-    const response = await axios.delete(
-      `http://localhost:8080/api/v1/admin/staff/${userId}`,  
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this staff?"
     );
-    console.log("Delete response:", response.data);
-    alert("Staff deleted successfully");
-    fetchStaff();
-  } catch (error) {
-    console.error("Delete failed:", error.response?.data || error.message || error);
-    alert("Failed to delete staff");
-  }
-};
+    if (!confirmDelete) return;
 
+    console.log("Attempting to delete staff with ID:", userId);
 
-
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/api/v1/admin/staff/${userId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      console.log("Delete response:", response.data);
+      alert("Staff deleted successfully");
+      fetchStaff();
+    } catch (error) {
+      console.error(
+        "Delete failed:",
+        error.response?.data || error.message || error
+      );
+      alert("Failed to delete staff");
+    }
+  };
 
   const chartData = [
     { name: "Jan", value: 20 },
@@ -114,11 +116,18 @@ export default function AdminPage() {
     { name: "Jun", value: 18 },
   ];
 
-  const pieData = [
-    { name: "In-store", value: 30 },
-    { name: "Online", value: 50 },
-    { name: "Others", value: 20 },
-  ];
+  // Pie chart data now reflects the summary cards
+  const pieData = dashboardData
+    ? [
+        { name: "Total Donors", value: dashboardData.totalDonors },
+        { name: "Total Staff", value: dashboardData.totalStaff },
+        { name: "Total Donations", value: dashboardData.totalDonations },
+      ]
+    : [
+        { name: "Total Donors", value: 0 },
+        { name: "Total Staff", value: 0 },
+        { name: "Total Donations", value: 0 },
+      ];
 
   const filteredUsers = users.filter((user) =>
     user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -146,20 +155,30 @@ export default function AdminPage() {
                   <h4>Total Donations</h4>
                   <p>{dashboardData.totalDonations}</p>
                 </div>
-                <div className="card red">
-                  <h4>Blood Volume (L)</h4>
-                  <p>{Number(dashboardData.totalBloodVolume).toFixed(2)}</p>
-                </div>
               </div>
               <div className="dashboard-charts">
                 <div className="chart-box">
-                  <h4>Monthly Trends</h4>
+                  <h4>Total Donor</h4>
                   <ResponsiveContainer width="100%" height={250}>
                     <AreaChart data={chartData}>
                       <defs>
-                        <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#2563eb" stopOpacity={0.8} />
-                          <stop offset="95%" stopColor="#2563eb" stopOpacity={0} />
+                        <linearGradient
+                          id="colorValue"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#2563eb"
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#2563eb"
+                            stopOpacity={0}
+                          />
                         </linearGradient>
                       </defs>
                       <XAxis dataKey="name" />
@@ -177,7 +196,7 @@ export default function AdminPage() {
                   </ResponsiveContainer>
                 </div>
                 <div className="chart-box">
-                  <h4>In-Store Sales</h4>
+                  <h4>Overview</h4>
                   <PieChart width={300} height={250}>
                     <Pie
                       data={pieData}
@@ -210,15 +229,20 @@ export default function AdminPage() {
           <h3 className="section-title">Staff Management</h3>
 
           <div className="search-bar-wrapper">
-            <div style={{ display: "flex", justifyContent: "flex-start", marginBottom: 12 }}>
-  <input
-    className="search-input small-input"
-    placeholder="Search..."
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-  />
-</div>
-
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                marginBottom: 12,
+              }}
+            >
+              <input
+                className="search-input small-input"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
           </div>
 
           <table className="staff-table">
@@ -240,9 +264,18 @@ export default function AdminPage() {
                   <td>{user.occupation || "Staff"}</td>
                   <td>
                     <div className="action-buttons">
-                      <button className="view-btn" onClick={() => setModalUser(user)}>View</button>
-                      <button className="delete-btn" onClick={() => handleDelete(user.userId)}>Delete</button>
-                   
+                      <button
+                        className="view-btn"
+                        onClick={() => setModalUser(user)}
+                      >
+                        View
+                      </button>
+                      <button
+                        className="delete-btn"
+                        onClick={() => handleDelete(user.userId)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -252,18 +285,38 @@ export default function AdminPage() {
 
           {modalUser && (
             <div className="modal-overlay" onClick={() => setModalUser(null)}>
-              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                <button className="modal-close" onClick={() => setModalUser(null)}>
+              <div
+                className="modal-content"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  className="modal-close"
+                  onClick={() => setModalUser(null)}
+                >
                   <FaTimes />
                 </button>
                 <h3>{modalUser.fullName}</h3>
-                <p><strong>Email:</strong> {modalUser.email}</p>
-                <p><strong>Phone:</strong> {modalUser.phoneNumber}</p>
-                <p><strong>Address:</strong> {modalUser.address}</p>
-                <p><strong>Blood Type:</strong> {modalUser.bloodType}</p>
-                <p><strong>Birthday:</strong> {modalUser.birthday}</p>
-                <p><strong>Sex:</strong> {modalUser.sex}</p>
-                <p><strong>Occupation:</strong> {modalUser.occupation}</p>
+                <p>
+                  <strong>Email:</strong> {modalUser.email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {modalUser.phoneNumber}
+                </p>
+                <p>
+                  <strong>Address:</strong> {modalUser.address}
+                </p>
+                <p>
+                  <strong>Blood Type:</strong> {modalUser.bloodType}
+                </p>
+                <p>
+                  <strong>Birthday:</strong> {modalUser.birthday}
+                </p>
+                <p>
+                  <strong>Sex:</strong> {modalUser.sex}
+                </p>
+                <p>
+                  <strong>Occupation:</strong> {modalUser.occupation}
+                </p>
               </div>
             </div>
           )}
@@ -274,40 +327,52 @@ export default function AdminPage() {
               <input
                 required
                 value={newUser.fullName || ""}
-                onChange={(e) => setNewUser({ ...newUser, fullName: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, fullName: e.target.value })
+                }
                 placeholder="Full Name"
               />
               <div className="horizontal-fields">
                 <input
                   required
                   value={newUser.email || ""}
-                  onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, email: e.target.value })
+                  }
                   placeholder="Email"
                 />
                 <input
                   required
                   type="password"
                   value={newUser.password || ""}
-                  onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, password: e.target.value })
+                  }
                   placeholder="Password"
                 />
               </div>
               <input
                 required
                 value={newUser.phoneNumber || ""}
-                onChange={(e) => setNewUser({ ...newUser, phoneNumber: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, phoneNumber: e.target.value })
+                }
                 placeholder="Phone Number"
               />
               <input
                 required
                 value={newUser.address || ""}
-                onChange={(e) => setNewUser({ ...newUser, address: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, address: e.target.value })
+                }
                 placeholder="Address"
               />
               <select
                 required
                 value={newUser.bloodType || ""}
-                onChange={(e) => setNewUser({ ...newUser, bloodType: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, bloodType: e.target.value })
+                }
               >
                 <option value="">Select Blood Type</option>
                 <option value="A_POSITIVE">A+</option>
@@ -323,12 +388,16 @@ export default function AdminPage() {
                 required
                 type="date"
                 value={newUser.birthday || ""}
-                onChange={(e) => setNewUser({ ...newUser, birthday: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, birthday: e.target.value })
+                }
               />
               <select
                 required
                 value={newUser.sex || ""}
-                onChange={(e) => setNewUser({ ...newUser, sex: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, sex: e.target.value })
+                }
               >
                 <option value="">Select Gender</option>
                 <option value="MALE">Male</option>
@@ -337,12 +406,20 @@ export default function AdminPage() {
               <input
                 required
                 value={newUser.occupation || ""}
-                onChange={(e) => setNewUser({ ...newUser, occupation: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, occupation: e.target.value })
+                }
                 placeholder="Occupation"
               />
               <div className="form-actions">
-                <button type="submit" className="save-btn">Add</button>
-                <button type="button" className="delete-btn" onClick={() => setNewUser({})}>
+                <button type="submit" className="save-btn">
+                  Add
+                </button>
+                <button
+                  type="button"
+                  className="delete-btn"
+                  onClick={() => setNewUser({})}
+                >
                   Clear
                 </button>
               </div>
@@ -367,7 +444,12 @@ export default function AdminPage() {
               key={item.key}
               className={selected === item.key ? "active" : ""}
               onClick={() => setSelected(item.key)}
-              style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                cursor: "pointer",
+              }}
             >
               <span>{item.icon}</span>
               {item.label}

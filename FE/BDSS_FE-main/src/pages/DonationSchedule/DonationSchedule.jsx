@@ -222,7 +222,37 @@ export default function DonationSchedule() {
                               </li>
                               <li>
                                 <strong>Blood Need:</strong>{" "}
-                                {schedule.bloodNeed.join(" - ")}
+                                {schedule.bloodNeed.map((type, idx, arr) => {
+                                  const label = type
+                                    .replace("_POSITIVE", "+")
+                                    .replace("_NEGATIVE", "-");
+                                  return (
+                                    <span
+                                      key={type}
+                                      style={{
+                                        fontWeight: 700,
+                                        color: "#b30000",
+                                        background: "#f7eaea",
+                                        borderRadius: 8,
+                                        padding: "2px 10px",
+                                        marginRight:
+                                          idx < arr.length - 1 ? 8 : 0,
+                                        display: "inline-block",
+                                        fontSize: "1em",
+                                      }}
+                                    >
+                                      {label}
+                                      {idx < arr.length - 1 ? (
+                                        <span
+                                          style={{
+                                            color: "#888",
+                                            fontWeight: 400,
+                                          }}
+                                        ></span>
+                                      ) : null}
+                                    </span>
+                                  );
+                                })}
                               </li>
                               <li>
                                 <strong>Time slots:</strong>
