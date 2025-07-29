@@ -83,8 +83,10 @@ public class UserService {
         // Gửi OTP verify
         try {
             otpService.sendOtpForVerify(user.getEmail());
-        } catch (MessagingException | UnsupportedEncodingException e) {
-            log.error("Failed to send verification OTP: {}", e.getMessage());
+            log.info("OTP sent to {}", user.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send OTP to {}: {}", user.getEmail(), e.getMessage());
+            // Không throw, continue registration
         }
 
         return UserCreationResponse.builder()

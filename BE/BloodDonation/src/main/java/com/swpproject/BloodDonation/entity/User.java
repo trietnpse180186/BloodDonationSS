@@ -89,7 +89,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return email; // Sử dụng email làm tên đăng nhập
     }
     @Override
     public boolean isAccountNonExpired() {
