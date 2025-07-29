@@ -69,8 +69,8 @@
   line-height: 1.5;
   margin-top: 30px;
   color: rgb(255, 255, 255);
-  text-shadow: 1px 1px 2px #0000006c;
   padding-right: 100px;
+  width: 530px;
 }
 
 .group-header-link {
@@ -216,7 +216,7 @@
   flex-direction: column;
   margin: 60px 60px;
 }
-.section-title {
+.section-title h3 {
   display: flex;
   align-items: center;
   color: #000000;
@@ -289,7 +289,7 @@
   justify-content: space-between;
   align-items: center;
   margin: 30px 0;
-  padding: 100px 30px;
+  padding: 60px 30px;
   background-color: #1d4a76;
 }
 .img-donor-highlight {
