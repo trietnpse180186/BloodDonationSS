@@ -156,13 +156,12 @@ export default function EmergencyRequest() {
   const formatDateTime = (isoDateTime) => {
     if (!isoDateTime) return "";
     const date = new Date(isoDateTime);
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    const hour = String(date.getHours()).padStart(2, "0");
+    const minute = String(date.getMinutes()).padStart(2, "0");
+    return `${day}/${month}/${year} ${hour}:${minute}`;
   };
 
   const getStatusBadge = (status) => {
@@ -810,12 +809,11 @@ export default function EmergencyRequest() {
       >
         <Modal.Header closeButton className="bg-light">
           <Modal.Title>
+            <div className="grid grid-cols-1 gap-2">
             <span className="text-danger">Emergency Request Details</span>
             <div className="mt-1">
-              <Badge bg="secondary" className="me-2">
-                ID: {selectedRequest?.requestId}
-              </Badge>
               {getStatusBadge(selectedRequest?.status)}
+            </div>
             </div>
           </Modal.Title>
         </Modal.Header>

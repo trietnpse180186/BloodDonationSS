@@ -254,7 +254,14 @@ export default function MedicalSchedule() {
       </Form.Group>
     );
   };
-
+  function formatDateDMY(dateStr) {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
   return (
     <div className="medical-schedule">
       <h2>Donation Schedules</h2>
@@ -267,7 +274,7 @@ export default function MedicalSchedule() {
             <th>Center</th>
             <th>Location</th>
             <th>Blood Need</th>
-            <th>Date</th>
+            <th width= "10%">Date</th>
             <th>Time</th>
             <th>Number of Donor</th>
             <th></th>
@@ -282,7 +289,7 @@ export default function MedicalSchedule() {
                 {s.bloodNeed &&
                   s.bloodNeed.map((bt) => bloodTypeLabel(bt)).join(", ")}
               </td>
-              <td>{s.date}</td>
+              <td>{formatDateDMY(s.date)}</td>
               <td className="time-column">
                 {s.timeSlots &&
                   s.timeSlots.map((slot, idx) => (

@@ -36,7 +36,6 @@ import {
 } from "react-icons/fa6";
 import "./BloodInventory.css";
 import { saveAs } from "file-saver";
-import { baseUrl } from "../../Utils/baseUrl";
 
 ChartJS.register(
   CategoryScale,
@@ -77,7 +76,7 @@ export default function BloodInventory() {
     try {
       const token = sessionStorage.getItem("accessToken");
       const response = await axios.get(
-        `${baseUrl}/api/blood-inventory/usage-report/pdf`,
+        "http://localhost:8080/api/blood-inventory/usage-report/pdf",
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob",
@@ -121,7 +120,7 @@ export default function BloodInventory() {
     try {
       const token = sessionStorage.getItem("accessToken");
       const res = await axios.get(
-        `${baseUrl}/api/blood-inventory/details?bloodType=${bloodType}`,
+        `http://localhost:8080/api/blood-inventory/details?bloodType=${bloodType}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setDetailData(res.data);
@@ -142,7 +141,7 @@ export default function BloodInventory() {
     try {
       const token = sessionStorage.getItem("accessToken");
       const response = await axios.get(
-        `${baseUrl}/api/blood-inventory/summary`,
+        "http://localhost:8080/api/blood-inventory/summary",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -163,7 +162,7 @@ export default function BloodInventory() {
     try {
       const token = sessionStorage.getItem("accessToken");
       await axios.post(
-        `${baseUrl}/api/blood-inventory/use`,
+        "http://localhost:8080/api/blood-inventory/use",
         {
           bloodType: useBloodForm.bloodType,
           quantity: Number(useBloodForm.quantity),
@@ -201,7 +200,7 @@ export default function BloodInventory() {
       try {
         const token = sessionStorage.getItem("accessToken");
         const res = await axios.get(
-          `${baseUrl}/api/blood-inventory/usage-statistics?startDate=${encodeURIComponent(
+          `http://localhost:8080/api/blood-inventory/usage-statistics?startDate=${encodeURIComponent(
             startDate
           )}&endDate=${encodeURIComponent(endDate)}`,
           { headers: { Authorization: `Bearer ${token}` } }
@@ -221,6 +220,14 @@ export default function BloodInventory() {
     (sum, item) => sum + item.availableUnits,
     0
   );
+  function formatDateDMY(dateStr) {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
   const totalExpiringUnits = inventoryData.reduce(
     (sum, item) => sum + item.expiringUnits,
     0
@@ -450,7 +457,14 @@ export default function BloodInventory() {
             </Card.Body>
           </Card>
         </Col>
-        <Modal show={detailModal.show} onHide={handleCloseDetail} size="lg">
+        <Modal 
+          show={detailModal.show} 
+          onHide={handleCloseDetail} 
+          size="xl" 
+          centered
+          dialogClassName="blood-detail-modal"
+          className="detail-modal"
+        >
           <Modal.Header closeButton>
             <Modal.Title>
               Detail:{" "}
@@ -469,10 +483,10 @@ export default function BloodInventory() {
                 <Table striped bordered hover>
                   <thead>
                     <tr>
-                      <th>Blood Unit ID</th>
                       <th>Blood Type</th>
                       <th>Received Date</th>
                       <th>Expiry Date</th>
+                      <th>Quantity</th>
                       <th>Status</th>
                     </tr>
                   </thead>
@@ -486,12 +500,12 @@ export default function BloodInventory() {
                     ) : (
                       detailData.map((d) => (
                         <tr key={d.id}>
-                          <td>{d.id}</td>
                           <td>
                             {bloodTypeDisplay[d.bloodType] || d.bloodType}
                           </td>
-                          <td>{d.receivedDate}</td>
-                          <td>{d.expiryDate}</td>
+                          <td>{formatDateDMY(d.receivedDate)}</td>
+                          <td>{formatDateDMY(d.expiryDate)}</td>
+                          <td>{d.quantity}ml</td>
                           <td>{d.status}</td>
                         </tr>
                       ))
@@ -759,3 +773,4 @@ export default function BloodInventory() {
     </Container>
   );
 }
+
