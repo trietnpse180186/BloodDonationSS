@@ -20,34 +20,39 @@ import ScrollTotop from "../helpers/scrollToTop";
 import StaffPage from "../pages/Staff/StaffPage";
 import ForgotPassword from "../pages/Auth/ForgotPassword";
 import ChangePassword from "../pages/User/ChangePassword";
-
-
+import { NotificationProvider } from "../contexts/NotificationContext";
+import EmergencyDonation from "../pages/Emergency/EmergencyDonation";
+import BloodInventory from "../pages/BloodInventory/BloodInventory";
 export default function WebRoutes() {
   return (
     <>
-      <ScrollTotop />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/FAQ" element={<FAQ />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/donor-register" element={<DonorRegister />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/user-profile" element={<UserInfo />} />
-        <Route path="/user/update/:userId" element={<UserUpdate />} />
-        <Route path="/staff" element={<StaffPage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/appointment" element={<AppointmentDetail />} />
-        <Route path="/schedule" element={<DonationSchedule />} />
-        <Route path="/blood-registration" element={<BloodRegister />} />
-        <Route path="/blood-registration2" element={<BloodRegister2 />} />
-        <Route path="/blood-donation-info" element={<BloodDonationInfo />} />
-        <Route path="/appointment-detail" element={<AppointmentDetail />} />
-        <Route path="/user-notification" element={<UserNotification />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/user/change-password" element={<ChangePassword />} />
-      </Routes>
+      <NotificationProvider>
+        <ScrollTotop />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/FAQ" element={<FAQ />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/donor-register" element={<DonorRegister />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/user-profile" element={<UserInfo />} />
+          <Route path="/user/update/:userId" element={<UserUpdate />} />
+          <Route path="/staff" element={<StaffPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/appointment" element={<AppointmentDetail />} />
+          <Route path="/emergency-donation" element={<EmergencyDonation />} />
+          <Route path="/blood-inventory" element={<BloodInventory />} />
+          <Route path="/schedule" element={<DonationSchedule />} />
+          <Route path="/blood-registration" element={<BloodRegister />} />
+          <Route path="/blood-registration2" element={<BloodRegister2 />} />
+          <Route path="/blood-donation-info" element={<BloodDonationInfo />} />
+          <Route path="/appointment-detail" element={<AppointmentDetail />} />
+          <Route path="/user-notification" element={<UserNotification />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/user/change-password" element={<ChangePassword />} />
+        </Routes>
+      </NotificationProvider>
     </>
   );
 }

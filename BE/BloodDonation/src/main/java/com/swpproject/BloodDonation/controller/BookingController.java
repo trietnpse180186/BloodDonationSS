@@ -1,14 +1,18 @@
 package com.swpproject.BloodDonation.controller;
 
 import com.swpproject.BloodDonation.dto.request.BookingWithSurveyRequest;
+import com.swpproject.BloodDonation.dto.request.StatusUpdateRequest;
 import com.swpproject.BloodDonation.dto.response.BookingResponse;
 import com.swpproject.BloodDonation.service.BookingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-        import java.util.List;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/booking")
@@ -42,11 +46,17 @@ public class BookingController {
     @PutMapping("/{bookingId}")
     public ResponseEntity<BookingResponse> updateBookingStatusById(
             @PathVariable String bookingId,
-            @RequestParam String status) {
-
-        bookingService.updateBookingStatus(bookingId, status);
-        BookingResponse updatedBooking = bookingService.getBookingById(bookingId);
-        return ResponseEntity.ok(updatedBooking);
+            @RequestBody StatusUpdateRequest request) {
+        // Để tránh exception từ việc gửi mail làm đứt flow API, bọc tất cả vào try-catch
+        try {
+            bookingService.updateBookingStatus(bookingId, request.getStatus());
+            BookingResponse updatedBooking = bookingService.getBookingById(bookingId);
+            return ResponseEntity.ok(updatedBooking);
+        } catch (Exception e) {
+            // Log lỗi và trả về status 400
+            System.err.println("Error updating booking status: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     // xem tất cả các lịch hẹn9

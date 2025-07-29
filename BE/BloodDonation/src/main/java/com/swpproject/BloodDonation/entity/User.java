@@ -48,7 +48,7 @@ public class User implements UserDetails {
     private List<UserHasRole> userHasRoles;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "Type_Blood")
+    @Column(name = "Type_Blood", nullable = true)
     private BloodType bloodType;
 
     @Column(name = "Birthday")

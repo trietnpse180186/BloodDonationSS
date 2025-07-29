@@ -35,4 +35,15 @@ public class MailService {
         log.info("Email sent successfully");
     }
 
+    @Async
+    public boolean sendEmailSafely(String subject, String content, String to) {
+        try {
+            sendEmail(subject, content, to);
+            return true;
+        } catch (Exception e) {
+            log.error("Failed to send email to {} with subject {}: {}", to, subject, e.getMessage());
+            return false;
+        }
+    }
+
 }

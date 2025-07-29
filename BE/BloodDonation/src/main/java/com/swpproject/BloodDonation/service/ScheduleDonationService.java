@@ -10,6 +10,7 @@ import com.swpproject.BloodDonation.entity.TimeSlot;
 import com.swpproject.BloodDonation.enums.BloodType;
 import com.swpproject.BloodDonation.repository.BookingDonationRepository;
 import com.swpproject.BloodDonation.repository.ScheduleDonationRepository;
+import com.swpproject.BloodDonation.repository.SurveyRepository;
 import com.swpproject.BloodDonation.repository.TimeSlotRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +36,7 @@ public class ScheduleDonationService {
     private final ScheduleDonationRepository scheduleDonationRepository;
     private final TimeSlotRepository timeSlotRepository;
     private final BookingDonationRepository bookingDonationRepository;
-
+    private final SurveyRepository surveyRepository;
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -151,8 +152,16 @@ public class ScheduleDonationService {
         ScheduleDonation schedule = scheduleDonationRepository.findById(scheduleId)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hiến máu với ID: " + scheduleId));
 
+        // 1. Xóa survey liên quan
+        surveyRepository.deleteSurveysByScheduleId(scheduleId);
+
+        // 2. Xóa booking liên quan
+        bookingDonationRepository.deleteByScheduleId(scheduleId);
+
+        // 3. Xóa schedule
         scheduleDonationRepository.delete(schedule);
     }
+
 
     private void validateScheduleRequest(ScheduleDonationRequest request) {
         if (request.getDate() == null) {

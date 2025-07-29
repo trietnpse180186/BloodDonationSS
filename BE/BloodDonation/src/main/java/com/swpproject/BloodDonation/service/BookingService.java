@@ -34,6 +34,8 @@ public class BookingService {
     private final TimeSlotRepository timeSlotRepository;
     private final CertificateRepository certificateRepository;
     private final DonationReportService donationReportService;
+    private final BloodInventoryService bloodInventoryService;
+    private final NotificationEventPublisher notificationPublisher;
 
 
     @Transactional
@@ -206,23 +208,23 @@ public class BookingService {
                 .build();
     }
 
-    public void updateBookingStatus(String bookingId, String status) {
-        BookingDonation booking = bookingDonationRepository.findById(bookingId)
-                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+//    public void updateBookingStatus(String bookingId, String status) {
+//        BookingDonation booking = bookingDonationRepository.findById(bookingId)
+//                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+//
+//        // Convert String status to Status enum
+//        Status statusEnum = Status.valueOf(status);
+//        booking.setStatus(statusEnum);
+//        bookingDonationRepository.save(booking);
+//        if (booking.getStatus() == Status.COMPLETED) {
+//            Certificate cert = new Certificate();
+//            cert.setUser(booking.getDonor());
+//            cert.setDonationDate(booking.getDateDonation());
+//            cert.setBookingId(booking.getDonationId());
+//            certificateRepository.save(cert);
+//        }
 
-        // Convert String status to Status enum
-        Status statusEnum = Status.valueOf(status);
-        booking.setStatus(statusEnum);
-        bookingDonationRepository.save(booking);
-        if (booking.getStatus() == Status.COMPLETED) {
-            Certificate cert = new Certificate();
-            cert.setUser(booking.getDonor());
-            cert.setDonationDate(booking.getDateDonation());
-            cert.setBookingId(booking.getDonationId());
-            certificateRepository.save(cert);
-        }
-
-    }
+//    }
 
     public List<BookingResponse> getAllBookings() {
         List<BookingDonation> bookings = bookingDonationRepository.findAll();
@@ -261,4 +263,57 @@ public class BookingService {
         bookingDonationRepository.delete(booking);
     }
 
+    @Transactional
+    public void updateBookingStatus(String bookingId, String status) {
+        BookingDonation booking = bookingDonationRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+
+        // Lưu trạng thái cũ để kiểm tra sự thay đổi
+        Status oldStatus = booking.getStatus();
+
+        // Convert String status to Status enum
+        Status statusEnum = Status.valueOf(status);
+        booking.setStatus(statusEnum);
+        bookingDonationRepository.save(booking);
+
+        // Nếu booking mới được đánh dấu hoàn thành
+        if (statusEnum == Status.COMPLETED && oldStatus != Status.COMPLETED) {
+            // Tạo chứng chỉ
+            Certificate cert = new Certificate();
+            cert.setUser(booking.getDonor());
+            cert.setDonationDate(booking.getDateDonation());
+            cert.setBookingId(booking.getDonationId());
+            certificateRepository.save(cert);
+
+            // TÍCH HỢP: Thêm máu vào kho
+            String donorId = booking.getDonor().getUserID();
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String staffId = authentication.getName();
+
+            try {
+                // Thêm máu vào kho
+                bloodInventoryService.addBloodToDonation(
+                        donorId,
+                        bookingId,
+                        "Regular Donation",
+                        staffId
+                );
+
+                // Gửi thông báo cho người hiến máu - SỬ DỤNG EVENT PUBLISHER
+                notificationPublisher.publishNotificationCreatedEvent(
+                        donorId,
+                        "Hiến máu thành công",
+                        "Cảm ơn bạn đã hiến máu thành công. 350ml máu của bạn đã được thêm vào kho máu và sẽ giúp cứu sống người khác.",
+                        "/donations/history",
+                        "DONATION_COMPLETED",
+                        "NORMAL"
+                );
+            } catch (Exception e) {
+                // Log lỗi nhưng không throw exception để không làm gián đoạn quy trình
+                // Vẫn tiếp tục đánh dấu lịch hiến máu là hoàn thành
+                System.err.println("Lỗi khi cập nhật kho máu: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
 }

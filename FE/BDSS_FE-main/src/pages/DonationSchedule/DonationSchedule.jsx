@@ -22,7 +22,7 @@ export default function DonationSchedule() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/schedule-donations")
+      .get("http://localhost:8080/api/schedule-donations/future")
       .then((res) => {
         setSchedules(res.data);
         setFilteredSchedules(res.data);
@@ -74,7 +74,29 @@ export default function DonationSchedule() {
     }
   }, [token, refreshToken]);
 
+  function isProfileComplete(user) {
+    if (!user) return false;
+    const requiredFields = [
+      "fullName",
+      "birthday",
+      "sex",
+      "phoneNumber",
+      "address",
+      "bloodType",
+    ];
+    return requiredFields.every(
+      (field) => user[field] && user[field] !== "" && user[field] !== null
+    );
+  }
+
   const handleBooking = (schedule) => {
+    if (!isProfileComplete(userInfo)) {
+      alert(
+        "Please update your profile with all required information before booking a donation schedule."
+      );
+      navigate(`/user/update/${userInfo.userId}`);
+      return;
+    }
     navigate(
       `/blood-registration?date=${schedule.date}&location=${encodeURIComponent(
         schedule.location

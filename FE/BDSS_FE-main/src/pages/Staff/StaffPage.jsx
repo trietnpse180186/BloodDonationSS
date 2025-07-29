@@ -8,9 +8,21 @@ import MedicalSchedule from "../DonationSchedule/MedicalSchedule";
 import Notification from "../Notification/Notification";
 import FAQManager from "../FAQ/FAQManager";
 import AppointmentManager from "../Appointment/AppointmentManager";
-
-import { FaBell, FaBlog, FaCalendarAlt, FaEnvelope, FaQuestionCircle, FaSignOutAlt, FaUserFriends } from "react-icons/fa";
+import { MdBloodtype } from "react-icons/md";
+import {
+  FaBell,
+  FaBlog,
+  FaCalendarAlt,
+  FaEnvelope,
+  FaFileMedical,
+  FaQuestionCircle,
+  FaSignOutAlt,
+  FaUserFriends,
+} from "react-icons/fa";
 import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
+import EmergencyRequest from "../Emergency/EmergencyRequest";
+import BloodInventory from "../BloodInventory/BloodInventory";
+
 
 const menuItems = [
   { key: "schedule", label: "Donation Schedule", icon: <FaCalendarAlt /> },
@@ -19,12 +31,23 @@ const menuItems = [
     label: "Donor Appointment Manager",
     icon: <FaUserFriends />,
   },
+  {
+    key: "emergency",
+    label: "Emergency Donation Request",
+    icon: <FaFileMedical />,
+  },
+  {
+    key: "blood-inventory",
+    label: "Blood Inventory",
+    icon: <MdBloodtype />,
+  },
   { key: "blog", label: "Blog Manager", icon: <FaBlog /> },
   { key: "faq", label: "FAQ Manager", icon: <FaQuestionCircle /> },
   { key: "notification", label: "Notification", icon: <FaBell /> },
   { key: "contact", label: "Contact", icon: <FaEnvelope /> },
   { key: "logout", label: "Logout", icon: <FaSignOutAlt /> },
 ];
+
 
 export default function StaffPage() {
   const [selected, setSelected] = useState("schedule");
@@ -45,6 +68,18 @@ export default function StaffPage() {
             <AppointmentManager />
           </div>
         );
+      case "emergency":
+        return (
+          <div className="staff-content-box">
+            <EmergencyRequest />
+          </div>
+        );
+      case "blood-inventory":
+        return (
+          <div className="staff-content-box">
+            <BloodInventory />
+          </div>
+        );
       case "blog":
         return (
           <div className="staff-content-box">
@@ -57,6 +92,7 @@ export default function StaffPage() {
             <FAQManager />
           </div>
         );
+
 
       case "notification":
         return (
@@ -78,6 +114,7 @@ export default function StaffPage() {
     }
   };
   const [staffInfo, setStaffInfo] = useState(null);
+
 
   useEffect(() => {
     const staffId = getUserIdFromToken();
@@ -113,3 +150,6 @@ export default function StaffPage() {
     </div>
   );
 }
+
+
+

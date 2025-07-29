@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import axios from "../../helpers/axiosInstance";
 import "./AppointmentManager.css";
 
-import Table from 'react-bootstrap/Table';
+
+import Table from "react-bootstrap/Table";
 import { Button, Modal } from "react-bootstrap";
-import { getQuestionTextById, getLabelByValue } from "../../helpers/bloodRegister";
+import {
+  getQuestionTextById,
+  getLabelByValue,
+} from "../../helpers/bloodRegister";
 export default function AppointmentManager() {
   const [appointments, setAppointments] = useState([]);
   const [surveyData, setSurveyData] = useState({ show: false, data: [] });
@@ -23,11 +27,13 @@ export default function AppointmentManager() {
       });
   }, [accessToken]);
 
+
   function formatDate(isoDate) {
     if (!isoDate) return "";
     const [year, month, day] = isoDate.split("-");
     return `${day}-${month}-${year}`;
   }
+
 
   function formatDateTime(isoDateTime) {
     if (!isoDateTime) return "";
@@ -35,6 +41,7 @@ export default function AppointmentManager() {
     const [year, month, day] = datePart.split("-");
     return `${day}-${month}-${year} ${timePart.slice(0, 5)}`;
   }
+
 
   const renderStatus = (status) => {
     switch (status) {
@@ -51,6 +58,7 @@ export default function AppointmentManager() {
     }
   };
 
+
   const grouped = appointments.reduce((acc, item) => {
     const name = item.user?.fullName || "Unknown User";
     const email = item.user?.email || "Unknown Email";
@@ -60,34 +68,68 @@ export default function AppointmentManager() {
     return acc;
   }, {});
 
-  // Tự động cập nhật trạng thái khi nhấn Update
+
   const handleUpdate = async (item) => {
     let nextStatus = "";
-    if (item.status === "PENDING") nextStatus = "APPROVED";
-    else if (item.status === "APPROVED") nextStatus = "COMPLETED";
-    else return; // Không cho update nếu đã CANCELLED hoặc COMPLETED
+    let notifyTitle = "";
+    let notifyDetail = "";
 
+
+    if (item.status === "PENDING") {
+      nextStatus = "APPROVED";
+      notifyTitle = "Appointment Approved";
+      notifyDetail = "Your blood donation appointment has been approved.";
+    } else if (item.status === "APPROVED") {
+      nextStatus = "COMPLETED";
+      notifyTitle = "Appointment Completed";
+      notifyDetail =
+        "Your blood donation appointment has been marked as completed. Thank you for your contribution!";
+    } else return;
     try {
       await axios.put(
         `http://localhost:8080/api/booking/${item.bookingId}`,
-        {},
+        { status: nextStatus },
         {
-          params: { status: nextStatus },
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
       setAppointments((prev) =>
         prev.map((appt) =>
-          appt.bookingId === item.bookingId ? { ...appt, status: nextStatus } : appt
+          appt.bookingId === item.bookingId
+            ? { ...appt, status: nextStatus }
+            : appt
         )
       );
+
+
+      const userId = item.user?.userID || item.user?.userId;
+      if (userId) {
+        await axios.post(
+          "http://localhost:8080/notifications",
+          {
+            title: notifyTitle,
+            detail: notifyDetail,
+            donorId: userId,
+            date: new Date().toISOString().slice(0, 10),
+            time: new Date().toTimeString().slice(0, 5),
+            type: "NOTIFICATION",
+            priority: "NORMAL",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      }
     } catch (error) {
       alert("Update Failed!");
     }
   };
 
+
   const handleSurvey = async (item) => {
-    try{
+    try {
       const res = await axios.get(
         `http://localhost:8080/api/survey/${item.bookingId}`,
         {
@@ -99,47 +141,90 @@ export default function AppointmentManager() {
       console.error("Error fetching survey data:", error);
       alert("Load Survey Failed!");
     }
-  }
+  };
   const handleDetail = (item) => {
     const bookingData = {
-      
       center: item.center,
       location: item.location || item.address,
       date: formatDate(item.dateDonation),
-      timeSlot: item.startTime && item.endTime 
-      ? `${item.startTime.slice(0, 5)} - ${item.endTime.slice(0, 5)}` 
-      : "N/A",
+      timeSlot:
+        item.startTime && item.endTime
+          ? `${item.startTime.slice(0, 5)} - ${item.endTime.slice(0, 5)}`
+          : "N/A",
       status: item.status,
       bloodType: item.bloodType,
       user: item.user,
-      bookingTime: formatDateTime(item.bookingTime)
+      bookingTime: formatDateTime(item.bookingTime),
     };
+
 
     setDetailData({ show: true, data: bookingData });
   };
 
+
   const handleCancel = async (item) => {
-    if (item.status !== "PENDING") return; // Chỉ cho phép cancel khi đang pending
     const confirm = window.confirm("Bạn có chắc muốn hủy lịch này không?");
     if (!confirm) return;
+
+
     try {
       await axios.put(
         `http://localhost:8080/api/booking/${item.bookingId}`,
-        {},
+        { status: "CANCELLED" },
         {
-          params: { status: "CANCELLED" },
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
+
+
       setAppointments((prev) =>
         prev.map((appt) =>
-          appt.bookingId === item.bookingId ? { ...appt, status: "CANCELLED" } : appt
+          appt.bookingId === item.bookingId
+            ? { ...appt, status: "CANCELLED" }
+            : appt
         )
       );
+
+
+      const bookingRes = await axios.get(
+        `http://localhost:8080/api/booking/${item.bookingId}`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+
+
+      const userId = bookingRes.data?.user?.userID;
+
+
+      if (userId) {
+        await axios.post(
+          "http://localhost:8080/notifications",
+          {
+            title: "Appointment Cancelled",
+            detail:
+              "Your blood donation appointment has been cancelled by the staff. Reason: You do not meet the eligibility requirements for blood donation.",
+            donorId: userId,
+            date: new Date().toISOString().slice(0, 10),
+            time: new Date().toTimeString().slice(0, 5),
+            type: "NOTIFICATION",
+            priority: "NORMAL",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      } else {
+        console.warn("Không tìm thấy userId để gửi thông báo.");
+      }
     } catch (error) {
+      console.error("Cancel or notification failed:", error);
       alert("Cancel Failed!");
     }
   };
+
 
   const handleRestore = async (item) => {
     try {
@@ -153,13 +238,16 @@ export default function AppointmentManager() {
       );
       setAppointments((prev) =>
         prev.map((appt) =>
-          appt.bookingId === item.bookingId ? { ...appt, status: "PENDING" } : appt
+          appt.bookingId === item.bookingId
+            ? { ...appt, status: "PENDING" }
+            : appt
         )
       );
     } catch (error) {
       alert("Restore Failed!");
     }
   };
+
 
   return (
     <div className="appointment-manager-container">
@@ -169,43 +257,57 @@ export default function AppointmentManager() {
           <div className="appointment-card" key={key}>
             <h3>{key}</h3>
             <div className="appointment-table">
-            <Table bordered responsive>
-              <thead>
-                <tr>
-                  <th>Center</th>
-                  <th>Booking Time</th>
-                  <th>Status</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item.bookingId}>
-                    <td>{item.center}</td>
-                    <td>{formatDateTime(item.bookingTime)}</td>
-                    <td>{renderStatus(item.status)}</td>
-                    <td className="action-buttons">
-                      <button onClick={() => handleDetail(item)}>View Details</button>
-                      <button onClick={() => handleSurvey(item)}>View Survey</button>
-                      {(item.status === "PENDING" || item.status === "APPROVED") && (
-                        <button onClick={() => handleUpdate(item)}>Update</button>
-                      )}
-                      {item.status === "PENDING" && (
-                        <button onClick={() => handleCancel(item)}>Cancel</button>
-                      )}
-                      {item.status === "CANCELLED" && (
-                        <button onClick={() => handleRestore(item)}>Restore</button>
-                      )}
-                    </td>
+              <Table bordered responsive>
+                <thead>
+                  <tr>
+                    <th>Center</th>
+                    <th>Booking Time</th>
+                    <th>Status</th>
+                    <th></th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
+                </thead>
+                <tbody>
+                  {items.map((item) => (
+                    <tr key={item.bookingId}>
+                      <td>{item.center}</td>
+                      <td>{formatDateTime(item.bookingTime)}</td>
+                      <td>{renderStatus(item.status)}</td>
+                      <td className="action-buttons">
+                        <button onClick={() => handleDetail(item)}>
+                          View Details
+                        </button>
+                        <button onClick={() => handleSurvey(item)}>
+                          View Survey
+                        </button>
+                        {(item.status === "PENDING" ||
+                          item.status === "APPROVED") && (
+                          <button onClick={() => handleUpdate(item)}>
+                            Update
+                          </button>
+                        )}
+                        {item.status === "PENDING" && (
+                          <button onClick={() => handleCancel(item)}>
+                            Cancel
+                          </button>
+                        )}
+                        {item.status === "CANCELLED" && (
+                          <button onClick={() => handleRestore(item)}>
+                            Restore
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             </div>
           </div>
         ))}
       </div>
-      <Modal show={surveyData.show} onHide={() => setSurveyData({ show: false, data: [] })}>
+      <Modal
+        show={surveyData.show}
+        onHide={() => setSurveyData({ show: false, data: [] })}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Survey Details</Modal.Title>
         </Modal.Header>
@@ -218,9 +320,19 @@ export default function AppointmentManager() {
                 .slice() // tạo bản sao để sort không ảnh hưởng state
                 .sort((a, b) => {
                   const order = [
-                    "q1","q2","q3","q4","q5","q6","q7","q8","q9"
+                    "q1",
+                    "q2",
+                    "q3",
+                    "q4",
+                    "q5",
+                    "q6",
+                    "q7",
+                    "q8",
+                    "q9",
                   ];
-                  return order.indexOf(a.description) - order.indexOf(b.description);
+                  return (
+                    order.indexOf(a.description) - order.indexOf(b.description)
+                  );
                 })
                 .map((s, idx) => {
                   let audit = {};
@@ -231,10 +343,15 @@ export default function AppointmentManager() {
                   }
                   return (
                     <li key={idx}>
-                      <strong>{getQuestionTextById(s.description)}</strong><br />
-                      <strong>Đáp án:</strong> {getLabelByValue(s.description, audit.answer)}
+                      <strong>{getQuestionTextById(s.description)}</strong>
+                      <br />
+                      <strong>Đáp án:</strong>{" "}
+                      {getLabelByValue(s.description, audit.answer)}
                       {audit.additionalInfo && audit.additionalInfo !== "" && (
-                        <span><br /><strong>Info:</strong> {audit.additionalInfo}</span>
+                        <span>
+                          <br />
+                          <strong>Info:</strong> {audit.additionalInfo}
+                        </span>
                       )}
                     </li>
                   );
@@ -243,12 +360,18 @@ export default function AppointmentManager() {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setSurveyData({ show: false, data: [] })}>
+          <Button
+            variant="secondary"
+            onClick={() => setSurveyData({ show: false, data: [] })}
+          >
             Close
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={detailData.show} onHide={() => setDetailData({ show: false, data: {} })}>
+      <Modal
+        show={detailData.show}
+        onHide={() => setDetailData({ show: false, data: {} })}
+      >
         <Modal.Header closeButton>
           <Modal.Title>Booking Details</Modal.Title>
         </Modal.Header>
@@ -287,7 +410,10 @@ export default function AppointmentManager() {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setDetailData({ show: false, data: null })}>
+          <Button
+            variant="secondary"
+            onClick={() => setDetailData({ show: false, data: null })}
+          >
             Close
           </Button>
         </Modal.Footer>

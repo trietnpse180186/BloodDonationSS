@@ -88,7 +88,7 @@ export default function AdminPage() {
 
   try {
     const response = await axios.delete(
-      `http://localhost:8080/api/v1/admin/staff/{id}`,  
+      `http://localhost:8080/api/v1/admin/staff/${userId}`,  
       {
         headers: { Authorization: `Bearer ${token}` },
       }
@@ -241,7 +241,7 @@ export default function AdminPage() {
                   <td>
                     <div className="action-buttons">
                       <button className="view-btn" onClick={() => setModalUser(user)}>View</button>
-                      <button className="delete-btn" onClick={() => handleDelete(user.id)}>Delete</button>
+                      <button className="delete-btn" onClick={() => handleDelete(user.userId)}>Delete</button>
                    
                     </div>
                   </td>

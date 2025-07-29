@@ -43,9 +43,10 @@ public class EmergencyBloodController {
             @RequestBody EmergencyBloodRequestDTO request,
             Authentication authentication) {
 
+
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String staffId = jwt.getClaim("userId");
-
+      
         EmergencyBloodResponseDTO response = emergencyService.createEmergencyRequest(request, staffId);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -62,7 +63,7 @@ public class EmergencyBloodController {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String staffId = jwt.getClaim("userId");
-
+      
         EmergencyBloodResponseDTO updated = emergencyService.updateEmergencyRequest(requestId, updateDTO, staffId);
         return ResponseEntity.ok(updated);
     }
@@ -103,8 +104,8 @@ public class EmergencyBloodController {
             Authentication authentication) {
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
-        String donorId = jwt.getClaim("userId");
-
+        String donorId  = jwt.getClaim("userId");
+      
         EmergencyDonorDTO response = emergencyService.respondToEmergencyRequest(requestId, donorId);
         return ResponseEntity.ok(response);
     }
@@ -207,6 +208,7 @@ public class EmergencyBloodController {
     @GetMapping("/user/history")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<EmergencyDonorDTO>> getUserDonationHistory(Authentication authentication) {
+
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String userId = jwt.getClaim("userId");
         

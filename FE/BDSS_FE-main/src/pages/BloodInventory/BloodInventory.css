@@ -1,0 +1,269 @@
+/* Use Blood button modern style */
+.btn-use-blood {
+  background: linear-gradient(90deg, #1976d2 0%, #2196f3 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.15rem;
+  border: none;
+  border-radius: 14px;
+  padding: 12px 32px;
+  box-shadow: 0 4px 18px 0 rgba(33, 150, 243, 0.13);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  outline: none;
+}
+.btn-use-blood:hover,
+.btn-use-blood:focus {
+  background: linear-gradient(90deg, #1565c0 0%, #1976d2 100%);
+  color: #fff;
+  box-shadow: 0 8px 32px 0 rgba(33, 150, 243, 0.18);
+  transform: translateY(-2px) scale(1.04);
+}
+.blood-inventory-container {
+  padding: 20px;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+}
+
+.blood-inventory-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #343a40;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.blood-inventory-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100px;
+  height: 3px;
+  background-color: #dc3545;
+  border-radius: 2px;
+}
+
+.blood-inventory-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+}
+
+.blood-inventory-loading p {
+  margin-top: 15px;
+  color: #6c757d;
+}
+
+.dashboard-card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card-content {
+  display: flex;
+  align-items: center;
+}
+
+.dashboard-card-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  font-size: 24px;
+}
+
+.dashboard-card-icon.available {
+  background-color: rgba(40, 167, 69, 0.15);
+  color: #28a745;
+}
+
+.dashboard-card-icon.expiring {
+  background-color: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+.dashboard-card-icon.used {
+  background-color: rgba(220, 53, 69, 0.15);
+  color: #dc3545;
+}
+
+.dashboard-card-icon.received {
+  background-color: rgba(13, 110, 253, 0.15);
+  color: #0d6efd;
+}
+
+.dashboard-card-stats h3 {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  color: #343a40;
+}
+
+.dashboard-card-stats p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.chart-card {
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.chart-card .card-header {
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 15px 20px;
+}
+
+.chart-card .card-header h5 {
+  margin: 0;
+  font-weight: 600;
+  color: #343a40;
+}
+
+.chart-card .card-body {
+  padding: 20px;
+}
+
+/* Style for nav tabs */
+.nav-tabs {
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: 20px !important;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  color: #495057;
+  font-weight: 500;
+  padding: 10px 15px;
+  border-radius: 0;
+  margin-right: 10px;
+  transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #dc3545;
+  border-bottom: 2px solid rgba(220, 53, 69, 0.5);
+}
+
+.nav-tabs .nav-link.active {
+  color: #dc3545;
+  background-color: transparent;
+  border-bottom: 2px solid #dc3545;
+}
+
+/* Style for inventory table */
+.inventory-table {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.inventory-table th {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  border-top: none;
+  white-space: nowrap;
+}
+
+.inventory-table td {
+  vertical-align: middle;
+}
+
+/* Style for blood type badges */
+.blood-type-badge {
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border-width: 2px;
+  border-style: solid;
+  background-color: #f8f9fa !important;
+}
+
+/* Form switch styling */
+.form-check-input {
+  height: 20px;
+  width: 40px;
+}
+
+.form-check-input:checked {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+
+/* Blood type detail section */
+.bloodtype-detail-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.btn-bloodtype-detail {
+  border-radius: 24px;
+  font-weight: 600;
+  font-size: 1.08rem;
+  padding: 8px 24px;
+  border: 2px solid #00bcd4;
+  color: #00bcd4;
+  background: #fff;
+  box-shadow: 0 2px 8px 0 rgba(0, 188, 212, 0.07);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.btn-bloodtype-detail:hover,
+.btn-bloodtype-detail:focus {
+  background: #e0f7fa;
+  color: #007c91;
+  border-color: #007c91;
+  box-shadow: 0 4px 16px 0 rgba(0, 188, 212, 0.13);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .blood-inventory-container {
+    padding: 15px;
+  }
+
+  .dashboard-card {
+    margin-bottom: 15px;
+  }
+
+  .dashboard-card-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+  }
+
+  .dashboard-card-stats h3 {
+    font-size: 22px;
+  }
+
+  .blood-inventory-title {
+    font-size: 24px;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 8px 10px;
+    font-size: 14px;
+  }
+}

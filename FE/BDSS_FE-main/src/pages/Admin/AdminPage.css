@@ -384,8 +384,8 @@ button.delete-btn:hover {
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border: 1px solid #e5e7eb;
-  width: 100%; /* ✅ mở rộng bằng bảng ở trên */
-  max-width: none; /* ✅ bỏ giới hạn */
+  width: 100%; 
+  max-width: none; 
   margin-top: 40px;
 }
 .section-title,
@@ -393,7 +393,7 @@ button.delete-btn:hover {
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 20px;
-  color: #1e3a8a; /* Màu xanh đậm đẹp */
+  color: #1e3a8a; 
   display: flex;
   align-items: center;
   gap: 10px;
