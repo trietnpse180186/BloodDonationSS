@@ -151,7 +151,9 @@ export default function AppointmentManager() {
   };
 
   const handleCancel = async (item) => {
-    const confirm = window.confirm("Bạn có chắc muốn hủy lịch này không?");
+    const confirm = window.confirm(
+      "Are you sure you want to cancel this appointment?"
+    );
     if (!confirm) return;
 
     try {
@@ -200,7 +202,7 @@ export default function AppointmentManager() {
           }
         );
       } else {
-        console.warn("Không tìm thấy userId để gửi thông báo.");
+        console.warn("User ID not found for notification.");
       }
     } catch (error) {
       console.error("Cancel or notification failed:", error);
@@ -212,9 +214,8 @@ export default function AppointmentManager() {
     try {
       await axios.put(
         `http://localhost:8080/api/booking/${item.bookingId}`,
-        {},
+        { status: "PENDING" },
         {
-          params: { status: "PENDING" },
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
@@ -298,7 +299,7 @@ export default function AppointmentManager() {
           ) : (
             <ul>
               {surveyData.data
-                .slice() // tạo bản sao để sort không ảnh hưởng state
+                .slice()
                 .sort((a, b) => {
                   const order = [
                     "q1",
@@ -326,7 +327,7 @@ export default function AppointmentManager() {
                     <li key={idx}>
                       <strong>{getQuestionTextById(s.description)}</strong>
                       <br />
-                      <strong>Đáp án:</strong>{" "}
+                      <strong>Answer:</strong>{" "}
                       {getLabelByValue(s.description, audit.answer)}
                       {audit.additionalInfo && audit.additionalInfo !== "" && (
                         <span>

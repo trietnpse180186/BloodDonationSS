@@ -1,7 +1,76 @@
+/* Modal User Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  padding: 18px 16px 14px 16px;
+  min-width: 680px;
+  max-width: 680px;
+  position: relative;
+  align-items: center;
+  animation: modalFadeIn 0.2s;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  font-size: 1.3em;
+  color: #b30000;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.modal-close:hover {
+  color: #d32f2f;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #b30000;
+  font-size: 1.08em;
+  font-weight: 700;
+  text-align: center;
+}
+.modal-content p {
+  margin: 5px 0;
+  font-size: 0.98em;
+  color: #333;
+}
+.modal-content strong {
+  color: #b30000;
+  font-weight: 600;
+}
 .admin-page {
   display: flex;
   height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: #f0f4f8;
 }
 
@@ -107,10 +176,18 @@
   color: #2563eb;
 }
 
-.card.blue { border-top: 4px solid #2563eb; }
-.card.green { border-top: 4px solid #22c55e; }
-.card.orange { border-top: 4px solid #f97316; }
-.card.red { border-top: 4px solid #dc2626; }
+.card.blue {
+  border-top: 4px solid #2563eb;
+}
+.card.green {
+  border-top: 4px solid #22c55e;
+}
+.card.orange {
+  border-top: 4px solid #f97316;
+}
+.card.red {
+  border-top: 4px solid #dc2626;
+}
 
 .dashboard-charts {
   display: flex;
@@ -384,8 +461,8 @@ button.delete-btn:hover {
   border-radius: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border: 1px solid #e5e7eb;
-  width: 100%; 
-  max-width: none; 
+  width: 100%;
+  max-width: none;
   margin-top: 40px;
 }
 .section-title,
@@ -393,7 +470,7 @@ button.delete-btn:hover {
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 20px;
-  color: #1e3a8a; 
+  color: #1e3a8a;
   display: flex;
   align-items: center;
   gap: 10px;
