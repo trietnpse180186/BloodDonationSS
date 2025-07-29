@@ -15,6 +15,7 @@ import { MdCake, MdWork } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader, PulseLoader } from "react-spinners";
+import { baseUrl } from "../../Utils/baseUrl";
 
 function PasswordInput({ value, onChange, name, placeholder }) {
   const [show, setShow] = useState(false);
@@ -128,10 +129,7 @@ export default function Register() {
     // Log form data gửi đi
     console.log("Form data gửi đi:", formData);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/users",
-        formData
-      );
+      const response = await axios.post(`${baseUrl}/api/v1/users`, formData);
       toast.success("Registration successful!");
       setTimeout(() => {
         setLoading(false);

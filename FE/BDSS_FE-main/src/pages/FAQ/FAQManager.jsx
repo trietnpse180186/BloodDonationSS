@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "../../helpers/axiosInstance";
 import { toast } from "react-toastify";
 import "./FAQManager.css";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function FAQManager() {
   const [faqs, setFaqs] = useState([]);
@@ -13,7 +14,7 @@ export default function FAQManager() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/faq")
+      .get(`${baseUrl}/faq`)
       .then((res) => setFaqs(res.data))
       .catch((err) => toast.error("FAQ error:", err));
   }, []);
@@ -23,11 +24,11 @@ export default function FAQManager() {
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
       if (editingId) {
-        await axios.put(`http://localhost:8080/faq/${editingId}`, form, config);
+        await axios.put(`${baseUrl}/faq/${editingId}`, form, config);
       } else {
-        await axios.post("http://localhost:8080/faq", form, config);
+        await axios.post(`${baseUrl}/faq`, form, config);
       }
-      const res = await axios.get("http://localhost:8080/faq");
+      const res = await axios.get(`${baseUrl}/faq`);
       setFaqs(res.data);
       setForm({ question: "", answer: "" });
       setEditingId(null);
@@ -48,7 +49,7 @@ export default function FAQManager() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete?")) return;
     try {
-      await axios.delete(`http://localhost:8080/faq/${id}`, {
+      await axios.delete(`${baseUrl}/faq/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setFaqs(faqs.filter((f) => f.id !== id));

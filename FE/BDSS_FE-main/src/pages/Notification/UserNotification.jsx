@@ -4,6 +4,7 @@ import Navbar from "../../components/navbar";
 import { getUserNotifications } from "../../helpers/getNotification";
 import NotificationModal from "../../components/NotificationModal";
 import { useLocation } from "react-router-dom";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);
@@ -112,7 +113,7 @@ export default function NotificationCenter() {
     try {
       const token = sessionStorage.getItem("accessToken");
       const response = await fetch(
-        `http://localhost:8080/notifications/${notificationId}/read`,
+        `${baseUrl}/notifications/${notificationId}/read`,
         {
           method: "PUT",
           headers: {
@@ -140,7 +141,7 @@ export default function NotificationCenter() {
     try {
       const token = sessionStorage.getItem("accessToken");
       const response = await fetch(
-        `http://localhost:8080/notifications/${notificationId}`,
+        `${baseUrl}/notifications/${notificationId}`,
         {
           method: "DELETE",
           headers: {

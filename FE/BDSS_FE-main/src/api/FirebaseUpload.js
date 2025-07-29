@@ -20,7 +20,7 @@ export default function FirebaseUpload() {
 
       console.log("Firebase image URL:", downloadURL);
 
-      axios.post("http://localhost:8080/api/user/avatar", {
+      axios.post("${baseUrl}/api/user/avatar", {
         imageUrl: downloadURL,
       });
 

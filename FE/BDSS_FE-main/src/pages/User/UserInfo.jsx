@@ -11,6 +11,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { baseUrl } from "../../Utils/baseUrl";
 
 function GenderIcon({ sex }) {
   if (sex.toUpperCase() === "MALE")
@@ -46,7 +47,7 @@ function UserInfo({ userId }) {
   const fetchDonationReport = async (uid) => {
     try {
       const res = await axios.get(
-        `http://localhost:8080/api/reports/user/${userIdFromToken}`,
+        `${baseUrl}/api/reports/user/${userIdFromToken}`,
         {
           headers: {
             Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
@@ -61,14 +62,11 @@ function UserInfo({ userId }) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(
-        `http://localhost:8080/users/delete/${userIdFromToken}`,
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      await axios.delete(`${baseUrl}/users/delete/${userIdFromToken}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+        },
+      });
       sessionStorage.removeItem("accessToken");
       sessionStorage.removeItem("refreshToken");
       toast.success("Account deleted successfully");

@@ -7,6 +7,7 @@ import axios from "../../helpers/axiosInstance";
 import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 import Footer from "../../components/footer";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
+import { baseUrl } from "../../Utils/baseUrl";
 
 function GenderIcon({ sex }) {
   if (!sex) return null;
@@ -184,7 +185,7 @@ export default function BloodDonationInfo({ answers }) {
     setIsSubmitting(true);
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/booking/create",
+        `${baseUrl}/api/booking/create`,
         payload,
         {
           headers: {

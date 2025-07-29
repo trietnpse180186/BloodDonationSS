@@ -14,6 +14,7 @@ import "./UserUpdate.css";
 import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 import { MdCake } from "react-icons/md";
 import { uploadImageToCloudinary } from "../../helpers/uploadImageToCloudinary";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function UserUpdate() {
   const [loading, setLoading] = useState(false);
@@ -149,7 +150,7 @@ export default function UserUpdate() {
         avatarUrl: uploadedUrl,
       };
 
-      await axios.put(`http://localhost:8080/users/${userId}`, updatedData, {
+      await axios.put(`${baseUrl}/users/${userId}`, updatedData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

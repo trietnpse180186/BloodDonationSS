@@ -5,6 +5,7 @@ import Footer from "../../components/footer";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "../../helpers/axiosInstance";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -39,10 +40,7 @@ export default function Contact() {
     setIsSubmitting(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:8080/contact",
-        formData
-      );
+      const response = await axios.post(`${baseUrl}/contact`, formData);
       toast.success("Contact form submitted successfully!");
       // Clear form after successful submission
       setFormData({

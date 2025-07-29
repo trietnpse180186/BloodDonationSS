@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "../../helpers/axiosInstance";
 import { Modal, Button, Form } from "react-bootstrap";
 import "./MedicalSchedule.css";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function MedicalSchedule() {
   const [schedules, setSchedules] = useState([]);
@@ -38,7 +39,7 @@ export default function MedicalSchedule() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/schedule-donations/", {
+      .get(`${baseUrl}/api/schedule-donations/`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then((res) => setSchedules(res.data))
@@ -118,7 +119,7 @@ export default function MedicalSchedule() {
     const bloodNeedFiltered = formData.bloodNeed.filter((bn) => bn);
     try {
       await axios.post(
-        "http://localhost:8080/api/schedule-donations",
+        `${baseUrl}/api/schedule-donations`,
         {
           center: formData.center,
           address: formData.location,
@@ -132,12 +133,9 @@ export default function MedicalSchedule() {
       alert("Schedule created successfully!");
       setShowModal(false);
 
-      const res = await axios.get(
-        "http://localhost:8080/api/schedule-donations/",
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      const res = await axios.get(`${baseUrl}/api/schedule-donations/`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       setSchedules(res.data);
 
       setFormData({
@@ -159,7 +157,7 @@ export default function MedicalSchedule() {
     const bloodNeedFiltered = editForm.bloodNeed.filter((bn) => bn);
     try {
       await axios.put(
-        `http://localhost:8080/api/schedule-donations/${editingId}`,
+        `${baseUrl}/api/schedule-donations/${editingId}`,
         {
           center: editForm.center,
 
@@ -174,12 +172,9 @@ export default function MedicalSchedule() {
       setShowModal(false);
       setEditingId(null);
 
-      const res = await axios.get(
-        "http://localhost:8080/api/schedule-donations/",
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      const res = await axios.get(`${baseUrl}/api/schedule-donations/`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       setSchedules(res.data);
     } catch (err) {
       console.error("Update error:", err.response?.data || err.message);
@@ -193,10 +188,9 @@ export default function MedicalSchedule() {
     if (!window.confirm("Are you sure you want to delete this schedule?"))
       return;
     try {
-      await axios.delete(
-        `http://localhost:8080/api/schedule-donations/${scheduleId}`,
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
+      await axios.delete(`${baseUrl}/api/schedule-donations/${scheduleId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       setSchedules((prev) => prev.filter((s) => s.scheduleId !== scheduleId));
     } catch (err) {
       console.error("Delete error:", err.response?.data || err.message);

@@ -6,6 +6,7 @@ import Footer from "../../components/footer";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "../../helpers/axiosInstance";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function BloodRegister() {
   const location = useLocation();
@@ -25,7 +26,7 @@ export default function BloodRegister() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/schedule-donations")
+      .get(`${baseUrl}/api/schedule-donations`)
       .then((res) => {
         setDonationSchedules(res.data);
       })
@@ -91,7 +92,7 @@ export default function BloodRegister() {
       timeSlot: selectedTimeSlotObj,
     };
 
-    toast.success("Booking information saved!"); 
+    toast.success("Booking information saved!");
     navigate("/blood-registration2", { state: { bookingData } });
     console.log("Booking Data:", bookingData);
   };

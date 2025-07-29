@@ -9,7 +9,7 @@ import { FaPlus, FaEye, FaEdit, FaTrash, FaMapMarkerAlt } from "react-icons/fa";
 import "./EmergencyRequest.css";
 import { getUserRole } from "../../helpers/getUserName";
 import { getUserIdFromToken } from "../../helpers/getUserById";
-
+import { baseUrl } from "../../Utils/baseUrl";
 export default function EmergencyRequest() {
   const [activeTab, setActiveTab] = useState("list");
   const [loading, setLoading] = useState(false);
@@ -141,7 +141,7 @@ export default function EmergencyRequest() {
     setLoading(true);
     try {
       const token = sessionStorage.getItem("accessToken");
-      const response = await axios.get("http://localhost:8080/api/emergency", {
+      const response = await axios.get(`${baseUrl}/api/emergency`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setEmergencyRequests(response.data);
@@ -316,7 +316,7 @@ export default function EmergencyRequest() {
       console.log("Sending request data:", requestData);
 
       const response = await axios.post(
-        "http://localhost:8080/api/emergency",
+        `${baseUrl}/api/emergency`,
         requestData,
         {
           headers: {
@@ -367,16 +367,12 @@ export default function EmergencyRequest() {
       console.log("Updating status to:", newStatus);
       console.log("Update DTO (only allowed fields):", updateDTO);
 
-      await axios.put(
-        `http://localhost:8080/api/emergency/${requestId}`,
-        updateDTO,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.put(`${baseUrl}/api/emergency/${requestId}`, updateDTO, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       toast.success(`Status updated to ${newStatus} successfully`);
       fetchEmergencyRequests();
@@ -448,7 +444,7 @@ export default function EmergencyRequest() {
       console.log("Updating request:", updateDTO);
 
       await axios.put(
-        `http://localhost:8080/api/emergency/${editingRequest.requestId}`,
+        `${baseUrl}/api/emergency/${editingRequest.requestId}`,
         updateDTO,
         {
           headers: {

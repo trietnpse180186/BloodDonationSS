@@ -4,6 +4,7 @@ import { getUserIdFromToken } from "../../helpers/getUserById";
 import "./Certificate.css";
 import logo from "../../images/logo.jpg";
 import logoCertificate from "../../images/logoCertificate.jpg";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function Certificate({ bookingId }) {
   const [data, setData] = useState(null);
@@ -18,7 +19,7 @@ export default function Certificate({ bookingId }) {
     }
 
     axios
-      .get(`http://localhost:8080/api/certificates/user/${userId}`, {
+      .get(`${baseUrl}/api/certificates/user/${userId}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -62,13 +63,16 @@ export default function Certificate({ bookingId }) {
         <div className="cert-body">
           <p className="cert-text-underName">
             {" "}
-           To honor their selfless act of donating blood. Which has helped save lives and bring hope to those in need.
+            To honor their selfless act of donating blood. Which has helped save
+            lives and bring hope to those in need.
           </p>
           <strong>Blood Type:</strong> {data.user?.bloodType}
           <br />
-          <strong>Birthday:</strong> {new Date(data.user?.birthday).toLocaleDateString('en-GB')}
+          <strong>Birthday:</strong>{" "}
+          {new Date(data.user?.birthday).toLocaleDateString("en-GB")}
           <br />
-          <strong>Donation Date:</strong> {new Date(data.donationDate).toLocaleDateString('en-GB')}
+          <strong>Donation Date:</strong>{" "}
+          {new Date(data.donationDate).toLocaleDateString("en-GB")}
           <br />
           <strong>Volume:</strong> {data.volume} ml
         </div>

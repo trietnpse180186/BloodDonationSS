@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Table, Spinner, Alert, Badge } from "react-bootstrap";
 import axios from "axios";
+import { baseUrl } from "../Utils/baseUrl";
 
 const bloodTypeDisplay = {
   A_POSITIVE: "A+",
@@ -35,7 +36,7 @@ export default function UseBloodHistoryModal({ show, onHide }) {
     try {
       const token = sessionStorage.getItem("accessToken");
       const res = await axios.get(
-        "http://localhost:8080/api/blood-inventory/usage-history",
+        `${baseUrl}/api/blood-inventory/usage-history`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
