@@ -1,6 +1,4 @@
-/* Modern Blog Styling */
 
-/* Hero section */
 .blog-hero {
   background: gray;
   color: white;
@@ -25,7 +23,7 @@
   opacity: 0.9;
 }
 
-/* Blog layout */
+
 .blog-layout {
   max-width: 1200px;
   margin: 0 auto 80px;
@@ -38,7 +36,6 @@
   gap: 30px;
 }
 
-/* Blog card styling */
 .blog-card {
   background-color: #fff;
   border-radius: 12px;
@@ -149,7 +146,7 @@
   font-size: 15px;
 }
 
-/* Modal styling */
+
 .blog-modal-overlay {
   position: fixed;
   top: 0;
@@ -276,7 +273,7 @@
   padding-top: 20px;
 }
 
-/* Responsive styling */
+
 @media (max-width: 768px) {
   .blog-hero {
     padding: 60px 20px;
@@ -308,7 +305,7 @@
   }
 }
 
-/* Animations for blog cards */
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
