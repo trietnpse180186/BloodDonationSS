@@ -77,6 +77,7 @@ public class User implements UserDetails {
     private boolean allowLocationTracking = false;
 
     //verify cho email
+    @Column(name = "is_verified", nullable = false, columnDefinition = "bit default 0")
     private boolean isVerified = false; // Thêm trường isVerified
 
     @Override
