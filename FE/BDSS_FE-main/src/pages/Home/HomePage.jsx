@@ -24,6 +24,86 @@ import {
 import Footer from "../../components/footer";
 
 export default function HomePage() {
+  const [stats, setStats] = useState({
+    donors: 0,
+    bloodDonated: 0,
+    avgTime: 0,
+    livesSaved: 0,
+  });
+
+  const [hasAnimated, setHasAnimated] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true);
+
+            let donorCount = 0;
+            const donorTarget = 5102;
+            const donorInterval = setInterval(() => {
+              donorCount += 71;
+              if (donorCount >= donorTarget) {
+                donorCount = donorTarget;
+                clearInterval(donorInterval);
+              }
+              setStats((prev) => ({ ...prev, donors: donorCount }));
+            }, 20);
+
+            let bloodCount = 0;
+            const bloodTarget = 1247;
+            const bloodInterval = setInterval(() => {
+              bloodCount += 24;
+              if (bloodCount >= bloodTarget) {
+                bloodCount = bloodTarget;
+                clearInterval(bloodInterval);
+              }
+              setStats((prev) => ({
+                ...prev,
+                bloodDonated: bloodCount.toLocaleString(), 
+              }));
+            }, 20);
+
+            let timeCount = 0;
+            const timeTarget = 45;
+            const timeInterval = setInterval(() => {
+              timeCount += 1;
+              if (timeCount >= timeTarget) {
+                timeCount = timeTarget;
+                clearInterval(timeInterval);
+              }
+              setStats((prev) => ({ ...prev, avgTime: timeCount }));
+            }, 30);
+
+            let livesCount = 0;
+            const livesTarget = 2204;
+            const livesInterval = setInterval(() => {
+              livesCount += 38;
+              if (livesCount >= livesTarget) {
+                livesCount = livesTarget;
+                clearInterval(livesInterval);
+              }
+              setStats((prev) => ({ ...prev, livesSaved: livesCount }));
+            }, 20);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    const statsElement = document.querySelector(".stats-container");
+    if (statsElement) {
+      observer.observe(statsElement);
+    }
+
+    return () => {
+      if (statsElement) {
+        observer.unobserve(statsElement);
+      }
+    };
+  }, [hasAnimated]);
+
   return (
     <>
       <Navbar />
@@ -53,28 +133,32 @@ export default function HomePage() {
         <div className="stats-container">
           <div className="stats-content">
             <div className="stat-item">
-              <div className="stat-number">5.102+</div>
+              <div className="stat-number">
+                {stats.donors.toLocaleString()}+
+              </div>
               <div className="stat-label">Registered Donors</div>
             </div>
             <div className="stat-item">
-              <div className="stat-number">1.427 L</div>
+              <div className="stat-number">{stats.bloodDonated} L</div>
               <div className="stat-label">Total Blood Donated</div>
             </div>
 
             <div className="stat-item">
-              <div className="stat-number">45 min</div>
+              <div className="stat-number">~{stats.avgTime} min</div>
               <div className="stat-label">Avg. Donation Time</div>
             </div>
 
             <div className="stat-item">
-              <div className="stat-number">7</div>
-              <div className="stat-label">Partner Hospitals</div>
+              <div className="stat-number">
+                {stats.livesSaved.toLocaleString()}+
+              </div>
+              <div className="stat-label">Lives Saved</div>
             </div>
           </div>
         </div>
-
+        <div className="hero-section"></div>
         <div className="benefits-section">
-          <h3 className="section-title">Benefits of Blood Donation</h3>
+          <h3 className="section-Title">Benefits of Blood Donation</h3>
           <ul className="benefits-list">
             <li>
               <img src={benefit1} alt="Benefit 1" className="benefit-icon" />
@@ -142,7 +226,7 @@ export default function HomePage() {
                   <p>Registration & ID check</p>
                   <ul>
                     <li>
-                      You’ll sign in, show your ID, and read some information
+                      You'll sign in, show your ID, and read some information
                       about donation.
                     </li>
                   </ul>
@@ -236,9 +320,10 @@ export default function HomePage() {
         </div>
         {/* Health and Age Criteria for Blood Donors */}
         <div className="criteria-section">
-          <p className="criteria-section-title">
-            Health and Age Criteria for Blood Donors
+          <p className="criteria-section-title1">
+            Health and Age Criteria
           </p>
+          <p className="criteria-section-title2">for Blood Donors</p>
           <div className="criteria-content">
             <div className="criteria-image">
               <img className="img-criteria-image" src={DRequirement} />
