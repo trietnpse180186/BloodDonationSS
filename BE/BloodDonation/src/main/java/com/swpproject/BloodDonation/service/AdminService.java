@@ -1,3 +1,4 @@
+// src/main/java/com/swpproject/BloodDonation/service/AdminService.java
 package com.swpproject.BloodDonation.service;
 
 import com.swpproject.BloodDonation.dto.request.StaffCreationRequest;
@@ -18,7 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,7 +34,7 @@ public class AdminService {
     private final BookingDonationRepository bookingDonationRepository;
     private final PasswordEncoder passwordEncoder;
     private final MailService mailService;
-    private final NotificationRepository  notificationRepository;
+    private final NotificationRepository notificationRepository;
     private final SurveyRepository surveyRepository;
     // Lượng máu tiêu chuẩn cho mỗi lần hiến (tính bằng lít)
     private static final double STANDARD_DONATION_VOLUME = 0.35;
@@ -43,11 +43,11 @@ public class AdminService {
     @Transactional
     public StaffResponse createStaff(StaffCreationRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new RuntimeException("Email đã tồn tại trong hệ thống");
+            throw new RuntimeException("Email already exists in the system");
         }
 
         String occupation = request.getOccupation();
-        if( occupation == null && occupation.trim().isEmpty()) {
+        if (occupation == null || occupation.trim().isEmpty()) {
             occupation = "System Staff";
         }
 
@@ -82,16 +82,16 @@ public class AdminService {
 
         try {
             mailService.sendEmail(
-                    "Tài khoản nhân viên tại Hệ thống hiến máu",
-                    "Chào " + staff.getFullName() + ",\n\n" +
-                            "Tài khoản nhân viên của bạn đã được tạo trong hệ thống quản lý hiến máu.\n" +
-                            "Email đăng nhập: " + staff.getEmail() + "\n" +
-                            "Mật khẩu ban đầu: " + request.getPassword() + "\n\n" +
-                            "Vui lòng đổi mật khẩu sau khi đăng nhập lần đầu.\n\n" +
-                            "Trân trọng,\nQuản trị viên Hệ thống hiến máu",
+                    "Staff Account Created in Blood Donation System",
+                    "Hello " + staff.getFullName() + ",\n\n" +
+                            "Your staff account has been created in the blood donation management system.\n" +
+                            "Login email: " + staff.getEmail() + "\n" +
+                            "Initial password: " + request.getPassword() + "\n\n" +
+                            "Please change your password after your first login.\n\n" +
+                            "Best regards,\nBlood Donation System Administrator",
                     staff.getEmail());
         } catch (MessagingException | UnsupportedEncodingException e) {
-            log.error("Gửi email thất bại cho địa chỉ: {}", staff.getEmail(), e);
+            log.error("Failed to send email to: {}", staff.getEmail(), e);
         }
 
         return convertToStaffResponse(savedStaff);
@@ -101,14 +101,14 @@ public class AdminService {
     @Transactional
     public StaffResponse updateStaff(String staffId, StaffUpdateRequest request) {
         User staff = userRepository.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với ID: " + staffId));
+                .orElseThrow(() -> new RuntimeException("Staff not found with ID: " + staffId));
 
         // Kiểm tra xem người dùng có vai trò STAFF không
         boolean isStaff = staff.getUserHasRoles().stream()
                 .anyMatch(userHasRole -> userHasRole.getRole().getName().equals("STAFF"));
 
         if (!isStaff) {
-            throw new RuntimeException("Người dùng không phải là nhân viên");
+            throw new RuntimeException("User is not a staff member");
         }
 
         if (request.getFullName() != null) {
@@ -147,7 +147,7 @@ public class AdminService {
     public List<StaffResponse> getAllStaff() {
         // Tìm vai trò STAFF
         Role staffRole = roleRepository.findByName("STAFF")
-                .orElseThrow(() -> new RuntimeException("Vai trò STAFF không tồn tại"));
+                .orElseThrow(() -> new RuntimeException("STAFF role does not exist"));
 
         // Tìm tất cả người dùng có vai trò STAFF
         List<User> staffUsers = userRepository.findAll().stream()
@@ -163,14 +163,14 @@ public class AdminService {
     @PreAuthorize("hasAuthority('ADMIN')")
     public StaffResponse getStaffById(String staffId) {
         User staff = userRepository.findById(staffId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với ID: " + staffId));
+                .orElseThrow(() -> new RuntimeException("Staff not found with ID: " + staffId));
 
         // Kiểm tra xem người dùng có vai trò STAFF không
         boolean isStaff = staff.getUserHasRoles().stream()
                 .anyMatch(userHasRole -> userHasRole.getRole().getName().equals("STAFF"));
 
         if (!isStaff) {
-            throw new RuntimeException("Người dùng không phải là nhân viên");
+            throw new RuntimeException("User is not a staff member");
         }
 
         return convertToStaffResponse(staff);
@@ -182,14 +182,14 @@ public class AdminService {
         try {
             // Tìm nhân viên theo ID
             User staff = userRepository.findById(staffId)
-                    .orElseThrow(() -> new RuntimeException("Không tìm thấy nhân viên với ID: " + staffId));
+                    .orElseThrow(() -> new RuntimeException("Staff not found with ID: " + staffId));
 
             // Kiểm tra xem người dùng có vai trò STAFF không
             boolean isStaff = staff.getUserHasRoles().stream()
                     .anyMatch(userHasRole -> userHasRole.getRole().getName().equals("STAFF"));
 
             if (!isStaff) {
-                throw new RuntimeException("Người dùng không phải là nhân viên");
+                throw new RuntimeException("User is not a staff member");
             }
             notificationRepository.deleteByDonorId(staffId);
             List<String> donationIds = bookingDonationRepository.findDonationIdsByDonorUserId(staffId);
@@ -208,10 +208,10 @@ public class AdminService {
             }
             // Xóa nhân viên khỏi hệ thống
             userRepository.delete(staff);
-            log.info("Đã xóa nhân viên với ID: {}", staffId);
+            log.info("Deleted staff with ID: {}", staffId);
         } catch (Exception e) {
-            log.error("Lỗi khi xóa nhân viên với ID: {}", staffId, e.getMessage(), e);
-            throw new RuntimeException("Không thể xóa nhân viên: " + e.getMessage(), e);
+            log.error("Error deleting staff with ID: {}", staffId, e.getMessage(), e);
+            throw new RuntimeException("Unable to delete staff: " + e.getMessage(), e);
         }
     }
 
@@ -219,7 +219,7 @@ public class AdminService {
     public DashboardStatsResponse getDashboardStats() {
         // Đếm tổng số người dùng có vai trò DONOR
         Role donorRole = roleRepository.findByName("DONOR")
-                .orElseThrow(() -> new RuntimeException("Vai trò DONOR không tồn tại"));
+                .orElseThrow(() -> new RuntimeException("DONOR role does not exist"));
 
         long totalDonors = userRepository.findAll().stream()
                 .filter(user -> user.getUserHasRoles().stream()
@@ -228,7 +228,7 @@ public class AdminService {
 
         // Đếm tổng số nhân viên (người dùng có vai trò STAFF)
         Role staffRole = roleRepository.findByName("STAFF")
-                .orElseThrow(() -> new RuntimeException("Vai trò STAFF không tồn tại"));
+                .orElseThrow(() -> new RuntimeException("STAFF role does not exist"));
 
         long totalStaff = userRepository.findAll().stream()
                 .filter(user -> user.getUserHasRoles().stream()

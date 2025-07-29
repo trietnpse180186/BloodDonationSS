@@ -39,73 +39,65 @@ public class UserService {
     private final CertificateRepository certificateRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
-    private final MailService mailService;
     private final EmergencyDonationRepository emergencyDonationRepository;
+    private final OtpService otpService;
+
     // Tạo người dùng mới với vai trò mặc định là DONOR
     public UserCreationResponse createUser(UserCreationRequest request) {
-        log.info("🔁 Creating user with email: {}", request.getEmail());
-
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-            log.warn("🚫 Email already exists: {}", request.getEmail());
             throw new RuntimeException("Email already exists");
         }
-
+        // Validate blood type manually
         if (request.getBloodType() != null && !isValidBloodType(request.getBloodType())) {
-            log.warn("🚫 Invalid blood type: {}", request.getBloodType());
             throw new RuntimeException("Invalid blood type");
         }
 
+        User user = User.builder()
+                .email(request.getEmail())
+                .fullName(request.getFullName())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .phoneNumber(request.getPhoneNumber())
+                .address(request.getAddress())
+                .bloodType(request.getBloodType())
+                .birthday(request.getBirthday())
+                .sex(request.getSex())
+                .occupation(request.getOccupation())
+                .active(true)
+                .isVerified(false) // Mặc định là false, cần xác thực sau
+                .build();
+
+        // Ensure role exists or create new
+        Role donorRole = roleRepository.findByName("DONOR").orElseGet(() -> {
+            Role newRole = Role.builder().name("DONOR").build();
+            return roleRepository.save(newRole);
+        });
+
+        // Gán role vào user
+        user.setUserHasRoles(List.of(UserHasRole.builder()
+                .role(donorRole)
+                .user(user)
+                .build()));
+
+        userRepository.save(user);
+
+        // Gửi OTP verify
         try {
-            User user = User.builder()
-                    .email(request.getEmail())
-                    .fullName(request.getFullName())
-                    .password(passwordEncoder.encode(request.getPassword()))
-                    .phoneNumber(request.getPhoneNumber())
-                    .address(request.getAddress())
-                    .bloodType(request.getBloodType())
-                    .birthday(request.getBirthday())
-                    .sex(request.getSex())
-                    .occupation(request.getOccupation())
-                    .build();
-
-            log.debug("✅ User entity built: {}", user);
-
-            // role logic
-            Role donorRole = roleRepository.findByName("DONOR").orElseGet(() -> {
-                Role newRole = Role.builder().name("DONOR").build();
-                return roleRepository.save(newRole);
-            });
-
-            user.setUserHasRoles(List.of(UserHasRole.builder()
-                    .role(donorRole)
-                    .user(user)
-                    .build()));
-
-            userRepository.save(user);
-            log.info("✅ User saved to database: {}", user.getEmail());
-
-            mailService.sendEmail("Welcome to Blood Donation",
-                    "Welcome, you have successfully registered an account",
-                    user.getEmail());
-            log.info("📧 Welcome email sent to {}", user.getEmail());
-
-            return UserCreationResponse.builder()
-                    .email(user.getEmail())
-                    .fullName(user.getFullName())
-                    .phoneNumber(user.getPhoneNumber())
-                    .address(user.getAddress())
-                    .bloodType(user.getBloodType())
-                    .birthday(user.getBirthday())
-                    .sex(user.getSex())
-                    .occupation(user.getOccupation())
-                    .build();
-
-        } catch (Exception e) {
-            log.error("❌ Error while creating user: {}", e.getMessage(), e);
-            throw new RuntimeException("Failed to create user");
+            otpService.sendOtpForVerify(user.getEmail());
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            log.error("Failed to send verification OTP: {}", e.getMessage());
         }
-    }
 
+        return UserCreationResponse.builder()
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
+                .bloodType(user.getBloodType())
+                .birthday(user.getBirthday())
+                .sex(user.getSex())
+                .occupation(user.getOccupation())
+                .build();
+    }
 
     // Cập nhật thông tin người dùng, chỉ cho phép người dùng đã đăng nhập truy cập
     @PutMapping("/users/{id}")

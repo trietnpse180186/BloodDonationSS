@@ -76,6 +76,10 @@ public class User implements UserDetails {
     @Column(name = "allow_location_tracking")
     private boolean allowLocationTracking = false;
 
+    //verify cho email
+    @Column(name = "is_verified", nullable = false, columnDefinition = "bit default 0")
+    private boolean isVerified = false; // Thêm trường isVerified
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.userHasRoles.stream().map(userHasRole ->
@@ -104,7 +108,11 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active && isVerified; // Chỉ cho phép đăng nhập nếu tài khoản đang hoạt động và đã xác thực email
+    }
+
+    public void setIsVerified(boolean isVerified) {
+        this.isVerified = isVerified;
     }
 
 }

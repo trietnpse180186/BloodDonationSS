@@ -28,7 +28,7 @@ public class UserLocationService {
     @Transactional
     public void updateUserLocation(String userId, LocationUpdateDTO locationDTO) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setLatitude(locationDTO.getLatitude());
         user.setLongitude(locationDTO.getLongitude());
@@ -39,7 +39,7 @@ public class UserLocationService {
         }
 
         userRepository.save(user);
-        log.info("Đã cập nhật vị trí cho người dùng: {}", userId);
+        log.info("Updated location for user: {}", userId);
     }
 
     /**
@@ -57,11 +57,11 @@ public class UserLocationService {
     @Transactional
     public void setLocationTrackingEnabled(String userId, boolean enabled) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy người dùng"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         user.setAllowLocationTracking(enabled);
         userRepository.save(user);
-        log.info("Đã {} theo dõi vị trí cho người dùng: {}", enabled ? "bật" : "tắt", userId);
+        log.info("{} location tracking for user: {}", enabled ? "Enabled" : "Disabled", userId);
     }
 
     /**

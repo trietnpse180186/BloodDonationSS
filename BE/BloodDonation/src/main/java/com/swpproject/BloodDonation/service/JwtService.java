@@ -44,7 +44,7 @@ public class JwtService {
                 .claim("bloodType", user.getBloodType())
                 .claim("authorities", authorityName)
                 .claim("fullName",user.getFullName())
-                .expirationTime(new Date(Instant.now().plus(30, ChronoUnit.MINUTES).toEpochMilli()))
+                .expirationTime(new Date(Instant.now().plus(2, ChronoUnit.HOURS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
                 .build();
 

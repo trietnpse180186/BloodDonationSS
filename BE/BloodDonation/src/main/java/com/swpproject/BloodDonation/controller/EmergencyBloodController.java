@@ -161,10 +161,10 @@ public class EmergencyBloodController {
             return ResponseEntity.badRequest().body(0);
         }
 
-        String title = "Yêu cầu hiến máu khẩn cấp gần bạn!";
-        String message = "Cần gấp nhóm máu " + request.getBloodTypeNeeded() +
-                " tại " + request.getHospitalName() + " gần vị trí của bạn. " +
-                "Sự giúp đỡ của bạn có thể cứu sống người khác!";
+        String title = "Emergency blood donation request near you !";
+        String message = "Urgently need blood type " + request.getBloodTypeNeeded() +
+                " at " + request.getHospitalName() + " near your location. " +
+                "Your help can save someone's life!" ;
         String actionUrl = "/emergency/" + request.getRequestId();
 
         // Tìm người dùng trong bán kính và gửi thông báo
@@ -183,7 +183,7 @@ public class EmergencyBloodController {
                     user.getLatitude(), user.getLongitude()
             );
 
-            String distanceMessage = message + "\n(Cách vị trí của bạn khoảng "
+            String distanceMessage = message + "\n(Approximately from your location "
                     + String.format("%.1f", distance) + " km)";
 
             String priority = distance <= 5 ? "HIGH" : "NORMAL";

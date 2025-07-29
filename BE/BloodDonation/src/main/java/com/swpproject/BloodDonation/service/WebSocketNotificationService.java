@@ -1,7 +1,6 @@
 package com.swpproject.BloodDonation.service;
 
 import com.swpproject.BloodDonation.dto.response.NotificationMessageDTO;
-import com.swpproject.BloodDonation.dto.request.NotificationRequest;
 import com.swpproject.BloodDonation.entity.Notification;
 import com.swpproject.BloodDonation.entity.User;
 import com.swpproject.BloodDonation.enums.NotificationStatus;
@@ -13,7 +12,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -49,18 +47,18 @@ public class WebSocketNotificationService {
                     .priority("NORMAL")
                     .build();
 
-            // Gửi đến user cụ thể
             messagingTemplate.convertAndSendToUser(
                     userId,
                     "/queue/notifications",
                     wsMessage
             );
 
-            log.info("✅ Sent WebSocket notification {} to user: {}", notificationId, userId);
+            log.info("Sent WebSocket notification {} to user: {}", notificationId, userId);
         } catch (Exception e) {
-            log.error("❌ Error sending WebSocket notification: {}", e.getMessage(), e);
+            log.error("Error sending WebSocket notification: {}", e.getMessage(), e);
         }
     }
+
     /**
      * Lắng nghe sự kiện thông báo đã được đọc
      */
@@ -70,7 +68,6 @@ public class WebSocketNotificationService {
         String userId = event.getUserId();
         String notificationId = event.getNotificationId();
 
-        // Gửi thông báo WebSocket
         notifyNotificationRead(userId, notificationId);
     }
 
@@ -81,14 +78,12 @@ public class WebSocketNotificationService {
     public void sendDirectNotification(String userId, String title, String message,
                                        String actionUrl, String type, String priority) {
         try {
-            // Tìm thông báo trong DB (đã được tạo bởi NotificationService)
             Notification notification = notificationRepository.findByDonor_UserIDAndTitleAndDetail(
                     userId, title, message).orElse(null);
 
             if (notification != null) {
-                // Tìm thông tin người gửi (hệ thống)
                 String senderUsername = "system";
-                String senderName = "Hệ thống";
+                String senderName = "System";
                 String senderRole = "SYSTEM";
 
                 NotificationMessageDTO wsMessage = NotificationMessageDTO.builder()
@@ -102,17 +97,16 @@ public class WebSocketNotificationService {
                         .priority(priority != null ? priority : "NORMAL")
                         .build();
 
-                // Gửi đến người dùng cụ thể qua WebSocket
                 messagingTemplate.convertAndSendToUser(
                         userId,
                         "/queue/notifications",
                         wsMessage
                 );
 
-                log.info("Đã gửi thông báo WebSocket đến người dùng: {}", userId);
+                log.info("Sent WebSocket notification to user: {}", userId);
             }
         } catch (Exception e) {
-            log.error("Lỗi khi gửi thông báo WebSocket: {}", e.getMessage());
+            log.error("Error sending WebSocket notification: {}", e.getMessage());
         }
     }
 
@@ -124,27 +118,22 @@ public class WebSocketNotificationService {
                                   String title, String message, String actionUrl,
                                   String type, String bloodType) {
         try {
-            // Tìm người dùng trong phạm vi
             List<User> nearbyUsers = userLocationService.findNearbyUsers(
                     latitude, longitude, radiusKm, bloodType
             );
 
-            log.info("Tìm thấy {} người dùng trong bán kính {}km", nearbyUsers.size(), radiusKm);
+            log.info("Found {} users within {}km radius", nearbyUsers.size(), radiusKm);
 
-            // Gửi thông báo cho từng người
             for (User user : nearbyUsers) {
-                // Tính khoảng cách để thêm vào thông báo
                 double distance = userLocationService.calculateDistance(
                         latitude, longitude, user.getLatitude(), user.getLongitude()
                 );
 
-                String distanceMessage = message + "\n(Cách vị trí của bạn khoảng "
-                        + String.format("%.1f", distance) + " km)";
+                String distanceMessage = message + "\n(Approximately " +
+                        String.format("%.1f", distance) + " km from your location)";
 
-                // Gửi thông báo với priority cao hơn cho người gần hơn
                 String priority = distance <= 5 ? "HIGH" : "NORMAL";
 
-                // Phát ra event thay vì gọi trực tiếp
                 eventPublisher.publishNotificationCreatedEvent(
                         user.getUserID(),
                         title,
@@ -155,7 +144,7 @@ public class WebSocketNotificationService {
                 );
             }
         } catch (Exception e) {
-            log.error("Lỗi khi gửi thông báo đến người dùng gần đó: {}", e.getMessage());
+            log.error("Error sending notification to nearby users: {}", e.getMessage());
         }
     }
 

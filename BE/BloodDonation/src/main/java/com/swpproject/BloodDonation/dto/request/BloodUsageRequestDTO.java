@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BloodUsageRequestDTO {
-    @NotNull(message = "Nhóm máu không được để trống")
+    @NotNull(message = "Blood type must not be empty")
     private BloodType bloodType;
 
-    @NotNull(message = "Số lượng không được để trống")
-    @Min(value = 1, message = "Số lượng phải lớn hơn 0")
+    @NotNull(message = "Quantity must not be empty")
+    @Min(value = 1, message = "Quantity must be greater than 0")
     private Double quantity;
 
     private String reason;

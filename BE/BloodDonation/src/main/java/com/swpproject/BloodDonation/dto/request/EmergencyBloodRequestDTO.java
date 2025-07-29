@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * DTO nhận yêu cầu tạo mới request hiến máu khẩn cấp
+ * DTO for creating a new emergency blood donation request
  */
 @Data
 @Builder
@@ -20,25 +20,25 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EmergencyBloodRequestDTO {
 
-    @NotBlank(message = "Tên bệnh viện không được để trống")
+    @NotBlank(message = "Hospital name must not be empty")
     private String hospitalName;
 
-    @NotBlank(message = "Địa chỉ không được để trống")
+    @NotBlank(message = "Address must not be empty")
     private String address;
 
-    @NotBlank(message = "Người liên hệ không được để trống")
+    @NotBlank(message = "Contact person must not be empty")
     private String contactPerson;
 
-    @NotBlank(message = "Số điện thoại không được để trống")
+    @NotBlank(message = "Contact phone must not be empty")
     private String contactPhone;
 
     private String description;
 
-    @NotNull(message = "Nhóm máu cần không được để trống")
+    @NotNull(message = "Required blood type must not be empty")
     private BloodType bloodTypeNeeded;
 
-    @NotNull(message = "Số lượng đơn vị máu không được để trống")
-    @Min(value = 1, message = "Số lượng đơn vị máu tối thiểu là 1")
+    @NotNull(message = "Number of blood units must not be empty")
+    @Min(value = 1, message = "Minimum number of blood units is 1")
     private Integer unitsNeeded;
 
     private LocalDateTime expirationTime;
