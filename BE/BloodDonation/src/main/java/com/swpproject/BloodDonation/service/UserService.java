@@ -41,6 +41,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final EmergencyDonationRepository emergencyDonationRepository;
     private final OtpService otpService;
+
     // Tạo người dùng mới với vai trò mặc định là DONOR
     public UserCreationResponse createUser(UserCreationRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
