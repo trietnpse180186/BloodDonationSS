@@ -6,6 +6,7 @@ import Footer from "../../components/footer";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "../../helpers/axiosInstance";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function BloodRegister() {
   const location = useLocation();
@@ -25,7 +26,7 @@ export default function BloodRegister() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/schedule-donations")
+      .get(`${baseUrl}/api/schedule-donations`)
       .then((res) => {
         setDonationSchedules(res.data);
       })
@@ -91,7 +92,7 @@ export default function BloodRegister() {
       timeSlot: selectedTimeSlotObj,
     };
 
-    toast.success("Booking information saved!"); 
+    toast.success("Booking information saved!");
     navigate("/blood-registration2", { state: { bookingData } });
     console.log("Booking Data:", bookingData);
   };
@@ -105,6 +106,16 @@ export default function BloodRegister() {
     const [y, m, d] = yyyymmdd.split("-");
     return `${d}/${m}/${y}`;
   };
+
+  function formatTimeRange(start, end) {
+    // start, end có thể là "08:00:00" hoặc "08:00"
+    const toHHmm = (t) => {
+      if (!t) return "";
+      const [h, m] = t.split(":");
+      return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+    };
+    return `${toHHmm(start)} - ${toHHmm(end)}`;
+  }
 
   return (
     <>
@@ -141,7 +152,7 @@ export default function BloodRegister() {
                   className="blood-form-date-input"
                   value={convertDateForInput(selectedDate)}
                   onChange={(e) => {
-                    const syncDate = convertDateForInput(e.target.value);
+                    const syncDate = convertDateFromInput(e.target.value);
                     setSelectedDate(syncDate);
                   }}
                 />
@@ -217,7 +228,7 @@ export default function BloodRegister() {
                       }`}
                       onClick={() => setTimeSelected(slot.id)}
                     >
-                      {slot.startTime} - {slot.endTime}
+                      {formatTimeRange(slot.startTime, slot.endTime)}
                     </button>
                   ))}
                 </div>

@@ -7,6 +7,7 @@ import Footer from "../../components/footer";
 import { peopleFill } from "../../icons/icon";
 import axios from "../../helpers/axiosInstance";
 import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function DonationSchedule() {
   const [searchName, setSearchName] = useState("");
@@ -22,7 +23,7 @@ export default function DonationSchedule() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/schedule-donations/future")
+      .get(`${baseUrl}/api/schedule-donations/future`)
       .then((res) => {
         setSchedules(res.data);
         setFilteredSchedules(res.data);
@@ -36,9 +37,7 @@ export default function DonationSchedule() {
     if (token && refreshToken) {
       const userIdFromToken = getUserIdFromToken(token);
       axios
-        .get(
-          `http://localhost:8080/api/reports/user/${userIdFromToken}/eligibility`
-        )
+        .get(`${baseUrl}/api/reports/user/${userIdFromToken}/eligibility`)
         .then((res) => {
           setEligibility(res.data);
         })
@@ -103,6 +102,12 @@ export default function DonationSchedule() {
       )}&center=${encodeURIComponent(schedule.center)}`
     );
   };
+
+  function formatTimeHM(timeStr) {
+  if (!timeStr) return "";
+  const [h, m] = timeStr.split(":");
+  return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+}
 
   return (
     <>
@@ -222,15 +227,45 @@ export default function DonationSchedule() {
                               </li>
                               <li>
                                 <strong>Blood Need:</strong>{" "}
-                                {schedule.bloodNeed.join(" - ")}
+                                {schedule.bloodNeed.map((type, idx, arr) => {
+                                  const label = type
+                                    .replace("_POSITIVE", "+")
+                                    .replace("_NEGATIVE", "-");
+                                  return (
+                                    <span
+                                      key={type}
+                                      style={{
+                                        fontWeight: 700,
+                                        color: "#b30000",
+                                        background: "#f7eaea",
+                                        borderRadius: 8,
+                                        padding: "2px 10px",
+                                        marginRight:
+                                          idx < arr.length - 1 ? 8 : 0,
+                                        display: "inline-block",
+                                        fontSize: "1em",
+                                      }}
+                                    >
+                                      {label}
+                                      {idx < arr.length - 1 ? (
+                                        <span
+                                          style={{
+                                            color: "#888",
+                                            fontWeight: 400,
+                                          }}
+                                        ></span>
+                                      ) : null}
+                                    </span>
+                                  );
+                                })}
                               </li>
                               <li>
                                 <strong>Time slots:</strong>
                                 <ul style={{ margin: 0, paddingLeft: 16 }}>
                                   {schedule.timeSlots.map((slot) => (
-                                    <li key={slot.id}>
-                                      {slot.startTime} - {slot.endTime}
-                                    </li>
+                                    <a key={slot.id}>
+                                      {formatTimeHM(slot.startTime)} - {formatTimeHM(slot.endTime)}
+                                    </a>
                                   ))}
                                 </ul>
                               </li>

@@ -183,6 +183,11 @@ export default function ForgotPassword() {
               {newPasswordError}
             </div>
           )}
+          <ul>
+            <li>Password must contain at least 1 uppercase letter</li>
+            <li>Password must contain at least 1 number</li>
+            <li>Password must be longer than 6 characters</li>
+          </ul>
           <label>Confirm Password</label>
           <PasswordInput
             value={confirmPassword}

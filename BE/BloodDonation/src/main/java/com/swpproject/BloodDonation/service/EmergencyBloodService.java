@@ -227,10 +227,11 @@ public class EmergencyBloodService {
                 .collect(Collectors.toList());
 
         for (User donor : registeredDonors) {
-            String title = "Cập nhật yêu cầu hiến máu khẩn cấp";
-            String message = "Yêu cầu hiến máu tại " + request.getHospitalName() +
-                    " đã được cập nhật. Vui lòng kiểm tra thông tin mới nhất.";
+            String title = "Emergency Blood Request Updated";
+            String message = "The emergency blood request at " + request.getHospitalName() +
+                    " has been updated. Please check the latest information.";
             String actionUrl = "/emergency/" + request.getRequestId();
+
 
             webSocketNotificationService.sendDirectNotification(
                     donor.getUserID(),
@@ -421,8 +422,8 @@ public class EmergencyBloodService {
     private void notifyStaffAboutNewDonor(EmergencyBloodRequest request, User donor) {
         User staff = request.getCreatedBy();
 
-        String title = "Người hiến máu mới đăng ký";
-        String message = donor.getFullName() + " đã đăng ký hiến máu cho yêu cầu khẩn cấp tại " +
+        String title = "New Donor Registered";
+        String message = donor.getFullName() + " has registered to donate blood for the emergency request at " +
                 request.getHospitalName();
         String actionUrl = "/staff/emergency/" + request.getRequestId();
 
@@ -491,9 +492,9 @@ public class EmergencyBloodService {
         User donor = donation.getDonor();
         EmergencyBloodRequest request = donation.getEmergencyRequest();
 
-        String title = "Cảm ơn bạn đã hiến máu!";
-        String message = "Chúng tôi xác nhận bạn đã hoàn thành hiến máu tại " +
-                request.getHospitalName() + ". Cảm ơn sự đóng góp của bạn.";
+        String title = "Thank you for donating blood!";
+        String message = "We confirm you have completed your blood donation at " +
+                request.getHospitalName() + ". Thank you for your contribution.";
         String actionUrl = "/donor/certificates";
 
         webSocketNotificationService.sendDirectNotification(
@@ -535,9 +536,10 @@ public class EmergencyBloodService {
                 .collect(Collectors.toList());
 
         for (User donor : respondedDonors) {
-            String title = "Yêu cầu hiến máu đã bị hủy";
-            String message = "Yêu cầu hiến máu khẩn cấp tại " + request.getHospitalName() +
-                    " đã bị hủy. " + (reason != null ? "Lý do: " + reason : "Cảm ơn bạn đã quan tâm.");
+            String title = "Emergency Blood Request Cancelled";
+            String message = "The emergency blood request at " + request.getHospitalName() +
+                    " has been cancelled. " + (reason != null ? "Reason: " + reason : "Thank you for your interest.");
+
 
             webSocketNotificationService.sendDirectNotification(
                     donor.getUserID(),
@@ -819,14 +821,14 @@ public class EmergencyBloodService {
 
             // Tiêu đề báo cáo
             com.itextpdf.text.Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
-            Paragraph title = new Paragraph("BÁO CÁO YÊU CẦU HIẾN MÁU KHẨN CẤP", titleFont);
+            Paragraph title = new Paragraph("EMERGENCY BLOOD REQUEST REPORT", titleFont);
             title.setAlignment(Element.ALIGN_CENTER);
             document.add(title);
 
             // Thời gian báo cáo
             com.itextpdf.text.Font normalFont = FontFactory.getFont(FontFactory.HELVETICA, 12);
-            String dateRange = "Từ: " + (fromDateStr != null ? fromDateStr : "tháng trước") +
-                    " đến: " + (toDateStr != null ? toDateStr : "hiện tại");
+            String dateRange = "From: " + (fromDateStr != null ? fromDateStr : "last month") +
+                    " to: " + (toDateStr != null ? toDateStr : "now");
             Paragraph dateRangePara = new Paragraph(dateRange, normalFont);
             dateRangePara.setAlignment(Element.ALIGN_CENTER);
             document.add(dateRangePara);
@@ -834,55 +836,55 @@ public class EmergencyBloodService {
 
             // Tổng quan
             com.itextpdf.text.Font sectionFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14);
-            document.add(new Paragraph("TỔNG QUAN", sectionFont));
+            document.add(new Paragraph("OVERVIEW", sectionFont));
 
             PdfPTable overviewTable = new PdfPTable(2);
             overviewTable.setWidthPercentage(100);
-            overviewTable.addCell("Tổng số yêu cầu");
+            overviewTable.addCell("Total requests");
             overviewTable.addCell(String.valueOf(statistics.getTotalRequests()));
-            overviewTable.addCell("Đang hoạt động");
+            overviewTable.addCell("Active");
             overviewTable.addCell(String.valueOf(statistics.getActiveRequests()));
-            overviewTable.addCell("Đã đủ người đăng ký");
+            overviewTable.addCell("Fulfilled");
             overviewTable.addCell(String.valueOf(statistics.getFulfilledRequests()));
-            overviewTable.addCell("Đã hoàn thành");
+            overviewTable.addCell("Completed");
             overviewTable.addCell(String.valueOf(statistics.getCompletedRequests()));
-            overviewTable.addCell("Đã hủy");
+            overviewTable.addCell("Cancelled");
             overviewTable.addCell(String.valueOf(statistics.getCancelledRequests()));
-            overviewTable.addCell("Tỷ lệ hoàn thành");
+            overviewTable.addCell("Completion rate");
             overviewTable.addCell(String.format("%.2f%%", statistics.getCompletionRate()));
             document.add(overviewTable);
 
             document.add(new Paragraph(" ")); // Khoảng trống
 
             // Thống kê đăng ký
-            document.add(new Paragraph("ĐĂNG KÝ HIẾN MÁU", sectionFont));
+            document.add(new Paragraph("BLOOD DONATION REGISTRATION", sectionFont));
 
             PdfPTable donationTable = new PdfPTable(2);
             donationTable.setWidthPercentage(100);
-            donationTable.addCell("Tổng số đăng ký");
+            donationTable.addCell("Total registrations");
             donationTable.addCell(String.valueOf(statistics.getTotalDonationsRegistered()));
-            donationTable.addCell("Chờ xác nhận");
+            donationTable.addCell("Pending");
             donationTable.addCell(String.valueOf(statistics.getPendingDonations()));
-            donationTable.addCell("Đã xác nhận");
+            donationTable.addCell("Confirmed");
             donationTable.addCell(String.valueOf(statistics.getConfirmedDonations()));
-            donationTable.addCell("Đã hoàn thành");
+            donationTable.addCell("Completed");
             donationTable.addCell(String.valueOf(statistics.getCompletedDonations()));
-            donationTable.addCell("Không đến");
+            donationTable.addCell("No show");
             donationTable.addCell(String.valueOf(statistics.getNoShowDonations()));
-            donationTable.addCell("Đã hủy");
+            donationTable.addCell("Cancelled");
             donationTable.addCell(String.valueOf(statistics.getCancelledDonations()));
             document.add(donationTable);
 
             document.add(new Paragraph(" ")); // Khoảng trống
 
             // Thống kê theo nhóm máu
-            document.add(new Paragraph("THEO NHÓM MÁU", sectionFont));
+            document.add(new Paragraph("BY BLOOD TYPE", sectionFont));
 
             PdfPTable bloodTypeTable = new PdfPTable(3);
             bloodTypeTable.setWidthPercentage(100);
-            bloodTypeTable.addCell("Nhóm máu");
-            bloodTypeTable.addCell("Số yêu cầu");
-            bloodTypeTable.addCell("Thời gian phản hồi trung bình (phút)");
+            bloodTypeTable.addCell("Blood type");
+            bloodTypeTable.addCell("Request count");
+            bloodTypeTable.addCell("Average response time (minutes)");
 
             for (Map.Entry<String, Integer> entry : statistics.getRequestsByBloodType().entrySet()) {
                 String bloodType = entry.getKey();
@@ -899,7 +901,7 @@ public class EmergencyBloodService {
             // Thời gian tạo báo cáo
             document.add(new Paragraph(" ")); // Khoảng trống
             Paragraph generated = new Paragraph(
-                    "Báo cáo được tạo vào: " + LocalDateTime.now().format(
+                    "Report generated at: " + LocalDateTime.now().format(
                             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
                     ),
                     normalFont
@@ -912,8 +914,8 @@ public class EmergencyBloodService {
             return new ByteArrayResource(baos.toByteArray());
 
         } catch (Exception e) {
-            log.error("Lỗi khi tạo báo cáo PDF: {}", e.getMessage(), e);
-            throw new RuntimeException("Không thể tạo báo cáo PDF: " + e.getMessage());
+            log.error("Error generating PDF report: {}", e.getMessage(), e);
+            throw new RuntimeException("Unable to generate PDF report: " + e.getMessage());
         }
     }
 
@@ -946,92 +948,92 @@ public class EmergencyBloodService {
             headerStyle.setFont(headerFont);
 
             // Trang 1: Tổng quan
-            Sheet overviewSheet = workbook.createSheet("Tổng quan");
+            Sheet overviewSheet = workbook.createSheet("Overview");
 
             // Tiêu đề
             Row titleRow = overviewSheet.createRow(0);
             Cell titleCell = titleRow.createCell(0);
-            titleCell.setCellValue("BÁO CÁO YÊU CẦU HIẾN MÁU KHẨN CẤP");
+            titleCell.setCellValue("EMERGENCY BLOOD REQUEST REPORT");
             titleCell.setCellStyle(headerStyle);
 
             // Thời gian báo cáo
             Row dateRow = overviewSheet.createRow(1);
-            dateRow.createCell(0).setCellValue("Từ: " + (fromDateStr != null ? fromDateStr : "tháng trước") +
-                    " đến: " + (toDateStr != null ? toDateStr : "hiện tại"));
+            dateRow.createCell(0).setCellValue("From: " + (fromDateStr != null ? fromDateStr : "last month") +
+                    " to: " + (toDateStr != null ? toDateStr : "now"));
 
             // Dữ liệu tổng quan
             Row headerRow = overviewSheet.createRow(3);
-            headerRow.createCell(0).setCellValue("Chỉ số");
-            headerRow.createCell(1).setCellValue("Giá trị");
+            headerRow.createCell(0).setCellValue("Indicator");
+            headerRow.createCell(1).setCellValue("Value");
             headerRow.getCell(0).setCellStyle(headerStyle);
             headerRow.getCell(1).setCellStyle(headerStyle);
 
             Row row1 = overviewSheet.createRow(4);
-            row1.createCell(0).setCellValue("Tổng số yêu cầu");
+            row1.createCell(0).setCellValue("Total requests");
             row1.createCell(1).setCellValue(statistics.getTotalRequests());
 
             Row row2 = overviewSheet.createRow(5);
-            row2.createCell(0).setCellValue("Đang hoạt động");
+            row2.createCell(0).setCellValue("Active");
             row2.createCell(1).setCellValue(statistics.getActiveRequests());
 
             Row row3 = overviewSheet.createRow(6);
-            row3.createCell(0).setCellValue("Đã đủ người đăng ký");
+            row3.createCell(0).setCellValue("Fulfilled");
             row3.createCell(1).setCellValue(statistics.getFulfilledRequests());
 
             Row row4 = overviewSheet.createRow(7);
-            row4.createCell(0).setCellValue("Đã hoàn thành");
+            row4.createCell(0).setCellValue("Completed");
             row4.createCell(1).setCellValue(statistics.getCompletedRequests());
 
             Row row5 = overviewSheet.createRow(8);
-            row5.createCell(0).setCellValue("Đã hủy");
+            row5.createCell(0).setCellValue("Cancelled");
             row5.createCell(1).setCellValue(statistics.getCancelledRequests());
 
             Row row6 = overviewSheet.createRow(9);
-            row6.createCell(0).setCellValue("Tỷ lệ hoàn thành");
+            row6.createCell(0).setCellValue("Completion rate");
             row6.createCell(1).setCellValue(String.format("%.2f%%", statistics.getCompletionRate()));
 
             // Dữ liệu đăng ký
             Row donationHeader = overviewSheet.createRow(11);
-            donationHeader.createCell(0).setCellValue("ĐĂNG KÝ HIẾN MÁU");
+            donationHeader.createCell(0).setCellValue("BLOOD DONATION REGISTRATION");
             donationHeader.getCell(0).setCellStyle(headerStyle);
 
             Row donationRow1 = overviewSheet.createRow(12);
-            donationRow1.createCell(0).setCellValue("Tổng số đăng ký");
+            donationRow1.createCell(0).setCellValue("Total registrations");
             donationRow1.createCell(1).setCellValue(statistics.getTotalDonationsRegistered());
 
             Row donationRow2 = overviewSheet.createRow(13);
-            donationRow2.createCell(0).setCellValue("Chờ xác nhận");
+            donationRow2.createCell(0).setCellValue("Pending");
             donationRow2.createCell(1).setCellValue(statistics.getPendingDonations());
 
             Row donationRow3 = overviewSheet.createRow(14);
-            donationRow3.createCell(0).setCellValue("Đã xác nhận");
+            donationRow3.createCell(0).setCellValue("Confirmed");
             donationRow3.createCell(1).setCellValue(statistics.getConfirmedDonations());
 
             Row donationRow4 = overviewSheet.createRow(15);
-            donationRow4.createCell(0).setCellValue("Đã hoàn thành");
+            donationRow4.createCell(0).setCellValue("Completed");
             donationRow4.createCell(1).setCellValue(statistics.getCompletedDonations());
 
             Row donationRow5 = overviewSheet.createRow(16);
-            donationRow5.createCell(0).setCellValue("Không đến");
+            donationRow5.createCell(0).setCellValue("No show");
             donationRow5.createCell(1).setCellValue(statistics.getNoShowDonations());
 
             Row donationRow6 = overviewSheet.createRow(17);
-            donationRow6.createCell(0).setCellValue("Đã hủy");
+            donationRow6.createCell(0).setCellValue("Cancelled");
             donationRow6.createCell(1).setCellValue(statistics.getCancelledDonations());
 
             // Tạo sheet chi tiết các yêu cầu
-            Sheet detailsSheet = workbook.createSheet("Chi tiết yêu cầu");
+            Sheet detailsSheet = workbook.createSheet("Request Details");
 
             // Header
             Row detailsHeader = detailsSheet.createRow(0);
             detailsHeader.createCell(0).setCellValue("ID");
-            detailsHeader.createCell(1).setCellValue("Bệnh viện");
-            detailsHeader.createCell(2).setCellValue("Nhóm máu");
-            detailsHeader.createCell(3).setCellValue("Số lượng cần");
-            detailsHeader.createCell(4).setCellValue("Số lượng đã hiến");
-            detailsHeader.createCell(5).setCellValue("Trạng thái");
-            detailsHeader.createCell(6).setCellValue("Thời gian tạo");
-            detailsHeader.createCell(7).setCellValue("Thời gian hết hạn");
+            detailsHeader.createCell(1).setCellValue("Hospital");
+            detailsHeader.createCell(2).setCellValue("Blood type");
+            detailsHeader.createCell(3).setCellValue("Units needed");
+            detailsHeader.createCell(4).setCellValue("Units donated");
+            detailsHeader.createCell(5).setCellValue("Status");
+            detailsHeader.createCell(6).setCellValue("Created time");
+            detailsHeader.createCell(7).setCellValue("Expiration time");
 
             // Đặt style cho header
             for (int i = 0; i < 8; i++) {
@@ -1067,8 +1069,8 @@ public class EmergencyBloodService {
             return new ByteArrayResource(baos.toByteArray());
 
         } catch (Exception e) {
-            log.error("Lỗi khi tạo báo cáo Excel: {}", e.getMessage(), e);
-            throw new RuntimeException("Không thể tạo báo cáo Excel: " + e.getMessage());
+            log.error("Error generating Excel report: {}", e.getMessage(), e);
+            throw new RuntimeException("Unable to generate Excel report: " + e.getMessage());
         }
     }
 

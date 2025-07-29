@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Table, Form, Button, Toast } from "react-bootstrap";
 import { ClipLoader } from "react-spinners";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function Notification() {
   const [form, setForm] = useState({
@@ -23,14 +24,11 @@ export default function Notification() {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/notifications/all",
-        {
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      const response = await axios.get(`${baseUrl}/notifications/all`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
+        },
+      });
       setNotification(response.data);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
@@ -39,7 +37,7 @@ export default function Notification() {
 
   const fetchDonors = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/users", {
+      const response = await axios.get(`${baseUrl}/users`, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
@@ -73,7 +71,7 @@ export default function Notification() {
     };
 
     try {
-      await axios.post("http://localhost:8080/notifications", dataToSend, {
+      await axios.post(`${baseUrl}/notifications`, dataToSend, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("accessToken")}`,
         },
@@ -97,6 +95,20 @@ export default function Notification() {
     setLoading(false);
   };
 
+    function formatDateDMY(dateStr) {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  function formatTimeHM(timeStr) {
+    if (!timeStr) return "";
+    const [h, m] = timeStr.split(":");
+    return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+  }
   return (
     <>
       {loading && (
@@ -176,7 +188,7 @@ export default function Notification() {
               <td>{note.title}</td>
               <td>{note.detail}</td>
               <td>
-                {note.date} - {note.time}
+                {formatDateDMY(note.date)} - {formatTimeHM(note.time)}
               </td>
               <td>{note.donorName}</td>
             </tr>

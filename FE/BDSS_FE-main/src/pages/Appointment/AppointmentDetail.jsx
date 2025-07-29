@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar";
 import Footer from "../../components/footer";
 import Certificate from "../Certificate/Certificate";
-
+import { baseUrl } from "../../Utils/baseUrl";
 import { getUserIdFromToken } from "../../helpers/getUserById";
 import axios from "../../helpers/axiosInstance";
 import { Button } from "react-bootstrap";
@@ -59,7 +59,7 @@ export default function AppointmentDetail() {
     }
     setLoading(true);
     axios
-      .get(`http://localhost:8080/api/booking/user/${userId}`, {
+      .get(`${baseUrl}/api/booking/user/${userId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -79,7 +79,7 @@ export default function AppointmentDetail() {
   const handleCancel = async (bookingId) => {
     try {
       await axios.put(
-        `http://localhost:8080/api/booking/${bookingId}`,
+        `${baseUrl}/api/booking/${bookingId}`,
         { status: "CANCELLED" },
         {
           headers: {

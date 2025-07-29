@@ -85,7 +85,7 @@ public class BloodInventoryController {
         if (success) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.badRequest().body("Không đủ lượng máu yêu cầu");
+            return ResponseEntity.badRequest().body("Insufficient required blood quantity");
         }
     }
 
@@ -191,7 +191,7 @@ public class BloodInventoryController {
             @PathVariable String inventoryId) {
 
         BloodInventory inventory = inventoryRepository.findById(inventoryId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn vị máu"));
+                .orElseThrow(() -> new RuntimeException("Blood unit not found"));
 
         return ResponseEntity.ok(bloodInventoryService.mapToDetailDTO(inventory));
     }
@@ -205,7 +205,7 @@ public class BloodInventoryController {
             @PathVariable String batchId) {
 
         BloodInventoryBatch batch = batchRepository.findById(batchId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy lô máu"));
+                .orElseThrow(() -> new RuntimeException("Blood batch not found"));
 
         return ResponseEntity.ok(batch);
     }

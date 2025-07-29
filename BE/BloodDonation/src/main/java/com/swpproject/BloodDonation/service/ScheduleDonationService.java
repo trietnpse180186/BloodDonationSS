@@ -7,7 +7,6 @@ import com.swpproject.BloodDonation.dto.response.TimeSlotResponse;
 import com.swpproject.BloodDonation.entity.BookingDonation;
 import com.swpproject.BloodDonation.entity.ScheduleDonation;
 import com.swpproject.BloodDonation.entity.TimeSlot;
-import com.swpproject.BloodDonation.enums.BloodType;
 import com.swpproject.BloodDonation.repository.BookingDonationRepository;
 import com.swpproject.BloodDonation.repository.ScheduleDonationRepository;
 import com.swpproject.BloodDonation.repository.SurveyRepository;
@@ -19,12 +18,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,49 +36,55 @@ public class ScheduleDonationService {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    /**
+     * Tạo mới lịch hiến máu
+     */
     @Transactional
     @PreAuthorize("hasAuthority('STAFF')")
     public ScheduleDonationResponse createSchedule(ScheduleDonationRequest request) {
-    // Kiểm tra tính hợp lệ của request
-    validateScheduleRequest(request);
+        // Kiểm tra tính hợp lệ của request
+        validateScheduleRequest(request);
 
-    // Lấy thông tin người dùng hiện tại
-    String currentUser = getCurrentUsername();
+        // Lấy thông tin người dùng hiện tại
+        String currentUser = getCurrentUsername();
 
-    // Tạo đối tượng schedule
-    String scheduleId = UUID.randomUUID().toString();
-    ScheduleDonation schedule = ScheduleDonation.builder()
-            .scheduleId(scheduleId)
-            .date(request.getDate())
-            .address(request.getAddress())
-            .center(request.getCenter())
-            .numberOfDonor(request.getNumberOfDonor())
-            .bloodNeed(request.getBloodNeed())
-            .updateBy(currentUser)
-            .timeSlots(new ArrayList<>())
-            .build();
+        // Tạo đối tượng schedule
+        String scheduleId = UUID.randomUUID().toString();
+        ScheduleDonation schedule = ScheduleDonation.builder()
+                .scheduleId(scheduleId)
+                .date(request.getDate())
+                .address(request.getAddress())
+                .center(request.getCenter())
+                .numberOfDonor(request.getNumberOfDonor())
+                .bloodNeed(request.getBloodNeed())
+                .updateBy(currentUser)
+                .timeSlots(new ArrayList<>())
+                .build();
 
-    // Lưu schedule để lấy ID
-    ScheduleDonation savedSchedule = scheduleDonationRepository.save(schedule);
+        // Lưu schedule để lấy ID
+        ScheduleDonation savedSchedule = scheduleDonationRepository.save(schedule);
 
-    // Tạo và liên kết các time slot
-    List<TimeSlot> timeSlots = request.getTimeSlots().stream()
-            .map(timeSlotRequest -> TimeSlot.builder()
-                    .startTime(timeSlotRequest.getStartTime())
-                    .endTime(timeSlotRequest.getEndTime())
-                    .scheduleDonation(savedSchedule)
-                    .build())
-            .collect(Collectors.toList());
+        // Tạo và liên kết các time slot
+        List<TimeSlot> timeSlots = request.getTimeSlots().stream()
+                .map(timeSlotRequest -> TimeSlot.builder()
+                        .startTime(timeSlotRequest.getStartTime())
+                        .endTime(timeSlotRequest.getEndTime())
+                        .scheduleDonation(savedSchedule)
+                        .build())
+                .collect(Collectors.toList());
 
-    // Sử dụng phương thức addTimeSlot có sẵn trong entity
-    timeSlots.forEach(savedSchedule::addTimeSlot);
+        // Sử dụng phương thức addTimeSlot có sẵn trong entity
+        timeSlots.forEach(savedSchedule::addTimeSlot);
 
-    ScheduleDonation updatedSchedule = scheduleDonationRepository.save(savedSchedule);
+        ScheduleDonation updatedSchedule = scheduleDonationRepository.save(savedSchedule);
 
-    // Chuyển đổi thành response
-    return convertToScheduleDonationResponse(updatedSchedule);
-}
+        // Chuyển đổi thành response
+        return convertToScheduleDonationResponse(updatedSchedule);
+    }
 
+    /**
+     * Lấy tất cả lịch hiến máu
+     */
     public List<ScheduleDonationResponse> getAllSchedules() {
         List<ScheduleDonation> schedules = scheduleDonationRepository.findAll();
 
@@ -91,6 +93,9 @@ public class ScheduleDonationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Lấy các lịch hiến máu trong tương lai
+     */
     public List<ScheduleDonationResponse> getFutureSchedules() {
         LocalDate today = LocalDate.now();
         List<ScheduleDonation> schedules = scheduleDonationRepository.findByDateGreaterThanEqual(today);
@@ -100,13 +105,19 @@ public class ScheduleDonationService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Lấy lịch hiến máu theo ID
+     */
     public ScheduleDonationResponse getScheduleById(String scheduleId) {
         ScheduleDonation schedule = scheduleDonationRepository.findById(scheduleId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hiến máu với ID: " + scheduleId));
+                .orElseThrow(() -> new RuntimeException("Schedule not found with ID: " + scheduleId));
 
         return convertToScheduleDonationResponse(schedule);
     }
 
+    /**
+     * Cập nhật lịch hiến máu
+     */
     @Transactional
     public ScheduleDonationResponse updateSchedule(String scheduleId, ScheduleDonationRequest request) {
         // Kiểm tra tính hợp lệ của request
@@ -117,7 +128,7 @@ public class ScheduleDonationService {
 
         // Tìm schedule hiện có
         ScheduleDonation existingSchedule = scheduleDonationRepository.findById(scheduleId)
-                .orElseThrow(() -> new RuntimeException("Can not found schedule with ID: " + scheduleId));
+                .orElseThrow(() -> new RuntimeException("Schedule not found with ID: " + scheduleId));
 
         // Cập nhật các trường cơ bản
         existingSchedule.setDate(request.getDate());
@@ -147,10 +158,13 @@ public class ScheduleDonationService {
         return convertToScheduleDonationResponse(updatedSchedule);
     }
 
+    /**
+     * Xóa lịch hiến máu
+     */
     @Transactional
     public void deleteSchedule(String scheduleId) {
         ScheduleDonation schedule = scheduleDonationRepository.findById(scheduleId)
-                .orElseThrow(() -> new RuntimeException("Không tìm thấy lịch hiến máu với ID: " + scheduleId));
+                .orElseThrow(() -> new RuntimeException("Schedule not found with ID: " + scheduleId));
 
         // 1. Xóa survey liên quan
         surveyRepository.deleteSurveysByScheduleId(scheduleId);
@@ -162,45 +176,50 @@ public class ScheduleDonationService {
         scheduleDonationRepository.delete(schedule);
     }
 
-
+    /**
+     * Kiểm tra tính hợp lệ của request tạo/cập nhật lịch
+     */
     private void validateScheduleRequest(ScheduleDonationRequest request) {
         if (request.getDate() == null) {
-            throw new IllegalArgumentException("Ngày hiến máu không được để trống");
+            throw new IllegalArgumentException("Donation date must not be empty");
         }
 
         if (request.getDate().isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("Ngày hiến máu phải là ngày trong tương lai");
+            throw new IllegalArgumentException("Donation date must be in the future");
         }
 
         if (request.getAddress() == null || request.getAddress().trim().isEmpty()) {
-            throw new IllegalArgumentException("Địa chỉ không được để trống");
+            throw new IllegalArgumentException("Address must not be empty");
         }
 
         if (request.getCenter() == null || request.getCenter().trim().isEmpty()) {
-            throw new IllegalArgumentException("Trung tâm hiến máu không được để trống");
+            throw new IllegalArgumentException("Donation center must not be empty");
         }
 
         if (request.getNumberOfDonor() == null || request.getNumberOfDonor() <= 0) {
-            throw new IllegalArgumentException("Số lượng người hiến máu phải lớn hơn 0");
+            throw new IllegalArgumentException("Number of donors must be greater than 0");
         }
 
         if (request.getTimeSlots() == null || request.getTimeSlots().isEmpty()) {
-            throw new IllegalArgumentException("Phải có ít nhất một khung giờ");
+            throw new IllegalArgumentException("At least one time slot is required");
         }
 
         // Kiểm tra tính hợp lệ của các khung giờ
         for (TimeSlotRequest timeSlot : request.getTimeSlots()) {
             if (timeSlot.getStartTime() == null || timeSlot.getEndTime() == null) {
-                throw new IllegalArgumentException("Giờ bắt đầu và giờ kết thúc không được để trống");
+                throw new IllegalArgumentException("Start time and end time must not be empty");
             }
 
             if (timeSlot.getStartTime().isAfter(timeSlot.getEndTime()) ||
                     timeSlot.getStartTime().equals(timeSlot.getEndTime())) {
-                throw new IllegalArgumentException("Giờ kết thúc phải sau giờ bắt đầu");
+                throw new IllegalArgumentException("End time must be after start time");
             }
         }
     }
 
+    /**
+     * Chuyển đổi entity sang response DTO
+     */
     private ScheduleDonationResponse convertToScheduleDonationResponse(ScheduleDonation schedule) {
         // Danh sách các timeSlot
         List<TimeSlotResponse> timeSlotResponses = schedule.getTimeSlots().stream()
@@ -217,22 +236,28 @@ public class ScheduleDonationService {
         return ScheduleDonationResponse.builder()
                 .scheduleId(schedule.getScheduleId())
                 .center(schedule.getCenter())
-                .location(schedule.getAddress()) // Ánh xạ address -> location
+                .location(schedule.getAddress()) // address -> location
                 .date(schedule.getDate().format(DATE_FORMATTER))
                 .timeSlots(timeSlotResponses)
                 .bloodNeed(schedule.getBloodNeed())
                 .donorCount(schedule.getNumberOfDonor()) // numberOfDonor -> donorCount
                 .updateBy(schedule.getUpdateBy())
                 .currentDonorCount(registeredCount)
-                .registrationStatus(registeredCount + "/" + schedule.getNumberOfDonor() + " registed")
+                .registrationStatus(registeredCount + "/" + schedule.getNumberOfDonor() + " registered")
                 .build();
     }
 
+    /**
+     * Lấy username hiện tại
+     */
     private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication != null ? authentication.getName() : "system";
     }
 
+    /**
+     * Lấy tất cả entity ScheduleDonation
+     */
     public List<ScheduleDonation> getAllScheduleDonations() {
         return scheduleDonationRepository.findAll();
     }

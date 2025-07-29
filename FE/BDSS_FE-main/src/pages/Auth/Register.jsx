@@ -15,6 +15,7 @@ import { MdCake, MdWork } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ClipLoader, PulseLoader } from "react-spinners";
+import { baseUrl } from "../../Utils/baseUrl";
 
 function PasswordInput({ value, onChange, name, placeholder }) {
   const [show, setShow] = useState(false);
@@ -125,17 +126,13 @@ export default function Register() {
     e.preventDefault();
     if (!validateForm()) return;
     setLoading(true);
-    // Log form data gửi đi
     console.log("Form data gửi đi:", formData);
     try {
-      const response = await axios.post(
-        "http://localhost:8080/api/v1/users",
-        formData
-      );
-      toast.success("Registration successful!");
+      const response = await axios.post(`${baseUrl}/api/v1/users`, formData);
+      toast.success("Please check your email for the OTP.");
       setTimeout(() => {
         setLoading(false);
-        navigate("/login");
+        navigate("/verify-email", { state: { email: formData.email } });
       }, 1500);
     } catch (error) {
       setLoading(false);
@@ -175,7 +172,6 @@ export default function Register() {
         <div className="register-flex-row" style={{ gap: 32 }}>
           <div className="register-account" style={{ flex: 1, minWidth: 320 }}>
             <h4 className="register-section-title">Account Information</h4>
-            {/* Email field */}
             <div className="register-field" style={{ marginBottom: 18 }}>
               <label className="register-label" htmlFor="email">
                 Email <span className="register-required">*</span>
@@ -200,7 +196,6 @@ export default function Register() {
                 <div className="register-error-message">{errors.email}</div>
               )}
             </div>
-            {/* Password field */}
             <div className="register-field" style={{ marginBottom: 18 }}>
               <label className="register-label" htmlFor="password">
                 Password <span className="register-required">*</span>
@@ -229,7 +224,6 @@ export default function Register() {
                 <div className="register-error-message">{errors.password}</div>
               )}
             </div>
-            {/* Confirm Password field */}
             <div className="register-field" style={{ marginBottom: 18 }}>
               <label className="register-label" htmlFor="confirmPassword">
                 Confirm Password <span className="register-required">*</span>
@@ -253,7 +247,6 @@ export default function Register() {
           </div>
           <div className="register-profile" style={{ flex: 1, minWidth: 320 }}>
             <h4 className="register-section-title">Profile Information</h4>
-            {/* Full Name field */}
             <div className="register-field" style={{ marginBottom: 18 }}>
               <label className="register-label" htmlFor="fullName">
                 Full Name <span className="register-required">*</span>
@@ -278,7 +271,6 @@ export default function Register() {
                 <div className="register-error-message">{errors.fullName}</div>
               )}
             </div>
-            {/* Gender field */}
             <div className="register-field" style={{ marginBottom: 18 }}>
               <label className="register-label">
                 Gender <span className="register-required">*</span>
@@ -320,7 +312,6 @@ export default function Register() {
                 <div className="register-error-message">{errors.sex}</div>
               )}
             </div>
-            {/* Birthday field */}
             <div className="register-field" style={{ marginBottom: 18 }}>
               <label className="register-label" htmlFor="birthday">
                 Birthday <span className="register-required">*</span>
@@ -357,7 +348,7 @@ export default function Register() {
             type="submit"
             disabled={loading}
           >
-            {loading ? "SIGNING UP..." : "SIGN UP"}
+            {loading ? "SIGNING UP..." : "VERIFY YOUR EMAIL"}
           </button>
         </div>
 

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../helpers/axiosInstance";
 import "./AppointmentManager.css";
-
+import { baseUrl } from "../../Utils/baseUrl";
 import Table from "react-bootstrap/Table";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Toast } from "react-bootstrap";
 import {
   getQuestionTextById,
   getLabelByValue,
 } from "../../helpers/bloodRegister";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function AppointmentManager() {
   const [appointments, setAppointments] = useState([]);
   const [surveyData, setSurveyData] = useState({ show: false, data: [] });
@@ -16,7 +19,7 @@ export default function AppointmentManager() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/booking/all", {
+      .get(`${baseUrl}/api/booking/all`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then((res) => setAppointments(res.data))
@@ -79,7 +82,7 @@ export default function AppointmentManager() {
     } else return;
     try {
       await axios.put(
-        `http://localhost:8080/api/booking/${item.bookingId}`,
+        `${baseUrl}/api/booking/${item.bookingId}`,
         { status: nextStatus },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -96,7 +99,7 @@ export default function AppointmentManager() {
       const userId = item.user?.userID || item.user?.userId;
       if (userId) {
         await axios.post(
-          "http://localhost:8080/notifications",
+          `${baseUrl}/notifications`,
           {
             title: notifyTitle,
             detail: notifyDetail,
@@ -114,18 +117,15 @@ export default function AppointmentManager() {
         );
       }
     } catch (error) {
-      alert("Update Failed!");
+      toast.error("Update Failed!");
     }
   };
 
   const handleSurvey = async (item) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/survey/${item.bookingId}`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      const res = await axios.get(`${baseUrl}/api/survey/${item.bookingId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       setSurveyData({ show: true, data: res.data });
     } catch (error) {
       console.error("Error fetching survey data:", error);
@@ -151,12 +151,14 @@ export default function AppointmentManager() {
   };
 
   const handleCancel = async (item) => {
-    const confirm = window.confirm("Bạn có chắc muốn hủy lịch này không?");
+    const confirm = window.confirm(
+      "Are you sure you want to cancel this appointment?"
+    );
     if (!confirm) return;
 
     try {
       await axios.put(
-        `http://localhost:8080/api/booking/${item.bookingId}`,
+        `${baseUrl}/api/booking/${item.bookingId}`,
         { status: "CANCELLED" },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -172,7 +174,7 @@ export default function AppointmentManager() {
       );
 
       const bookingRes = await axios.get(
-        `http://localhost:8080/api/booking/${item.bookingId}`,
+        `${baseUrl}/api/booking/${item.bookingId}`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -182,7 +184,7 @@ export default function AppointmentManager() {
 
       if (userId) {
         await axios.post(
-          "http://localhost:8080/notifications",
+          `${baseUrl}/notifications`,
           {
             title: "Appointment Cancelled",
             detail:
@@ -200,21 +202,20 @@ export default function AppointmentManager() {
           }
         );
       } else {
-        console.warn("Không tìm thấy userId để gửi thông báo.");
+        console.warn("User ID not found for notification.");
       }
     } catch (error) {
       console.error("Cancel or notification failed:", error);
-      alert("Cancel Failed!");
+      toast.error("Cancel Failed!");
     }
   };
 
   const handleRestore = async (item) => {
     try {
       await axios.put(
-        `http://localhost:8080/api/booking/${item.bookingId}`,
-        {},
+        `${baseUrl}/api/booking/${item.bookingId}`,
+        { status: "PENDING" },
         {
-          params: { status: "PENDING" },
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
@@ -226,7 +227,7 @@ export default function AppointmentManager() {
         )
       );
     } catch (error) {
-      alert("Restore Failed!");
+      toast.error("Restore Failed!");
     }
   };
 
@@ -298,7 +299,7 @@ export default function AppointmentManager() {
           ) : (
             <ul>
               {surveyData.data
-                .slice() // tạo bản sao để sort không ảnh hưởng state
+                .slice()
                 .sort((a, b) => {
                   const order = [
                     "q1",
@@ -326,7 +327,7 @@ export default function AppointmentManager() {
                     <li key={idx}>
                       <strong>{getQuestionTextById(s.description)}</strong>
                       <br />
-                      <strong>Đáp án:</strong>{" "}
+                      <strong>Answer:</strong>{" "}
                       {getLabelByValue(s.description, audit.answer)}
                       {audit.additionalInfo && audit.additionalInfo !== "" && (
                         <span>
@@ -399,6 +400,7 @@ export default function AppointmentManager() {
           </Button>
         </Modal.Footer>
       </Modal>
+      <ToastContainer />
     </div>
   );
 }

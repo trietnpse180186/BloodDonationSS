@@ -7,13 +7,16 @@ import com.swpproject.BloodDonation.dto.response.BookingResponse;
 import com.swpproject.BloodDonation.entity.*;
 import com.swpproject.BloodDonation.enums.Status;
 import com.swpproject.BloodDonation.repository.*;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+// @Transactional để đảm bảo các thao tác với cơ sở dữ liệu được thực hiện trong một
 public class BookingService {
 
     private final BookingDonationRepository bookingDonationRepository;
@@ -36,6 +41,7 @@ public class BookingService {
     private final DonationReportService donationReportService;
     private final BloodInventoryService bloodInventoryService;
     private final NotificationEventPublisher notificationPublisher;
+    private final MailService mailService;
 
 
     @Transactional
@@ -208,23 +214,6 @@ public class BookingService {
                 .build();
     }
 
-//    public void updateBookingStatus(String bookingId, String status) {
-//        BookingDonation booking = bookingDonationRepository.findById(bookingId)
-//                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
-//
-//        // Convert String status to Status enum
-//        Status statusEnum = Status.valueOf(status);
-//        booking.setStatus(statusEnum);
-//        bookingDonationRepository.save(booking);
-//        if (booking.getStatus() == Status.COMPLETED) {
-//            Certificate cert = new Certificate();
-//            cert.setUser(booking.getDonor());
-//            cert.setDonationDate(booking.getDateDonation());
-//            cert.setBookingId(booking.getDonationId());
-//            certificateRepository.save(cert);
-//        }
-
-//    }
 
     public List<BookingResponse> getAllBookings() {
         List<BookingDonation> bookings = bookingDonationRepository.findAll();
@@ -264,6 +253,7 @@ public class BookingService {
     }
 
     @Transactional
+    // Chuyển trạng thái booking và gửi email thông báo (nội dung email bằng tiếng Anh)
     public void updateBookingStatus(String bookingId, String status) {
         BookingDonation booking = bookingDonationRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
@@ -302,8 +292,8 @@ public class BookingService {
                 // Gửi thông báo cho người hiến máu - SỬ DỤNG EVENT PUBLISHER
                 notificationPublisher.publishNotificationCreatedEvent(
                         donorId,
-                        "Hiến máu thành công",
-                        "Cảm ơn bạn đã hiến máu thành công. 350ml máu của bạn đã được thêm vào kho máu và sẽ giúp cứu sống người khác.",
+                        "Blood donation successful",
+                        "Thank you for your successful blood donation. Your 350ml of blood has been added to the blood inventory and will help save lives.",
                         "/donations/history",
                         "DONATION_COMPLETED",
                         "NORMAL"
@@ -311,9 +301,64 @@ public class BookingService {
             } catch (Exception e) {
                 // Log lỗi nhưng không throw exception để không làm gián đoạn quy trình
                 // Vẫn tiếp tục đánh dấu lịch hiến máu là hoàn thành
-                System.err.println("Lỗi khi cập nhật kho máu: " + e.getMessage());
+                System.err.println("Error updating blood inventory: " + e.getMessage());
                 e.printStackTrace();
             }
         }
+
+        if (oldStatus != statusEnum) {
+            sendStatusChangeEmail(booking, statusEnum);
+        }
+    }
+
+    private void sendStatusChangeEmail(BookingDonation booking, Status newStatus) {
+        User donor = booking.getDonor();
+        String donorEmail = donor.getEmail();
+        String donorName = donor.getFullName();
+
+        String subject = "Blood Donation Booking Status Update";
+        String content = buildEmailContent(donorName, booking, newStatus);
+
+        try {
+            mailService.sendEmail(subject, content, donorEmail);
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            log.error("Failed to send status change email to {} for booking {}: {}", donorEmail, booking.getDonationId(), e.getMessage(), e);
+        }
+    }
+
+    // Helper build nội dung email (nội dung bằng tiếng Anh)
+    private String buildEmailContent(String donorName, BookingDonation booking, Status newStatus) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        String bookingTime = booking.getBookingTime() != null ? booking.getBookingTime().format(formatter) : "N/A";
+
+        String statusMessage;
+        switch (newStatus) {
+            case COMPLETED:
+                statusMessage = "Your blood donation booking has been successfully completed!";
+                break;
+            case CANCELLED:
+                statusMessage = "Your blood donation booking has been cancelled.";
+                break;
+            case PENDING:
+                statusMessage = "Your blood donation booking is pending confirmation.";
+                break;
+            default:
+                statusMessage = "The status of your blood donation booking has changed to " + newStatus;
+        }
+
+        return "<h2>Hello " + donorName + ",</h2>" +
+                "<p>" + statusMessage + "</p>" +
+                "<p>Booking details:</p>" +
+                "<ul>" +
+                "<li>Donation date: " + booking.getDateDonation() + "</li>" +
+                "<li>Time: " + booking.getStartTime() + " - " + booking.getEndTime() + "</li>" +
+                "<li>Location: " + booking.getAddress() + "</li>" +
+                "<li>Center: " + booking.getCenter() + "</li>" +
+                "<li>Booking time: " + bookingTime + "</li>" +
+                "</ul>" +
+                "<p>If you have any questions, please contact our support team.</p>" +
+                "<br><p>Best regards,<br>BloodDonation Team</p>";
     }
 }
+
+
