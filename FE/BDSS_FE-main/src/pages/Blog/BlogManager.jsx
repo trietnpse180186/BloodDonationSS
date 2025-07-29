@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import "./BlogManager.css";
 import { uploadImageToCloudinary } from "../../helpers/uploadImageToCloudinary";
 import { FaSpinner } from "react-icons/fa";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function BlogManager() {
   const [blogs, setBlogs] = useState([]);
@@ -16,7 +17,7 @@ export default function BlogManager() {
   useEffect(() => {
     setLoading(true);
     axios
-      .get("http://localhost:8080/blogs")
+      .get(`${baseUrl}/blogs`)
       .then((res) => {
         setBlogs(res.data);
         setLoading(false);
@@ -47,15 +48,11 @@ export default function BlogManager() {
       const data = { ...form, imageUrl };
 
       if (editingId) {
-        await axios.put(
-          `http://localhost:8080/blogs/${editingId}`,
-          data,
-          config
-        );
+        await axios.put(`${baseUrl}/blogs/${editingId}`, data, config);
       } else {
-        await axios.post("http://localhost:8080/blogs", data, config);
+        await axios.post(`${baseUrl}/blogs`, data, config);
       }
-      const res = await axios.get("http://localhost:8080/blogs");
+      const res = await axios.get(`${baseUrl}/blogs`);
       setBlogs(res.data);
       setForm({ title: "", content: "", imageUrl: "" });
       setEditingId(null);
@@ -83,7 +80,7 @@ export default function BlogManager() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this blog?")) return;
     try {
-      await axios.delete(`http://localhost:8080/blogs/${id}`, {
+      await axios.delete(`${baseUrl}/blogs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBlogs(blogs.filter((b) => b.id !== id));

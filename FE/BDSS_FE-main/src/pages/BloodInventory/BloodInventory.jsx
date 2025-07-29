@@ -36,6 +36,7 @@ import {
 } from "react-icons/fa6";
 import "./BloodInventory.css";
 import { saveAs } from "file-saver";
+import { baseUrl } from "../../Utils/baseUrl";
 
 ChartJS.register(
   CategoryScale,
@@ -76,7 +77,7 @@ export default function BloodInventory() {
     try {
       const token = sessionStorage.getItem("accessToken");
       const response = await axios.get(
-        "http://localhost:8080/api/blood-inventory/usage-report/pdf",
+        `${baseUrl}/api/blood-inventory/usage-report/pdf`,
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob",
@@ -120,7 +121,7 @@ export default function BloodInventory() {
     try {
       const token = sessionStorage.getItem("accessToken");
       const res = await axios.get(
-        `http://localhost:8080/api/blood-inventory/details?bloodType=${bloodType}`,
+        `${baseUrl}/api/blood-inventory/details?bloodType=${bloodType}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setDetailData(res.data);
@@ -141,7 +142,7 @@ export default function BloodInventory() {
     try {
       const token = sessionStorage.getItem("accessToken");
       const response = await axios.get(
-        "http://localhost:8080/api/blood-inventory/summary",
+        `${baseUrl}/api/blood-inventory/summary`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -162,7 +163,7 @@ export default function BloodInventory() {
     try {
       const token = sessionStorage.getItem("accessToken");
       await axios.post(
-        "http://localhost:8080/api/blood-inventory/use",
+        `${baseUrl}/api/blood-inventory/use`,
         {
           bloodType: useBloodForm.bloodType,
           quantity: Number(useBloodForm.quantity),
@@ -200,7 +201,7 @@ export default function BloodInventory() {
       try {
         const token = sessionStorage.getItem("accessToken");
         const res = await axios.get(
-          `http://localhost:8080/api/blood-inventory/usage-statistics?startDate=${encodeURIComponent(
+          `${baseUrl}/api/blood-inventory/usage-statistics?startDate=${encodeURIComponent(
             startDate
           )}&endDate=${encodeURIComponent(endDate)}`,
           { headers: { Authorization: `Bearer ${token}` } }

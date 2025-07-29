@@ -4,6 +4,8 @@ import { toast } from "react-toastify";
 import { getUserRole } from "../../helpers/getUserName";
 import { Table, Button } from "react-bootstrap";
 import "./ContactManager.css";
+import { baseUrl } from "../../Utils/baseUrl";
+
 export default function ContactManager() {
   const [contacts, setContacts] = useState([]);
   const accessToken = sessionStorage.getItem("accessToken");
@@ -15,7 +17,7 @@ export default function ContactManager() {
       return;
     }
     axios
-      .get("http://localhost:8080/contact", {
+      .get(`${baseUrl}/contact`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then((res) => setContacts(res.data))
@@ -29,7 +31,7 @@ export default function ContactManager() {
     if (!window.confirm("Are you sure you want to delete this contact?"))
       return;
     try {
-      await axios.delete(`http://localhost:8080/contact/${id}`, {
+      await axios.delete(`${baseUrl}/contact/${id}`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setContacts((prev) => prev.filter((c) => c.id !== id));
@@ -43,7 +45,7 @@ export default function ContactManager() {
     if (!window.confirm("Are you sure you want to delete ALL contacts?"))
       return;
     try {
-      await axios.delete("http://localhost:8080/contact/all", {
+      await axios.delete(`${baseUrl}/contact/all`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       setContacts([]);

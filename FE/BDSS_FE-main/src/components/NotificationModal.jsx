@@ -22,6 +22,7 @@ import {
   FaHourglassHalf,
   FaInfoCircle,
 } from "react-icons/fa";
+import { baseUrl } from "../Utils/baseUrl";
 
 function NotificationModal({ show, onHide, notification }) {
   useEffect(() => {
@@ -164,7 +165,7 @@ function NotificationModal({ show, onHide, notification }) {
       const token = sessionStorage.getItem("accessToken");
 
       const response = await axios.post(
-        `http://localhost:8080/api/emergency/${requestId}/respond`,
+        `${baseUrl}/api/emergency/${requestId}/respond`,
         {},
         {
           headers: {

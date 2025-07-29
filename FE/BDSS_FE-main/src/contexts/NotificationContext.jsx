@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { getUserNotifications } from "../helpers/getNotification";
 import { getUserIdFromToken } from "../helpers/getUserById";
+import { baseUrl } from "../Utils/baseUrl";
 
 const NotificationContext = createContext();
 
@@ -81,7 +82,7 @@ export const NotificationProvider = ({ children }) => {
     try {
       const token = sessionStorage.getItem("accessToken");
       const response = await fetch(
-        `http://localhost:8080/notifications/${notificationId}/read`,
+        `${baseUrl}/notifications/${notificationId}/read`,
         {
           method: "PUT",
           headers: {
@@ -110,7 +111,7 @@ export const NotificationProvider = ({ children }) => {
     try {
       const token = sessionStorage.getItem("accessToken");
       const response = await fetch(
-        `http://localhost:8080/notifications/${notificationId}`,
+        `${baseUrl}/notifications/${notificationId}`,
         {
           method: "DELETE",
           headers: {

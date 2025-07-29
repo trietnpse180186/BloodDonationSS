@@ -1,12 +1,11 @@
-// src/assets/axiosInstance.js
 import axios from "axios";
 import { refreshAccessToken } from "./authService";
+import { baseUrl } from "../Utils/baseUrl";
 
 const instance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: `${baseUrl}`,
 });
 
-// Interceptor để tự động refresh token khi hết hạn
 instance.interceptors.response.use(
   (response) => response,
   async (error) => {

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "./staffPage.css";
 import "./StaffPage.css";
 import BlogManager from "../Blog/BlogManager";
 import logout from "../../helpers/authLogout";

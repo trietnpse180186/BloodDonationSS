@@ -23,7 +23,7 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import Navbar from "../../components/navbar";
-
+import { baseUrl } from "../../Utils/baseUrl";
 export default function EmergencyDonation() {
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +70,7 @@ export default function EmergencyDonation() {
         }
 
         const response = await axios.get(
-          "http://localhost:8080/api/emergency/user/history",
+          `${baseUrl}/api/emergency/user/history`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
