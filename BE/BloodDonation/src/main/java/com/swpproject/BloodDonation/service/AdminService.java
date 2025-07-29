@@ -63,6 +63,7 @@ public class AdminService {
                 .birthday(request.getBirthday())
                 .sex(request.getSex())
                 .occupation(occupation)
+                .isVerified(true)
                 .active(true)
                 .build();
 

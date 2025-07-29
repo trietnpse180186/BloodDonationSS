@@ -4,7 +4,7 @@ import logout from "../../helpers/authLogout";
 import "./AdminPage.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 import {
   FaSignOutAlt,
@@ -69,84 +69,69 @@ export default function AdminPage() {
       alert("Failed to load staff list.");
     }
   };
-const isAtLeast18YearsOld = (birthday) => {
-  const today = new Date();
-  const birthDate = new Date(birthday);
-  const age = today.getFullYear() - birthDate.getFullYear();
-  const m = today.getMonth() - birthDate.getMonth();
-  const d = today.getDate() - birthDate.getDate();
-  return age > 18 || (age === 18 && (m > 0 || (m === 0 && d >= 0)));
-};
+  const isAtLeast18YearsOld = (birthday) => {
+    const today = new Date();
+    const birthDate = new Date(birthday);
+    const age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    const d = today.getDate() - birthDate.getDate();
+    return age > 18 || (age === 18 && (m > 0 || (m === 0 && d >= 0)));
+  };
 
   const handleCreate = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!isAtLeast18YearsOld(newUser.birthday)) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Invalid Birthday',
-      text: 'Staff must be at least 18 years old.',
-    });
-    return;
-  }
-
-  try {
-    await axios.post("http://localhost:8080/api/v1/admin/staff", newUser, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    Swal.fire('Success', 'Staff created successfully.', 'success');
-    setNewUser({});
-    fetchStaff();
-  } catch {
-    Swal.fire('Error', 'Failed to create staff.', 'error');
-  }
-};
-
-
- const handleDelete = (userId) => {
-  Swal.fire({
-    title: 'Delete Confirmation',
-    text: 'Are you sure you want to delete this staff member?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonText: 'Delete',
-    cancelButtonText: 'Cancel',
-    confirmButtonColor: '#d33',
-    cancelButtonColor: '#3085d6',
-  }).then(async (result) => {
-    if (result.isConfirmed) {
-      try {
-        const response = await axios.delete(
-          `http://localhost:8080/api/v1/admin/staff/${userId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        Swal.fire('Deleted!', 'The staff member was removed successfully.', 'success');
-        fetchStaff();
-      } catch (error) {
-        Swal.fire('Error', 'Failed to delete staff.', 'error');
-      }
+    if (!isAtLeast18YearsOld(newUser.birthday)) {
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Birthday",
+        text: "Staff must be at least 18 years old.",
+      });
+      return;
     }
-  });
-};
+
     try {
-      const response = await axios.delete(
-        `${baseUrl}/api/v1/admin/staff/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      console.log("Delete response:", response.data);
-      alert("Staff deleted successfully");
+      await axios.post(`${baseUrl}/api/v1/admin/staff`, newUser, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      Swal.fire("Success", "Staff created successfully.", "success");
+      setNewUser({});
       fetchStaff();
-    } catch (error) {
-      console.error(
-        "Delete failed:",
-        error.response?.data || error.message || error
-      );
-      alert("Failed to delete staff");
+    } catch {
+      Swal.fire("Error", "Failed to create staff.", "error");
     }
+  };
+
+  const handleDelete = (userId) => {
+    Swal.fire({
+      title: "Delete Confirmation",
+      text: "Are you sure you want to delete this staff member?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.delete(
+            `${baseUrl}/api/v1/admin/staff/${userId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          Swal.fire(
+            "Deleted!",
+            "The staff member was removed successfully.",
+            "success"
+          );
+          fetchStaff();
+        } catch (error) {
+          Swal.fire("Error", "Failed to delete staff.", "error");
+        }
+      }
+    });
   };
 
   const chartData = [
@@ -158,7 +143,6 @@ const isAtLeast18YearsOld = (birthday) => {
     { name: "Jun", value: 18 },
   ];
 
-  // Pie chart data now reflects the summary cards
   const pieData = dashboardData
     ? [
         { name: "Total Donors", value: dashboardData.totalDonors },
@@ -427,21 +411,25 @@ const isAtLeast18YearsOld = (birthday) => {
                 <option value="AB_NEGATIVE">AB-</option>
               </select>
               <DatePicker
-  selected={newUser.birthday ? new Date(newUser.birthday) : null}
-  onChange={(date) =>
-    setNewUser({
-      ...newUser,
-      birthday: date.toISOString().split("T")[0],
-    })
-  }
-  dateFormat="dd/MM/yyyy"
-  placeholderText="Chọn ngày sinh (dd/mm/yyyy)"
-  className="custom-datepicker-input"
-  maxDate={new Date(new Date().setFullYear(new Date().getFullYear() - 18))}
-  showYearDropdown
-  scrollableYearDropdown
-  yearDropdownItemNumber={100}
-/>
+                selected={newUser.birthday ? new Date(newUser.birthday) : null}
+                onChange={(date) =>
+                  setNewUser({
+                    ...newUser,
+                    birthday: date.toISOString().split("T")[0],
+                  })
+                }
+                dateFormat="dd/MM/yyyy"
+                placeholderText="Chọn ngày sinh (dd/mm/yyyy)"
+                className="custom-datepicker-input"
+                maxDate={
+                  new Date(
+                    new Date().setFullYear(new Date().getFullYear() - 18)
+                  )
+                }
+                showYearDropdown
+                scrollableYearDropdown
+                yearDropdownItemNumber={100}
+              />
 
               <select
                 required
@@ -495,12 +483,11 @@ const isAtLeast18YearsOld = (birthday) => {
               key={item.key}
               className={selected === item.key ? "active" : ""}
               onClick={() => {
-                if(item.key === "logout") {
+                if (item.key === "logout") {
                   logout();
                 } else {
                   setSelected(item.key);
                 }
-
               }}
             >
               <span className="menu-icon">{item.icon}</span>
