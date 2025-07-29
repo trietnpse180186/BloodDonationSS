@@ -10,7 +10,7 @@ function PasswordInput({ value, onChange }) {
   const [show, setShow] = useState(false);
 
   return (
-    <div className="input-group">
+    <div className="password-input-group">
       <input
         type={show ? "text" : "password"}
         placeholder="Password"
@@ -23,6 +23,8 @@ function PasswordInput({ value, onChange }) {
         className="show-password-btn"
         onClick={() => setShow((s) => !s)}
         tabIndex={0}
+        role="button"
+        aria-label={show ? "Hide password" : "Show password"}
       >
         {show ? <FaEyeSlash /> : <FaEye />}
       </span>
