@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Button } from "react-bootstrap";
+import { baseUrl } from "../Utils/baseUrl";
 
 export async function refreshAccessToken() {
   const refreshToken = sessionStorage.getItem("refreshToken");
@@ -9,7 +10,7 @@ export async function refreshAccessToken() {
   }
 
   try {
-    const res = await axios.post("http://localhost:8080/refresh", {
+    const res = await axios.post(`${baseUrl}/refresh`, {
       refreshToken,
     });
 

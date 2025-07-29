@@ -1,4 +1,5 @@
 import axios from "axios";
+import { baseUrl } from "../Utils/baseUrl";
 
 export function getUserIdFromToken() {
   const token = sessionStorage.getItem("accessToken");
@@ -7,7 +8,6 @@ export function getUserIdFromToken() {
   try {
     const part = token.split(".")[1];
     if (!part) return null;
-    // Chuyển base64url về base64 chuẩn
     let base64 = part.replace(/-/g, "+").replace(/_/g, "/");
     while (base64.length % 4) base64 += "=";
     const payload = JSON.parse(atob(base64));
@@ -30,7 +30,7 @@ export default async function getUserById() {
   }
 
   try {
-    const res = await axios.get(`http://localhost:8080/users/${userId}`, {
+    const res = await axios.get(`${baseUrl}/users/${userId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

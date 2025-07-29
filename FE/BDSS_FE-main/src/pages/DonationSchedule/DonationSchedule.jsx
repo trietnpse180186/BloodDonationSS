@@ -7,6 +7,7 @@ import Footer from "../../components/footer";
 import { peopleFill } from "../../icons/icon";
 import axios from "../../helpers/axiosInstance";
 import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
+import { baseUrl } from "../../Utils/baseUrl";
 
 export default function DonationSchedule() {
   const [searchName, setSearchName] = useState("");
@@ -22,7 +23,7 @@ export default function DonationSchedule() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/schedule-donations/future")
+      .get(`${baseUrl}/api/schedule-donations/future`)
       .then((res) => {
         setSchedules(res.data);
         setFilteredSchedules(res.data);
@@ -36,9 +37,7 @@ export default function DonationSchedule() {
     if (token && refreshToken) {
       const userIdFromToken = getUserIdFromToken(token);
       axios
-        .get(
-          `http://localhost:8080/api/reports/user/${userIdFromToken}/eligibility`
-        )
+        .get(`${baseUrl}/api/reports/user/${userIdFromToken}/eligibility`)
         .then((res) => {
           setEligibility(res.data);
         })

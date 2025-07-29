@@ -22,6 +22,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
+import { baseUrl } from "../../Utils/baseUrl";
 
 const menuItems = [
   { key: "dashboard", label: "Dashboard", icon: <FaTachometerAlt /> },
@@ -43,7 +44,7 @@ export default function AdminPage() {
   useEffect(() => {
     if (selected === "dashboard") {
       axios
-        .get("http://localhost:8080/api/v1/admin/dashboard", {
+        .get(`${baseUrl}/api/v1/admin/dashboard`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => setDashboardData(res.data))
@@ -57,7 +58,7 @@ export default function AdminPage() {
 
   const fetchStaff = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/v1/admin/staff", {
+      const res = await axios.get(`${baseUrl}/api/v1/admin/staff`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data);
@@ -69,7 +70,7 @@ export default function AdminPage() {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:8080/api/v1/admin/staff", newUser, {
+      await axios.post(`${baseUrl}/api/v1/admin/staff`, newUser, {
         headers: { Authorization: `Bearer ${token}` },
       });
       alert("Staff created successfully");
@@ -90,7 +91,7 @@ export default function AdminPage() {
 
     try {
       const response = await axios.delete(
-        `http://localhost:8080/api/v1/admin/staff/${userId}`,
+        `${baseUrl}/api/v1/admin/staff/${userId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

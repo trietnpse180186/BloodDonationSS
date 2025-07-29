@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../helpers/axiosInstance";
 import "./AppointmentManager.css";
-
+import { baseUrl } from "../../Utils/baseUrl";
 import Table from "react-bootstrap/Table";
 import { Button, Modal } from "react-bootstrap";
 import {
@@ -16,7 +16,7 @@ export default function AppointmentManager() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/api/booking/all", {
+      .get(`${baseUrl}/api/booking/all`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       })
       .then((res) => setAppointments(res.data))
@@ -79,7 +79,7 @@ export default function AppointmentManager() {
     } else return;
     try {
       await axios.put(
-        `http://localhost:8080/api/booking/${item.bookingId}`,
+        `${baseUrl}/api/booking/${item.bookingId}`,
         { status: nextStatus },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -96,7 +96,7 @@ export default function AppointmentManager() {
       const userId = item.user?.userID || item.user?.userId;
       if (userId) {
         await axios.post(
-          "http://localhost:8080/notifications",
+          `${baseUrl}/notifications`,
           {
             title: notifyTitle,
             detail: notifyDetail,
@@ -120,12 +120,9 @@ export default function AppointmentManager() {
 
   const handleSurvey = async (item) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/survey/${item.bookingId}`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
+      const res = await axios.get(`${baseUrl}/api/survey/${item.bookingId}`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
       setSurveyData({ show: true, data: res.data });
     } catch (error) {
       console.error("Error fetching survey data:", error);
@@ -158,7 +155,7 @@ export default function AppointmentManager() {
 
     try {
       await axios.put(
-        `http://localhost:8080/api/booking/${item.bookingId}`,
+        `${baseUrl}/api/booking/${item.bookingId}`,
         { status: "CANCELLED" },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
@@ -174,7 +171,7 @@ export default function AppointmentManager() {
       );
 
       const bookingRes = await axios.get(
-        `http://localhost:8080/api/booking/${item.bookingId}`,
+        `${baseUrl}/api/booking/${item.bookingId}`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -184,7 +181,7 @@ export default function AppointmentManager() {
 
       if (userId) {
         await axios.post(
-          "http://localhost:8080/notifications",
+          `${baseUrl}/notifications`,
           {
             title: "Appointment Cancelled",
             detail:
@@ -213,7 +210,7 @@ export default function AppointmentManager() {
   const handleRestore = async (item) => {
     try {
       await axios.put(
-        `http://localhost:8080/api/booking/${item.bookingId}`,
+        `${baseUrl}/api/booking/${item.bookingId}`,
         { status: "PENDING" },
         {
           headers: { Authorization: `Bearer ${accessToken}` },

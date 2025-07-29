@@ -16,12 +16,12 @@ export default function Blog() {
   const openBlogModal = (blog) => {
     setSelectedBlog(blog);
     setIsModalOpen(true);
-    document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+    document.body.style.overflow = "hidden";
   };
 
   const closeBlogModal = () => {
     setIsModalOpen(false);
-    document.body.style.overflow = "auto"; // Re-enable scrolling
+    document.body.style.overflow = "auto";
   };
 
   return (
@@ -62,7 +62,6 @@ export default function Blog() {
                   </span>
                   <span className="blog-category">Health</span>
                 </div>
-                
               </div>
             </div>
           ))}

@@ -14,6 +14,7 @@ import logo from "../images/logo.jpg";
 import getUserById, { getUserIdFromToken } from "../helpers/getUserById";
 import { getUserNotifications } from "../helpers/getNotification";
 import "./navbar.css";
+import { baseUrl } from "../Utils/baseUrl";
 
 export default function AppNavbar() {
   const [notifications, setNotifications] = useState([]);
@@ -75,16 +76,13 @@ export default function AppNavbar() {
   const markAsRead = async (notificationId) => {
     try {
       const token = sessionStorage.getItem("accessToken");
-      await fetch(
-        `http://localhost:8080/notifications/${notificationId}/read`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await fetch(`${baseUrl}/notifications/${notificationId}/read`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       setNotifications((prevNotifications) =>
         prevNotifications.map((n) =>

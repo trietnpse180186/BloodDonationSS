@@ -9,6 +9,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { PulseLoader } from "react-spinners";
+import { baseUrl } from "../../Utils/baseUrl";
 
 function PasswordInput({ value, onChange }) {
   const [show, setShow] = useState(false);
@@ -47,7 +48,7 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8080/auth/login", {
+      const response = await axios.post(`${baseUrl}/auth/login`, {
         email,
         password,
       });
