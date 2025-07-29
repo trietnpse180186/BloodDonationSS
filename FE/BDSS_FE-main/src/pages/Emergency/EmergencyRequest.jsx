@@ -809,12 +809,11 @@ export default function EmergencyRequest() {
       >
         <Modal.Header closeButton className="bg-light">
           <Modal.Title>
+            <div className="grid grid-cols-1 gap-2">
             <span className="text-danger">Emergency Request Details</span>
             <div className="mt-1">
-              <Badge bg="secondary" className="me-2">
-                ID: {selectedRequest?.requestId}
-              </Badge>
               {getStatusBadge(selectedRequest?.status)}
+            </div>
             </div>
           </Modal.Title>
         </Modal.Header>

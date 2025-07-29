@@ -103,6 +103,12 @@ export default function DonationSchedule() {
     );
   };
 
+  function formatTimeHM(timeStr) {
+  if (!timeStr) return "";
+  const [h, m] = timeStr.split(":");
+  return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+}
+
   return (
     <>
       <Navbar />
@@ -257,9 +263,9 @@ export default function DonationSchedule() {
                                 <strong>Time slots:</strong>
                                 <ul style={{ margin: 0, paddingLeft: 16 }}>
                                   {schedule.timeSlots.map((slot) => (
-                                    <li key={slot.id}>
-                                      {slot.startTime} - {slot.endTime}
-                                    </li>
+                                    <a key={slot.id}>
+                                      {formatTimeHM(slot.startTime)} - {formatTimeHM(slot.endTime)}
+                                    </a>
                                   ))}
                                 </ul>
                               </li>

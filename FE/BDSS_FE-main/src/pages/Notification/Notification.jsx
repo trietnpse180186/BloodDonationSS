@@ -95,6 +95,20 @@ export default function Notification() {
     setLoading(false);
   };
 
+    function formatDateDMY(dateStr) {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+
+  function formatTimeHM(timeStr) {
+    if (!timeStr) return "";
+    const [h, m] = timeStr.split(":");
+    return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+  }
   return (
     <>
       {loading && (
@@ -174,7 +188,7 @@ export default function Notification() {
               <td>{note.title}</td>
               <td>{note.detail}</td>
               <td>
-                {note.date} - {note.time}
+                {formatDateDMY(note.date)} - {formatTimeHM(note.time)}
               </td>
               <td>{note.donorName}</td>
             </tr>

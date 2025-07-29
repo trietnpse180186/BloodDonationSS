@@ -107,6 +107,16 @@ export default function BloodRegister() {
     return `${d}/${m}/${y}`;
   };
 
+  function formatTimeRange(start, end) {
+    // start, end có thể là "08:00:00" hoặc "08:00"
+    const toHHmm = (t) => {
+      if (!t) return "";
+      const [h, m] = t.split(":");
+      return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+    };
+    return `${toHHmm(start)} - ${toHHmm(end)}`;
+  }
+
   return (
     <>
       <Navbar />
@@ -142,7 +152,7 @@ export default function BloodRegister() {
                   className="blood-form-date-input"
                   value={convertDateForInput(selectedDate)}
                   onChange={(e) => {
-                    const syncDate = convertDateForInput(e.target.value);
+                    const syncDate = convertDateFromInput(e.target.value);
                     setSelectedDate(syncDate);
                   }}
                 />
@@ -218,7 +228,7 @@ export default function BloodRegister() {
                       }`}
                       onClick={() => setTimeSelected(slot.id)}
                     >
-                      {slot.startTime} - {slot.endTime}
+                      {formatTimeRange(slot.startTime, slot.endTime)}
                     </button>
                   ))}
                 </div>

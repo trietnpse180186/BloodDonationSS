@@ -8,6 +8,8 @@ import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 import Footer from "../../components/footer";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
 import { baseUrl } from "../../Utils/baseUrl";
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function GenderIcon({ sex }) {
   if (!sex) return null;
@@ -134,7 +136,7 @@ export default function BloodDonationInfo({ answers }) {
         <p>
           <strong>Time Slot:</strong>
           <span className="info-value">
-            {bookingData.timeSlot.startTime} - {bookingData.timeSlot.endTime}
+            {formatTimeHM(bookingData.timeSlot.startTime)} - {formatTimeHM(bookingData.timeSlot.endTime)}
           </span>
         </p>
       </>
@@ -194,11 +196,13 @@ export default function BloodDonationInfo({ answers }) {
           },
         }
       );
-      alert("Booking successful!");
-      navigate("/appointment-detail");
+      toast.success("Booking successful!");
+      setTimeout(() => {
+        navigate("/appointment-detail");
+      }, 1200);
     } catch (error) {
       console.error("Booking error:", error, error?.response?.data);
-      alert(
+      toast.error(
         "Booking failed. " +
           (error?.response?.data?.message
             ? error.response.data.message
@@ -208,11 +212,16 @@ export default function BloodDonationInfo({ answers }) {
       setIsSubmitting(false);
     }
   };
+  function formatTimeHM(timeStr) {
+  if (!timeStr) return "";
+  const [h, m] = timeStr.split(":");
+  return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+}
 
-  // Phần return của component
   return (
     <>
       <Navbar />
+      <ToastContainer />
       <div className="donation-info-container">
         <h2>Blood Donation Registration Confirmation</h2>
 
@@ -225,8 +234,8 @@ export default function BloodDonationInfo({ answers }) {
             <h3>Booking Summary</h3>
             <p>
               <strong>{bookingData?.center}</strong> • {bookingData?.date} •{" "}
-              {bookingData?.timeSlot?.startTime} -{" "}
-              {bookingData?.timeSlot?.endTime}
+              {formatTimeHM(bookingData?.timeSlot?.startTime)} -{" "}
+              {formatTimeHM(bookingData?.timeSlot?.endTime)}
             </p>
           </div>
         </div>

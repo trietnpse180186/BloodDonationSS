@@ -3,11 +3,14 @@ import axios from "../../helpers/axiosInstance";
 import "./AppointmentManager.css";
 import { baseUrl } from "../../Utils/baseUrl";
 import Table from "react-bootstrap/Table";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Toast } from "react-bootstrap";
 import {
   getQuestionTextById,
   getLabelByValue,
 } from "../../helpers/bloodRegister";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function AppointmentManager() {
   const [appointments, setAppointments] = useState([]);
   const [surveyData, setSurveyData] = useState({ show: false, data: [] });
@@ -114,7 +117,7 @@ export default function AppointmentManager() {
         );
       }
     } catch (error) {
-      alert("Update Failed!");
+      toast.error("Update Failed!");
     }
   };
 
@@ -203,7 +206,7 @@ export default function AppointmentManager() {
       }
     } catch (error) {
       console.error("Cancel or notification failed:", error);
-      alert("Cancel Failed!");
+      toast.error("Cancel Failed!");
     }
   };
 
@@ -224,7 +227,7 @@ export default function AppointmentManager() {
         )
       );
     } catch (error) {
-      alert("Restore Failed!");
+      toast.error("Restore Failed!");
     }
   };
 
@@ -397,6 +400,7 @@ export default function AppointmentManager() {
           </Button>
         </Modal.Footer>
       </Modal>
+      <ToastContainer />
     </div>
   );
 }
