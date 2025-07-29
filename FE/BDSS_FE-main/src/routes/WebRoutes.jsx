@@ -23,6 +23,7 @@ import ChangePassword from "../pages/User/ChangePassword";
 import { NotificationProvider } from "../contexts/NotificationContext";
 import EmergencyDonation from "../pages/Emergency/EmergencyDonation";
 import BloodInventory from "../pages/BloodInventory/BloodInventory";
+import VerifyEmail from "../pages/Auth/VerifyEmail";
 export default function WebRoutes() {
   return (
     <>
@@ -51,6 +52,7 @@ export default function WebRoutes() {
           <Route path="/user-notification" element={<UserNotification />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/user/change-password" element={<ChangePassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
         </Routes>
       </NotificationProvider>
     </>
