@@ -293,10 +293,13 @@ export default function UserUpdate() {
             <select
               className="user-update-select"
               name="bloodType"
-              value={formData.bloodType}
-              onChange={handleChange}
+              value={formData.bloodType || ""}
+              onChange={(e) => {
+                const value = e.target.value === "" ? null : e.target.value;
+                setFormData((prev) => ({ ...prev, bloodType: value }));
+              }}
             >
-              <option value="">Choose blood type</option>
+              <option value="">UNKNOWN</option>
               <option value="A_POSITIVE">A+</option>
               <option value="A_NEGATIVE">A-</option>
               <option value="B_POSITIVE">B+</option>
