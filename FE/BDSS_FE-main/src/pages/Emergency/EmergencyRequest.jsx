@@ -4,12 +4,27 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "../../helpers/axiosInstance";
-import { Table, Button, Modal, Badge } from "react-bootstrap";
-import { FaPlus, FaEye, FaEdit, FaTrash, FaMapMarkerAlt } from "react-icons/fa";
+import { Table, Button, Badge, Modal } from "react-bootstrap";
+import CustomModal from "../../components/CustomModal";
+import {
+  FaPlus,
+  FaEye,
+  FaEdit,
+  FaMapMarkerAlt,
+  FaTint,
+  FaHospital,
+  FaInfoCircle,
+  FaExclamationTriangle,
+  FaUserFriends,
+  FaUserAltSlash,
+  FaTimes,
+  FaCheckCircle,
+} from "react-icons/fa";
 import "./EmergencyRequest.css";
 import { getUserRole } from "../../helpers/getUserName";
 import { getUserIdFromToken } from "../../helpers/getUserById";
 import { baseUrl } from "../../Utils/baseUrl";
+import Swal from "sweetalert2";
 export default function EmergencyRequest() {
   const [activeTab, setActiveTab] = useState("list");
   const [loading, setLoading] = useState(false);
@@ -20,9 +35,6 @@ export default function EmergencyRequest() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingRequest, setEditingRequest] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
-  const [addressSuggestions, setSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [searchLoading, setSearchLoading] = useState(false);
   const token = sessionStorage.getItem("accessToken");
   const userId = getUserIdFromToken();
   const userRole = getUserRole(token);
@@ -387,15 +399,83 @@ export default function EmergencyRequest() {
     }
   };
 
+  const updateDonationStatus = async (donationId, status, notes = "") => {
+    try {
+      const token = sessionStorage.getItem("accessToken");
+
+      await axios.put(
+        `${baseUrl}/api/emergency/donations/${donationId}/status`,
+        null,
+        {
+          params: {
+            status: status,
+            notes: notes,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      toast.success(`Donation status updated to ${status} successfully`);
+      // Refresh the emergency requests to get updated data
+      await fetchEmergencyRequests();
+      // If detail modal is open, refresh the selected request
+      if (selectedRequest) {
+        // Fetch the updated request data
+        try {
+          const response = await axios.get(`${baseUrl}/api/emergency`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const updatedRequest = response.data.find(
+            (req) => req.requestId === selectedRequest.requestId
+          );
+          if (updatedRequest) {
+            setSelectedRequest(updatedRequest);
+          }
+        } catch (error) {
+          console.error("Error refreshing selected request:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error updating donation status:", error);
+      if (error.response?.status === 404) {
+        toast.error("Donation not found");
+      } else if (error.response?.status === 403) {
+        toast.error("You don't have permission to update this donation");
+      } else {
+        toast.error("Error updating donation status");
+      }
+    }
+  };
+
   const handleCancel = async (id) => {
-    if (window.confirm("Cancel this request?")) {
+    const result = await Swal.fire({
+      title: "Cancel Request?",
+      text: "Are you sure you want to cancel this emergency blood request?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes, cancel it!",
+      cancelButtonText: "No, keep it",
+    });
+
+    if (result.isConfirmed) {
       try {
         const response = await axios.delete(`/api/emergency/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         fetchEmergencyRequests();
+        Swal.fire(
+          "Cancelled!",
+          "The emergency request has been cancelled.",
+          "success"
+        );
       } catch (error) {
         console.log(error);
+        Swal.fire("Error!", "Failed to cancel the request.", "error");
       }
     }
   };
@@ -494,12 +574,12 @@ export default function EmergencyRequest() {
               <thead>
                 <tr>
                   <th>Hospital</th>
-                  <th>Blood Type</th>
-                  <th>Units</th>
-                  <th>Priority</th>
-                  <th>Status</th>
-                  <th>Created</th>
-                  <th>Expires</th>
+                  <th width="10%">Blood Type</th>
+                  <th width="5%">Units</th>
+                  <th width="8%">Priority</th>
+                  <th width="8%">Status</th>
+                  <th width="15%">Created</th>
+                  <th width="13%">Expires</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -565,15 +645,7 @@ export default function EmergencyRequest() {
                             >
                               <FaEdit />
                             </Button>
-                            <Button
-                              variant="outline-success"
-                              size="sm"
-                              onClick={() =>
-                                updateStatus(request.requestId, "FULFILLED")
-                              }
-                            >
-                              Complete
-                            </Button>
+
                             <Button
                               variant="outline-secondary"
                               size="sm"
@@ -801,242 +873,449 @@ export default function EmergencyRequest() {
         </Modal.Body>
       </Modal>
 
-      {/* Detail Modal - cập nhật hiển thị thông tin chi tiết hơn */}
-      <Modal
+      <CustomModal
         show={showDetailModal}
         onHide={() => setShowDetailModal(false)}
-        size="lg"
+        size="fullscreen"
+        headerClass="danger"
+        title={
+          <div className="d-flex align-items-center">
+            <FaExclamationTriangle className="me-2" />
+            <div>
+              <div className="fs-5">Emergency Blood Request</div>
+              <div className="fs-6 mt-1">
+                {getStatusBadge(selectedRequest?.status)}
+                {selectedRequest?.isRareBloodType && (
+                  <Badge bg="warning" text="dark" className="ms-2">
+                    Rare Blood Type
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </div>
+        }
+        footer={
+          <div className="d-flex gap-2">
+            <Button
+              variant="outline-secondary"
+              onClick={() => setShowDetailModal(false)}
+            >
+              <FaTimes className="me-1" /> Close
+            </Button>
+          </div>
+        }
       >
-        <Modal.Header closeButton className="bg-light">
-          <Modal.Title>
-            <div className="grid grid-cols-1 gap-2">
-            <span className="text-danger">Emergency Request Details</span>
-            <div className="mt-1">
-              {getStatusBadge(selectedRequest?.status)}
-            </div>
-            </div>
-          </Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          {selectedRequest && (
-            <>
-              <div className="card mb-4">
-                <div className="card-header bg-light">
-                  <h5 className="mb-0">Hospital Information</h5>
-                </div>
-                <div className="card-body">
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <strong>Hospital:</strong> {selectedRequest.hospitalName}
+        {selectedRequest && (
+          <>
+            {/* Summary Section */}
+            <div className="emergency-summary mb-4">
+              <div className="row align-items-center">
+                <div className="col-md-6 mb-3 mb-md-0">
+                  <div className="d-flex align-items-center">
+                    <div
+                      className="blood-type-badge me-3"
+                      style={{
+                        background: "#f8d7da",
+                        color: "#842029",
+                        borderRadius: "8px",
+                        padding: "8px 14px",
+                        display: "inline-block",
+                        fontSize: "1.25rem",
+                        fontWeight: "bold",
+                        border: "1px solid #f5c2c7",
+                      }}
+                    >
+                      {selectedRequest.bloodTypeNeeded
+                        ?.replace("_POSITIVE", "+")
+                        .replace("_NEGATIVE", "-")}
                     </div>
-                    <div className="col-md-6">
-                      <strong>Contact Person:</strong>{" "}
-                      {selectedRequest.contactPerson}
-                    </div>
-                  </div>
-
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <strong>Phone:</strong> {selectedRequest.contactPhone}
-                    </div>
-                    <div className="col-md-6">
-                      <strong>Address:</strong> {selectedRequest.address}
-                    </div>
-                  </div>
-
-                  {selectedRequest.latitude && selectedRequest.longitude && (
-                    <div className="row mb-3">
-                      <div className="col-md-6">
-                        <strong>Coordinates:</strong> {selectedRequest.latitude}
-                        , {selectedRequest.longitude}
+                    <div>
+                      <h5 className="mb-0">{selectedRequest.hospitalName}</h5>
+                      <div className="text-muted">
+                        <small>
+                          Created: {formatDateTime(selectedRequest.requestTime)}
+                        </small>
                       </div>
-                      {selectedRequest.distance && (
-                        <div className="col-md-6">
-                          <strong>Distance:</strong>{" "}
-                          {Math.round(selectedRequest.distance * 10) / 10} km
-                        </div>
-                      )}
                     </div>
-                  )}
+                  </div>
+                </div>
+                <div className="col-md-6">
+                  <div className="d-flex justify-content-md-end align-items-center">
+                    <div
+                      className="progress-container me-2"
+                      style={{ flex: 1, maxWidth: "200px" }}
+                    >
+                      <div className="d-flex justify-content-between mb-1">
+                        <small>Donation Progress</small>
+                        <small>
+                          <strong>
+                            {selectedRequest.unitsDonated || 0}/
+                            {selectedRequest.unitsNeeded}
+                          </strong>
+                        </small>
+                      </div>
+                      <div className="progress" style={{ height: "10px" }}>
+                        <div
+                          className="progress-bar bg-success"
+                          role="progressbar"
+                          style={{
+                            width: `${Math.min(
+                              100,
+                              ((selectedRequest.unitsDonated || 0) /
+                                selectedRequest.unitsNeeded) *
+                                100
+                            )}%`,
+                          }}
+                        ></div>
+                      </div>
+                    </div>
+                    {getPriorityBadge(selectedRequest.priority)}
+                  </div>
                 </div>
               </div>
+              <hr className="my-3" />
+            </div>
 
-              <div className="card mb-4">
-                <div className="card-header bg-light">
-                  <h5 className="mb-0">Request Details</h5>
-                </div>
-                <div className="card-body">
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <strong>Blood Type:</strong>{" "}
-                      <span className="text-danger fw-bold">
-                        {selectedRequest.bloodTypeNeeded}
+            {/* Medical Information Section */}
+            <div className="card mb-4 border-left-danger">
+              <div className="card-header bg-light d-flex align-items-center">
+                <FaTint className="text-danger me-2" />
+                <h5 className="mb-0">Blood Requirement Details</h5>
+              </div>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-4 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">Blood Type</div>
+                      <div className="detail-value fw-bold text-danger">
+                        {selectedRequest.bloodTypeNeeded
+                          ?.replace("_POSITIVE", "+")
+                          .replace("_NEGATIVE", "-")}
                         {selectedRequest.isRareBloodType && (
-                          <Badge bg="warning" text="dark" className="ms-1">
+                          <Badge
+                            bg="warning"
+                            text="dark"
+                            className="ms-2"
+                            style={{ fontSize: "0.8em" }}
+                          >
                             Rare
                           </Badge>
                         )}
-                      </span>
-                    </div>
-                    <div className="col-md-6">
-                      <strong>Category:</strong>{" "}
-                      {selectedRequest.bloodTypeCategory || "Standard"}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <strong>Units Needed:</strong>{" "}
-                      {selectedRequest.unitsNeeded}
-                    </div>
-                    <div className="col-md-6">
-                      <strong>Units Donated:</strong>{" "}
-                      <span
-                        className={
-                          selectedRequest.unitsDonated >=
-                          selectedRequest.unitsNeeded
-                            ? "text-success"
-                            : "text-danger"
-                        }
-                      >
-                        {selectedRequest.unitsDonated || 0} /{" "}
+                  <div className="col-md-4 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">
+                        Units Needed
+                      </div>
+                      <div className="detail-value">
                         {selectedRequest.unitsNeeded}
-                      </span>
+                      </div>
                     </div>
                   </div>
-
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <strong>Priority:</strong>{" "}
-                      {getPriorityBadge(selectedRequest.priority)}
-                    </div>
-                    <div className="col-md-6">
-                      <strong>Status:</strong>{" "}
-                      {getStatusBadge(selectedRequest.status)}
+                  <div className="col-md-4 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">Category</div>
+                      <div className="detail-value">
+                        {selectedRequest.bloodTypeCategory || "Standard"}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <strong>Created:</strong>{" "}
-                      {formatDateTime(selectedRequest.requestTime)}
+                  <div className="col-md-4 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">Priority</div>
+                      <div className="detail-value">
+                        {getPriorityBadge(selectedRequest.priority)}
+                      </div>
                     </div>
-                    <div className="col-md-6">
-                      <strong>Expires:</strong>{" "}
-                      <span
-                        className={
+                  </div>
+                  <div className="col-md-4 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">Status</div>
+                      <div className="detail-value">
+                        {getStatusBadge(selectedRequest.status)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-4 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">Expires</div>
+                      <div
+                        className={`detail-value ${
                           isExpired(selectedRequest.expirationTime)
                             ? "text-danger"
                             : ""
-                        }
+                        }`}
                       >
                         {formatDateTime(selectedRequest.expirationTime)}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="row mb-3">
-                    <div className="col-md-6">
-                      <strong>Created By:</strong>{" "}
-                      {selectedRequest.createdByName || "N/A"}
-                    </div>
-                    <div className="col-md-6">
-                      <strong>Last Updated:</strong>{" "}
-                      {formatDateTime(selectedRequest.lastUpdatedTime)}
-                    </div>
-                  </div>
-
-                  {selectedRequest.description && (
-                    <div className="mb-3">
-                      <strong>Description:</strong>
-                      <div className="p-2 border rounded mt-1 bg-light">
-                        {selectedRequest.description}
                       </div>
                     </div>
-                  )}
+                  </div>
+                </div>
+
+                {selectedRequest.description && (
+                  <div className="mt-3">
+                    <div className="detail-label text-muted mb-1">
+                      Description
+                    </div>
+                    <div className="p-3 border rounded bg-light detail-description">
+                      {selectedRequest.description}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Hospital Information Section */}
+            <div className="card mb-4">
+              <div className="card-header bg-light d-flex align-items-center">
+                <FaHospital className="text-primary me-2" />
+                <h5 className="mb-0">Hospital Information</h5>
+              </div>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-6 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">
+                        Hospital Name
+                      </div>
+                      <div className="detail-value fw-bold">
+                        {selectedRequest.hospitalName}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">
+                        Contact Person
+                      </div>
+                      <div className="detail-value">
+                        {selectedRequest.contactPerson}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">Phone</div>
+                      <div className="detail-value">
+                        <a
+                          href={`tel:${selectedRequest.contactPhone}`}
+                          className="text-primary"
+                        >
+                          {selectedRequest.contactPhone}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">Address</div>
+                      <div className="detail-value">
+                        {selectedRequest.address}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {selectedRequest.latitude && selectedRequest.longitude && (
+                  <div className="row mt-2">
+                    <div className="col-md-6 mb-3">
+                      <div className="detail-item">
+                        <div className="detail-label text-muted">
+                          Coordinates
+                        </div>
+                        <div className="detail-value">
+                          {selectedRequest.latitude},{" "}
+                          {selectedRequest.longitude}
+                        </div>
+                      </div>
+                    </div>
+                    {selectedRequest.distance && (
+                      <div className="col-md-6 mb-3">
+                        <div className="detail-item">
+                          <div className="detail-label text-muted">
+                            Distance
+                          </div>
+                          <div className="detail-value">
+                            {Math.round(selectedRequest.distance * 10) / 10} km
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Admin Information */}
+            <div className="card mb-4">
+              <div className="card-header bg-light d-flex align-items-center">
+                <FaInfoCircle className="text-secondary me-2" />
+                <h5 className="mb-0">Request Metadata</h5>
+              </div>
+              <div className="card-body">
+                <div className="row">
+                  <div className="col-md-6 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">Created By</div>
+                      <div className="detail-value">
+                        {selectedRequest.createdByName || "N/A"}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">
+                        Created Time
+                      </div>
+                      <div className="detail-value">
+                        {formatDateTime(selectedRequest.requestTime)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">
+                        Last Updated
+                      </div>
+                      <div className="detail-value">
+                        {formatDateTime(selectedRequest.lastUpdatedTime)}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-3">
+                    <div className="detail-item">
+                      <div className="detail-label text-muted">Request ID</div>
+                      <div className="detail-value">
+                        <small className="text-muted">
+                          {selectedRequest.requestId}
+                        </small>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
 
-              {/* Donor Information Section - Phần mới */}
-              <div className="card mb-4">
-                <div className="card-header bg-light d-flex justify-content-between">
-                  <h5 className="mb-0">Donor Information</h5>
-                  <Badge bg="info">
-                    {selectedRequest.donors?.length || 0} Donors
-                  </Badge>
+            {/* Donor Information Section */}
+            <div className="card mb-4">
+              <div className="card-header bg-light d-flex align-items-center justify-content-between">
+                <div className="d-flex align-items-center">
+                  <FaUserFriends className="text-success me-2" />
+                  <h5 className="mb-0">Donor Responses</h5>
                 </div>
-                <div className="card-body">
-                  {selectedRequest.donors &&
-                  selectedRequest.donors.length > 0 ? (
-                    <div className="table-responsive">
-                      <table className="table table-striped table-bordered">
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Blood Type</th>
-                            <th>Status</th>
-                            <th>Response Time</th>
-                            <th>Contact</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {selectedRequest.donors.map((donor) => (
-                            <tr key={donor.donationId}>
-                              <td>{donor.donorName || "Anonymous"}</td>
-                              <td>{donor.bloodType}</td>
-                              <td>
-                                <Badge
-                                  bg={
-                                    donor.status === "COMPLETED"
-                                      ? "success"
-                                      : donor.status === "PENDING"
-                                      ? "warning"
-                                      : donor.status === "CANCELLED"
-                                      ? "danger"
-                                      : "secondary"
-                                  }
+                <Badge bg="info" pill>
+                  {selectedRequest.donors?.length || 0} Donors
+                </Badge>
+              </div>
+              <div className="card-body">
+                {selectedRequest.donors && selectedRequest.donors.length > 0 ? (
+                  <div className="table-responsive">
+                    <table className="table table-striped table-hover table-bordered">
+                      <thead className="table-light">
+                        <tr>
+                          <th scope="col">Name</th>
+                          <th scope="col">Blood Type</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Response Time</th>
+                          <th scope="col">Contact</th>
+                          <th scope="col">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedRequest.donors.map((donor) => (
+                          <tr key={donor.donationId}>
+                            <td className="fw-bold">
+                              {donor.donorName || "Anonymous"}
+                            </td>
+                            <td>
+                              <span className="text-danger">
+                                {donor.bloodType
+                                  ?.replace("_POSITIVE", "+")
+                                  .replace("_NEGATIVE", "-")}
+                              </span>
+                            </td>
+                            <td>
+                              <Badge
+                                bg={
+                                  donor.status === "COMPLETED"
+                                    ? "success"
+                                    : donor.status === "PENDING"
+                                    ? "warning"
+                                    : donor.status === "CANCELLED"
+                                    ? "danger"
+                                    : "secondary"
+                                }
+                                pill
+                              >
+                                {donor.status}
+                              </Badge>
+                            </td>
+                            <td>{formatDateTime(donor.responseTime)}</td>
+                            <td>
+                              {donor.phoneNumber ? (
+                                <a
+                                  href={`tel:${donor.phoneNumber}`}
+                                  className="text-primary"
                                 >
-                                  {donor.status}
+                                  {donor.phoneNumber}
+                                </a>
+                              ) : (
+                                <span className="text-muted">N/A</span>
+                              )}
+                            </td>
+                            <td>
+                              {donor.status === "PENDING" && (
+                                <Button
+                                  variant="outline-success"
+                                  size="sm"
+                                  onClick={() =>
+                                    updateDonationStatus(
+                                      donor.donationId,
+                                      "COMPLETED"
+                                    )
+                                  }
+                                  title="Mark donation as completed"
+                                >
+                                  <FaCheckCircle className="me-1" />
+                                  Complete
+                                </Button>
+                              )}
+                              {donor.status === "COMPLETED" && (
+                                <Badge bg="success" pill>
+                                  <FaCheckCircle className="me-1" />
+                                  Completed
                                 </Badge>
-                              </td>
-                              <td>{formatDateTime(donor.responseTime)}</td>
-                              <td>{donor.phoneNumber || "N/A"}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  ) : (
-                    <div className="text-center p-3">
-                      <p className="text-muted mb-0">
-                        No donors have responded yet
-                      </p>
-                    </div>
-                  )}
-                </div>
+                              )}
+                              {donor.status === "CANCELLED" && (
+                                <Badge bg="danger" pill>
+                                  <FaTimes className="me-1" />
+                                  Cancelled
+                                </Badge>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="text-center p-4 empty-state">
+                    <FaUserAltSlash
+                      className="text-muted mb-3"
+                      style={{ fontSize: "2rem" }}
+                    />
+                    <p className="text-muted mb-0">
+                      No donors have responded to this emergency request yet
+                    </p>
+                  </div>
+                )}
               </div>
-            </>
-          )}
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDetailModal(false)}>
-            Close
-          </Button>
-          {selectedRequest?.status === "ACTIVE" && (
-            <Button
-              variant="primary"
-              onClick={() => {
-                // Chuyển đến trang chi tiết để phản hồi
-                navigate(`/emergency/${selectedRequest.requestId}`);
-              }}
-            >
-              View Full Details
-            </Button>
-          )}
-        </Modal.Footer>
-      </Modal>
+            </div>
+          </>
+        )}
+      </CustomModal>
 
       {/* Edit Modal */}
       <Modal
@@ -1176,11 +1455,9 @@ export default function EmergencyRequest() {
                     </div>
                   </div>
 
-                  {/* Request Information - Chỉ cho edit các trường được phép */}
                   <div className="mb-4">
                     <h5>Request Information</h5>
 
-                    {/* Hiển thị blood type và units (readonly) */}
                     <div className="row">
                       <div className="col-md-6">
                         <label>Blood Type Needed (Cannot be changed)</label>

@@ -6,6 +6,15 @@ import NotificationModal from "../../components/NotificationModal";
 import { useLocation } from "react-router-dom";
 import { baseUrl } from "../../Utils/baseUrl";
 
+function formatDateDMY(dateStr) {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 export default function NotificationCenter() {
   const [notifications, setNotifications] = useState([]);
   const [activeMenuId, setActiveMenuId] = useState(null);
@@ -241,7 +250,7 @@ export default function NotificationCenter() {
                       marginTop: "5px",
                     }}
                   >
-                    {notify.date} at{" "}
+                    {formatDateDMY(notify.date)} at{" "}
                     {notify.time
                       ? notify.time.match(/^\d{2}:\d{2}:\d{2}/)?.[0] || ""
                       : ""}

@@ -31,14 +31,12 @@ export default function EmergencyDonation() {
   const [activeTab, setActiveTab] = useState("all");
   const navigate = useNavigate();
 
-  // Format date
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
     return date.toLocaleString();
   };
 
-  // Get status badge
   const getStatusBadge = (status) => {
     if (!status) return <Badge bg="secondary">Unknown</Badge>;
 
@@ -94,7 +92,6 @@ export default function EmergencyDonation() {
     fetchDonations();
   }, []);
 
-  // Filter donations based on active tab
   const filteredDonations = donations.filter((donation) => {
     if (activeTab === "all") return true;
     return donation.status.toLowerCase() === activeTab.toLowerCase();

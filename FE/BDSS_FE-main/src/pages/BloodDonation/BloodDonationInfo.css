@@ -98,6 +98,71 @@
   padding-left: 15px;
 }
 
+/* New user info grid layout */
+.user-info-grid,
+.booking-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 15px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.info-row .info-value {
+  padding-left: 0;
+  color: #333;
+  font-weight: 500;
+  word-break: break-word;
+}
+
+.info-row .info-value.blood-type {
+  font-weight: 700;
+  color: #b30000;
+  font-size: 16px;
+}
+
+/* Gender icon styling in new layout */
+.info-row .info-value svg {
+  margin-right: 6px;
+  font-size: 18px;
+  vertical-align: middle;
+}
+
+/* Responsive design for info rows */
+@media (max-width: 768px) {
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding: 8px 0;
+  }
+
+  .info-label {
+    font-size: 13px;
+    color: #666;
+  }
+
+  .info-row .info-value {
+    font-size: 15px;
+  }
+}
+
 /* Survey question styling */
 .info-card-survey .question {
   display: block;

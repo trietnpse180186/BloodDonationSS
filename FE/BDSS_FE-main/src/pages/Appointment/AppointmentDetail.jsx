@@ -115,7 +115,7 @@ export default function AppointmentDetail() {
                 <tr>
                   <th>Center</th>
                   <th>Date</th>
-                  <th>Location</th>
+                  <th width="40%">Location</th>
                   <th>Time Slot</th>
                   <th>Status</th>
                   <th>Action</th>

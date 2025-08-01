@@ -9,7 +9,7 @@ import Footer from "../../components/footer";
 import { IoMdMale, IoMdFemale } from "react-icons/io";
 import { baseUrl } from "../../Utils/baseUrl";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 function GenderIcon({ sex }) {
   if (!sex) return null;
@@ -30,11 +30,9 @@ function GenderIcon({ sex }) {
 
 function formatDateToIso(dateStr) {
   if (!dateStr) return "";
-  // Nếu đã đúng ISO yyyy-MM-dd
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
     return dateStr;
   }
-  // Nếu là dạng dd/MM/yyyy hoặc dd-MM-yyyy
   if (/^\d{2}[\/-]\d{2}[\/-]\d{4}$/.test(dateStr)) {
     const [day, month, year] = dateStr.split(/\/|-/);
     return `${year}-${month}-${day}`;
@@ -48,7 +46,6 @@ export default function BloodDonationInfo({ answers }) {
   const bookingData = location.state?.bookingData;
   const surveyData = location.state?.surveyData;
 
-  // Get userId from token
   const userIdFromToken = getUserIdFromToken();
   const [user, setUser] = useState(null);
 
@@ -63,7 +60,6 @@ export default function BloodDonationInfo({ answers }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const renderUserData = () => {
-    // Không bọc thêm div.info-card nữa
     if (!user) return <p>No user information found.</p>;
 
     function formatDate(dateStr) {
@@ -72,44 +68,47 @@ export default function BloodDonationInfo({ answers }) {
       return `${day}/${month}/${year}`;
     }
 
-    // Chỉ trả về nội dung, không bọc thêm div.info-card nữa
     return (
       <>
         <h3>User Information</h3>
-        <p>
-          <strong>Full Name:</strong>
-          <span className="info-value">{user.fullName}</span>
-        </p>
-        <p>
-          <strong>Gender:</strong>
-          <span className="info-value">
-            <GenderIcon sex={user.sex} />
-          </span>
-        </p>
-        <p>
-          <strong>Date of Birth:</strong>
-          <span className="info-value">{formatDate(user.birthday)}</span>
-        </p>
-        <p>
-          <strong>Address:</strong>
-          <span className="info-value">{user.address}</span>
-        </p>
-        <p>
-          <strong>Email:</strong>
-          <span className="info-value">{user.email}</span>
-        </p>
-        <p>
-          <strong>Occupation:</strong>
-          <span className="info-value">{user.occupation}</span>
-        </p>
-        <p>
-          <strong>Phone Number:</strong>
-          <span className="info-value">{user.phoneNumber}</span>
-        </p>
-        <p>
-          <strong>Blood Type:</strong>
-          <span className="info-value">{user.bloodType}</span>
-        </p>
+        <div className="user-info-grid">
+          <div className="info-row">
+            <span className="info-label">Full Name:</span>
+            <span className="info-value">{user.fullName}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Gender:</span>
+            <span className="info-value">
+              <GenderIcon sex={user.sex} />
+            </span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Date of Birth:</span>
+            <span className="info-value">{formatDate(user.birthday)}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Address:</span>
+            <span className="info-value">{user.address}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Email:</span>
+            <span className="info-value">{user.email}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Occupation:</span>
+            <span className="info-value">{user.occupation}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Phone Number:</span>
+            <span className="info-value">{user.phoneNumber}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Blood Type:</span>
+            <span className="info-value blood-type">
+              {user.bloodType ? user.bloodType : "UNKNOWN"}
+            </span>
+          </div>
+        </div>
       </>
     );
   };
@@ -117,35 +116,36 @@ export default function BloodDonationInfo({ answers }) {
   const renderBookingData = () => {
     if (!bookingData) return <div>No booking information.</div>;
 
-    // Chỉ trả về nội dung, không bọc thêm div.info-card-booking nữa
     return (
       <>
         <h3>Booking Information</h3>
-        <p>
-          <strong>Date:</strong>
-          <span className="info-value">{bookingData.date}</span>
-        </p>
-        <p>
-          <strong>Location:</strong>
-          <span className="info-value">{bookingData.location}</span>
-        </p>
-        <p>
-          <strong>Center:</strong>
-          <span className="info-value">{bookingData.center}</span>
-        </p>
-        <p>
-          <strong>Time Slot:</strong>
-          <span className="info-value">
-            {formatTimeHM(bookingData.timeSlot.startTime)} - {formatTimeHM(bookingData.timeSlot.endTime)}
-          </span>
-        </p>
+        <div className="booking-info-grid">
+          <div className="info-row">
+            <span className="info-label">Date:</span>
+            <span className="info-value">{bookingData.date}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Location:</span>
+            <span className="info-value">{bookingData.location}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Center:</span>
+            <span className="info-value">{bookingData.center}</span>
+          </div>
+          <div className="info-row">
+            <span className="info-label">Time:</span>
+            <span className="info-value">
+              {formatTimeHM(bookingData.timeSlot.startTime)} -{" "}
+              {formatTimeHM(bookingData.timeSlot.endTime)}
+            </span>
+          </div>
+        </div>
       </>
     );
   };
 
   const renderSurveyData = () => {
     if (!surveyData) return <div>No survey information.</div>;
-    // Loại bỏ div.info-card-survey bên ngoài
     return (
       <>
         <h3>Blood Donation Survey</h3>
@@ -155,7 +155,6 @@ export default function BloodDonationInfo({ answers }) {
               {bloodRegister.find((bq) => bq.id === q.questionId)?.text ||
                 `Question ${idx + 1}`}
             </i>
-            {/* Thay đổi màu đỏ sang xanh */}
             <div
               className="answer"
               style={{ marginLeft: 16, color: "#2c5282" }}
@@ -213,10 +212,10 @@ export default function BloodDonationInfo({ answers }) {
     }
   };
   function formatTimeHM(timeStr) {
-  if (!timeStr) return "";
-  const [h, m] = timeStr.split(":");
-  return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
-}
+    if (!timeStr) return "";
+    const [h, m] = timeStr.split(":");
+    return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+  }
 
   return (
     <>

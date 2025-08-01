@@ -47,10 +47,7 @@ public class UserService {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
-        // Validate blood type manually
-        if (request.getBloodType() != null && !isValidBloodType(request.getBloodType())) {
-            throw new RuntimeException("Invalid blood type");
-        }
+
 
         User user = User.builder()
                 .email(request.getEmail())
@@ -102,14 +99,10 @@ public class UserService {
     }
 
     // Cập nhật thông tin người dùng, chỉ cho phép người dùng đã đăng nhập truy cập
-    @PutMapping("/users/{id}")
     @PreAuthorize("isAuthenticated()")
     public UserUpdateResponse updateUser(String userId, UserUpdateRequest request) {
         return userRepository.findById(userId).map(user -> {
-            // Validate blood type manually if provided
-            if (request.getBloodType() != null && !isValidBloodType(request.getBloodType())) {
-                throw new RuntimeException("Invalid blood type");
-            }
+
             if (request.getFullName() != null) {
                 user.setFullName(request.getFullName());
             }
@@ -123,9 +116,9 @@ public class UserService {
             if (request.getPhoneNumber() != null) {
                 user.setPhoneNumber(request.getPhoneNumber());
             }
-            if (request.getBloodType() != null) {
-                user.setBloodType(request.getBloodType());
-            }
+
+            user.setBloodType(request.getBloodType());
+
             if (request.getBirthday() != null) {
                 user.setBirthday(request.getBirthday());
             }

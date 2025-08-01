@@ -1,3 +1,270 @@
+/* Emergency Request Container - New Layout */
+.emergency-request-container {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(220, 53, 69, 0.12);
+  margin-bottom: 1.5rem;
+}
+
+.emergency-header {
+  padding: 1.5rem 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.emergency-header.urgent {
+  background: linear-gradient(135deg, #dc3545, #e35d6a);
+  color: white;
+}
+
+.emergency-header.rare-blood {
+  background: linear-gradient(135deg, #ffc107, #ffcd39);
+  color: #212529;
+}
+
+.emergency-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.emergency-title h4 {
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.emergency-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Critical Information Section */
+.critical-info-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: white;
+  border-bottom: 2px solid #f8f9fa;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.blood-type-card {
+  border-left-color: #dc3545;
+}
+
+.blood-type-card .info-icon {
+  color: #dc3545;
+}
+
+.units-card {
+  border-left-color: #fd7e14;
+}
+
+.units-card .info-icon {
+  color: #fd7e14;
+}
+
+.priority-card {
+  border-left-color: #6f42c1;
+}
+
+.priority-card .info-icon {
+  color: #6f42c1;
+}
+
+.info-icon {
+  font-size: 1.5rem;
+  min-width: 24px;
+}
+
+.info-content {
+  flex: 1;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.info-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.info-value.blood-type {
+  font-size: 1.3rem;
+  color: #dc3545;
+  letter-spacing: 1px;
+}
+
+.priority-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* Hospital Section */
+.hospital-section,
+.contact-section,
+.description-section {
+  padding: 1.5rem 2rem;
+  background: white;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.section-title h5 {
+  margin: 0;
+  font-weight: 600;
+  color: #495057;
+}
+
+.section-icon {
+  font-size: 1.25rem;
+  color: #6c757d;
+}
+
+.hospital-details {
+  margin-left: 2rem;
+}
+
+.hospital-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #0d6efd;
+  margin-bottom: 0.75rem;
+}
+
+.hospital-address {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.address-icon {
+  margin-top: 0.25rem;
+  color: #6c757d;
+  min-width: 14px;
+}
+
+/* Contact Section */
+.contact-details {
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-item {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.contact-label {
+  font-weight: 600;
+  color: #495057;
+  min-width: 120px;
+}
+
+.contact-value {
+  font-weight: 500;
+  color: #212529;
+}
+
+.contact-value.emergency-phone {
+  font-weight: 700;
+  color: #198754;
+  font-size: 1.1rem;
+}
+
+/* Description Section */
+.description-content {
+  margin-left: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #0d6efd;
+  font-weight: 500;
+  color: #495057;
+  line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .critical-info-section {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
+
+  .hospital-section,
+  .contact-section,
+  .description-section {
+    padding: 1rem;
+  }
+
+  .hospital-details,
+  .contact-details,
+  .description-content {
+    margin-left: 0;
+  }
+
+  .emergency-header {
+    padding: 1rem;
+  }
+
+  .emergency-title h4 {
+    font-size: 1.1rem;
+  }
+
+  .contact-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .contact-label {
+    min-width: auto;
+  }
+}
+
+/* Legacy styles for backward compatibility */
 /* Ensure long addresses wrap and preserve line breaks */
 .address-text {
   display: block;

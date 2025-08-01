@@ -1,0 +1,224 @@
+/* Custom Modal Styles */
+.custom-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+  backdrop-filter: blur(2px);
+  overflow: hidden; /* Prevent scrolling on backdrop */
+}
+
+.custom-modal {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  max-height: 95vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: modalSlideIn 0.3s ease-out;
+}
+
+.custom-modal.small {
+  width: 400px;
+  max-width: 90vw;
+}
+
+.custom-modal.medium {
+  width: 600px;
+  max-width: 90vw;
+}
+
+.custom-modal.large {
+  width: 800px;
+  max-width: 95vw;
+}
+
+.custom-modal.xlarge {
+  width: 1200px;
+  max-width: 98vw;
+}
+
+.custom-modal.fullscreen {
+  width: 98vw;
+  max-width: 98vw;
+  height: 95vh;
+}
+
+.custom-modal.fullscreen .custom-modal-body {
+  max-height: calc(95vh - 160px); /* Adjusted for fullscreen */
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.custom-modal-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.custom-modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 12px 12px 0 0;
+}
+
+.custom-modal-header.danger {
+  background: linear-gradient(135deg, #dc3545, #e35d6a);
+  color: white;
+  border-bottom: none;
+}
+
+.custom-modal-header.primary {
+  background: linear-gradient(135deg, #007bff, #4dabf7);
+  color: white;
+  border-bottom: none;
+}
+
+.custom-modal-header.success {
+  background: linear-gradient(135deg, #28a745, #51cf66);
+  color: white;
+  border-bottom: none;
+}
+
+.custom-modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+}
+
+.custom-modal-close-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.custom-modal-close-btn:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.custom-modal-header:not(.danger):not(.primary):not(.success)
+  .custom-modal-close-btn {
+  color: #6c757d;
+}
+
+.custom-modal-header:not(.danger):not(.primary):not(.success)
+  .custom-modal-close-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #495057;
+}
+
+.custom-modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
+  background: white;
+  max-height: calc(95vh - 200px); /* Limit height to ensure scrolling works */
+  overscroll-behavior: contain; /* Prevent scroll chaining */
+}
+
+.custom-modal-body.compact {
+  padding: 1rem;
+}
+
+.custom-modal-body.spacious {
+  padding: 3rem;
+}
+
+.custom-modal-footer {
+  padding: 1rem 2rem;
+  border-top: 1px solid #e9ecef;
+  background: #f8f9fa;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  border-radius: 0 0 12px 12px;
+}
+
+.custom-modal-footer.center {
+  justify-content: center;
+}
+
+.custom-modal-footer.start {
+  justify-content: flex-start;
+}
+
+.custom-modal-footer.between {
+  justify-content: space-between;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .custom-modal {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+
+  .custom-modal.large,
+  .custom-modal.xlarge,
+  .custom-modal.fullscreen {
+    width: calc(100vw - 2rem);
+    max-width: calc(100vw - 2rem);
+  }
+
+  .custom-modal-header {
+    padding: 1rem 1.5rem;
+  }
+
+  .custom-modal-body {
+    padding: 1.5rem;
+  }
+
+  .custom-modal-footer {
+    padding: 1rem 1.5rem;
+  }
+}
+
+/* Scrollbar styling for modal body */
+.custom-modal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-modal-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.custom-modal-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.custom-modal-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

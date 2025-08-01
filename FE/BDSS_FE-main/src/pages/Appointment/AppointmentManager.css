@@ -23,14 +23,63 @@
   --neutral-600: #595959;
   --neutral-700: #424242;
   --neutral-800: #292929;
-  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;
   /* Thêm màu button mới */
   --btn-color: #ebe3fd;
   --btn-hover: #2196f3;
+}
+
+/* Blood Type Update Button Styling */
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid var(--neutral-200);
+}
+
+.user-header h3 {
+  margin: 0;
+  color: var(--primary);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.blood-type-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.blood-type-display {
+  font-weight: 600;
+  color: var(--primary-dark);
+  background-color: var(--neutral-100);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--neutral-200);
+}
+
+.blood-type-update-btn {
+  background-color: var(--blue);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.blood-type-update-btn:hover {
+  background-color: var(--blue-dark);
+  transform: none;
 }
 
 /* Main Container Styling */
@@ -51,8 +100,69 @@
   padding-bottom: 12px;
 }
 
+/* Search Container */
+.search-container {
+  max-width: 300px;
+  padding: 0 1rem;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 25px;
+  box-shadow: var(--shadow-md);
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.search-box:focus-within {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-lg);
+}
+
+.search-input {
+  width: 100%;
+  padding: 1rem 1.5rem 1rem 3rem;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  border-radius: 25px;
+  background: transparent;
+  color: var(--neutral-700);
+}
+
+.search-input::placeholder {
+  color: var(--neutral-400);
+  font-style: italic;
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  font-size: 1.2rem;
+  color: var(--neutral-400);
+  pointer-events: none;
+}
+
+.search-results-info {
+  margin-top: 0.75rem;
+  text-align: center;
+  color: var(--neutral-600);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.search-results-info span {
+  background-color: var(--neutral-100);
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  border: 1px solid var(--neutral-200);
+}
+
 .appointment-manager-container h2:after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 50%;
@@ -158,9 +268,9 @@
 }
 
 /* Status Styling */
-.status-pending, 
-.status-confirmed, 
-.status-complete, 
+.status-pending,
+.status-confirmed,
+.status-complete,
 .status-cancelled {
   display: inline-block;
   min-width: 100px;
@@ -178,7 +288,7 @@
   border: 1px solid rgba(242, 153, 0, 0.3);
 }
 
-.status-confirmed, 
+.status-confirmed,
 .status-complete {
   background-color: #e8f5e9;
   color: var(--green);
@@ -249,7 +359,7 @@
 
 /* Modal Styling */
 .modal-header {
-  background: #1d4a76;  /* Màu đặc thay vì gradient */
+  background: #1d4a76; /* Màu đặc thay vì gradient */
   color: white;
   border-radius: 8px 8px 0 0;
   padding: 1.5rem;
@@ -269,7 +379,7 @@
 
 /* Tạo đường gạch dưới tinh tế cho header */
 .modal-header::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 10%;
@@ -440,7 +550,7 @@ button.btn-secondary {
   .appointment-manager-container h2 {
     font-size: 2rem;
   }
-  
+
   .action-buttons button {
     min-width: 110px;
     padding: 0.625rem;
@@ -452,21 +562,52 @@ button.btn-secondary {
   .appointment-manager-container {
     padding: 1.5rem 1rem;
   }
-  
+
   .appointment-manager-container h2 {
     font-size: 1.8rem;
     margin-bottom: 1.5rem;
   }
-  
+
+  .search-container {
+    padding: 0 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .search-input {
+    padding: 0.875rem 1.25rem 0.875rem 2.75rem;
+    font-size: 0.95rem;
+  }
+
+  .search-icon {
+    left: 0.875rem;
+    font-size: 1.1rem;
+  }
+
+  .user-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .blood-type-section {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .blood-type-update-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+
   .appointment-table th,
   .appointment-table td {
     padding: 0.75rem 0.5rem;
     font-size: 0.9rem;
   }
-  
-  .status-pending, 
-  .status-confirmed, 
-  .status-complete, 
+
+  .status-pending,
+  .status-confirmed,
+  .status-complete,
   .status-cancelled {
     min-width: 80px;
     padding: 0.3rem 0.5rem;
@@ -478,16 +619,16 @@ button.btn-secondary {
   .appointment-manager-container h2 {
     font-size: 1.5rem;
   }
-  
+
   .detail-row {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .detail-row strong {
     margin-bottom: 0.3rem;
   }
-  
+
   .modal-title {
     font-size: 1.1rem;
   }

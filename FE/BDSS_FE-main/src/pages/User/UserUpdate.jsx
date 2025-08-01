@@ -51,7 +51,7 @@ export default function UserUpdate() {
           sex: user.sex || "",
           phoneNumber: user.phoneNumber || "",
           address: user.address || "",
-          bloodType: user.bloodType || "",
+          bloodType: user.bloodType ?? null,
           occupation: user.occupation || "",
           avatarUrl: user.avatarUrl || "",
         }));
@@ -148,6 +148,7 @@ export default function UserUpdate() {
       const updatedData = {
         ...formData,
         avatarUrl: uploadedUrl,
+        bloodType: formData.bloodType === "" ? null : formData.bloodType,
       };
 
       await axios.put(`${baseUrl}/users/${userId}`, updatedData, {
@@ -287,25 +288,6 @@ export default function UserUpdate() {
               onChange={handleChange}
               placeholder="Address"
             />
-          </div>
-
-          <div className="user-update-field">
-            <select
-              className="user-update-select"
-              name="bloodType"
-              value={formData.bloodType}
-              onChange={handleChange}
-            >
-              <option value="">Choose blood type</option>
-              <option value="A_POSITIVE">A+</option>
-              <option value="A_NEGATIVE">A-</option>
-              <option value="B_POSITIVE">B+</option>
-              <option value="B_NEGATIVE">B-</option>
-              <option value="O_POSITIVE">O+</option>
-              <option value="O_NEGATIVE">O-</option>
-              <option value="AB_POSITIVE">AB+</option>
-              <option value="AB_NEGATIVE">AB-</option>
-            </select>
           </div>
 
           <div className="user-update-field">

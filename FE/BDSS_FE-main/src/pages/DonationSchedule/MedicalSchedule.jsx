@@ -3,6 +3,7 @@ import axios from "../../helpers/axiosInstance";
 import { Modal, Button, Form } from "react-bootstrap";
 import "./MedicalSchedule.css";
 import { baseUrl } from "../../Utils/baseUrl";
+import Swal from "sweetalert2";
 
 export default function MedicalSchedule() {
   const [schedules, setSchedules] = useState([]);
@@ -130,7 +131,12 @@ export default function MedicalSchedule() {
         },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      alert("Schedule created successfully!");
+
+      await Swal.fire({
+        icon: "success",
+        title: "Schedule created successfully!",
+        confirmButtonColor: "#2563eb",
+      });
       setShowModal(false);
 
       const res = await axios.get(`${baseUrl}/api/schedule-donations/`, {
@@ -148,7 +154,12 @@ export default function MedicalSchedule() {
       });
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert("Failed to create schedule.");
+      await Swal.fire({
+        icon: "error",
+        title: "Failed to create schedule.",
+        text: err.response?.data?.message || err.message || "",
+        confirmButtonColor: "#2563eb",
+      });
     }
   };
 
@@ -160,7 +171,7 @@ export default function MedicalSchedule() {
         `${baseUrl}/api/schedule-donations/${editingId}`,
         {
           center: editForm.center,
-
+          bloodNeed: bloodNeedFiltered,
           address: editForm.address,
           date: formatDate(editForm.date),
           numberOfDonor: Number(editForm.numberOfDonor),
@@ -168,7 +179,12 @@ export default function MedicalSchedule() {
         },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
-      alert("Schedule updated!");
+
+      await Swal.fire({
+        icon: "success",
+        title: "Schedule updated!",
+        confirmButtonColor: "#2563eb",
+      });
       setShowModal(false);
       setEditingId(null);
 
@@ -178,24 +194,53 @@ export default function MedicalSchedule() {
       setSchedules(res.data);
     } catch (err) {
       console.error("Update error:", err.response?.data || err.message);
-      alert(
-        "Failed to update schedule.\n" + (err.response?.data?.message || "")
-      );
+      Swal.fire({
+        icon: "error",
+        title: "Failed to update schedule.",
+        text: err.response?.data?.message || err.message || "",
+        confirmButtonColor: "#2563eb",
+      });
     }
   };
 
   const handleDelete = async (scheduleId) => {
-    if (!window.confirm("Are you sure you want to delete this schedule?"))
-      return;
-    try {
-      await axios.delete(`${baseUrl}/api/schedule-donations/${scheduleId}`, {
-        headers: { Authorization: `Bearer ${accessToken}` },
-      });
-      setSchedules((prev) => prev.filter((s) => s.scheduleId !== scheduleId));
-    } catch (err) {
-      console.error("Delete error:", err.response?.data || err.message);
-      alert("Failed to delete schedule.");
-    }
+    Swal.fire({
+      icon: "warning",
+      title: "Delete Confirmation",
+      text: "Are you sure you want to delete this schedule?",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.delete(
+            `${baseUrl}/api/schedule-donations/${scheduleId}`,
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            }
+          );
+          setSchedules((prev) =>
+            prev.filter((s) => s.scheduleId !== scheduleId)
+          );
+          Swal.fire(
+            "Deleted!",
+            "The schedule was removed successfully.",
+            "success"
+          );
+        } catch (err) {
+          console.error("Delete error:", err.response?.data || err.message);
+          await Swal.fire({
+            icon: "error",
+            title: "Failed to delete schedule.",
+            text: err.response?.data?.message || err.message || "",
+            confirmButtonColor: "#2563eb",
+          });
+        }
+      }
+    });
   };
 
   const renderBloodNeed = () => {
@@ -274,7 +319,7 @@ export default function MedicalSchedule() {
             <th>Center</th>
             <th>Location</th>
             <th>Blood Need</th>
-            <th width= "10%">Date</th>
+            <th width="10%">Date</th>
             <th>Time</th>
             <th>Number of Donor</th>
             <th></th>
@@ -301,9 +346,11 @@ export default function MedicalSchedule() {
               <td>{s.donorCount}</td>
               <td>
                 <div className="schedule-actions">
-                  <button onClick={() => handleEditClick(s)}>Update</button>
+                  <button onClick={() => handleEditClick(s)}>
+                    Update Schedule
+                  </button>
                   <button onClick={() => handleDelete(s.scheduleId)}>
-                    Delete
+                    Delete Schedule
                   </button>
                 </div>
               </td>

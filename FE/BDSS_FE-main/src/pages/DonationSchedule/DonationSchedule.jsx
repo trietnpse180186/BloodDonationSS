@@ -8,6 +8,9 @@ import { peopleFill } from "../../icons/icon";
 import axios from "../../helpers/axiosInstance";
 import getUserById, { getUserIdFromToken } from "../../helpers/getUserById";
 import { baseUrl } from "../../Utils/baseUrl";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 
 export default function DonationSchedule() {
   const [searchName, setSearchName] = useState("");
@@ -81,7 +84,6 @@ export default function DonationSchedule() {
       "sex",
       "phoneNumber",
       "address",
-      "bloodType",
     ];
     return requiredFields.every(
       (field) => user[field] && user[field] !== "" && user[field] !== null
@@ -90,10 +92,20 @@ export default function DonationSchedule() {
 
   const handleBooking = (schedule) => {
     if (!isProfileComplete(userInfo)) {
-      alert(
-        "Please update your profile with all required information before booking a donation schedule."
-      );
-      navigate(`/user/update/${userInfo.userId}`);
+      Swal.fire({
+        icon: "warning",
+        title: "Incomplete Profile",
+        text: "Please update your profile with all required information before booking a donation schedule.",
+        confirmButtonText: "OK",
+        confirmButtonColor: "#2563eb",
+        customClass: {
+          popup: "swal2-modal-custom",
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate(`/user/update/${userInfo.userId}`);
+        }
+      });
       return;
     }
     navigate(
@@ -104,14 +116,15 @@ export default function DonationSchedule() {
   };
 
   function formatTimeHM(timeStr) {
-  if (!timeStr) return "";
-  const [h, m] = timeStr.split(":");
-  return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
-}
+    if (!timeStr) return "";
+    const [h, m] = timeStr.split(":");
+    return `${h.padStart(2, "0")}:${m.padStart(2, "0")}`;
+  }
 
   return (
     <>
       <Navbar />
+      <ToastContainer position="top-center" autoClose={2500} />
       <div className="donation-schedule-page">
         <h1>Donation Schedule</h1>
 
@@ -263,9 +276,25 @@ export default function DonationSchedule() {
                                 <strong>Time slots:</strong>
                                 <ul style={{ margin: 0, paddingLeft: 16 }}>
                                   {schedule.timeSlots.map((slot) => (
-                                    <a key={slot.id}>
-                                      {formatTimeHM(slot.startTime)} - {formatTimeHM(slot.endTime)}
-                                    </a>
+                                    <span
+                                      key={slot.id}
+                                      style={{
+                                        display: "inline-block",
+                                        background: "#e3f2fd",
+                                        color: "#1976d2",
+                                        borderRadius: 8,
+                                        padding: "2px 12px",
+                                        margin: "2px 6px 2px 0",
+                                        fontWeight: 600,
+                                        fontSize: "1em",
+                                        border: "1px solid #90caf9",
+                                        boxShadow:
+                                          "0 1px 2px rgba(25, 118, 210, 0.08)",
+                                      }}
+                                    >
+                                      {formatTimeHM(slot.startTime)} -{" "}
+                                      {formatTimeHM(slot.endTime)}
+                                    </span>
                                   ))}
                                 </ul>
                               </li>
@@ -275,7 +304,7 @@ export default function DonationSchedule() {
                           <div className="schedule-total">
                             <div className="schedule-total-icon">
                               {peopleFill}
-                              <span>Registration Status</span>
+                              <span>Number of Donor</span>
                             </div>
 
                             <div className="schedule-total-count">
@@ -295,7 +324,7 @@ export default function DonationSchedule() {
                                   : {}
                               }
                             >
-                              Book now
+                              Donate Blood
                             </button>
 
                             {eligibility === false && (
@@ -308,7 +337,7 @@ export default function DonationSchedule() {
                               >
                                 You are not eligible to donate blood at this
                                 time. Please wait until the required interval
-                                has passed.
+                                has passed or complete your previous donation.
                               </div>
                             )}
 
