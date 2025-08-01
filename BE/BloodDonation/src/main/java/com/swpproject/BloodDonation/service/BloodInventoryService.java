@@ -157,6 +157,10 @@ public class BloodInventoryService {
         Double remainingRequest = requestedQuantity;
         LocalDateTime now = LocalDateTime.now();
 
+        // Định dạng ngày giờ đẹp hơn
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String formattedDateTime = now.format(formatter);
+
         for (BloodInventory unit : availableUnits) {
             if (remainingRequest <= 0) break;
 
@@ -181,14 +185,14 @@ public class BloodInventoryService {
                     usedPortion.setStatus("USED");
                     usedPortion.setLastUpdatedTime(now);
                     usedPortion.setLastUpdatedBy(updatedBy);
-                    usedPortion.setNotes("Used " + remainingRequest + "ml for: " + request.getReason() + " at " + now);
+                    usedPortion.setNotes("Used " + remainingRequest + "ml for: " + request.getReason() + " on " + formattedDateTime);
                     inventoryRepository.save(usedPortion);
                 }
 
                 unit.setLastUpdatedBy(updatedBy);
                 unit.setLastUpdatedTime(now);
                 unit.setNotes((unit.getNotes() != null ? unit.getNotes() : "") + "\nUsed " + remainingRequest +
-                        "ml for: " + request.getReason() + " at " + now);
+                        "ml for: " + request.getReason() + " on " + formattedDateTime);
 
                 remainingRequest = 0.0;
             } else {
@@ -198,7 +202,7 @@ public class BloodInventoryService {
                 unit.setUsedQuantity(unit.getQuantity());
                 unit.setQuantity(0.0);
                 unit.setNotes((unit.getNotes() != null ? unit.getNotes() : "") + "\nFully used for: " +
-                        request.getReason() + " at " + now);
+                        request.getReason() + " on " + formattedDateTime);
                 unit.setQuantity(0.0);
                 unit.setLastUpdatedBy(updatedBy);
                 unit.setLastUpdatedTime(now);

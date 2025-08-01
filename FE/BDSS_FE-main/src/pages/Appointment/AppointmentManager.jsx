@@ -10,11 +10,17 @@ import {
 } from "../../helpers/bloodRegister";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Swal from "sweetalert2";
 
 export default function AppointmentManager() {
   const [appointments, setAppointments] = useState([]);
   const [surveyData, setSurveyData] = useState({ show: false, data: [] });
   const [detailData, setDetailData] = useState({ show: false, data: {} });
+  const [bloodTypeUpdateData, setBloodTypeUpdateData] = useState({
+    show: false,
+    user: null,
+  });
+  const [searchTerm, setSearchTerm] = useState("");
   const accessToken = sessionStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -64,6 +70,16 @@ export default function AppointmentManager() {
     acc[key].push(item);
     return acc;
   }, {});
+
+  // Filter grouped data based on search term
+  const filteredGrouped = Object.entries(grouped).filter(([key, items]) => {
+    const name = items[0]?.user?.fullName || "";
+    const email = items[0]?.user?.email || "";
+    return (
+      name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
 
   const handleUpdate = async (item) => {
     let nextStatus = "";
@@ -129,7 +145,11 @@ export default function AppointmentManager() {
       setSurveyData({ show: true, data: res.data });
     } catch (error) {
       console.error("Error fetching survey data:", error);
-      alert("Load Survey Failed!");
+      await Swal.fire({
+        icon: "error",
+        title: "Load Survey Failed!",
+        confirmButtonColor: "#2563eb",
+      });
     }
   };
   const handleDetail = (item) => {
@@ -151,63 +171,70 @@ export default function AppointmentManager() {
   };
 
   const handleCancel = async (item) => {
-    const confirm = window.confirm(
-      "Are you sure you want to cancel this appointment?"
-    );
-    if (!confirm) return;
-
-    try {
-      await axios.put(
-        `${baseUrl}/api/booking/${item.bookingId}`,
-        { status: "CANCELLED" },
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-
-      setAppointments((prev) =>
-        prev.map((appt) =>
-          appt.bookingId === item.bookingId
-            ? { ...appt, status: "CANCELLED" }
-            : appt
-        )
-      );
-
-      const bookingRes = await axios.get(
-        `${baseUrl}/api/booking/${item.bookingId}`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-
-      const userId = bookingRes.data?.user?.userID;
-
-      if (userId) {
-        await axios.post(
-          `${baseUrl}/notifications`,
+    Swal.fire({
+      icon: "warning",
+      title: "Reject Confirmation",
+      text: "Are you sure you want to reject this appointment?",
+      showCancelButton: true,
+      confirmButtonText: "Reject Appointment",
+      cancelButtonText: "Back",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then(async (result) => {
+      if (!result.isConfirmed) return;
+      try {
+        await axios.put(
+          `${baseUrl}/api/booking/${item.bookingId}`,
+          { status: "CANCELLED" },
           {
-            title: "Appointment Cancelled",
-            detail:
-              "Your blood donation appointment has been cancelled by the staff. Reason: You do not meet the eligibility requirements for blood donation.",
-            donorId: userId,
-            date: new Date().toISOString().slice(0, 10),
-            time: new Date().toTimeString().slice(0, 5),
-            type: "NOTIFICATION",
-            priority: "NORMAL",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
+            headers: { Authorization: `Bearer ${accessToken}` },
           }
         );
-      } else {
-        console.warn("User ID not found for notification.");
+
+        setAppointments((prev) =>
+          prev.map((appt) =>
+            appt.bookingId === item.bookingId
+              ? { ...appt, status: "CANCELLED" }
+              : appt
+          )
+        );
+
+        const bookingRes = await axios.get(
+          `${baseUrl}/api/booking/${item.bookingId}`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+
+        const userId = bookingRes.data?.user?.userID;
+
+        if (userId) {
+          await axios.post(
+            `${baseUrl}/notifications`,
+            {
+              title: "Appointment Cancelled",
+              detail:
+                "Your blood donation appointment has been cancelled by the staff. Reason: You do not meet the eligibility requirements for blood donation.",
+              donorId: userId,
+              date: new Date().toISOString().slice(0, 10),
+              time: new Date().toTimeString().slice(0, 5),
+              type: "NOTIFICATION",
+              priority: "NORMAL",
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+        } else {
+          console.warn("User ID not found for notification.");
+        }
+      } catch (error) {
+        console.error("Cancel or notification failed:", error);
+        toast.error("Cancel Failed!");
       }
-    } catch (error) {
-      console.error("Cancel or notification failed:", error);
-      toast.error("Cancel Failed!");
-    }
+    });
   };
 
   const handleRestore = async (item) => {
@@ -231,61 +258,141 @@ export default function AppointmentManager() {
     }
   };
 
+  const handleBloodTypeUpdate = (user) => {
+    setBloodTypeUpdateData({ show: true, user: user });
+  };
+
+  const updateUserBloodType = async (userId, bloodType) => {
+    try {
+      await axios.put(
+        `${baseUrl}/users/${userId}`,
+        { bloodType: bloodType },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+
+      // Update the appointments state to reflect the new blood type
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt.user?.userID === userId || appt.user?.userId === userId
+            ? { ...appt, user: { ...appt.user, bloodType: bloodType } }
+            : appt
+        )
+      );
+
+      toast.success("Blood type updated successfully!");
+      setBloodTypeUpdateData({ show: false, user: null });
+    } catch (error) {
+      console.error("Error updating blood type:", error);
+      toast.error("Failed to update blood type!");
+    }
+  };
+
   return (
     <div className="appointment-manager-container">
       <h2>Donor Appointment Details</h2>
-      <div className="appointment-manager">
-        {Object.entries(grouped).map(([key, items]) => (
-          <div className="appointment-card" key={key}>
-            <h3>{key}</h3>
-            <div className="appointment-table">
-              <Table bordered responsive>
-                <thead>
-                  <tr>
-                    <th>Center</th>
-                    <th>Booking Time</th>
-                    <th>Status</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {items.map((item) => (
-                    <tr key={item.bookingId}>
-                      <td>{item.center}</td>
-                      <td>{formatDateTime(item.bookingTime)}</td>
-                      <td>{renderStatus(item.status)}</td>
-                      <td className="action-buttons">
-                        <button onClick={() => handleDetail(item)}>
-                          View Details
-                        </button>
-                        <button onClick={() => handleSurvey(item)}>
-                          View Survey
-                        </button>
-                        {(item.status === "PENDING" ||
-                          item.status === "APPROVED") && (
-                          <button onClick={() => handleUpdate(item)}>
-                            Update
-                          </button>
-                        )}
-                        {item.status === "PENDING" && (
-                          <button onClick={() => handleCancel(item)}>
-                            Cancel
-                          </button>
-                        )}
-                        {item.status === "CANCELLED" && (
-                          <button onClick={() => handleRestore(item)}>
-                            Restore
-                          </button>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </div>
-          </div>
-        ))}
+
+      {/* Search Bar */}
+      <div className="search-container">
+        <div className="search-box">
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+        </div>
+        <div className="search-results-info">
+          {searchTerm && (
+            <span>
+              Found {filteredGrouped.length} user(s) matching "{searchTerm}"
+            </span>
+          )}
+        </div>
       </div>
+
+      <div className="appointment-manager">
+        {filteredGrouped.length === 0 && searchTerm ? (
+          <div className="no-results">
+            <div className="no-results-icon">🔍</div>
+            <h3>No Results Found</h3>
+            <p>No users found matching "{searchTerm}"</p>
+            <p>Try searching with a different name or email.</p>
+          </div>
+        ) : (
+          filteredGrouped.map(([key, items]) => (
+            <div className="appointment-card" key={key}>
+              <div className="user-header">
+                <h3>{key}</h3>
+                <div className="blood-type-section">
+                  <span className="blood-type-display">
+                    Blood Type: {items[0]?.user?.bloodType || "Unknown"}
+                  </span>
+                  <button
+                    className="blood-type-update-btn"
+                    onClick={() => handleBloodTypeUpdate(items[0]?.user)}
+                    title="Update Blood Type"
+                  >
+                    ✏️ Update Blood Type
+                  </button>
+                </div>
+              </div>
+              <div className="appointment-table">
+                <Table bordered responsive>
+                  <thead>
+                    <tr>
+                      <th>Center</th>
+                      <th>Booking Time</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item) => (
+                      <tr key={item.bookingId}>
+                        <td>{item.center}</td>
+                        <td>{formatDateTime(item.bookingTime)}</td>
+                        <td>{renderStatus(item.status)}</td>
+                        <td className="action-buttons">
+                          <button onClick={() => handleDetail(item)}>
+                            View Details
+                          </button>
+                          <button onClick={() => handleSurvey(item)}>
+                            View Survey
+                          </button>
+                          {item.status === "PENDING" && (
+                            <button onClick={() => handleUpdate(item)}>
+                              Approve
+                            </button>
+                          )}
+                          {item.status === "APPROVED" && (
+                            <button onClick={() => handleUpdate(item)}>
+                              Complete
+                            </button>
+                          )}
+                          {item.status === "PENDING" && (
+                            <button onClick={() => handleCancel(item)}>
+                              Reject
+                            </button>
+                          )}
+                          {item.status === "CANCELLED" && (
+                            <button onClick={() => handleRestore(item)}>
+                              Restore
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
       <Modal
         show={surveyData.show}
         onHide={() => setSurveyData({ show: false, data: [] })}
@@ -368,6 +475,15 @@ export default function AppointmentManager() {
               <div className="detail-row">
                 <strong>Email:</strong> {detailData.data.user?.email}
               </div>
+              <div className="detail-row">
+                <strong>Phone:</strong> {detailData.data.user?.phoneNumber}
+              </div>
+              <div className="detail-row">
+                <strong>Booking Time:</strong> {detailData.data.bookingTime}
+              </div>
+              <div className="detail-row">
+                <strong>Status:</strong> {detailData.data.status}
+              </div>
               <div className="detail-card">
                 <div className="detail-row">
                   <strong>Center:</strong> {detailData.data.center}
@@ -382,12 +498,6 @@ export default function AppointmentManager() {
                   <strong>Time:</strong> {detailData.data.timeSlot}
                 </div>
               </div>
-              <div className="detail-row">
-                <strong>Booking Time:</strong> {detailData.data.bookingTime}
-              </div>
-              <div className="detail-row">
-                <strong>Status:</strong> {detailData.data.status}
-              </div>
             </div>
           )}
         </Modal.Body>
@@ -400,6 +510,75 @@ export default function AppointmentManager() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Blood Type Update Modal */}
+      <Modal
+        show={bloodTypeUpdateData.show}
+        onHide={() => setBloodTypeUpdateData({ show: false, user: null })}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Update Blood Type</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {bloodTypeUpdateData.user && (
+            <div>
+              <div className="mb-3">
+                <strong>User:</strong> {bloodTypeUpdateData.user.fullName}
+              </div>
+              <div className="mb-3">
+                <strong>Email:</strong> {bloodTypeUpdateData.user.email}
+              </div>
+              <div className="mb-3">
+                <strong>Current Blood Type:</strong>{" "}
+                {bloodTypeUpdateData.user.bloodType || "Unknown"}
+              </div>
+              <div className="mb-3">
+                <label htmlFor="bloodTypeSelect">
+                  <strong>Select New Blood Type:</strong>
+                </label>
+                <select
+                  id="bloodTypeSelect"
+                  className="form-control mt-2"
+                  defaultValue={bloodTypeUpdateData.user.bloodType || ""}
+                  onChange={(e) => {
+                    const selectedBloodType = e.target.value;
+                    document.getElementById("confirmBloodTypeBtn").onclick =
+                      () => {
+                        updateUserBloodType(
+                          bloodTypeUpdateData.user.userID ||
+                            bloodTypeUpdateData.user.userId,
+                          selectedBloodType
+                        );
+                      };
+                  }}
+                >
+                  <option value="">Unknown</option>
+                  <option value="A_POSITIVE">A+</option>
+                  <option value="A_NEGATIVE">A-</option>
+                  <option value="B_POSITIVE">B+</option>
+                  <option value="B_NEGATIVE">B-</option>
+                  <option value="AB_POSITIVE">AB+</option>
+                  <option value="AB_NEGATIVE">AB-</option>
+                  <option value="O_POSITIVE">O+</option>
+                  <option value="O_NEGATIVE">O-</option>
+                </select>
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setBloodTypeUpdateData({ show: false, user: null })}
+          >
+            Cancel
+          </Button>
+          <Button id="confirmBloodTypeBtn" variant="primary" onClick={() => {}}>
+            Update Blood Type
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
       <ToastContainer />
     </div>
   );

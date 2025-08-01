@@ -83,7 +83,7 @@ public class DonationReportService {
 
         // Lấy tất cả các lần hiến máu đã hoàn thành
         List<BookingDonation> completedDonations = bookingDonationRepository.findByDonor(user).stream()
-                .filter(booking -> booking.getStatus() == Status.COMPLETED)
+                .filter(booking -> booking.getStatus() == Status.COMPLETED || booking.getStatus()== Status.APPROVED || booking.getStatus()== Status.PENDING)
                 .collect(Collectors.toList());
 
         // Nếu chưa có lần hiến máu nào trước đây, người dùng có thể hiến máu

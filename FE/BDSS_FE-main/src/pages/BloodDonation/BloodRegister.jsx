@@ -108,7 +108,6 @@ export default function BloodRegister() {
   };
 
   function formatTimeRange(start, end) {
-    // start, end có thể là "08:00:00" hoặc "08:00"
     const toHHmm = (t) => {
       if (!t) return "";
       const [h, m] = t.split(":");
@@ -210,9 +209,7 @@ export default function BloodRegister() {
             </div>
 
             <div className="blood-form-section">
-              <h3 className="blood-form-section-title">
-                Time slots for the selected location
-              </h3>
+              <h3 className="blood-form-section-title">Select Time</h3>
               {!selectedLocation ? (
                 <div className="blood-form-empty-message">
                   Please select a location first

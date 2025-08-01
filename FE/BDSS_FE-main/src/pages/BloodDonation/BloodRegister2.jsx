@@ -54,7 +54,7 @@ export default function BloodRegister2() {
         rel="stylesheet"
       ></link>
       <div className="blood-form-container">
-        <h2 className="bloodform-title">Đặt lịch hiến máu</h2>
+        <h2 className="bloodform-title">Book Donation</h2>
         <div className="booking-progress-survey">
           <div className="progress-step completed">1. Select Date</div>
           <div className="progress-step active">2. Complete Survey</div>
@@ -62,10 +62,10 @@ export default function BloodRegister2() {
         </div>
         <div className="bloodform-steps">
           <p className="bloodform-step ">
-            <i className="bi bi-calendar-check-fill"></i>Thời gian & Địa điểm
+            <i className="bi bi-calendar-check-fill"></i> Time and Location
           </p>
           <p className="bloodform-step active">
-            <i className="bi bi-calendar2"></i>Phiếu đăng ký hiến máu
+            <i className="bi bi-calendar2"></i> Health Survey
           </p>
         </div>
         <div className="bloodform-body2">
@@ -129,11 +129,8 @@ export default function BloodRegister2() {
               <Link to="/blood-registration">
                 <button className="button-style">Back</button>
               </Link>
-              <button
-                className="button-style"
-                onClick={handleSubmit}
-              >
-                Confirm
+              <button className="button-style" onClick={handleSubmit}>
+                Next
               </button>
             </div>
           </div>

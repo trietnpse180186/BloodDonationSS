@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UseBloodHistoryModal from "../../components/UseBloodHistoryModal";
+import CustomModal from "../../components/CustomModal";
 import axios from "axios";
 import {
   Container,
@@ -12,7 +13,7 @@ import {
   Tabs,
   Tab,
   Badge,
-  Modal,
+  Button,
 } from "react-bootstrap";
 import {
   Chart as ChartJS,
@@ -290,7 +291,7 @@ export default function BloodInventory() {
     ),
     datasets: [
       {
-        label: "Received This Month",
+        label: "Available Quantity",
         data: inventoryData.map((item) => item.receivedThisMonth),
         borderColor: "#4CAF50",
         backgroundColor: "rgba(76, 175, 80, 0.2)",
@@ -367,78 +368,79 @@ export default function BloodInventory() {
       <UseBloodHistoryModal
         show={showHistoryModal}
         onHide={() => setShowHistoryModal(false)}
+        dialogClassName="usage-history-modal-wide"
       />
 
-      <Modal show={useBloodModal} onHide={() => setUseBloodModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Use Blood</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="mb-3">
-            <label className="form-label">Blood Type</label>
-            <select
-              className="form-select"
-              value={useBloodForm.bloodType}
-              onChange={(e) =>
-                setUseBloodForm((f) => ({ ...f, bloodType: e.target.value }))
+      <CustomModal
+        show={useBloodModal}
+        onHide={() => setUseBloodModal(false)}
+        size="medium"
+        headerClass="primary"
+        title="Use Blood"
+        footer={
+          <div className="d-flex gap-2">
+            <Button variant="secondary" onClick={() => setUseBloodModal(false)}>
+              Close
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleUseBlood}
+              disabled={
+                !useBloodForm.bloodType ||
+                !useBloodForm.quantity ||
+                !useBloodForm.reason
               }
             >
-              <option value="">Select Blood Type...</option>
-              {Object.keys(bloodTypeDisplay).map((type) => (
-                <option key={type} value={type}>
-                  {bloodTypeDisplay[type]}
-                </option>
-              ))}
-            </select>
+              Use Blood
+            </Button>
           </div>
-          <div className="mb-3">
-            <label className="form-label">Quantity (ml)</label>
-            <input
-              type="number"
-              className="form-control"
-              value={useBloodForm.quantity}
-              onChange={(e) =>
-                setUseBloodForm((f) => ({ ...f, quantity: e.target.value }))
-              }
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Reason</label>
-            <input
-              type="text"
-              className="form-control"
-              value={useBloodForm.reason}
-              onChange={(e) =>
-                setUseBloodForm((f) => ({ ...f, reason: e.target.value }))
-              }
-            />
-          </div>
-          {useBloodResult && (
-            <Alert variant={useBloodResult.success ? "success" : "danger"}>
-              {useBloodResult.message}
-            </Alert>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <button
-            className="btn btn-secondary"
-            onClick={() => setUseBloodModal(false)}
-          >
-            Close
-          </button>
-          <button
-            className="btn btn-primary"
-            onClick={handleUseBlood}
-            disabled={
-              !useBloodForm.bloodType ||
-              !useBloodForm.quantity ||
-              !useBloodForm.reason
+        }
+      >
+        <div className="mb-3">
+          <label className="form-label">Blood Type</label>
+          <select
+            className="form-select"
+            value={useBloodForm.bloodType}
+            onChange={(e) =>
+              setUseBloodForm((f) => ({ ...f, bloodType: e.target.value }))
             }
           >
-            Use Blood
-          </button>
-        </Modal.Footer>
-      </Modal>
+            <option value="">Select Blood Type...</option>
+            {Object.keys(bloodTypeDisplay).map((type) => (
+              <option key={type} value={type}>
+                {bloodTypeDisplay[type]}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Quantity (ml)</label>
+          <input
+            type="number"
+            className="form-control"
+            value={useBloodForm.quantity}
+            onChange={(e) =>
+              setUseBloodForm((f) => ({ ...f, quantity: e.target.value }))
+            }
+          />
+        </div>
+        <div className="mb-3">
+          <label className="form-label">Reason</label>
+          <input
+            type="text"
+            className="form-control"
+            value={useBloodForm.reason}
+            onChange={(e) =>
+              setUseBloodForm((f) => ({ ...f, reason: e.target.value }))
+            }
+          />
+        </div>
+        {useBloodResult && (
+          <Alert variant={useBloodResult.success ? "success" : "danger"}>
+            {useBloodResult.message}
+          </Alert>
+        )}
+      </CustomModal>
 
       <Row className="mb-4">
         <Col xs={12} md={6} lg={3}>
@@ -457,87 +459,77 @@ export default function BloodInventory() {
             </Card.Body>
           </Card>
         </Col>
-        <Modal 
-          show={detailModal.show} 
-          onHide={handleCloseDetail} 
-          size="xl" 
-          centered
-          dialogClassName="blood-detail-modal"
-          className="detail-modal"
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>
-              Detail:{" "}
-              {detailModal.bloodType && bloodTypeDisplay[detailModal.bloodType]}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {detailLoading ? (
-              <div className="text-center">
-                <Spinner animation="border" />
-              </div>
-            ) : detailError ? (
-              <Alert variant="danger">{detailError}</Alert>
-            ) : (
-              <div className="table-responsive">
-                <Table striped bordered hover>
-                  <thead>
-                    <tr>
-                      <th>Blood Type</th>
-                      <th>Received Date</th>
-                      <th>Expiry Date</th>
-                      <th>Quantity</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {detailData.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="text-center">
-                          No data available
-                        </td>
-                      </tr>
-                    ) : (
-                      detailData.map((d) => (
-                        <tr key={d.id}>
-                          <td>
-                            {bloodTypeDisplay[d.bloodType] || d.bloodType}
-                          </td>
-                          <td>{formatDateDMY(d.receivedDate)}</td>
-                          <td>{formatDateDMY(d.expiryDate)}</td>
-                          <td>{d.quantity}ml</td>
-                          <td>{d.status}</td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </Table>
-              </div>
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <button className="btn btn-secondary" onClick={handleCloseDetail}>
+        <CustomModal
+          show={detailModal.show}
+          onHide={handleCloseDetail}
+          size="xlarge"
+          headerClass="primary"
+          title={`Detail: ${
+            detailModal.bloodType && bloodTypeDisplay[detailModal.bloodType]
+          }`}
+          footer={
+            <Button variant="secondary" onClick={handleCloseDetail}>
               Close
-            </button>
-          </Modal.Footer>
-        </Modal>
+            </Button>
+          }
+        >
+          {detailLoading ? (
+            <div className="text-center">
+              <Spinner animation="border" />
+            </div>
+          ) : detailError ? (
+            <Alert variant="danger">{detailError}</Alert>
+          ) : (
+            <div className="table-responsive">
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Blood Type</th>
+                    <th>Received Date</th>
+                    <th>Expiry Date</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detailData.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="text-center">
+                        No data available
+                      </td>
+                    </tr>
+                  ) : (
+                    detailData.map((d) => (
+                      <tr key={d.id}>
+                        <td>{bloodTypeDisplay[d.bloodType] || d.bloodType}</td>
+                        <td>{formatDateDMY(d.receivedDate)}</td>
+                        <td>{formatDateDMY(d.expiryDate)}</td>
+                        <td>{d.quantity}ml</td>
+                        <td>{d.status}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </Table>
+            </div>
+          )}
+        </CustomModal>
 
         <Col xs={12} md={6} lg={3}>
           <Card className="dashboard-card">
             <Card.Body>
               <div className="dashboard-card-content">
-                <div className="dashboard-card-icon expiring">
-                  <FaTriangleExclamation />
+                <div className="dashboard-card-icon received">
+                  <FaArrowTrendUp />
                 </div>
                 <div className="dashboard-card-stats">
-                  <h3>{totalExpiringUnits}</h3>
-                  <p>Expiring Units</p>
+                  <h3>{totalReceivedThisMonth.toFixed(1)} ml</h3>
+                  <p>Available Quantity</p>
                 </div>
               </div>
             </Card.Body>
           </Card>
         </Col>
-
         <Col xs={12} md={6} lg={3}>
           <Card className="dashboard-card">
             <Card.Body>
@@ -558,12 +550,12 @@ export default function BloodInventory() {
           <Card className="dashboard-card">
             <Card.Body>
               <div className="dashboard-card-content">
-                <div className="dashboard-card-icon received">
-                  <FaArrowTrendUp />
+                <div className="dashboard-card-icon expiring">
+                  <FaTriangleExclamation />
                 </div>
                 <div className="dashboard-card-stats">
-                  <h3>{totalReceivedThisMonth.toFixed(1)} ml</h3>
-                  <p>Received This Month</p>
+                  <h3>{totalExpiringUnits}</h3>
+                  <p>Expiring Units</p>
                 </div>
               </div>
             </Card.Body>
@@ -704,14 +696,12 @@ export default function BloodInventory() {
                 <Table striped hover className="inventory-table">
                   <thead>
                     <tr>
-                      <th>Blood Type</th>
-                      <th>Total Quantity (L)</th>
-                      <th>Available Quantity (L)</th>
-                      <th>Available Units</th>
-                      <th>Expiring Units</th>
+                      <th width="10%">Blood Type</th>
+                      <th>Available Quantity (ml)</th>
+                      <th width="13%">Available Units</th>
+                      <th width="13%">Expiring Units</th>
                       <th>Used This Month (ml)</th>
-                      <th>Received This Month (L)</th>
-                      <th>Status</th>
+                      <th width="8%">Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -729,7 +719,6 @@ export default function BloodInventory() {
                             {bloodTypeDisplay[item.bloodType] || item.bloodType}
                           </Badge>
                         </td>
-                        <td>{item.totalQuantity.toFixed(1)}</td>
                         <td>{item.availableQuantity.toFixed(1)}</td>
                         <td>{item.availableUnits}</td>
                         <td>
@@ -749,7 +738,6 @@ export default function BloodInventory() {
                               ].amount.toFixed(1)
                             : 0}
                         </td>
-                        <td>{item.receivedThisMonth.toFixed(1)}</td>
                         <td>
                           {item.availableUnits < 5 ? (
                             <Badge bg="danger">Used up</Badge>
@@ -773,4 +761,3 @@ export default function BloodInventory() {
     </Container>
   );
 }
-

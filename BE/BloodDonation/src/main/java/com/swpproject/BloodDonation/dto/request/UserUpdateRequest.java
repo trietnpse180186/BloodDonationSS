@@ -1,6 +1,7 @@
 package com.swpproject.BloodDonation.dto.request;
 
 import com.swpproject.BloodDonation.enums.BloodType;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class UserUpdateRequest {
     @Size(max = 200, message = "Address cannot exceed 200 characters")
     private String address;
 
+    @Nullable
     private BloodType bloodType;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
