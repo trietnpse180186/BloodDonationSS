@@ -51,4 +51,21 @@ public class BookingDonation {
     @ManyToOne
     @JoinColumn(name = "DonorId")
     private User donor;
+    @Column(name = "check_in_code")
+    private String checkInCode;
+
+    @Column(name = "check_in_time")
+    private LocalDateTime checkInTime;
+
+    @Column(name = "check_in_by")
+    private String checkInBy;
+
+    @Column(name = "check_out_time")
+    private LocalDateTime checkOutTime;
+
+    @Column(name = "check_out_by")
+    private String checkOutBy;
+
+    @Column(name = "check_out_notes")
+    private String checkOutNotes;
 }

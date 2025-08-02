@@ -8,5 +8,6 @@ public enum EmergencyDonationStatus {
     CONFIRMED,   // Nhân viên đã xác nhận người hiến sẽ đến
     COMPLETED,   // Đã hiến máu thành công
     NO_SHOW,     // Không đến theo lịch hẹn
-    CANCELLED    // Đã hủy đăng ký
+    CANCELLED,    // Đã hủy đăng ký
+    REJECTED     // Đăng ký bị từ chối
 }

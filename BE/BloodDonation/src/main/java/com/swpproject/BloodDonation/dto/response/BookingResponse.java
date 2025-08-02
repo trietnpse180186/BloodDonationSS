@@ -26,4 +26,10 @@ public class BookingResponse {
     private User user;
     private LocalDateTime bookingTime;
     private String formattedBookingTime; // thoi gian dat lich duoc định dạng
+    private String checkInCode;
+    private LocalDateTime checkInTime;
+    private String checkInBy;
+    private LocalDateTime checkOutTime;
+    private String checkOutBy;
+    private String checkOutNotes;
 }

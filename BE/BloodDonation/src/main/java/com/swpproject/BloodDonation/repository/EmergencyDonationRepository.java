@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface EmergencyDonationRepository extends JpaRepository<EmergencyDonation, String> {
@@ -52,4 +53,8 @@ public interface EmergencyDonationRepository extends JpaRepository<EmergencyDona
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate
     );
+
+    Optional<EmergencyDonation> findByCheckInCode(String checkInCode);
+    boolean existsByCheckInCode(String checkInCode);
+    List<EmergencyDonation> findByStatusAndCheckInDeadlineBefore(EmergencyDonationStatus status, LocalDateTime deadline);
 }
