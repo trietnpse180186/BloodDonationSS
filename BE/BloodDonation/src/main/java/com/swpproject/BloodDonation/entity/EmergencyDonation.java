@@ -34,6 +34,7 @@ public class EmergencyDonation {
 
     private LocalDateTime donationTime; // Thời gian hiến máu thực tế
 
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private EmergencyDonationStatus status = EmergencyDonationStatus.PENDING;
 
@@ -45,9 +46,30 @@ public class EmergencyDonation {
     @Column(columnDefinition = "NVARCHAR(500)")
     private String staffNotes; // Ghi chú từ nhân viên
 
-    @ManyToOne
-    @JoinColumn(name = "last_updated_by")
-    private User lastUpdatedBy; // Người cập nhật cuối cùng
+    @Column(name = "check_in_code")
+    private String checkInCode;
+
+    @Column(name = "check_in_deadline")
+    private LocalDateTime checkInDeadline;
+
+    @Column(name = "check_in_time")
+    private LocalDateTime checkInTime;
+
+    @Column(name = "check_in_by")
+    private String checkInBy;
+
+    @Column(name = "check_out_time")
+    private LocalDateTime checkOutTime;
+
+    @Column(name = "check_out_by")
+    private String checkOutBy;
+
+    @Column(name = "check_out_notes")
+    private String checkOutNotes;
+
+
+    @Column(name = "last_updated_by")
+    private String lastUpdatedBy; // Người cập nhật cuối cùng
 
     private LocalDateTime lastUpdatedTime; // Thời gian cập nhật cuối cùng
 }

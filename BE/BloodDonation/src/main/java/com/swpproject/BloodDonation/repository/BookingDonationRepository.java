@@ -3,6 +3,7 @@ package com.swpproject.BloodDonation.repository;
 import com.swpproject.BloodDonation.entity.BookingDonation;
 import com.swpproject.BloodDonation.entity.ScheduleDonation;
 import com.swpproject.BloodDonation.entity.User;
+import com.swpproject.BloodDonation.enums.Status;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -10,7 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface BookingDonationRepository extends JpaRepository<BookingDonation, String> {
@@ -41,5 +44,11 @@ public interface BookingDonationRepository extends JpaRepository<BookingDonation
     @Transactional
     @Query("DELETE FROM BookingDonation b WHERE b.scheduleDonation.id = :scheduleId")
     void deleteByScheduleId(@Param("scheduleId") String scheduleId);
+
+    Optional<BookingDonation> findByCheckInCode(String checkInCode);
+    boolean existsByCheckInCode(String checkInCode);
+    List<BookingDonation> findByDateDonationAndStatusAndCheckInTimeIsNull(LocalDate dateDonation, Status status);
+    List<BookingDonation> findByDateDonationAndStatus(LocalDate dateDonation, Status status);
+
 
 }

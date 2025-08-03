@@ -2,6 +2,7 @@ package com.swpproject.BloodDonation.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.swpproject.BloodDonation.dto.request.BookingWithSurveyRequest;
+import com.swpproject.BloodDonation.dto.request.CheckOutRequestDTO;
 import com.swpproject.BloodDonation.dto.request.SurveyRequest;
 import com.swpproject.BloodDonation.dto.response.BookingResponse;
 import com.swpproject.BloodDonation.entity.*;
@@ -42,6 +43,7 @@ public class BookingService {
     private final BloodInventoryService bloodInventoryService;
     private final NotificationEventPublisher notificationPublisher;
     private final MailService mailService;
+    private final CheckInCodeService checkInCodeService;
 
 
     @Transactional
@@ -358,6 +360,229 @@ public class BookingService {
                 "</ul>" +
                 "<p>If you have any questions, please contact our support team.</p>" +
                 "<br><p>Best regards,<br>BloodDonation Team</p>";
+    }
+
+    @Transactional
+    @PreAuthorize("hasAuthority('STAFF')")
+    public BookingResponse approveBookingWithCheckInCode(String bookingId, String staffId) {
+        BookingDonation booking = bookingDonationRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+
+        // Check if it's in PENDING status
+        if (booking.getStatus() != Status.PENDING) {
+            throw new RuntimeException("Only PENDING bookings can be approved");
+        }
+
+        // Update status
+        booking.setStatus(Status.APPROVED);
+
+        // Generate check-in code if not already assigned
+        if (booking.getCheckInCode() == null || booking.getCheckInCode().isEmpty()) {
+            String checkInCode = checkInCodeService.generateUniqueCode();
+            booking.setCheckInCode(checkInCode);
+        }
+
+        BookingDonation savedBooking = bookingDonationRepository.save(booking);
+
+        // Send notification with check-in code
+        sendCheckInCodeNotification(savedBooking);
+
+        return mapToBookingResponse(savedBooking);
+    }
+
+    /**
+     * Send notification with check-in code
+     */
+    private void sendCheckInCodeNotification(BookingDonation booking) {
+        User donor = booking.getDonor();
+
+        // Send app notification
+        notificationPublisher.publishNotificationCreatedEvent(
+                donor.getUserID(),
+                "Booking Approved - Check-in Code: " + booking.getCheckInCode(),
+                "Your blood donation booking has been approved. Your check-in code is: " +
+                        booking.getCheckInCode() + ". Please bring this code when you arrive at the donation center.",
+                "/donations/upcoming",
+                "BOOKING_APPROVED",
+                "HIGH"
+        );
+
+        // Send email notification
+        String subject = "Blood Donation Booking Approved - Check-in Code";
+        String content = "<h2>Hello " + donor.getFullName() + ",</h2>" +
+                "<p>Your blood donation booking has been <strong>approved</strong>.</p>" +
+                "<p>Here is your check-in code:</p>" +
+                "<h1 style='color: #c0392b; font-size: 32px; text-align: center; " +
+                "border: 2px dashed #c0392b; padding: 10px; margin: 20px 0;'>" +
+                booking.getCheckInCode() + "</h1>" +
+                "<p>Please provide this code when you arrive at the donation center.</p>" +
+                "<p><strong>Booking details:</strong></p>" +
+                "<ul>" +
+                "<li>Date: " + booking.getDateDonation() + "</li>" +
+                "<li>Time: " + booking.getStartTime() + " - " + booking.getEndTime() + "</li>" +
+                "<li>Location: " + booking.getAddress() + "</li>" +
+                "</ul>" +
+                "<p>Thank you for your contribution to saving lives!</p>" +
+                "<br><p>Best regards,<br>BloodDonation Team</p>";
+
+        try {
+            mailService.sendEmail(subject, content, donor.getEmail());
+        } catch (Exception e) {
+            log.error("Failed to send check-in code email: {}", e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Check-in a donor using check-in code
+     */
+    @Transactional
+    @PreAuthorize("hasAuthority('STAFF')")
+    public BookingResponse checkInDonorByCode(String checkInCode, String staffId) {
+        BookingDonation booking = bookingDonationRepository.findByCheckInCode(checkInCode)
+                .orElseThrow(() -> new RuntimeException("Invalid check-in code"));
+
+        // Check current status
+        if (booking.getStatus() != Status.APPROVED && booking.getStatus() != Status.PENDING) {
+            throw new RuntimeException("Booking must be in APPROVED or PENDING status to check-in");
+        }
+
+        // Check if already checked in
+        if (booking.getCheckInTime() != null) {
+            throw new RuntimeException("Donor has already been checked in");
+        }
+
+        // Record check-in
+        booking.setCheckInTime(LocalDateTime.now());
+        booking.setCheckInBy(staffId);
+
+        // Ensure status is APPROVED
+        if (booking.getStatus() != Status.APPROVED) {
+            booking.setStatus(Status.APPROVED);
+        }
+
+        BookingDonation savedBooking = bookingDonationRepository.save(booking);
+
+        // Send check-in notification
+        notificationPublisher.publishNotificationCreatedEvent(
+                savedBooking.getDonor().getUserID(),
+                "Check-in Successful",
+                "You have been successfully checked in for your blood donation at " +
+                        savedBooking.getAddress() + ".",
+                "/donations/current",
+                "CHECKIN_COMPLETED",
+                "NORMAL"
+        );
+
+        return mapToBookingResponse(savedBooking);
+    }
+
+    /**
+     * Check-out a donor after donation
+     */
+    @Transactional
+    @PreAuthorize("hasAuthority('STAFF')")
+    public BookingResponse checkOutDonor(String bookingId, CheckOutRequestDTO request, String staffId) {
+        BookingDonation booking = bookingDonationRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+
+        // Check if already checked in
+        if (booking.getCheckInTime() == null) {
+            throw new RuntimeException("Donor must be checked in before checkout");
+        }
+
+        // Check if already checked out
+        if (booking.getCheckOutTime() != null) {
+            throw new RuntimeException("Donor has already been checked out");
+        }
+
+        // Record check-out
+        booking.setCheckOutTime(LocalDateTime.now());
+        booking.setCheckOutBy(staffId);
+        booking.setCheckOutNotes(request.getNotes());
+
+        // Update status to COMPLETED
+        booking.setStatus(Status.COMPLETED);
+        BookingDonation savedBooking = bookingDonationRepository.save(booking);
+
+        // Process completion (certificate, blood inventory, etc.)
+        updateBookingStatus(bookingId, "COMPLETED");
+
+        return mapToBookingResponse(savedBooking);
+    }
+
+    /**
+     * Mark donor as no-show
+     */
+    @Transactional
+    @PreAuthorize("hasAuthority('STAFF')")
+    public BookingResponse markAsNoShow(String bookingId, String staffId) {
+        BookingDonation booking = bookingDonationRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found with ID: " + bookingId));
+
+        // Check if already checked in
+        if (booking.getCheckInTime() != null) {
+            throw new RuntimeException("Donor has already checked in, cannot mark as no-show");
+        }
+
+        // Check status
+        if (booking.getStatus() != Status.APPROVED && booking.getStatus() != Status.PENDING) {
+            throw new RuntimeException("Only APPROVED or PENDING bookings can be marked as no-show");
+        }
+
+        // Update status
+        booking.setStatus(Status.NO_SHOW);
+        BookingDonation savedBooking = bookingDonationRepository.save(booking);
+
+        // Send notification
+        notificationPublisher.publishNotificationCreatedEvent(
+                savedBooking.getDonor().getUserID(),
+                "Missed Blood Donation Appointment",
+                "You were marked as no-show for your blood donation appointment. If you still want to donate, please book a new appointment.",
+                "/donations/history",
+                "MISSED_APPOINTMENT",
+                "NORMAL"
+        );
+
+        return mapToBookingResponse(savedBooking);
+    }
+
+    /**
+     * Get booking by check-in code
+     */
+    public BookingResponse getBookingByCheckInCode(String checkInCode) {
+        BookingDonation booking = bookingDonationRepository.findByCheckInCode(checkInCode)
+                .orElseThrow(() -> new RuntimeException("No booking found with check-in code: " + checkInCode));
+
+        return mapToBookingResponse(booking);
+    }
+
+    /**
+     * Map entity to DTO (update to include check-in/out fields)
+     */
+    private BookingResponse mapToBookingResponse(BookingDonation booking) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedBookingTime = booking.getBookingTime() != null ?
+                booking.getBookingTime().format(formatter) : null;
+
+        return BookingResponse.builder()
+                .bookingId(booking.getDonationId())
+                .dateDonation(booking.getDateDonation())
+                .startTime(booking.getStartTime())
+                .endTime(booking.getEndTime())
+                .address(booking.getAddress())
+                .status(String.valueOf(booking.getStatus()))
+                .center(booking.getCenter())
+                .user(booking.getDonor())
+                .bookingTime(booking.getBookingTime())
+                .formattedBookingTime(formattedBookingTime != null ? "Booking at: " + formattedBookingTime : null)
+                // Add check-in/out fields
+                .checkInCode(booking.getCheckInCode())
+                .checkInTime(booking.getCheckInTime())
+                .checkInBy(booking.getCheckInBy())
+                .checkOutTime(booking.getCheckOutTime())
+                .checkOutBy(booking.getCheckOutBy())
+                .checkOutNotes(booking.getCheckOutNotes())
+                .build();
     }
 }
 

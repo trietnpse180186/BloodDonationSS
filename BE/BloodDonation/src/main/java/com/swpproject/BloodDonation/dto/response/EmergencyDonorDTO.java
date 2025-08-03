@@ -37,4 +37,12 @@ public class EmergencyDonorDTO {
     private LocalDateTime requestDate;
     private String lastUpdatedBy;
     private LocalDateTime lastUpdatedTime;
+
+    private String checkInCode;
+    private LocalDateTime checkInDeadline;
+    private LocalDateTime checkInTime;
+    private String checkInBy;
+    private LocalDateTime checkOutTime;
+    private String checkOutBy;
+    private String checkOutNotes;
 }

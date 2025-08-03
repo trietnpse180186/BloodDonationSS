@@ -3,6 +3,7 @@ package com.swpproject.BloodDonation.service;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.swpproject.BloodDonation.dto.request.CheckOutRequestDTO;
 import com.swpproject.BloodDonation.dto.request.EmergencyBloodRequestDTO;
 import com.swpproject.BloodDonation.dto.response.EmergencyBloodResponseDTO;
 import com.swpproject.BloodDonation.dto.response.EmergencyDonorDTO;
@@ -24,6 +25,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +52,7 @@ public class EmergencyBloodService {
     private final WebSocketNotificationService webSocketNotificationService;
     private final UserLocationService userLocationService;
     private final NotificationEventPublisher eventPublisher;
-
+    private final CheckInCodeService checkInCodeService;
 
     @Value("${app.url:http://localhost:3000}")
     private String appUrl;
@@ -348,73 +350,73 @@ public class EmergencyBloodService {
     /**
      * Người dùng đăng ký hiến máu cho một yêu cầu khẩn cấp
      */
-    @Transactional
-    public EmergencyDonorDTO respondToEmergencyRequest(String requestId, String donorId) {
-        EmergencyBloodRequest request = emergencyRepository.findById(requestId)
-                .orElseThrow(() -> new RuntimeException("Emergency request not found"));
-
-        if (request.getStatus() != EmergencyStatus.ACTIVE) {
-            throw new RuntimeException("This emergency request is no longer active");
-        }
-
-        User donor = userRepository.findById(donorId)
-                .orElseThrow(() -> new RuntimeException("Donor not found"));
-
-        // Kiểm tra xem người dùng đã đăng ký chưa
-        if (donationRepository.existsByEmergencyRequestRequestIdAndDonorUserID(requestId, donorId)) {
-            throw new RuntimeException("You have already responded to this request");
-        }
-
-        // Tính khoảng cách nếu có thông tin địa lý
-        Double donorDistance = null;
-        if (donor.getLatitude() != null && donor.getLongitude() != null &&
-                request.getLatitude() != null && request.getLongitude() != null) {
-
-            donorDistance = userLocationService.calculateDistance(
-                    donor.getLatitude(), donor.getLongitude(),
-                    request.getLatitude(), request.getLongitude()
-            );
-        }
-
-        // Tạo đăng ký mới
-        EmergencyDonation donation = EmergencyDonation.builder()
-                .id(UUID.randomUUID().toString())
-                .emergencyRequest(request)
-                .donor(donor)
-                .responseTime(LocalDateTime.now())
-                .status(EmergencyDonationStatus.CONFIRMED)
-                .donorDistance(donorDistance)
-                .lastUpdatedTime(LocalDateTime.now())
-                .build();
-
-        EmergencyDonation savedDonation = donationRepository.save(donation);
-
-        // Kiểm tra xem đã đủ người đăng ký chưa
-        Integer confirmedDonors = donationRepository.countActiveResponsesByRequestId(requestId);
-        if (confirmedDonors >= request.getUnitsNeeded()) {
-            request.setStatus(EmergencyStatus.FULFILLED);
-            emergencyRepository.save(request);
-        }
-
-        // Thông báo cho nhân viên về người hiến máu mới
-        notifyStaffAboutNewDonor(request, donor);
-
-        return EmergencyDonorDTO.builder()
-                .donationId(savedDonation.getId())
-                .donorId(donor.getUserID())
-                .donorName(donor.getFullName())
-                .phoneNumber(donor.getPhoneNumber())
-                .bloodType(donor.getBloodType().toString())
-                .status(savedDonation.getStatus())
-                .responseTime(savedDonation.getResponseTime())
-                .distance(donorDistance)
-                .requestId(request.getRequestId())
-                .hospitalName(request.getHospitalName())
-                .hospitalAddress(request.getAddress())
-                .requestStatus(request.getStatus())
-                .requestDate(request.getRequestTime())
-                .build();
-    }
+//    @Transactional
+//    public EmergencyDonorDTO respondToEmergencyRequest(String requestId, String donorId) {
+//        EmergencyBloodRequest request = emergencyRepository.findById(requestId)
+//                .orElseThrow(() -> new RuntimeException("Emergency request not found"));
+//
+//        if (request.getStatus() != EmergencyStatus.ACTIVE) {
+//            throw new RuntimeException("This emergency request is no longer active");
+//        }
+//
+//        User donor = userRepository.findById(donorId)
+//                .orElseThrow(() -> new RuntimeException("Donor not found"));
+//
+//        // Kiểm tra xem người dùng đã đăng ký chưa
+//        if (donationRepository.existsByEmergencyRequestRequestIdAndDonorUserID(requestId, donorId)) {
+//            throw new RuntimeException("You have already responded to this request");
+//        }
+//
+//        // Tính khoảng cách nếu có thông tin địa lý
+//        Double donorDistance = null;
+//        if (donor.getLatitude() != null && donor.getLongitude() != null &&
+//                request.getLatitude() != null && request.getLongitude() != null) {
+//
+//            donorDistance = userLocationService.calculateDistance(
+//                    donor.getLatitude(), donor.getLongitude(),
+//                    request.getLatitude(), request.getLongitude()
+//            );
+//        }
+//
+//        // Tạo đăng ký mới
+//        EmergencyDonation donation = EmergencyDonation.builder()
+//                .id(UUID.randomUUID().toString())
+//                .emergencyRequest(request)
+//                .donor(donor)
+//                .responseTime(LocalDateTime.now())
+//                .status(EmergencyDonationStatus.CONFIRMED)
+//                .donorDistance(donorDistance)
+//                .lastUpdatedTime(LocalDateTime.now())
+//                .build();
+//
+//        EmergencyDonation savedDonation = donationRepository.save(donation);
+//
+//        // Kiểm tra xem đã đủ người đăng ký chưa
+//        Integer confirmedDonors = donationRepository.countActiveResponsesByRequestId(requestId);
+//        if (confirmedDonors >= request.getUnitsNeeded()) {
+//            request.setStatus(EmergencyStatus.FULFILLED);
+//            emergencyRepository.save(request);
+//        }
+//
+//        // Thông báo cho nhân viên về người hiến máu mới
+//        notifyStaffAboutNewDonor(request, donor);
+//
+//        return EmergencyDonorDTO.builder()
+//                .donationId(savedDonation.getId())
+//                .donorId(donor.getUserID())
+//                .donorName(donor.getFullName())
+//                .phoneNumber(donor.getPhoneNumber())
+//                .bloodType(donor.getBloodType().toString())
+//                .status(savedDonation.getStatus())
+//                .responseTime(savedDonation.getResponseTime())
+//                .distance(donorDistance)
+//                .requestId(request.getRequestId())
+//                .hospitalName(request.getHospitalName())
+//                .hospitalAddress(request.getAddress())
+//                .requestStatus(request.getStatus())
+//                .requestDate(request.getRequestTime())
+//                .build();
+//    }
 
     /**
      * Thông báo cho nhân viên về người hiến máu mới đăng ký
@@ -455,7 +457,8 @@ public class EmergencyBloodService {
         User staff = userRepository.findById(staffId)
                 .orElseThrow(() -> new RuntimeException("Staff not found"));
 
-        donation.setLastUpdatedBy(staff);
+//        donation.setLastUpdatedBy(staff);
+        donation.setLastUpdatedBy(staff.getFullName());
         donation.setLastUpdatedTime(LocalDateTime.now());
 
         if (newStatus == EmergencyDonationStatus.COMPLETED) {
@@ -576,8 +579,7 @@ public class EmergencyBloodService {
                         .staffNotes(donation.getStaffNotes())
                         .distance(donation.getDonorDistance())
                         .lastUpdatedTime(donation.getLastUpdatedTime())
-                        .lastUpdatedBy(donation.getLastUpdatedBy() != null ?
-                                donation.getLastUpdatedBy().getFullName() : null)
+                        .lastUpdatedBy(donation.getLastUpdatedBy())
                         .build())
                 .collect(Collectors.toList());
 
@@ -637,8 +639,7 @@ public class EmergencyBloodService {
                             .hospitalAddress(request.getAddress())
                             .requestStatus(request.getStatus())
                             .requestDate(request.getRequestTime())
-                            .lastUpdatedBy(donation.getLastUpdatedBy() != null ?
-                                    donation.getLastUpdatedBy().getFullName() : null)
+                            .lastUpdatedBy(donation.getLastUpdatedBy())
                             .lastUpdatedTime(donation.getLastUpdatedTime())
                             .build();
                 })
@@ -1072,6 +1073,463 @@ public class EmergencyBloodService {
             log.error("Error generating Excel report: {}", e.getMessage(), e);
             throw new RuntimeException("Unable to generate Excel report: " + e.getMessage());
         }
+    }
+
+    private LocalDateTime calculateCheckInDeadline(String priority, Double distance) {
+        LocalDateTime now = LocalDateTime.now();
+
+        // Default: 24 hours
+        int deadlineHours = 24;
+
+        // Adjust based on priority
+        if ("HIGH".equalsIgnoreCase(priority)) {
+            deadlineHours = 12; // High priority: 12 hours
+        } else if ("CRITICAL".equalsIgnoreCase(priority)) {
+            deadlineHours = 6;  // Critical: 6 hours
+        }
+
+        // Adjust based on distance if available
+        if (distance != null) {
+            if (distance > 20) {
+                // If distance >20km, add 2 hours
+                deadlineHours += 2;
+            } else if (distance < 5) {
+                // If distance <5km, reduce by 1 hour (minimum 3 hours)
+                deadlineHours = Math.max(3, deadlineHours - 1);
+            }
+        }
+
+        return now.plusHours(deadlineHours);
+    }
+
+    /**
+     * Update the respondToEmergencyRequest method to include check-in code
+     */
+    @Transactional
+    public EmergencyDonorDTO respondToEmergencyRequest(String requestId, String donorId) {
+        // Existing code to find request and donor...
+        EmergencyBloodRequest request = emergencyRepository.findById(requestId)
+                .orElseThrow(() -> new RuntimeException("Emergency request not found"));
+
+        if (request.getStatus() != EmergencyStatus.ACTIVE) {
+            throw new RuntimeException("This emergency request is no longer active");
+        }
+
+        User donor = userRepository.findById(donorId)
+                .orElseThrow(() -> new RuntimeException("Donor not found"));
+
+        // Check if already registered
+        if (donationRepository.existsByEmergencyRequestRequestIdAndDonorUserID(requestId, donorId)) {
+            throw new RuntimeException("You have already responded to this request");
+        }
+
+        // Calculate distance
+        Double donorDistance = null;
+        if (donor.getLatitude() != null && donor.getLongitude() != null &&
+                request.getLatitude() != null && request.getLongitude() != null) {
+            donorDistance = userLocationService.calculateDistance(
+                    donor.getLatitude(), donor.getLongitude(),
+                    request.getLatitude(), request.getLongitude()
+            );
+        }
+
+        // Calculate check-in deadline
+        LocalDateTime checkInDeadline = calculateCheckInDeadline(request.getPriority(), donorDistance);
+
+        // Generate check-in code
+        String checkInCode = checkInCodeService.generateUniqueCode();
+
+        // Create new donation record
+        EmergencyDonation donation = EmergencyDonation.builder()
+                .id(UUID.randomUUID().toString())
+                .emergencyRequest(request)
+                .donor(donor)
+                .responseTime(LocalDateTime.now())
+                .status(EmergencyDonationStatus.CONFIRMED)
+                .donorDistance(donorDistance)
+                .lastUpdatedTime(LocalDateTime.now())
+                .checkInCode(checkInCode)
+                .checkInDeadline(checkInDeadline)
+                .build();
+
+        EmergencyDonation savedDonation = donationRepository.save(donation);
+
+        // Check if enough donors
+        Integer confirmedDonors = donationRepository.countActiveResponsesByRequestId(requestId);
+        if (confirmedDonors >= request.getUnitsNeeded()) {
+            request.setStatus(EmergencyStatus.FULFILLED);
+            emergencyRepository.save(request);
+        }
+
+        // Notify staff about new donor
+        notifyStaffAboutNewDonor(request, donor);
+
+        // Notify donor about check-in code
+        notifyDonorAboutCheckInCode(savedDonation);
+
+        // Map to DTO
+        return mapToEmergencyDonorDTO(savedDonation);
+    }
+
+    /**
+     * Notify donor about check-in code
+     */
+    private void notifyDonorAboutCheckInCode(EmergencyDonation donation) {
+        User donor = donation.getDonor();
+        EmergencyBloodRequest request = donation.getEmergencyRequest();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        String formattedDeadline = donation.getCheckInDeadline().format(formatter);
+
+        String title = "Emergency Blood Donation Check-in Code";
+        String message = "Thank you for responding to the emergency blood request at " +
+                request.getHospitalName() + ".\n\n" +
+                "Your check-in code is: " + donation.getCheckInCode() + "\n" +
+                "You must check-in before: " + formattedDeadline + "\n\n" +
+                "Please provide this code when you arrive at the hospital. " +
+                "If you cannot make it, please let us know as soon as possible.";
+
+        String actionUrl = "/emergency/my-donations";
+
+        webSocketNotificationService.sendDirectNotification(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_CHECKIN_CODE",
+                request.getPriority()
+        );
+
+        eventPublisher.publishNotificationCreatedEvent(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_CHECKIN_CODE",
+                request.getPriority()
+        );
+    }
+
+    /**
+     * Check-in donor using check-in code
+     */
+    @Transactional
+    public EmergencyDonorDTO checkInDonorByCode(String checkInCode, String staffId) {
+        // Find donation by check-in code
+        EmergencyDonation donation = donationRepository.findByCheckInCode(checkInCode)
+                .orElseThrow(() -> new RuntimeException("Invalid check-in code"));
+
+        // Check status
+        if (donation.getStatus() != EmergencyDonationStatus.CONFIRMED) {
+            throw new RuntimeException("Donation must be in CONFIRMED status to check-in");
+        }
+
+        // Check if already checked in
+        if (donation.getCheckInTime() != null) {
+            throw new RuntimeException("Donor has already been checked in");
+        }
+
+        // Check deadline
+        if (LocalDateTime.now().isAfter(donation.getCheckInDeadline())) {
+            throw new RuntimeException("Check-in deadline has passed. Please contact staff for assistance.");
+        }
+
+        User staff = userRepository.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("Staff not found"));
+
+        // Record check-in
+        donation.setCheckInTime(LocalDateTime.now());
+        donation.setCheckInBy(staffId);
+        donation.setLastUpdatedTime(LocalDateTime.now());
+        donation.setLastUpdatedBy(staff.getFullName());
+
+        EmergencyDonation savedDonation = donationRepository.save(donation);
+
+        // Notify donor
+        notifyDonorAboutCheckIn(savedDonation);
+
+        return mapToEmergencyDonorDTO(savedDonation);
+    }
+
+    /**
+     * Notify donor about successful check-in
+     */
+    private void notifyDonorAboutCheckIn(EmergencyDonation donation) {
+        User donor = donation.getDonor();
+        EmergencyBloodRequest request = donation.getEmergencyRequest();
+
+        String title = "Check-in Successful";
+        String message = "You have successfully checked in for your emergency blood donation at " +
+                request.getHospitalName() + ". Thank you for your prompt response!";
+
+        String actionUrl = "/emergency/my-donations";
+
+        webSocketNotificationService.sendDirectNotification(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_CHECKIN_COMPLETED",
+                "NORMAL"
+        );
+
+        eventPublisher.publishNotificationCreatedEvent(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_CHECKIN_COMPLETED",
+                "NORMAL"
+        );
+    }
+
+    /**
+     * Check-out donor after donation
+     */
+    @Transactional
+    public EmergencyDonorDTO checkOutDonor(String donationId, CheckOutRequestDTO request, String staffId) {
+        // Find donation
+        EmergencyDonation donation = donationRepository.findById(donationId)
+                .orElseThrow(() -> new RuntimeException("Emergency donation not found"));
+
+        // Check if already checked in
+        if (donation.getCheckInTime() == null) {
+            throw new RuntimeException("Donor must be checked in before checkout");
+        }
+
+        // Check if already checked out
+        if (donation.getCheckOutTime() != null) {
+            throw new RuntimeException("Donor has already been checked out");
+        }
+
+        User staff = userRepository.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("Staff not found"));
+
+        // Record check-out
+        donation.setCheckOutTime(LocalDateTime.now());
+        donation.setCheckOutBy(staffId);
+        donation.setCheckOutNotes(request.getNotes());
+        donation.setStatus(EmergencyDonationStatus.COMPLETED);
+        donation.setDonationTime(LocalDateTime.now());
+        donation.setLastUpdatedTime(LocalDateTime.now());
+        donation.setLastUpdatedBy(staff.getFullName());
+
+        EmergencyDonation savedDonation = donationRepository.save(donation);
+
+        // Check if request is complete
+        checkRequestCompletion(donation.getEmergencyRequest());
+
+        // Notify donor
+        notifyDonorAboutCheckOut(savedDonation);
+
+        return mapToEmergencyDonorDTO(savedDonation);
+    }
+
+    /**
+     * Notify donor about successful check-out
+     */
+    private void notifyDonorAboutCheckOut(EmergencyDonation donation) {
+        User donor = donation.getDonor();
+        EmergencyBloodRequest request = donation.getEmergencyRequest();
+
+        String title = "Blood Donation Completed - Thank You!";
+        String message = "Thank you for completing your emergency blood donation at " +
+                request.getHospitalName() + ". Your donation will help save lives!";
+
+        String actionUrl = "/emergency/my-donations";
+
+        webSocketNotificationService.sendDirectNotification(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_DONATION_COMPLETED",
+                "NORMAL"
+        );
+
+        eventPublisher.publishNotificationCreatedEvent(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_DONATION_COMPLETED",
+                "NORMAL"
+        );
+    }
+
+    /**
+     * Mark donor as no-show
+     */
+    @Transactional
+    public EmergencyDonorDTO markAsNoShow(String donationId, String staffId) {
+        // Find donation
+        EmergencyDonation donation = donationRepository.findById(donationId)
+                .orElseThrow(() -> new RuntimeException("Emergency donation not found"));
+
+        // Check status
+        if (donation.getStatus() != EmergencyDonationStatus.CONFIRMED) {
+            throw new RuntimeException("Only donations in CONFIRMED status can be marked as no-show");
+        }
+
+        // Check if already checked in
+        if (donation.getCheckInTime() != null) {
+            throw new RuntimeException("Donor has already checked in, cannot mark as no-show");
+        }
+
+        User staff = userRepository.findById(staffId)
+                .orElseThrow(() -> new RuntimeException("Staff not found"));
+
+        // Mark as no-show
+        donation.setStatus(EmergencyDonationStatus.NO_SHOW);
+        donation.setLastUpdatedTime(LocalDateTime.now());
+        donation.setLastUpdatedBy(staff.getFullName());
+
+        EmergencyDonation savedDonation = donationRepository.save(donation);
+
+        // Notify donor
+        notifyDonorAboutNoShow(savedDonation);
+
+        return mapToEmergencyDonorDTO(savedDonation);
+    }
+
+    /**
+     * Notify donor about no-show
+     */
+    private void notifyDonorAboutNoShow(EmergencyDonation donation) {
+        User donor = donation.getDonor();
+        EmergencyBloodRequest request = donation.getEmergencyRequest();
+
+        String title = "Missed Emergency Blood Donation";
+        String message = "You were marked as no-show for your emergency blood donation at " +
+                request.getHospitalName() + ". If you still want to donate, please contact the hospital.";
+
+        String actionUrl = "/emergency/my-donations";
+
+        webSocketNotificationService.sendDirectNotification(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_NOSHOW",
+                "NORMAL"
+        );
+
+        eventPublisher.publishNotificationCreatedEvent(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_NOSHOW",
+                "NORMAL"
+        );
+    }
+
+    /**
+     * Get donation by check-in code
+     */
+    public EmergencyDonorDTO getEmergencyDonationByCheckInCode(String checkInCode) {
+        EmergencyDonation donation = donationRepository.findByCheckInCode(checkInCode)
+                .orElseThrow(() -> new RuntimeException("Invalid check-in code"));
+
+        return mapToEmergencyDonorDTO(donation);
+    }
+
+    /**
+     * Map entity to DTO (updated to include check-in/out fields)
+     */
+    private EmergencyDonorDTO mapToEmergencyDonorDTO(EmergencyDonation donation) {
+        EmergencyBloodRequest request = donation.getEmergencyRequest();
+
+        return EmergencyDonorDTO.builder()
+                .donationId(donation.getId())
+                .donorId(donation.getDonor().getUserID())
+                .donorName(donation.getDonor().getFullName())
+                .phoneNumber(donation.getDonor().getPhoneNumber())
+                .bloodType(donation.getDonor().getBloodType().toString())
+                .status(donation.getStatus())
+                .responseTime(donation.getResponseTime())
+                .donationTime(donation.getDonationTime())
+                .notes(donation.getNotes())
+                .staffNotes(donation.getStaffNotes())
+                .distance(donation.getDonorDistance())
+                .requestId(request.getRequestId())
+                .hospitalName(request.getHospitalName())
+                .hospitalAddress(request.getAddress())
+                .requestStatus(request.getStatus())
+                .requestDate(request.getRequestTime())
+                .lastUpdatedBy(donation.getLastUpdatedBy())
+                .lastUpdatedTime(donation.getLastUpdatedTime())
+                // Add check-in/out fields
+                .checkInCode(donation.getCheckInCode())
+                .checkInDeadline(donation.getCheckInDeadline())
+                .checkInTime(donation.getCheckInTime())
+                .checkInBy(donation.getCheckInBy())
+                .checkOutTime(donation.getCheckOutTime())
+                .checkOutBy(donation.getCheckOutBy())
+                .checkOutNotes(donation.getCheckOutNotes())
+                .build();
+    }
+
+    /**
+     * Process expired check-ins (scheduled task)
+     */
+    @Scheduled(fixedRate = 3600000) // Run every hour
+    @Transactional
+    public void processExpiredCheckIns() {
+        LocalDateTime now = LocalDateTime.now();
+
+        // Find all donations with expired check-in deadlines
+        List<EmergencyDonation> expiredDonations = donationRepository.findByStatusAndCheckInDeadlineBefore(
+                EmergencyDonationStatus.CONFIRMED, now);
+
+        for (EmergencyDonation donation : expiredDonations) {
+            // Only process donations not yet checked in
+            if (donation.getCheckInTime() == null) {
+                // Mark as no-show
+                donation.setStatus(EmergencyDonationStatus.NO_SHOW);
+                donation.setLastUpdatedTime(now);
+                donation.setLastUpdatedBy("System");
+
+                donationRepository.save(donation);
+
+                // Notify donor
+                notifyDonorAboutExpiredCheckIn(donation);
+
+                log.info("Marked donation {} as NO_SHOW due to expired check-in deadline", donation.getId());
+            }
+        }
+    }
+
+    /**
+     * Notify donor about expired check-in
+     */
+    private void notifyDonorAboutExpiredCheckIn(EmergencyDonation donation) {
+        User donor = donation.getDonor();
+        EmergencyBloodRequest request = donation.getEmergencyRequest();
+
+        String title = "Emergency Donation Check-in Expired";
+        String message = "Your check-in for emergency blood donation at " +
+                request.getHospitalName() + " has expired. If you still want to donate, please contact the hospital.";
+
+        String actionUrl = "/emergency/my-donations";
+
+        webSocketNotificationService.sendDirectNotification(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_CHECKIN_EXPIRED",
+                "NORMAL"
+        );
+
+        eventPublisher.publishNotificationCreatedEvent(
+                donor.getUserID(),
+                title,
+                message,
+                actionUrl,
+                "EMERGENCY_CHECKIN_EXPIRED",
+                "NORMAL"
+        );
     }
 
 
