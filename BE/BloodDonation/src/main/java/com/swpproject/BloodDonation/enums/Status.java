@@ -6,5 +6,6 @@ public enum Status {
     CANCELLED, // Đã hủy đăng ký
     COMPLETED, // Đã hiến máu thành công
     NO_SHOW,// Người hiến không đến theo lịch hẹn
+    CHECKED_IN,
     REJECTED // Đăng ký bị từ chối
 }

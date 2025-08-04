@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class Certificate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
