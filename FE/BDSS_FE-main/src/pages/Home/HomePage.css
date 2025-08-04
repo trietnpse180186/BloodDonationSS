@@ -150,7 +150,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 100px 0;
+  margin: 50px 0px 100px 0px;
   gap: 20px;
 }
 
@@ -222,7 +222,7 @@
   display: flex;
   align-items: center;
   flex-direction: column;
-  margin: 60px 60px;
+  margin: 60px 0px;
 }
 .section-Title {
   display: flex;
@@ -289,8 +289,22 @@
   text-decoration: none;
   color: #921d13;
 }
-
-/* Content */
+.benefits-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.55;
+  background:
+    radial-gradient(ellipse 480px 200px at 82% 78%, #ffe066 0%, #fffbe6 60%, transparent 100%), /* big gold spot bottom right */
+    radial-gradient(ellipse 610px 200px at 0% 30%, #ffd700 0%, #fffbe6 60%, transparent 100%); /* smaller gold spot bottom left */
+  filter: blur(8px);
+}
+.benefits-section {
+  position: relative;
+  z-index: 1;
+}
 .donor-highlight {
   display: flex;
   flex-direction: row;
@@ -476,6 +490,48 @@
   }
 }
 /* Step Donation Blood */
+
+.donation_step {
+  position: relative;
+  z-index: 1;
+}
+
+.donation_step_title {
+  position: relative;
+  z-index: 2;
+}
+
+.donation_step_title::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -60%);
+  width: 600px;
+  height: 120px;
+  background: radial-gradient(ellipse 0% 60% at 50% 50%, #ffe066 0%, #fffbe6 70%, transparent 100%);
+  opacity: 0.7;
+  filter: blur(12px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.donation_step::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.45;
+  background:
+    
+    radial-gradient(ellipse 610px 200px at 100% 25%, #fff200 10%, #ede8cf 60%, transparent 100%);
+  filter: blur(8px);
+}
+.donation_step > * {
+  position: relative;
+  z-index: 1;
+}
 .donation_step {
   margin: 50px 0;
 }
