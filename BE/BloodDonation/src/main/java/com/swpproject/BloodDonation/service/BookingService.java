@@ -269,7 +269,7 @@ public class BookingService {
         bookingDonationRepository.save(booking);
 
         // Nếu booking mới được đánh dấu hoàn thành
-        if (statusEnum == Status.COMPLETED && oldStatus != Status.COMPLETED) {
+        if (statusEnum == Status.COMPLETED) {
             // Tạo chứng chỉ
             Certificate cert = new Certificate();
             cert.setUser(booking.getDonor());
@@ -456,10 +456,11 @@ public class BookingService {
         booking.setCheckInBy(staffId);
 
         // Ensure status is APPROVED
-        if (booking.getStatus() != Status.APPROVED) {
-            booking.setStatus(Status.APPROVED);
-        }
+//        if (booking.getStatus() != Status.APPROVED) {
+//            booking.setStatus(Status.APPROVED);
+//        }
 
+        booking.setStatus(Status.CHECKED_IN);
         BookingDonation savedBooking = bookingDonationRepository.save(booking);
 
         // Send check-in notification

@@ -20,8 +20,13 @@ export default function AppointmentManager() {
     show: false,
     user: null,
   });
+  const [selectedBloodType, setSelectedBloodType] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
-  const [otpModal, setOtpModal] = useState({ show: false, item: null, otp: "" });
+  const [otpModal, setOtpModal] = useState({
+    show: false,
+    item: null,
+    otp: "",
+  });
   const accessToken = sessionStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -55,7 +60,7 @@ export default function AppointmentManager() {
       case "APPROVED":
         return <span className="status-confirmed">Approved</span>;
       case "CHECKED_IN":
-        return <span className="status-confirmed">Approved</span>;
+        return <span className="status-checked-in">Checked-In</span>;
       case "CANCELLED":
         return <span className="status-cancelled">Cancelled</span>;
       case "COMPLETED":
@@ -252,10 +257,17 @@ export default function AppointmentManager() {
   };
 
   const handleBloodTypeUpdate = (user) => {
+    console.log("Opening blood type modal for user:", user);
+    setSelectedBloodType(user?.bloodType || "");
     setBloodTypeUpdateData({ show: true, user: user });
   };
 
   const updateUserBloodType = async (userId, bloodType) => {
+    if (!bloodType) {
+      toast.error("Please select a blood type!");
+      return;
+    }
+
     try {
       await axios.put(
         `${baseUrl}/users/${userId}`,
@@ -275,6 +287,7 @@ export default function AppointmentManager() {
 
       toast.success("Blood type updated successfully!");
       setBloodTypeUpdateData({ show: false, user: null });
+      setSelectedBloodType("");
     } catch (error) {
       console.error("Error updating blood type:", error);
       toast.error("Failed to update blood type!");
@@ -313,14 +326,58 @@ export default function AppointmentManager() {
   };
 
   const handleCheckout = async (item) => {
+    // Check blood type before allowing checkout
+    const currentBloodType = item.user?.bloodType;
+    const isBloodTypeMissing =
+      !currentBloodType ||
+      currentBloodType === "" ||
+      currentBloodType === "Unknown" ||
+      currentBloodType === null ||
+      currentBloodType === undefined;
+
+    if (isBloodTypeMissing) {
+      // Show warning and prevent checkout
+      await Swal.fire({
+        icon: "warning",
+        title: "Blood Type Required",
+        html: `
+          <div style="text-align: left; padding: 10px;">
+            <p><strong>⚠️ Cannot complete checkout:</strong></p>
+            <p>Please verify and update the donor's blood type before checkout.</p>
+            <br>
+            <p><strong>Donor:</strong> ${item.user?.fullName || "Unknown"}</p>
+            <p><strong>Email:</strong> ${item.user?.email || "Unknown"}</p>
+            <p><strong>Current Blood Type:</strong> <span style="color: #d33; font-weight: bold;">${
+              currentBloodType || "Not specified"
+            }</span></p>
+            <br>
+            <p style="font-size: 0.9em; color: #666;">
+              <strong>Action:</strong> Please use the "Update Blood Type" button to verify the donor's blood type first.
+            </p>
+          </div>
+        `,
+        confirmButtonText: "I'll update blood type first",
+        confirmButtonColor: "#f39c12",
+        width: 500,
+      });
+      return; // Stop checkout process
+    }
+
     try {
-      await axios.post(
+      console.log("Starting checkout for item:", item);
+
+      const response = await axios.post(
         `${baseUrl}/api/checkin/checkout/${item.bookingId}`,
-        {},
+        {
+          notes: "Checkout completed successfully",
+        },
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
       );
+
+      console.log("Checkout API response:", response);
+
       setAppointments((prev) =>
         prev.map((appt) =>
           appt.bookingId === item.bookingId
@@ -328,37 +385,55 @@ export default function AppointmentManager() {
             : appt
         )
       );
+
       toast.success("Checkout successful!");
 
       const userId = item.user?.userID || item.user?.userId;
       if (userId) {
-        await axios.post(
-          `${baseUrl}/notifications`,
-          {
-            title: "Appointment Completed",
-            detail: "Thank you for your blood donation. Your appointment has been completed successfully.",
-            donorId: userId,
-            date: new Date().toISOString().slice(0, 10),
-            time: new Date().toTimeString().slice(0, 5),
-            type: "NOTIFICATION",
-            priority: "NORMAL",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
+        try {
+          await axios.post(
+            `${baseUrl}/notifications`,
+            {
+              title: "Appointment Completed",
+              detail:
+                "Thank you for your blood donation. Your appointment has been completed successfully.",
+              donorId: userId,
+              date: new Date().toISOString().slice(0, 10),
+              time: new Date().toTimeString().slice(0, 5),
+              type: "NOTIFICATION",
+              priority: "NORMAL",
             },
-          }
-        );
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          console.log("Notification sent successfully");
+        } catch (notificationError) {
+          console.error(
+            "Notification failed, but checkout successful:",
+            notificationError
+          );
+        }
       }
 
-      const bloodType =
-        item.user?.bloodType || item.bloodType || "UNKNOWN";
-      if (!bloodType || bloodType === "UNKNOWN") {
-        setBloodTypeUpdateData({ show: true, user: item.user });
-        toast.info("Please update blood type for this Donor!");
-      }
+      // Show success message with blood type confirmation
+      toast.success(
+        `✅ Checkout completed successfully! Blood type: ${currentBloodType}`,
+        {
+          position: "top-right",
+          autoClose: 5000,
+        }
+      );
     } catch (error) {
-      toast.error("Checkout Failed!");
+      console.error("Checkout error details:", error);
+      console.error("Error response:", error.response?.data);
+      console.error("Error status:", error.response?.status);
+
+      const errorMessage =
+        error.response?.data?.message || error.message || "Unknown error";
+      toast.error(`Checkout Failed: ${errorMessage}`);
     }
   };
 
@@ -402,6 +477,16 @@ export default function AppointmentManager() {
                 <div className="blood-type-section">
                   <span className="blood-type-display">
                     Blood Type: {items[0]?.user?.bloodType || "Unknown"}
+                    {(!items[0]?.user?.bloodType ||
+                      items[0]?.user?.bloodType === "" ||
+                      items[0]?.user?.bloodType === "Unknown") && (
+                      <span
+                        className="blood-type-missing-indicator"
+                        title="Blood type needs verification"
+                      >
+                        ⚠️
+                      </span>
+                    )}
                   </span>
                   <button
                     className="blood-type-update-btn"
@@ -632,66 +717,70 @@ export default function AppointmentManager() {
       {/* Blood Type Update Modal */}
       <Modal
         show={bloodTypeUpdateData.show}
-        onHide={() => setBloodTypeUpdateData({ show: false, user: null })}
+        onHide={() => {
+          setBloodTypeUpdateData({ show: false, user: null });
+          setSelectedBloodType("");
+        }}
       >
         <Modal.Header closeButton>
           <Modal.Title>Update Blood Type</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {bloodTypeUpdateData.user && (
-            <div>
-              <div className="mb-3">
-                <strong>User:</strong> {bloodTypeUpdateData.user.fullName}
-              </div>
-              <div className="mb-3">
-                <strong>Email:</strong> {bloodTypeUpdateData.user.email}
-              </div>
-              <div className="mb-3">
-                <strong>Current Blood Type:</strong>{" "}
-                {bloodTypeUpdateData.user.bloodType || "Unknown"}
-              </div>
-              <div className="mb-3">
-                <label htmlFor="bloodTypeSelect">
-                  <strong>Select New Blood Type:</strong>
-                </label>
-                <select
-                  id="bloodTypeSelect"
-                  className="form-control mt-2"
-                  defaultValue={bloodTypeUpdateData.user.bloodType || ""}
-                  onChange={(e) => {
-                    const selectedBloodType = e.target.value;
-                    document.getElementById("confirmBloodTypeBtn").onclick =
-                      () => {
-                        updateUserBloodType(
-                          bloodTypeUpdateData.user.userID ||
-                            bloodTypeUpdateData.user.userId,
-                          selectedBloodType
-                        );
-                      };
-                  }}
-                >
-                  <option value="">Unknown</option>
-                  <option value="A_POSITIVE">A+</option>
-                  <option value="A_NEGATIVE">A-</option>
-                  <option value="B_POSITIVE">B+</option>
-                  <option value="B_NEGATIVE">B-</option>
-                  <option value="AB_POSITIVE">AB+</option>
-                  <option value="AB_NEGATIVE">AB-</option>
-                  <option value="O_POSITIVE">O+</option>
-                  <option value="O_NEGATIVE">O-</option>
-                </select>
-              </div>
+          <div>
+            <div className="mb-3">
+              <strong>User:</strong>{" "}
+              {bloodTypeUpdateData.user?.fullName || "Unknown User"}
             </div>
-          )}
+            <div className="mb-3">
+              <strong>Email:</strong>{" "}
+              {bloodTypeUpdateData.user?.email || "Unknown Email"}
+            </div>
+            <div className="mb-3">
+              <strong>Current Blood Type:</strong>{" "}
+              {bloodTypeUpdateData.user?.bloodType || "Unknown"}
+            </div>
+            <div className="mb-3">
+              <label htmlFor="bloodTypeSelect">
+                <strong>Select New Blood Type:</strong>
+              </label>
+              <select
+                id="bloodTypeSelect"
+                className="form-control mt-2"
+                value={selectedBloodType}
+                onChange={(e) => setSelectedBloodType(e.target.value)}
+              >
+                <option value="">Unknown</option>
+                <option value="A_POSITIVE">A+</option>
+                <option value="A_NEGATIVE">A-</option>
+                <option value="B_POSITIVE">B+</option>
+                <option value="B_NEGATIVE">B-</option>
+                <option value="AB_POSITIVE">AB+</option>
+                <option value="AB_NEGATIVE">AB-</option>
+                <option value="O_POSITIVE">O+</option>
+                <option value="O_NEGATIVE">O-</option>
+              </select>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button
             variant="secondary"
-            onClick={() => setBloodTypeUpdateData({ show: false, user: null })}
+            onClick={() => {
+              setBloodTypeUpdateData({ show: false, user: null });
+              setSelectedBloodType("");
+            }}
           >
             Cancel
           </Button>
-          <Button id="confirmBloodTypeBtn" variant="primary" onClick={() => {}}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              const userId =
+                bloodTypeUpdateData.user?.userID ||
+                bloodTypeUpdateData.user?.userId;
+              updateUserBloodType(userId, selectedBloodType);
+            }}
+          >
             Update Blood Type
           </Button>
         </Modal.Footer>
