@@ -53,7 +53,7 @@ public class EmergencyBloodService {
     private final UserLocationService userLocationService;
     private final NotificationEventPublisher eventPublisher;
     private final CheckInCodeService checkInCodeService;
-
+    private final DonationReportService donationReportService;
     @Value("${app.url:http://localhost:3000}")
     private String appUrl;
 
@@ -1115,6 +1115,8 @@ public class EmergencyBloodService {
             throw new RuntimeException("This emergency request is no longer active");
         }
 
+
+
         User donor = userRepository.findById(donorId)
                 .orElseThrow(() -> new RuntimeException("Donor not found"));
 
@@ -1122,7 +1124,10 @@ public class EmergencyBloodService {
         if (donationRepository.existsByEmergencyRequestRequestIdAndDonorUserID(requestId, donorId)) {
             throw new RuntimeException("You have already responded to this request");
         }
-
+            boolean canDonate = donationReportService.canUserDonate(donorId);
+            if (!canDonate) {
+                throw new RuntimeException("You are not eligible to donate blood at this time. Please check your donation history or contact support for more information.");
+            }
         // Calculate distance
         Double donorDistance = null;
         if (donor.getLatitude() != null && donor.getLongitude() != null &&

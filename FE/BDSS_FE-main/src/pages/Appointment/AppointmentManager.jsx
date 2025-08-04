@@ -326,7 +326,6 @@ export default function AppointmentManager() {
   };
 
   const handleCheckout = async (item) => {
-    // Check blood type before allowing checkout
     const currentBloodType = item.user?.bloodType;
     const isBloodTypeMissing =
       !currentBloodType ||
@@ -336,7 +335,6 @@ export default function AppointmentManager() {
       currentBloodType === undefined;
 
     if (isBloodTypeMissing) {
-      // Show warning and prevent checkout
       await Swal.fire({
         icon: "warning",
         title: "Blood Type Required",
@@ -360,7 +358,7 @@ export default function AppointmentManager() {
         confirmButtonColor: "#f39c12",
         width: 500,
       });
-      return; // Stop checkout process
+      return;
     }
 
     try {
@@ -418,9 +416,8 @@ export default function AppointmentManager() {
         }
       }
 
-      // Show success message with blood type confirmation
       toast.success(
-        `✅ Checkout completed successfully! Blood type: ${currentBloodType}`,
+        `Checkout completed successfully! Blood type: ${currentBloodType}`,
         {
           position: "top-right",
           autoClose: 5000,
@@ -728,7 +725,7 @@ export default function AppointmentManager() {
         <Modal.Body>
           <div>
             <div className="mb-3">
-              <strong>User:</strong>{" "}
+              <strong>Donor:</strong>{" "}
               {bloodTypeUpdateData.user?.fullName || "Unknown User"}
             </div>
             <div className="mb-3">
@@ -742,6 +739,9 @@ export default function AppointmentManager() {
             <div className="mb-3">
               <label htmlFor="bloodTypeSelect">
                 <strong>Select New Blood Type:</strong>
+                <h6 style={{ fontSize: "0.9em", color: "#666" }}>
+                  Following the blood test results from the checkout record
+                </h6>
               </label>
               <select
                 id="bloodTypeSelect"
@@ -749,7 +749,7 @@ export default function AppointmentManager() {
                 value={selectedBloodType}
                 onChange={(e) => setSelectedBloodType(e.target.value)}
               >
-                <option value="">Unknown</option>
+                <option value="">-- Select Blood Type --</option>
                 <option value="A_POSITIVE">A+</option>
                 <option value="A_NEGATIVE">A-</option>
                 <option value="B_POSITIVE">B+</option>
