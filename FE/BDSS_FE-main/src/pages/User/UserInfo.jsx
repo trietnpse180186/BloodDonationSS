@@ -203,9 +203,7 @@ function UserInfo({ userId }) {
             <div className="user-info-modern-row">
               <span className="user-info-modern-label">Blood Type:</span>
               <span className="user-info-modern-value">
-                {user.bloodType ?? (
-                  <span style={{ color: "#888" }}>UNKNOWN</span>
-                )}
+                {user.bloodType ?? <span style={{ color: "#888" }}>_</span>}
               </span>
             </div>
           </div>
