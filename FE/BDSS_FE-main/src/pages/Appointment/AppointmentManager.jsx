@@ -21,6 +21,7 @@ export default function AppointmentManager() {
     user: null,
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const [otpModal, setOtpModal] = useState({ show: false, item: null, otp: "" });
   const accessToken = sessionStorage.getItem("accessToken");
 
   useEffect(() => {
@@ -53,6 +54,8 @@ export default function AppointmentManager() {
         return <span className="status-pending">Pending</span>;
       case "APPROVED":
         return <span className="status-confirmed">Approved</span>;
+      case "CHECKED_IN":
+        return <span className="status-confirmed">Approved</span>;
       case "CANCELLED":
         return <span className="status-cancelled">Cancelled</span>;
       case "COMPLETED":
@@ -71,7 +74,6 @@ export default function AppointmentManager() {
     return acc;
   }, {});
 
-  // Filter grouped data based on search term
   const filteredGrouped = Object.entries(grouped).filter(([key, items]) => {
     const name = items[0]?.user?.fullName || "";
     const email = items[0]?.user?.email || "";
@@ -81,35 +83,16 @@ export default function AppointmentManager() {
     );
   });
 
-  const handleUpdate = async (item) => {
-    let nextStatus = "";
-    let notifyTitle = "";
-    let notifyDetail = "";
-
-    if (item.status === "PENDING") {
-      nextStatus = "APPROVED";
-      notifyTitle = "Appointment Approved";
-      notifyDetail = "Your blood donation appointment has been approved.";
-    } else if (item.status === "APPROVED") {
-      nextStatus = "COMPLETED";
-      notifyTitle = "Appointment Completed";
-      notifyDetail =
-        "Your blood donation appointment has been marked as completed. Thank you for your contribution!";
-    } else return;
+  const handleAccept = async (item) => {
     try {
-      await axios.put(
-        `${baseUrl}/api/booking/${item.bookingId}`,
-        { status: nextStatus },
+      await axios.post(
+        `${baseUrl}/api/checkin/approve/${item.bookingId}`,
+        {},
         {
-          headers: { Authorization: `Bearer ${accessToken}` },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         }
-      );
-      setAppointments((prev) =>
-        prev.map((appt) =>
-          appt.bookingId === item.bookingId
-            ? { ...appt, status: nextStatus }
-            : appt
-        )
       );
 
       const userId = item.user?.userID || item.user?.userId;
@@ -117,8 +100,8 @@ export default function AppointmentManager() {
         await axios.post(
           `${baseUrl}/notifications`,
           {
-            title: notifyTitle,
-            detail: notifyDetail,
+            title: "Appointment Approved",
+            detail: "Your blood donation appointment has been approved.",
             donorId: userId,
             date: new Date().toISOString().slice(0, 10),
             time: new Date().toTimeString().slice(0, 5),
@@ -132,8 +115,18 @@ export default function AppointmentManager() {
           }
         );
       }
+
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt.bookingId === item.bookingId
+            ? { ...appt, status: "APPROVED" }
+            : appt
+        )
+      );
+
+      toast.success("Appointment approved successfully!");
     } catch (error) {
-      toast.error("Update Failed!");
+      toast.error("Approve Failed!");
     }
   };
 
@@ -272,7 +265,6 @@ export default function AppointmentManager() {
         }
       );
 
-      // Update the appointments state to reflect the new blood type
       setAppointments((prev) =>
         prev.map((appt) =>
           appt.user?.userID === userId || appt.user?.userId === userId
@@ -286,6 +278,87 @@ export default function AppointmentManager() {
     } catch (error) {
       console.error("Error updating blood type:", error);
       toast.error("Failed to update blood type!");
+    }
+  };
+
+  const handleCheckinClick = (item) => {
+    setOtpModal({ show: true, item, otp: "" });
+  };
+
+  const handleCheckin = async () => {
+    if (!otpModal.otp) {
+      toast.error("Please enter the OTP code!");
+      return;
+    }
+    try {
+      await axios.post(
+        `${baseUrl}/api/checkin`,
+        { checkInCode: otpModal.otp },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt.bookingId === otpModal.item.bookingId
+            ? { ...appt, status: "CHECKED_IN", checkInCode: otpModal.otp }
+            : appt
+        )
+      );
+      toast.success("Check-in successful!");
+      setOtpModal({ show: false, item: null, otp: "" });
+    } catch (error) {
+      toast.error("Check-in Failed! Please check the OTP code.");
+    }
+  };
+
+  const handleCheckout = async (item) => {
+    try {
+      await axios.post(
+        `${baseUrl}/api/checkin/checkout/${item.bookingId}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      setAppointments((prev) =>
+        prev.map((appt) =>
+          appt.bookingId === item.bookingId
+            ? { ...appt, status: "COMPLETED" }
+            : appt
+        )
+      );
+      toast.success("Checkout successful!");
+
+      const userId = item.user?.userID || item.user?.userId;
+      if (userId) {
+        await axios.post(
+          `${baseUrl}/notifications`,
+          {
+            title: "Appointment Completed",
+            detail: "Thank you for your blood donation. Your appointment has been completed successfully.",
+            donorId: userId,
+            date: new Date().toISOString().slice(0, 10),
+            time: new Date().toTimeString().slice(0, 5),
+            type: "NOTIFICATION",
+            priority: "NORMAL",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+      }
+
+      const bloodType =
+        item.user?.bloodType || item.bloodType || "UNKNOWN";
+      if (!bloodType || bloodType === "UNKNOWN") {
+        setBloodTypeUpdateData({ show: true, user: item.user });
+        toast.info("Please update blood type for this Donor!");
+      }
+    } catch (error) {
+      toast.error("Checkout Failed!");
     }
   };
 
@@ -363,13 +436,18 @@ export default function AppointmentManager() {
                             View Survey
                           </button>
                           {item.status === "PENDING" && (
-                            <button onClick={() => handleUpdate(item)}>
-                              Approve
+                            <button onClick={() => handleAccept(item)}>
+                              Accepted
                             </button>
                           )}
                           {item.status === "APPROVED" && (
-                            <button onClick={() => handleUpdate(item)}>
-                              Complete
+                            <button onClick={() => handleCheckinClick(item)}>
+                              Check-In
+                            </button>
+                          )}
+                          {item.status === "CHECKED_IN" && (
+                            <button onClick={() => handleCheckout(item)}>
+                              Check-Out
                             </button>
                           )}
                           {item.status === "PENDING" && (
@@ -392,6 +470,46 @@ export default function AppointmentManager() {
           ))
         )}
       </div>
+
+      {/* Modal nhập OTP checkin */}
+      <Modal
+        show={otpModal.show}
+        onHide={() => setOtpModal({ show: false, item: null, otp: "" })}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Check-in: Enter OTP Code</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <label htmlFor="otpInput">
+              Please enter the OTP code for check-in:
+            </label>
+            <input
+              id="otpInput"
+              type="text"
+              className="form-control mt-2"
+              value={otpModal.otp}
+              onChange={(e) =>
+                setOtpModal((prev) => ({ ...prev, otp: e.target.value }))
+              }
+              placeholder="Enter OTP code"
+              autoFocus
+            />
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setOtpModal({ show: false, item: null, otp: "" })}
+          >
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleCheckin}>
+            Confirm Check-in
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Modal
         show={surveyData.show}
