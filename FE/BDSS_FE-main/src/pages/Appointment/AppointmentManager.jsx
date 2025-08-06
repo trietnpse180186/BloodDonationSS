@@ -519,7 +519,7 @@ export default function AppointmentManager() {
                           </button>
                           {item.status === "PENDING" && (
                             <button onClick={() => handleAccept(item)}>
-                              Accepted
+                              Accept
                             </button>
                           )}
                           {item.status === "APPROVED" && (
