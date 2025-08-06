@@ -4,6 +4,12 @@
   padding: 0.4rem 0.5rem;
   font-size: 0.97rem;
   white-space: nowrap;
+  border-right: 1px solid #dee2e6;
+}
+
+.emergency-table th:last-child,
+.emergency-table td:last-child {
+  border-right: none;
 }
 
 .emergency-table td {
@@ -94,6 +100,18 @@
   border-radius: 4px;
   background-color: #f5f5f5;
 }
+
+/* Donor table styling */
+.emergency-detail-modal .table th,
+.emergency-detail-modal .table td {
+  border-right: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.emergency-detail-modal .table th:last-child,
+.emergency-detail-modal .table td:last-child {
+  border-right: none;
+}
 .action-btn-group {
   display: flex;
   flex-direction: row;
@@ -116,4 +134,55 @@
 
 .action-btn:not(:last-child) {
   margin-right: 0.2rem;
+}
+
+/* SweetAlert Modal Styling */
+.swal-check-in-popup {
+  width: 400px !important;
+  max-width: 90vw !important;
+  padding: 20px !important;
+}
+
+.swal-check-in-popup .swal2-html-container {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.swal-check-in-input {
+  width: calc(100% - 24px) !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  margin: 0 auto !important;
+  display: block !important;
+  border: 1px solid #d3d3d3 !important;
+  border-radius: 4px !important;
+}
+
+/* Additional SweetAlert2 input styling */
+.swal-check-in-popup .swal2-input {
+  width: calc(100% - 24px) !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+  margin: 0 auto !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  border: 1px solid #d3d3d3 !important;
+  border-radius: 4px !important;
+}
+
+/* Responsive SweetAlert */
+@media (max-width: 480px) {
+  .swal-check-in-popup {
+    width: 320px !important;
+    margin: 0 auto !important;
+    padding: 15px !important;
+  }
+
+  .swal-check-in-input,
+  .swal-check-in-popup .swal2-input {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+    width: calc(100% - 20px) !important;
+  }
 }

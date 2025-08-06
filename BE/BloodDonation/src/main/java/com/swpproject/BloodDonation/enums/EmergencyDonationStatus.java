@@ -6,7 +6,8 @@ package com.swpproject.BloodDonation.enums;
 public enum EmergencyDonationStatus {
     PENDING,     // Đã đăng ký, chờ xác nhận
     CONFIRMED,   // Nhân viên đã xác nhận người hiến sẽ đến
-    COMPLETED,   // Đã hiến máu thành công
+    COMPLETED,
+    CHECKED_IN,// Đã hiến máu thành công
     NO_SHOW,     // Không đến theo lịch hẹn
     CANCELLED,    // Đã hủy đăng ký
     REJECTED     // Đăng ký bị từ chối

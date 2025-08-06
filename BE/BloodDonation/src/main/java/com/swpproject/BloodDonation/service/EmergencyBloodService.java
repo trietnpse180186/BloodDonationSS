@@ -1247,6 +1247,7 @@ public class EmergencyBloodService {
         donation.setCheckInBy(staffId);
         donation.setLastUpdatedTime(LocalDateTime.now());
         donation.setLastUpdatedBy(staff.getFullName());
+        donation.setStatus(EmergencyDonationStatus.CHECKED_IN);
 
         EmergencyDonation savedDonation = donationRepository.save(donation);
 

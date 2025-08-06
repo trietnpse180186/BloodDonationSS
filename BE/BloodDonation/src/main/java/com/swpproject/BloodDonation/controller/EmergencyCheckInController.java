@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -37,7 +38,9 @@ public class EmergencyCheckInController {
             @Valid @RequestBody CheckInRequestDTO request,
             Authentication authentication) {
 
-        String staffId = authentication.getName();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String staffId = jwt.getClaim("userId");
+
         EmergencyDonorDTO donation = emergencyBloodService.checkInDonorByCode(
                 request.getCheckInCode(), staffId);
 
@@ -53,7 +56,9 @@ public class EmergencyCheckInController {
             @RequestBody CheckOutRequestDTO request,
             Authentication authentication) {
 
-        String staffId = authentication.getName();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String staffId = jwt.getClaim("userId");
+
         EmergencyDonorDTO donation = emergencyBloodService.checkOutDonor(
                 donationId, request, staffId);
 
@@ -68,7 +73,9 @@ public class EmergencyCheckInController {
             @PathVariable String donationId,
             Authentication authentication) {
 
-        String staffId = authentication.getName();
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        String staffId = jwt.getClaim("userId");
+
         EmergencyDonorDTO donation = emergencyBloodService.markAsNoShow(donationId, staffId);
 
         return ResponseEntity.ok(donation);
