@@ -19,6 +19,9 @@ import {
   FaUserAltSlash,
   FaTimes,
   FaCheckCircle,
+  FaSignInAlt,
+  FaSignOutAlt,
+  FaUserClock,
 } from "react-icons/fa";
 import "./EmergencyRequest.css";
 import { getUserRole } from "../../helpers/getUserName";
@@ -178,14 +181,24 @@ export default function EmergencyRequest() {
 
   const getStatusBadge = (status) => {
     const statusConfig = {
+      // Emergency Request Status
       ACTIVE: { variant: "success", text: "Active" },
       EXPIRED: { variant: "danger", text: "Expired" },
       FULFILLED: { variant: "primary", text: "Fulfilled" },
       CANCELLED: { variant: "secondary", text: "Cancelled" },
+
+      // Donation Status
+      COMPLETED: { variant: "success", text: "Completed" },
+      CHECKED_IN: { variant: "info", text: "Checked In" },
+      CONFIRMED: { variant: "primary", text: "Confirmed" },
+      PENDING: { variant: "warning", text: "Pending" },
+      RESPONDED: { variant: "secondary", text: "Responded" },
+      NO_SHOW: { variant: "dark", text: "No Show" },
+      REJECTED: { variant: "danger", text: "Rejected" },
     };
 
     const config = statusConfig[status] || {
-      variant: "secondary",
+      variant: "light",
       text: status,
     };
     return <Badge bg={config.variant}>{config.text}</Badge>;
@@ -450,6 +463,200 @@ export default function EmergencyRequest() {
     }
   };
 
+  // Check-in function for emergency donors
+  const handleCheckIn = async (donationId) => {
+    try {
+      // Prompt for check-in code
+      const { value: checkInCode } = await Swal.fire({
+        title: "Check In Donor",
+        input: "text",
+        inputLabel: "Check-in Code",
+        inputPlaceholder: "Enter the check-in code...",
+        showCancelButton: true,
+        width: "400px",
+        padding: "20px",
+        customClass: {
+          popup: "swal-check-in-popup",
+          input: "swal-check-in-input",
+        },
+        inputAttributes: {
+          style:
+            "width: calc(100% - 24px); box-sizing: border-box; margin: 0 auto; display: block;",
+        },
+        inputValidator: (value) => {
+          if (!value) {
+            return "Check-in code is required!";
+          }
+        },
+      });
+
+      if (!checkInCode) return; // User cancelled
+
+      const token = sessionStorage.getItem("accessToken");
+
+      const requestBody = {
+        checkInCode: checkInCode,
+      };
+
+      const response = await axios.post(
+        `${baseUrl}/api/emergency/checkin`,
+        requestBody,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      toast.success("Donor checked in successfully");
+      await fetchEmergencyRequests();
+
+      // Refresh selected request if modal is open
+      if (selectedRequest) {
+        try {
+          const response = await axios.get(`${baseUrl}/api/emergency`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const updatedRequest = response.data.find(
+            (req) => req.requestId === selectedRequest.requestId
+          );
+          if (updatedRequest) {
+            setSelectedRequest(updatedRequest);
+          }
+        } catch (error) {
+          console.error("Error refreshing selected request:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error checking in donor:", error);
+
+      if (error.response?.status === 404) {
+        toast.error("Invalid check-in code or donation not found");
+      } else if (error.response?.status === 403) {
+        toast.error("You don't have permission to check in donors");
+      } else if (error.response?.status === 400) {
+        toast.error(
+          error.response?.data?.message || "Invalid check-in request"
+        );
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Error checking in donor. Please try again.");
+      }
+    }
+  };
+
+  // Check-out function for emergency donors
+  const handleCheckOut = async (donationId) => {
+    try {
+      const { value: formValues } = await Swal.fire({
+        title: "Check Out Donor",
+        html: `
+          <div class="form-group mb-3">
+            <label for="bloodType" class="form-label">Blood Type:</label>
+            <select id="bloodType" class="form-control" required>
+              <option value="">Select Blood Type</option>
+              <option value="A_POSITIVE">A+</option>
+              <option value="A_NEGATIVE">A-</option>
+              <option value="B_POSITIVE">B+</option>
+              <option value="B_NEGATIVE">B-</option>
+              <option value="AB_POSITIVE">AB+</option>
+              <option value="AB_NEGATIVE">AB-</option>
+              <option value="O_POSITIVE">O+</option>
+              <option value="O_NEGATIVE">O-</option>
+            </select>
+          </div>
+          <div class="form-group mb-3">
+            <label for="unitsCollected" class="form-label">Units Collected:</label>
+            <input id="unitsCollected" class="form-control" type="number" min="0" step="0.1" placeholder="e.g., 1" required>
+          </div>
+          <div class="form-group">
+            <label for="notes" class="form-label">Notes:</label>
+            <textarea id="notes" class="form-control" rows="3" placeholder="Enter notes about the donation..." required></textarea>
+          </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: "Check Out",
+        cancelButtonText: "Cancel",
+        preConfirm: () => {
+          const bloodType = document.getElementById("bloodType").value;
+          const unitsCollected =
+            document.getElementById("unitsCollected").value;
+          const notes = document.getElementById("notes").value;
+
+          if (!bloodType) {
+            Swal.showValidationMessage("Blood type is required");
+            return false;
+          }
+          if (!unitsCollected || parseFloat(unitsCollected) <= 0) {
+            Swal.showValidationMessage("Valid units collected is required");
+            return false;
+          }
+          if (!notes || notes.trim() === "") {
+            Swal.showValidationMessage("Notes are required");
+            return false;
+          }
+
+          return {
+            bloodType: bloodType,
+            unitsCollected: parseFloat(unitsCollected),
+            notes: notes.trim(),
+          };
+        },
+      });
+
+      if (!formValues) return;
+
+      const token = sessionStorage.getItem("accessToken");
+
+      await axios.post(
+        `${baseUrl}/api/emergency/checkin/checkout/${donationId}`,
+        {
+          bloodType: formValues.bloodType,
+          unitsCollected: formValues.unitsCollected,
+          notes: formValues.notes,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      toast.success("Donor checked out successfully");
+      await fetchEmergencyRequests();
+
+      if (selectedRequest) {
+        try {
+          const response = await axios.get(`${baseUrl}/api/emergency`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const updatedRequest = response.data.find(
+            (req) => req.requestId === selectedRequest.requestId
+          );
+          if (updatedRequest) {
+            setSelectedRequest(updatedRequest);
+          }
+        } catch (error) {
+          console.error("Error refreshing selected request:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error checking out donor:", error);
+      if (error.response?.status === 404) {
+        toast.error("Donation not found");
+      } else if (error.response?.status === 403) {
+        toast.error("You don't have permission to check out donors");
+      } else if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Error checking out donor");
+      }
+    }
+  };
+
   const handleCancel = async (id) => {
     const result = await Swal.fire({
       title: "Cancel Request?",
@@ -570,7 +777,7 @@ export default function EmergencyRequest() {
           <div className="text-center py-4">Loading...</div>
         ) : (
           <div className="table-responsive">
-            <Table striped bordered hover>
+            <Table striped bordered hover className="emergency-table">
               <thead>
                 <tr>
                   <th>Hospital</th>
@@ -624,7 +831,7 @@ export default function EmergencyRequest() {
                       </span>
                     </td>
                     <td>
-                      <div className="d-flex gap-1">
+                      <div className="d-flex gap-1 justify-content-center">
                         <Button
                           variant="outline-primary"
                           size="sm"
@@ -1241,15 +1448,33 @@ export default function EmergencyRequest() {
                                 bg={
                                   donor.status === "COMPLETED"
                                     ? "success"
+                                    : donor.status === "CHECKED_IN"
+                                    ? "info"
+                                    : donor.status === "CONFIRMED"
+                                    ? "primary"
                                     : donor.status === "PENDING"
                                     ? "warning"
+                                    : donor.status === "RESPONDED"
+                                    ? "secondary"
                                     : donor.status === "CANCELLED"
                                     ? "danger"
-                                    : "secondary"
+                                    : donor.status === "NO_SHOW"
+                                    ? "dark"
+                                    : donor.status === "REJECTED"
+                                    ? "danger"
+                                    : "light"
                                 }
                                 pill
                               >
-                                {donor.status}
+                                {donor.status === "CHECKED_IN"
+                                  ? "Checked In"
+                                  : donor.status === "NO_SHOW"
+                                  ? "No Show"
+                                  : donor.status === "RESPONDED"
+                                  ? "Responded"
+                                  : donor.status === "CONFIRMED"
+                                  ? "Confirmed"
+                                  : donor.status || "Unknown"}
                               </Badge>
                             </td>
                             <td>{formatDateTime(donor.responseTime)}</td>
@@ -1266,34 +1491,86 @@ export default function EmergencyRequest() {
                               )}
                             </td>
                             <td>
-                              {donor.status === "PENDING" && (
-                                <Button
-                                  variant="outline-success"
-                                  size="sm"
-                                  onClick={() =>
-                                    updateDonationStatus(
-                                      donor.donationId,
-                                      "COMPLETED"
-                                    )
-                                  }
-                                  title="Mark donation as completed"
-                                >
-                                  <FaCheckCircle className="me-1" />
-                                  Complete
-                                </Button>
-                              )}
-                              {donor.status === "COMPLETED" && (
-                                <Badge bg="success" pill>
-                                  <FaCheckCircle className="me-1" />
-                                  Completed
-                                </Badge>
-                              )}
-                              {donor.status === "CANCELLED" && (
-                                <Badge bg="danger" pill>
-                                  <FaTimes className="me-1" />
-                                  Cancelled
-                                </Badge>
-                              )}
+                              <div className="d-flex gap-1 flex-wrap justify-content-center">
+                                {/* Show check-in for CONFIRMED status (ready to check-in) */}
+                                {(donor.status === "CONFIRMED" ||
+                                  donor.status === "PENDING" ||
+                                  donor.status === "RESPONDED") && (
+                                  <Button
+                                    variant="outline-primary"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleCheckIn(donor.donationId)
+                                    }
+                                    title="Check in donor"
+                                  >
+                                    <FaSignInAlt className="me-1" />
+                                    Check In
+                                  </Button>
+                                )}
+
+                                {/* Show check-out for checked-in donors */}
+                                {donor.status === "CHECKED_IN" && (
+                                  <Button
+                                    variant="outline-success"
+                                    size="sm"
+                                    onClick={() =>
+                                      handleCheckOut(donor.donationId)
+                                    }
+                                    title="Check out donor"
+                                  >
+                                    <FaSignOutAlt className="me-1" />
+                                    Check Out
+                                  </Button>
+                                )}
+
+                                {/* Status badges for completed/cancelled/no-show */}
+                                {donor.status === "COMPLETED" && (
+                                  <Badge bg="success" pill>
+                                    <FaCheckCircle className="me-1" />
+                                    Completed
+                                  </Badge>
+                                )}
+                                {donor.status === "CANCELLED" && (
+                                  <Badge bg="danger" pill>
+                                    <FaTimes className="me-1" />
+                                    Cancelled
+                                  </Badge>
+                                )}
+                                {donor.status === "NO_SHOW" && (
+                                  <Badge bg="dark" pill>
+                                    <FaUserClock className="me-1" />
+                                    No Show
+                                  </Badge>
+                                )}
+                                {donor.status === "REJECTED" && (
+                                  <Badge bg="danger" pill>
+                                    <FaTimes className="me-1" />
+                                    Rejected
+                                  </Badge>
+                                )}
+                                {donor.status === "RESPONDED" && (
+                                  <Badge bg="secondary" pill>
+                                    Responded
+                                  </Badge>
+                                )}
+
+                                {/* Fallback for unknown status */}
+                                {![
+                                  "PENDING",
+                                  "CONFIRMED",
+                                  "CHECKED_IN",
+                                  "COMPLETED",
+                                  "CANCELLED",
+                                  "NO_SHOW",
+                                  "REJECTED",
+                                  "RESPONDED",
+                                ].includes(donor.status) && (
+                                  <Badge bg="light" text="dark" pill>
+                                    {donor.status || "Unknown"}
+                                  </Badge>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         ))}

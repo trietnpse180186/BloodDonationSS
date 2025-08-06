@@ -60,7 +60,7 @@ export default function AppointmentManager() {
       case "APPROVED":
         return <span className="status-confirmed">Approved</span>;
       case "CHECKED_IN":
-        return <span className="status-checked-in">Checked-In</span>;
+        return <span className="status-checked-in">Checked-in</span>;
       case "CANCELLED":
         return <span className="status-cancelled">Cancelled</span>;
       case "COMPLETED":
@@ -524,12 +524,12 @@ export default function AppointmentManager() {
                           )}
                           {item.status === "APPROVED" && (
                             <button onClick={() => handleCheckinClick(item)}>
-                              Check-In
+                              Check-in
                             </button>
                           )}
                           {item.status === "CHECKED_IN" && (
                             <button onClick={() => handleCheckout(item)}>
-                              Check-Out
+                              Check-out
                             </button>
                           )}
                           {item.status === "PENDING" && (

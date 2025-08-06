@@ -115,7 +115,7 @@ public class EmergencyBloodController {
      */
     @PutMapping("/donations/{donationId}/status")
     @PreAuthorize("hasAuthority('STAFF') or hasAuthority('ADMIN')")
-    public ResponseEntity<Void> updateDonationStatus(
+    public ResponseEntity<Void> updateDonationdcStatus(
             @PathVariable String donationId,
             @RequestParam EmergencyDonationStatus status,
             @RequestParam(required = false) String notes,
